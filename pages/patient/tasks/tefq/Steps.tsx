@@ -1,9 +1,9 @@
-import { FormikProps, FormikValues } from "formik"
-import * as Yup from "yup"
-import { NumberInput } from "../../../../components/inputs/NumbeInput"
-import { SelectInput } from "../../../../components/inputs/SelectInput"
-import { parseCachedVal } from "../../helpers"
-import { Question } from "../../Question"
+import { FormikProps, FormikValues } from "formik";
+import * as Yup from "yup";
+import { NumberInput } from "../../../../src/components/inputs/NumbeInput";
+import { SelectInput } from "../../../../src/components/inputs/SelectInput";
+import { parseCachedVal } from "../../helpers";
+import { Question } from "../../Question";
 
 export const initialValues = {
   tenseLevel: parseCachedVal(localStorage.tenseLevel, ""),
@@ -13,23 +13,23 @@ export const initialValues = {
   frightenedFrequency: parseCachedVal(localStorage.frightenedFrequency, ""),
   restlessAmount: parseCachedVal(localStorage.restlessAmount, ""),
   panicFrequency: parseCachedVal(localStorage.panicFrequency, ""),
-}
+};
 
 type StepProps = (
   values: FormikValues,
   formikBag: FormikProps<FormikValues>,
   currentStepIndex: number
-) => Promise<unknown>
+) => Promise<unknown>;
 
 export const beforePrev: StepProps = (_value, _params, currentStepIndex) => {
-  _params.setErrors({})
-  localStorage.setItem("tefqSteps", String(currentStepIndex - 1))
-  return Promise.resolve()
-}
+  _params.setErrors({});
+  localStorage.setItem("tefqSteps", String(currentStepIndex - 1));
+  return Promise.resolve();
+};
 export const beforeNext: StepProps = (_values, _params, currentStepIndex) => {
-  localStorage.setItem("tefqSteps", String(currentStepIndex + 1))
-  return Promise.resolve()
-}
+  localStorage.setItem("tefqSteps", String(currentStepIndex + 1));
+  return Promise.resolve();
+};
 const options = [
   {
     label: "Definitely true",
@@ -47,7 +47,7 @@ const options = [
     label: "Definitely false",
     value: "Definitely false",
   },
-]
+];
 
 export const Step1 = () => {
   return (
@@ -63,11 +63,11 @@ export const Step1 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step1.validation = Yup.object().shape({
   alwaysEating: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step2 = () => {
   return (
@@ -82,11 +82,11 @@ export const Step2 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step2.validation = Yup.object().shape({
   smallHelpings: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step3 = () => {
   return (
@@ -101,11 +101,11 @@ export const Step3 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step3.validation = Yup.object().shape({
   anxiousEating: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step4 = () => {
   return (
@@ -120,11 +120,11 @@ export const Step4 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step4.validation = Yup.object().shape({
   uncontrollableEating: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step5 = () => {
   return (
@@ -139,11 +139,11 @@ export const Step5 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step5.validation = Yup.object().shape({
   eatingWithOthers: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step6 = () => {
   return (
@@ -158,11 +158,11 @@ export const Step6 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step6.validation = Yup.object().shape({
   overeatingWhenBlue: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step7 = () => {
   return (
@@ -177,11 +177,11 @@ export const Step7 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step7.validation = Yup.object().shape({
   delicacyEating: Yup.string().required("Please select a value"),
-})
+});
 export const Step8 = () => {
   return (
     <Question
@@ -195,11 +195,11 @@ export const Step8 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step8.validation = Yup.object().shape({
   bottomlessPit: Yup.string().required("Please select a value"),
-})
+});
 export const Step9 = () => {
   return (
     <Question
@@ -213,11 +213,11 @@ export const Step9 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step9.validation = Yup.object().shape({
   alwaysHungry: Yup.string().required("Please select a value"),
-})
+});
 export const Step10 = () => {
   return (
     <Question
@@ -231,11 +231,11 @@ export const Step10 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step10.validation = Yup.object().shape({
   lonelyEating: Yup.string().required("Please select a value"),
-})
+});
 export const Step11 = () => {
   return (
     <Question
@@ -249,11 +249,11 @@ export const Step11 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step11.validation = Yup.object().shape({
   holdBack: Yup.string().required("Please select a value"),
-})
+});
 export const Step12 = () => {
   return (
     <Question
@@ -267,11 +267,11 @@ export const Step12 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step12.validation = Yup.object().shape({
   fatFoods: Yup.string().required("Please select a value"),
-})
+});
 export const Step13 = () => {
   return (
     <Question
@@ -285,11 +285,11 @@ export const Step13 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step13.validation = Yup.object().shape({
   alwaysHungry2: Yup.string().required("Please select a value"),
-})
+});
 const oftenHungryOptions = [
   {
     label: "Only at meal times",
@@ -307,7 +307,7 @@ const oftenHungryOptions = [
     label: "Almost always",
     value: "Almost always",
   },
-]
+];
 export const Step14 = () => {
   return (
     <Question
@@ -321,11 +321,11 @@ export const Step14 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step14.validation = Yup.object().shape({
   howOftenHungry: Yup.string().required("Please select a value"),
-})
+});
 export const Step15 = () => {
   return (
     <Question
@@ -339,11 +339,11 @@ export const Step15 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step15.validation = Yup.object().shape({
   avoidStockingUp: Yup.string().required("Please select a value"),
-})
+});
 const likelyOptions = [
   {
     label: "Unlikely",
@@ -361,7 +361,7 @@ const likelyOptions = [
     label: "Very likely",
     value: "Very likely",
   },
-]
+];
 export const Step16 = () => {
   return (
     <Question
@@ -375,11 +375,11 @@ export const Step16 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step16.validation = Yup.object().shape({
   conciouslyEatLess: Yup.string().required("Please select a value"),
-})
+});
 
 const eatingBingesOptions = [
   {
@@ -398,7 +398,7 @@ const eatingBingesOptions = [
     label: "At least once a week",
     value: "At least once a week",
   },
-]
+];
 export const Step17 = () => {
   return (
     <Question
@@ -412,11 +412,11 @@ export const Step17 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step17.validation = Yup.object().shape({
   eatingBinges: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step18 = () => {
   return (
@@ -426,15 +426,15 @@ export const Step18 = () => {
         <NumberInput cache name="restraint" placeholder="Select an option..." />
       }
     />
-  )
-}
+  );
+};
 Step18.validation = Yup.object().shape({
   // max value is 8 lowest value is 1
   restraint: Yup.number()
     .min(1, "Must be at least 1")
     .max(8, "Must be at most 8")
     .required("Please select a value"),
-})
+});
 
 export const list = [
   {
@@ -544,4 +544,4 @@ export const list = [
     beforePrev,
     beforeNext,
   },
-]
+];

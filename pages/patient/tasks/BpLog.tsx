@@ -1,15 +1,15 @@
-import * as Yup from "yup"
-import { FormikProvider, useFormik } from "formik"
-import { useRef } from "react"
-import { Button } from "../../../components/Button"
-import { NumberInput } from "../../../components/inputs/NumbeInput"
-import { convertFormValuesIntoAnswers, parseCachedVal } from "../helpers"
-import { Question } from "../Question"
-import { BackButton } from "../../../components/BackButton"
+import * as Yup from "yup";
+import { FormikProvider, useFormik } from "formik";
+import { useRef } from "react";
+import { Button } from "../../../src/components/Button";
+import { NumberInput } from "../../../src/components/inputs/NumbeInput";
+import { convertFormValuesIntoAnswers, parseCachedVal } from "../helpers";
+import { Question } from "../Question";
+import { BackButton } from "../../../src/components/BackButton";
 
-import { useMutation, gql } from "@apollo/client"
-import { useNavigate } from "react-router"
-import { useNotificationDispatch } from "../../../context/NotificationContext"
+import { useMutation, gql } from "@apollo/client";
+import { useNavigate } from "react-router";
+import { useNotificationDispatch } from "../../../context/NotificationContext";
 
 const completeUserTaskMutation = gql`
   mutation CompleteTask($input: CompleteUserTaskInput!) {
@@ -17,42 +17,42 @@ const completeUserTaskMutation = gql`
       completed
     }
   }
-`
+`;
 export const BpLog = ({ userTaskId = "" }) => {
-  const notificationDispatchers = useNotificationDispatch()
-  const navigate = useNavigate()
+  const notificationDispatchers = useNotificationDispatch();
+  const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("systolic")
-    localStorage.removeItem("diastolic")
-  }
+    localStorage.removeItem("systolic");
+    localStorage.removeItem("diastolic");
+  };
   const onCompleted = () => {
-    clearLocalStorage()
+    clearLocalStorage();
     notificationDispatchers.displayNotification(
       "Blood pressure logged successfully",
       "Your results have been saved",
       "success"
-    )
-    navigate("/dashboard?refetch=true")
-  }
-  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation)
+    );
+    navigate("/dashboard?refetch=true");
+  };
+  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
 
-  const systolicBpRef = useRef(null)
-  const diastolicBpRef = useRef(null)
+  const systolicBpRef = useRef(null);
+  const diastolicBpRef = useRef(null);
   const initialValues = {
     systolicBp: parseCachedVal(localStorage.systolicBp, ""),
     diastolicBp: parseCachedVal(localStorage.diastolicBp, ""),
-  }
+  };
   const onSubmit = async (values = initialValues) => {
-    const answers = convertFormValuesIntoAnswers(values)
-    const input = { _id: userTaskId, answers }
+    const answers = convertFormValuesIntoAnswers(values);
+    const input = { _id: userTaskId, answers };
     console.log("log: values", {
       input,
       values,
       convertedValues: convertFormValuesIntoAnswers(values),
-    })
-    await completeUserTask({ variables: { input } })
-    onCompleted()
-  }
+    });
+    await completeUserTask({ variables: { input } });
+    onCompleted();
+  };
 
   const formikValues = useFormik({
     initialValues,
@@ -67,8 +67,8 @@ export const BpLog = ({ userTaskId = "" }) => {
         .min(40, "Cannot be less than 40")
         .max(150, "Cannot be higher than 150"),
     }),
-  })
-  const { handleSubmit, errors } = formikValues
+  });
+  const { handleSubmit, errors } = formikValues;
   return (
     <FormikProvider value={formikValues}>
       <BackButton location="dashboard" />
@@ -126,5 +126,5 @@ export const BpLog = ({ userTaskId = "" }) => {
         </div>
       </div>
     </FormikProvider>
-  )
-}
+  );
+};

@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo } from "react"
-import { gql, useMutation } from "@apollo/client"
-import { Wrapper } from "../../components/layouts/Wrapper"
-import { IconInput } from "../../components/inputs/IconInput"
-import { Button } from "../../components/Button"
-import { MailIcon } from "@heroicons/react/solid"
-import { FormikProvider, useFormik } from "formik"
-import { useNavigate } from "react-router-dom"
-import * as Yup from "yup"
-import { parseError } from "../../utils/parseError"
-import { getStateByAbbreviation } from "../../utils/states"
+import React, { useEffect, useMemo } from "react";
+import { gql, useMutation } from "@apollo/client";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { IconInput } from "../../src/components/inputs/IconInput";
+import { Button } from "../../src/components/Button";
+import { MailIcon } from "@heroicons/react/solid";
+import { FormikProvider, useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import { parseError } from "../../utils/parseError";
+import { getStateByAbbreviation } from "../../utils/states";
 
 const subscribeEmailMutation = gql`
   mutation SubscribeEmail($input: SubscribeEmailInput!) {
@@ -16,18 +16,18 @@ const subscribeEmailMutation = gql`
       message
     }
   }
-`
+`;
 
 const WaitlistForm = () => {
-  const navigation = useNavigate()
-  const [subscribeEmail] = useMutation(subscribeEmailMutation)
+  const navigation = useNavigate();
+  const [subscribeEmail] = useMutation(subscribeEmailMutation);
 
   useEffect(() => {
     if (localStorage.getItem("fullName") || localStorage.getItem("location"))
-      return
+      return;
 
-    navigation("/signup")
-  }, [navigation])
+    navigation("/signup");
+  }, [navigation]);
 
   const subscribeEmailForm = useFormik({
     initialValues: {
@@ -49,27 +49,27 @@ const WaitlistForm = () => {
           variables: {
             input: values,
           },
-        })
+        });
 
-        resetForm()
-        setStatus({ success: data.subscribeEmail.message })
+        resetForm();
+        setStatus({ success: data.subscribeEmail.message });
       } catch (err) {
-        const msg = parseError(err)
-        setStatus({ error: msg })
+        const msg = parseError(err);
+        setStatus({ error: msg });
         setErrors({
           email: " ",
-        })
+        });
       }
     },
-  })
+  });
 
   const state = useMemo(() => {
-    if (!subscribeEmailForm.values.location) return
+    if (!subscribeEmailForm.values.location) return;
 
-    return getStateByAbbreviation(subscribeEmailForm.values.location)?.label
-  }, [subscribeEmailForm.values.location])
+    return getStateByAbbreviation(subscribeEmailForm.values.location)?.label;
+  }, [subscribeEmailForm.values.location]);
 
-  const { isSubmitting, submitForm, status } = subscribeEmailForm
+  const { isSubmitting, submitForm, status } = subscribeEmailForm;
 
   return (
     <Wrapper>
@@ -130,7 +130,7 @@ const WaitlistForm = () => {
         </div>
       </FormikProvider>
     </Wrapper>
-  )
-}
+  );
+};
 
-export default WaitlistForm
+export default WaitlistForm;

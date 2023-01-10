@@ -1,13 +1,13 @@
-import React, { useRef } from "react"
-import { useField } from "formik"
-import { NumberInput } from "../../../components/inputs/NumbeInput"
+import React, { useRef } from "react";
+import { useField } from "formik";
+import { NumberInput } from "../../../src/components/inputs/NumbeInput";
 
 export const BMI = () => {
-  const fullName = localStorage.getItem("fullName") || ""
-  const [, { error: feetError }] = useField("heightFeet")
-  const [, { error: inchError }] = useField("heightInches")
-  const heightInchesRef = useRef(null)
-  const weightRef = useRef(null)
+  const fullName = localStorage.getItem("fullName") || "";
+  const [, { error: feetError }] = useField("heightFeet");
+  const [, { error: inchError }] = useField("heightInches");
+  const heightInchesRef = useRef(null);
+  const weightRef = useRef(null);
 
   return (
     <div>
@@ -64,5 +64,5 @@ export const BMI = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,8 +1,8 @@
 import React from "react"
-import { ApplicationLayout } from "../components/layouts/ApplicationLayout"
+import { ApplicationLayout } from "../src/components/layouts/ApplicationLayout"
 import "@sendbird/uikit-react/dist/index.css"
-import { useAuth } from "../hooks/useAuth"
-import { ChatPage } from "../components/chat"
+import { useAuth } from "../src/hooks/useAuth"
+import { ChatPage } from "../src/components/chat"
 
 export const Chat = () => {
   const { user } = useAuth()

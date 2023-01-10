@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { format } from "date-fns"
-import { useField } from "formik"
-import React from "react"
-import { TextArea } from "../../../../components/inputs/TextArea"
-import { roleToText } from "../../../../utils/roleToText"
+import { format } from "date-fns";
+import { useField } from "formik";
+import React from "react";
+import { TextArea } from "../../../../src/components/inputs/TextArea";
+import { roleToText } from "../../../../utils/roleToText";
 
 export const AppointmentDetails = () => {
   const tz =
     new Date()
       .toLocaleString("en", { timeZoneName: "short" })
       .split(" ")
-      .pop() || "UTC"
-  const [, { value: eaProvider }] = useField("eaProvider")
-  const [, { value: providerType }] = useField("providerType")
-  const [, { value: startTimeInUtc }] = useField("startTimeInUtc")
-  const [, { value: endTimeInUtc }] = useField("endTimeInUtc")
-  const provider = roleToText(providerType)
+      .pop() || "UTC";
+  const [, { value: eaProvider }] = useField("eaProvider");
+  const [, { value: providerType }] = useField("providerType");
+  const [, { value: startTimeInUtc }] = useField("startTimeInUtc");
+  const [, { value: endTimeInUtc }] = useField("endTimeInUtc");
+  const provider = roleToText(providerType);
 
   return (
     <div>
@@ -81,5 +81,5 @@ export const AppointmentDetails = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

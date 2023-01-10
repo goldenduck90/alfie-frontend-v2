@@ -1,8 +1,8 @@
-import * as Yup from "yup"
-import { SelectInput } from "../../../../components/inputs/SelectInput"
-import { Question } from "../../Question"
-import { FormikProps, FormikValues } from "formik"
-import { parseCachedVal } from "../../helpers"
+import * as Yup from "yup";
+import { SelectInput } from "../../../../src/components/inputs/SelectInput";
+import { Question } from "../../Question";
+import { FormikProps, FormikValues } from "formik";
+import { parseCachedVal } from "../../helpers";
 
 export const initialValues = {
   tenseLevel: parseCachedVal(localStorage.tenseLevel, ""),
@@ -12,23 +12,23 @@ export const initialValues = {
   frightenedFrequency: parseCachedVal(localStorage.frightenedFrequency, ""),
   restlessAmount: parseCachedVal(localStorage.restlessAmount, ""),
   panicFrequency: parseCachedVal(localStorage.panicFrequency, ""),
-}
+};
 
 type StepProps = (
   values: FormikValues,
   formikBag: FormikProps<FormikValues>,
   currentStepIndex: number
-) => Promise<unknown>
+) => Promise<unknown>;
 
 export const beforePrev: StepProps = (_value, _params, currentStepIndex) => {
-  _params.setErrors({})
-  localStorage.setItem("mpFeelingStep", String(currentStepIndex - 1))
-  return Promise.resolve()
-}
+  _params.setErrors({});
+  localStorage.setItem("mpFeelingStep", String(currentStepIndex - 1));
+  return Promise.resolve();
+};
 export const beforeNext: StepProps = (_values, _params, currentStepIndex) => {
-  localStorage.setItem("mpFeelingStep", String(currentStepIndex + 1))
-  return Promise.resolve()
-}
+  localStorage.setItem("mpFeelingStep", String(currentStepIndex + 1));
+  return Promise.resolve();
+};
 
 export const tenseOptions = [
   {
@@ -47,7 +47,7 @@ export const tenseOptions = [
     label: "Not at all",
     value: "Not at all",
   },
-]
+];
 export const Step1 = () => {
   return (
     <Question
@@ -62,11 +62,11 @@ export const Step1 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step1.validation = Yup.object().shape({
   tenseLevel: Yup.string().required("Please select a value"),
-})
+});
 
 const frightenedLevelOptions = [
   {
@@ -85,7 +85,7 @@ const frightenedLevelOptions = [
     label: "Not at all",
     value: "Not at all",
   },
-]
+];
 export const Step2 = () => {
   return (
     <Question
@@ -99,11 +99,11 @@ export const Step2 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step2.validation = Yup.object().shape({
   frightenedLevel: Yup.string().required("Please select a value"),
-})
+});
 
 const worryAmountOptions = [
   {
@@ -122,7 +122,7 @@ const worryAmountOptions = [
     label: "Only occasionally",
     value: "Only occasionally",
   },
-]
+];
 export const Step3 = () => {
   return (
     <Question
@@ -136,11 +136,11 @@ export const Step3 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step3.validation = Yup.object().shape({
   worryAmount: Yup.string().required("Please select a value"),
-})
+});
 
 const easeFrequencyOptions = [
   {
@@ -159,7 +159,7 @@ const easeFrequencyOptions = [
     label: "Not at all",
     value: "Not at all",
   },
-]
+];
 export const Step4 = () => {
   return (
     <Question
@@ -173,11 +173,11 @@ export const Step4 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step4.validation = Yup.object().shape({
   easeFrequency: Yup.string().required("Please select a value"),
-})
+});
 
 const frightenedFrequencyOptions = [
   {
@@ -196,7 +196,7 @@ const frightenedFrequencyOptions = [
     label: "Very Often",
     value: "Very Often",
   },
-]
+];
 export const Step5 = () => {
   return (
     <Question
@@ -210,11 +210,11 @@ export const Step5 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step5.validation = Yup.object().shape({
   frightenedFrequency: Yup.string().required("Please select a value"),
-})
+});
 
 const restlessAmountOptions = [
   {
@@ -233,7 +233,7 @@ const restlessAmountOptions = [
     label: "Not at all",
     value: "Not at all",
   },
-]
+];
 export const Step6 = () => {
   return (
     <Question
@@ -247,11 +247,11 @@ export const Step6 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step6.validation = Yup.object().shape({
   restlessAmount: Yup.string().required("Please select a value"),
-})
+});
 
 const panicFrequencyOptions = [
   {
@@ -270,7 +270,7 @@ const panicFrequencyOptions = [
     label: "Not at all",
     value: "Not at all",
   },
-]
+];
 export const Step7 = () => {
   return (
     <Question
@@ -284,11 +284,11 @@ export const Step7 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step7.validation = Yup.object().shape({
   panicFrequency: Yup.string().required("Please select a value"),
-})
+});
 
 export const list = [
   {
@@ -331,4 +331,4 @@ export const list = [
     beforePrev,
     beforeNext,
   },
-]
+];

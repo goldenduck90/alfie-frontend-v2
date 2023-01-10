@@ -1,11 +1,11 @@
-import { useField } from "formik"
-import { ChangeEventHandler, FC } from "react"
-import { useCachedState } from "../../hooks/useCachedState"
-import { Loading } from "../Loading"
+import { useField } from "formik";
+import { ChangeEventHandler, FC } from "react";
+import { useCachedState } from "../../hooks/useCachedState";
+import { Loading } from "../Loading";
 
 export interface ITextInput {
-  name: string
-  placeholder: string
+  name: string;
+  placeholder: string;
   type?:
     | "text"
     | "password"
@@ -14,11 +14,11 @@ export interface ITextInput {
     | "date"
     | "range"
     | "datetime-local"
-    | "tel"
-  disabled?: boolean
-  cache?: boolean
-  callbackForValue?: (value: string) => void
-  loading?: boolean
+    | "tel";
+  disabled?: boolean;
+  cache?: boolean;
+  callbackForValue?: (value: string) => void;
+  loading?: boolean;
 }
 export const TextInput: FC<ITextInput> = ({
   name,
@@ -29,18 +29,18 @@ export const TextInput: FC<ITextInput> = ({
   callbackForValue,
   loading = false,
 }) => {
-  const [, { value, error }, { setValue, setError }] = useField(name)
-  const [, setCachedValue] = useCachedState(name, value, cache)
+  const [, { value, error }, { setValue, setError }] = useField(name);
+  const [, setCachedValue] = useCachedState(name, value, cache);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     if (cache) {
-      setCachedValue(e.target.value)
+      setCachedValue(e.target.value);
     }
     if (callbackForValue) {
-      callbackForValue(e.target.value)
+      callbackForValue(e.target.value);
     }
-    setValue(e.target.value)
-  }
+    setValue(e.target.value);
+  };
 
   return (
     <div className="flex flex-col">
@@ -62,5 +62,5 @@ export const TextInput: FC<ITextInput> = ({
       </div>
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
     </div>
-  )
-}
+  );
+};

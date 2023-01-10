@@ -1,26 +1,26 @@
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid"
-import { FormikProvider } from "formik"
-import { Link, useNavigate } from "react-router-dom"
-import { Button } from "../../components/Button"
-import { Wrapper } from "../../components/layouts/Wrapper"
-import { BiologicalSex } from "./steps/BiologicalSex"
-import { BMI } from "./steps/BMI"
-import { DateOfBirth } from "./steps/DateOfBirth"
-import { EmailCapture } from "./steps/EmailCapture"
-import { FullName } from "./steps/FullName"
-import { Location } from "./steps/Location"
-import * as Yup from "yup"
-import { WeightLossMotivator } from "./steps/WeightLossMotivator"
-import { useFormikWizard } from "formik-wizard-form"
-import { differenceInYears, format } from "date-fns"
-import { ValidStates } from "../../utils/states"
-import { ProgressBar } from "../../components/ProgressBar"
-import { Logo } from "../../components/Logo"
-import { gql, useMutation } from "@apollo/client"
-import { parseError } from "../../utils/parseError"
-import { Gender } from "../../graphql/generated"
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
+import { FormikProvider } from "formik";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../../src/components/Button";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { BiologicalSex } from "./steps/BiologicalSex";
+import { BMI } from "./steps/BMI";
+import { DateOfBirth } from "./steps/DateOfBirth";
+import { EmailCapture } from "./steps/EmailCapture";
+import { FullName } from "./steps/FullName";
+import { Location } from "./steps/Location";
+import * as Yup from "yup";
+import { WeightLossMotivator } from "./steps/WeightLossMotivator";
+import { useFormikWizard } from "formik-wizard-form";
+import { differenceInYears, format } from "date-fns";
+import { ValidStates } from "../../utils/states";
+import { ProgressBar } from "../../src/components/ProgressBar";
+import { Logo } from "../../src/components/Logo";
+import { gql, useMutation } from "@apollo/client";
+import { parseError } from "../../utils/parseError";
+import { Gender } from "../../graphql/generated";
 
-const TOTAL_STEPS = 6
+const TOTAL_STEPS = 6;
 
 const createOrFindCheckoutMutation = gql`
   mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
@@ -31,11 +31,11 @@ const createOrFindCheckoutMutation = gql`
       }
     }
   }
-`
+`;
 
 export const PreCheckout = () => {
-  const navigate = useNavigate()
-  const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation)
+  const navigate = useNavigate();
+  const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
 
   const preCheckoutForm = useFormikWizard({
     initialValues: {
@@ -70,7 +70,7 @@ export const PreCheckout = () => {
     ) => {
       try {
         const heightInInches =
-          parseInt(heightFeet) * 12 + parseInt(heightInches)
+          parseInt(heightFeet) * 12 + parseInt(heightInches);
         const { data } = await createOrFindCheckout({
           variables: {
             input: {
@@ -86,14 +86,14 @@ export const PreCheckout = () => {
               phone,
             },
           },
-        })
+        });
 
-        const { checkout } = data.createOrFindCheckout
-        resetForm()
-        navigate(`/signup/checkout/${checkout._id}`)
+        const { checkout } = data.createOrFindCheckout;
+        resetForm();
+        navigate(`/signup/checkout/${checkout._id}`);
       } catch (err) {
-        const msg = parseError(err)
-        setStatus({ error: msg })
+        const msg = parseError(err);
+        setStatus({ error: msg });
       }
     },
     validateOnNext: true,
@@ -112,9 +112,9 @@ export const PreCheckout = () => {
             ),
         }),
         beforeNext({ fullName }, _, currentStepIndex) {
-          localStorage.setItem("fullName", fullName)
-          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
-          return Promise.resolve()
+          localStorage.setItem("fullName", fullName);
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex));
+          return Promise.resolve();
         },
       },
       {
@@ -125,9 +125,9 @@ export const PreCheckout = () => {
           ),
         }),
         beforeNext({ weightLossMotivator }, _, currentStepIndex) {
-          localStorage.setItem("weightLossMotivator", weightLossMotivator)
-          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
-          return Promise.resolve()
+          localStorage.setItem("weightLossMotivator", weightLossMotivator);
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex));
+          return Promise.resolve();
         },
       },
       {
@@ -141,14 +141,14 @@ export const PreCheckout = () => {
               (value) => {
                 return (
                   differenceInYears(new Date(), new Date(value || "")) >= 18
-                )
+                );
               }
             ),
         }),
         beforeNext({ dateOfBirth }, _, currentStepIndex) {
-          localStorage.setItem("dateOfBirth", dateOfBirth)
-          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
-          return Promise.resolve()
+          localStorage.setItem("dateOfBirth", dateOfBirth);
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex));
+          return Promise.resolve();
         },
       },
       {
@@ -157,9 +157,9 @@ export const PreCheckout = () => {
           biologicalSex: Yup.string().required("Please select an option."),
         }),
         beforeNext({ biologicalSex }, _, currentStepIndex) {
-          localStorage.setItem("biologicalSex", biologicalSex)
-          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
-          return Promise.resolve()
+          localStorage.setItem("biologicalSex", biologicalSex);
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex));
+          return Promise.resolve();
         },
       },
       {
@@ -168,14 +168,14 @@ export const PreCheckout = () => {
           location: Yup.string().required("Please select an option."),
         }),
         beforeNext({ location }, _, currentStepIndex) {
-          localStorage.setItem("location", location)
-          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          localStorage.setItem("location", location);
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex));
 
           if (!ValidStates.includes(location)) {
-            navigate("/signup/waitlist")
+            navigate("/signup/waitlist");
           }
 
-          return Promise.resolve()
+          return Promise.resolve();
         },
       },
       {
@@ -197,17 +197,17 @@ export const PreCheckout = () => {
         beforeNext({ heightFeet, heightInches, weight }, _, currentStepIndex) {
           // We need to calculate the users BMI and throw an ineligible error if they are not eligible for the program because their BMI is less than 27.
           const heightInInches =
-            parseInt(heightFeet) * 12 + parseInt(heightInches)
-          const bmi = (weight / (heightInInches * heightInInches)) * 703
+            parseInt(heightFeet) * 12 + parseInt(heightInches);
+          const bmi = (weight / (heightInInches * heightInInches)) * 703;
           if (bmi < 27) {
-            navigate("/signup/ineligible")
+            navigate("/signup/ineligible");
           } else {
-            localStorage.setItem("heightFeet", heightFeet)
-            localStorage.setItem("heightInches", heightInches)
-            localStorage.setItem("weight", weight)
-            localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+            localStorage.setItem("heightFeet", heightFeet);
+            localStorage.setItem("heightInches", heightInches);
+            localStorage.setItem("weight", weight);
+            localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           }
-          return Promise.resolve()
+          return Promise.resolve();
         },
       },
       {
@@ -218,16 +218,16 @@ export const PreCheckout = () => {
             .required("Please enter your email address."),
         }),
         beforeNext({ email, textOptIn, phone }, _, currentStepIndex) {
-          console.log(textOptIn, "textOptIn")
-          localStorage.setItem("email", email)
-          localStorage.setItem("textOptIn", textOptIn)
-          localStorage.setItem("phone", phone)
-          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
-          return Promise.resolve()
+          console.log(textOptIn, "textOptIn");
+          localStorage.setItem("email", email);
+          localStorage.setItem("textOptIn", textOptIn);
+          localStorage.setItem("phone", phone);
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex));
+          return Promise.resolve();
         },
       },
     ],
-  })
+  });
 
   const {
     handlePrev,
@@ -238,9 +238,9 @@ export const PreCheckout = () => {
     renderComponent,
     currentStepIndex,
     isLastStep,
-  } = preCheckoutForm
+  } = preCheckoutForm;
 
-  console.log(isNextDisabled)
+  console.log(isNextDisabled);
   return (
     <>
       <ProgressBar progress={(currentStepIndex / TOTAL_STEPS) * 100} />
@@ -287,5 +287,5 @@ export const PreCheckout = () => {
         </FormikProvider>
       </Wrapper>
     </>
-  )
-}
+  );
+};

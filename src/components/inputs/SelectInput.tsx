@@ -1,19 +1,19 @@
-import { ChangeEventHandler, FC, useRef } from "react"
-import { useField } from "formik"
-import { ChevronDownIcon } from "@heroicons/react/solid"
-import { useCachedState } from "../../hooks/useCachedState"
+import { ChangeEventHandler, FC, useRef } from "react";
+import { useField } from "formik";
+import { ChevronDownIcon } from "@heroicons/react/solid";
+import { useCachedState } from "../../hooks/useCachedState";
 
 export type OptionInput = {
-  label?: string
-  value: string
-}
+  label?: string;
+  value: string;
+};
 export interface ISelectInput {
-  name: string
-  placeholder?: string
-  options: OptionInput[]
-  disabled?: boolean
-  cache?: boolean
-  onChange?: (value: string) => void
+  name: string;
+  placeholder?: string;
+  options: OptionInput[];
+  disabled?: boolean;
+  cache?: boolean;
+  onChange?: (value: string) => void;
 }
 export const SelectInput: FC<ISelectInput> = ({
   name,
@@ -23,17 +23,17 @@ export const SelectInput: FC<ISelectInput> = ({
   cache,
   onChange, // TODO: extend on when needed
 }) => {
-  const [, { value, error }, { setError, setValue }] = useField(name)
-  const selectRef = useRef<HTMLSelectElement>(null)
-  const [, setCachedValue] = useCachedState(name, value, cache)
+  const [, { value, error }, { setError, setValue }] = useField(name);
+  const selectRef = useRef<HTMLSelectElement>(null);
+  const [, setCachedValue] = useCachedState(name, value, cache);
   const handleChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
-    const selectVal = e.target.value.length ? e.target.value : ""
+    const selectVal = e.target.value.length ? e.target.value : "";
     if (cache) {
-      setCachedValue(selectVal)
+      setCachedValue(selectVal);
     }
-    setValue(selectVal)
-    onChange?.(selectVal)
-  }
+    setValue(selectVal);
+    onChange?.(selectVal);
+  };
   return (
     <>
       <div
@@ -65,5 +65,5 @@ export const SelectInput: FC<ISelectInput> = ({
       </div>
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
     </>
-  )
-}
+  );
+};

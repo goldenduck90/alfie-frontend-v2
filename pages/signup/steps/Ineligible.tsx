@@ -1,10 +1,10 @@
-import { Wrapper } from "../../../components/layouts/Wrapper"
-import { Logo } from "../../../components/Logo"
+import { Wrapper } from "../../../src/components/layouts/Wrapper";
+import { Logo } from "../../../src/components/Logo";
 
 export const Ineligible = () => {
   // sorry, based on your inputs you are ineligible for our medication-based weight loss program. Medications are approved for individuals with a BMI > 30 or a BMI > 27 with associated conditions.
   const message =
-    "Sorry based on your inputs you are ineligible for our medication-based weight loss program. Medications are approved for individuals with a BMI > 30 or a BMI > 27 with associated conditions."
+    "Sorry based on your inputs you are ineligible for our medication-based weight loss program. Medications are approved for individuals with a BMI > 30 or a BMI > 27 with associated conditions.";
   return (
     <Wrapper>
       <Logo />
@@ -12,5 +12,5 @@ export const Ineligible = () => {
         <p className="font-mulish text-gray-900">{message}</p>
       </div>
     </Wrapper>
-  )
-}
+  );
+};

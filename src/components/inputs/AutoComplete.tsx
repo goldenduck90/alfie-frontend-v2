@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { gql, useQuery } from "@apollo/client"
-import { Combobox } from "@headlessui/react"
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid"
-import * as Sentry from "@sentry/react"
-import { useField } from "formik"
-import { useEffect, useState } from "react"
-import { useCachedState } from "../../hooks/useCachedState"
-import { Loading } from "../Loading"
+import { gql, useQuery } from "@apollo/client";
+import { Combobox } from "@headlessui/react";
+import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
+import * as Sentry from "@sentry/react";
+import { useField } from "formik";
+import { useEffect, useState } from "react";
+import { useCachedState } from "../../hooks/useCachedState";
+import { Loading } from "../Loading";
 
 function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ")
+  return classes.filter(Boolean).join(" ");
 }
 
 const AutoComplete = (props: any) => {
@@ -25,21 +25,21 @@ const AutoComplete = (props: any) => {
         }
       }
     }
-  `
-  const result = useQuery(googleReverseGeoCode, {})
+  `;
+  const result = useQuery(googleReverseGeoCode, {});
 
-  const [selectedLocation, setSelectedLocation] = useState()
+  const [selectedLocation, setSelectedLocation] = useState();
   const [cacheValue, setCachedValue] = useCachedState(
     props.name,
     selectedLocation,
     props.cache
-  )
+  );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [, { value, error }, { setError, setValue }] = useField(props.name)
+  const [, { value, error }, { setError, setValue }] = useField(props.name);
   function setFormikValue(formFieldValue: any) {
-    setValue(formFieldValue.place_id)
-    setSelectedLocation(formFieldValue)
-    setCachedValue(formFieldValue)
+    setValue(formFieldValue.place_id);
+    setSelectedLocation(formFieldValue);
+    setCachedValue(formFieldValue);
   }
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
@@ -49,9 +49,9 @@ const AutoComplete = (props: any) => {
           query: "googleReverseGeoCode",
           component: "AutoComplete",
         },
-      })
+      });
     }
-  }, [result])
+  }, [result]);
   return (
     <Combobox as="div" value={cacheValue} onChange={setFormikValue}>
       <Combobox.Label className="block text-sm font-medium text-gray-700">
@@ -71,7 +71,7 @@ const AutoComplete = (props: any) => {
                     location: `${result?.data?.reverseGeoCode[0].geometry.location.lat},${result?.data?.reverseGeoCode[0].geometry.location.lng}`,
                   },
                 },
-              })
+              });
             }
           }}
           displayValue={(location: any) => location?.description}
@@ -132,6 +132,6 @@ const AutoComplete = (props: any) => {
         )}
       </div>
     </Combobox>
-  )
-}
-export default AutoComplete
+  );
+};
+export default AutoComplete;

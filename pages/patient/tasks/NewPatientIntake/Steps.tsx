@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { gql, useQuery } from "@apollo/client"
-import { LocationMarkerIcon } from "@heroicons/react/solid"
-import * as Sentry from "@sentry/react"
-import { FormikProps, FormikValues, useField } from "formik"
-import GoogleMapReact from "google-map-react"
-import { useEffect, useState } from "react"
-import * as Yup from "yup"
-import { Checkbox } from "../../../../components/inputs/Checkbox"
-import { CheckboxGroup } from "../../../../components/inputs/CheckBoxGroup"
-import { SelectInput } from "../../../../components/inputs/SelectInput"
-import { StringFieldArray } from "../../../../components/inputs/StringFieldArray"
-import { TextArea } from "../../../../components/inputs/TextArea"
-import { TextInput } from "../../../../components/inputs/TextInput"
-import { Loading } from "../../../../components/Loading"
-import { parseCachedVal } from "../../helpers"
-import { Question } from "../../Question"
+import { gql, useQuery } from "@apollo/client";
+import { LocationMarkerIcon } from "@heroicons/react/solid";
+import * as Sentry from "@sentry/react";
+import { FormikProps, FormikValues, useField } from "formik";
+import GoogleMapReact from "google-map-react";
+import { useEffect, useState } from "react";
+import * as Yup from "yup";
+import { Checkbox } from "../../../../src/components/inputs/Checkbox";
+import { CheckboxGroup } from "../../../../src/components/inputs/CheckBoxGroup";
+import { SelectInput } from "../../../../src/components/inputs/SelectInput";
+import { StringFieldArray } from "../../../../src/components/inputs/StringFieldArray";
+import { TextArea } from "../../../../src/components/inputs/TextArea";
+import { TextInput } from "../../../../src/components/inputs/TextInput";
+import { Loading } from "../../../../src/components/Loading";
+import { parseCachedVal } from "../../helpers";
+import { Question } from "../../Question";
 
 const MapMarker = (props: any) => {
   return (
@@ -25,8 +25,8 @@ const MapMarker = (props: any) => {
         className="w-8 h-8 text-red-500"
       />
     </div>
-  )
-}
+  );
+};
 export const initialValues = {
   weightLossAttemptTime: parseCachedVal(localStorage.weightLossAttemptTime, ""),
 
@@ -44,23 +44,23 @@ export const initialValues = {
   allergies: parseCachedVal(localStorage.allergies, [""]),
   usePillPack: parseCachedVal(localStorage.usePillPack, ""),
   preferredPharmacy: parseCachedVal(localStorage.preferredPharmacy, ""),
-}
+};
 
 type StepProps = (
   values: FormikValues,
   formikBag: FormikProps<FormikValues>,
   currentStepIndex: number
-) => Promise<unknown>
+) => Promise<unknown>;
 
 export const beforePrev: StepProps = (_value, _params, currentStepIndex) => {
-  _params.setErrors({})
-  localStorage.setItem("questionnaireStep", String(currentStepIndex - 1))
-  return Promise.resolve()
-}
+  _params.setErrors({});
+  localStorage.setItem("questionnaireStep", String(currentStepIndex - 1));
+  return Promise.resolve();
+};
 export const beforeNext: StepProps = (_values, _params, currentStepIndex) => {
-  localStorage.setItem("questionnaireStep", String(currentStepIndex + 1))
-  return Promise.resolve()
-}
+  localStorage.setItem("questionnaireStep", String(currentStepIndex + 1));
+  return Promise.resolve();
+};
 export const Step1 = () => (
   <Question
     questionText="How long have you been trying to lose weight?"
@@ -94,10 +94,10 @@ export const Step1 = () => (
       />
     }
   />
-)
+);
 Step1.validation = Yup.object().shape({
   weightLossAttemptTime: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step2 = () => (
   <Question
@@ -108,11 +108,11 @@ export const Step2 = () => (
         name="weightManagementMethods"
         onChange={(props) => {
           if (props.id === "None of the above") {
-            props.setCheckboxes(props.checked ? [props.id] : [])
+            props.setCheckboxes(props.checked ? [props.id] : []);
           } else {
             props.setCheckboxes(
               props.values.filter((id) => id !== "None of the above")
-            )
+            );
           }
         }}
         items={[
@@ -127,10 +127,10 @@ export const Step2 = () => (
       />
     }
   />
-)
+);
 Step2.validation = Yup.object().shape({
   weightManagementMethods: Yup.array().min(1, "Please select a value"),
-})
+});
 
 export const Step3 = () => (
   <Question
@@ -142,11 +142,11 @@ export const Step3 = () => (
         name="conditions"
         onChange={(props) => {
           if (props.id === "None of the above") {
-            props.setCheckboxes(props.checked ? [props.id] : [])
+            props.setCheckboxes(props.checked ? [props.id] : []);
           } else {
             props.setCheckboxes(
               props.values.filter((id) => id !== "None of the above")
-            )
+            );
           }
         }}
         items={[
@@ -169,10 +169,10 @@ export const Step3 = () => (
       />
     }
   />
-)
+);
 Step3.validation = Yup.object().shape({
   conditions: Yup.array().min(1, "Please select a value"),
-})
+});
 
 export const Step4 = () => (
   <Question
@@ -184,11 +184,11 @@ export const Step4 = () => (
         name="previousConditions"
         onChange={(props) => {
           if (props.id === "None of the above") {
-            props.setCheckboxes(props.checked ? [props.id] : [])
+            props.setCheckboxes(props.checked ? [props.id] : []);
           } else {
             props.setCheckboxes(
               props.values.filter((id) => id !== "None of the above")
-            )
+            );
           }
         }}
         items={[
@@ -207,10 +207,10 @@ export const Step4 = () => (
       />
     }
   />
-)
+);
 Step4.validation = Yup.object().shape({
   previousConditions: Yup.array().min(1, "Please select a value"),
-})
+});
 
 export const Step5 = () => (
   <Question
@@ -222,11 +222,11 @@ export const Step5 = () => (
         name="medications"
         onChange={(props) => {
           if (props.id === "None of the above") {
-            props.setCheckboxes(props.checked ? [props.id] : [])
+            props.setCheckboxes(props.checked ? [props.id] : []);
           } else {
             props.setCheckboxes(
               props.values.filter((id) => id !== "None of the above")
-            )
+            );
           }
         }}
         items={[
@@ -249,19 +249,19 @@ export const Step5 = () => (
       />
     }
   />
-)
+);
 Step5.validation = Yup.object().shape({
   medications: Yup.array().min(1, "Please select a value"),
-})
+});
 
 const ConditionalSelects = () => {
-  const [, { value }, { setError }] = useField("hasSurgicalHistory")
+  const [, { value }, { setError }] = useField("hasSurgicalHistory");
   const [
     ,
     ,
     { setValue: setSurgicalHistory, setError: setSurgicalHistoryError },
-  ] = useField("surgicalHistory")
-  const showSecondQuestion = value === "Yes"
+  ] = useField("surgicalHistory");
+  const showSecondQuestion = value === "Yes";
   return (
     <>
       <SelectInput
@@ -270,10 +270,10 @@ const ConditionalSelects = () => {
         placeholder="Select an option..."
         onChange={(selectVal: string) => {
           if (selectVal === "No") {
-            delete localStorage.surgicalHistory
-            setSurgicalHistory(undefined)
-            setError(undefined)
-            setSurgicalHistoryError(undefined)
+            delete localStorage.surgicalHistory;
+            setSurgicalHistory(undefined);
+            setError(undefined);
+            setSurgicalHistoryError(undefined);
           }
         }}
         options={[
@@ -296,14 +296,14 @@ const ConditionalSelects = () => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 export const Step6 = () => (
   <Question
     questionText="Have you had any surgeries in the past?"
     input={<ConditionalSelects />}
   />
-)
+);
 Step6.validation = Yup.object().shape({
   hasSurgicalHistory: Yup.string().required("Please select a value"),
   surgicalHistory: Yup.string().when("hasSurgicalHistory", {
@@ -312,7 +312,7 @@ Step6.validation = Yup.object().shape({
       .required("Please enter a value")
       .min(12, "Cannot be less than 12 characters"),
   }),
-})
+});
 
 export const Step7 = () => {
   return (
@@ -320,20 +320,20 @@ export const Step7 = () => {
       questionText="Please list any medication allergies you are aware of"
       input={<StringFieldArray cache name="allergies" />}
     />
-  )
-}
+  );
+};
 
 export const Step8 = () => {
-  const [selectedMarker, setSelectedMarker] = useState<any>(null)
-  const [pharmacyName, setPharmacyName] = useState<string>("")
-  const [, { value }] = useField("usePillPack")
+  const [selectedMarker, setSelectedMarker] = useState<any>(null);
+  const [pharmacyName, setPharmacyName] = useState<string>("");
+  const [, { value }] = useField("usePillPack");
   // set the selectedMarker to localStorage under the key "labCorpLocation"
 
   useEffect(() => {
     if (selectedMarker) {
-      localStorage.setItem("pharmacy", String(selectedMarker.id))
+      localStorage.setItem("pharmacy", String(selectedMarker.id));
     }
-  }, [selectedMarker])
+  }, [selectedMarker]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const googleReverseGeoCode = gql`
@@ -348,8 +348,8 @@ export const Step8 = () => {
         }
       }
     }
-  `
-  const result = useQuery(googleReverseGeoCode, {})
+  `;
+  const result = useQuery(googleReverseGeoCode, {});
 
   const defaultProps = {
     center: {
@@ -357,7 +357,7 @@ export const Step8 = () => {
       lng: result?.data?.reverseGeoCode[0].geometry.location.lng,
     },
     zoom: 13,
-  }
+  };
   const pharmacyLocations = gql`
     query getPharmacyLocations($input: PharmacyLocationInput!) {
       pharmacyLocations(input: $input) {
@@ -373,14 +373,14 @@ export const Step8 = () => {
         primary_phone_number
       }
     }
-  `
+  `;
   const getAllpharmacyLocationsByName = useQuery(pharmacyLocations, {
     variables: {
       input: {
         name: pharmacyName,
       },
     },
-  })
+  });
 
   function generateLabLocationsMapMarkers() {
     return getAllpharmacyLocationsByName?.data?.pharmacyLocations.map(
@@ -388,15 +388,15 @@ export const Step8 = () => {
         return (
           <MapMarker
             onSelectOfMarker={() => {
-              setSelectedMarker(location)
+              setSelectedMarker(location);
             }}
             lat={location.lat}
             lng={location.lng}
             text={location.name}
           />
-        )
+        );
       }
-    )
+    );
   }
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
@@ -406,9 +406,9 @@ export const Step8 = () => {
           query: "reverseGeoCodeAddress",
           component: "Step8",
         },
-      })
+      });
     }
-  }, [result])
+  }, [result]);
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (getAllpharmacyLocationsByName.error) {
@@ -420,9 +420,9 @@ export const Step8 = () => {
             component: "Step8",
           },
         }
-      )
+      );
     }
-  }, [getAllpharmacyLocationsByName])
+  }, [getAllpharmacyLocationsByName]);
   return (
     <Question
       aboveQuestionText="We have partnered with PillPack to deliver medications straight to your door. If you would like to use PillPack to receive your medications, please sign up here: https://my.pillpack.com/signup. If not, please tell us your preferred pharmacy."
@@ -451,9 +451,9 @@ export const Step8 = () => {
                         name="pharmacy"
                         placeholder="Search for a pharmacy"
                         callbackForValue={(inputValue: string) => {
-                          console.log(inputValue, "inputValue")
+                          console.log(inputValue, "inputValue");
                           if (inputValue.length >= 3) {
-                            setPharmacyName(inputValue)
+                            setPharmacyName(inputValue);
                           }
                         }}
                         loading={getAllpharmacyLocationsByName.loading}
@@ -470,7 +470,7 @@ export const Step8 = () => {
                           defaultZoom={defaultProps.zoom}
                           debounced={false}
                           onGoogleApiLoaded={({ map, maps }) => {
-                            console.log(map, maps)
+                            console.log(map, maps);
                             // refresh the map once the lat and long are loaded from the graphql query
                             if (
                               result?.data?.reverseGeoCode[0].geometry.location
@@ -481,7 +481,7 @@ export const Step8 = () => {
                                   result?.data?.reverseGeoCode[0].geometry.location.lat,
                                   result?.data?.reverseGeoCode[0].geometry.location.lng
                                 )
-                              )
+                              );
                             }
                           }}
                         >
@@ -512,8 +512,8 @@ export const Step8 = () => {
         </>
       }
     />
-  )
-}
+  );
+};
 Step8.validation = Yup.object().shape({
   usePillPack: Yup.string().required("Required"),
   pharmacy: Yup.string().when("usePillPack", {
@@ -523,18 +523,18 @@ Step8.validation = Yup.object().shape({
     ),
   }),
   //
-})
+});
 
 export const Step9 = () => {
-  const [selectedMarker, setSelectedMarker] = useState<any>(null)
+  const [selectedMarker, setSelectedMarker] = useState<any>(null);
 
   // set the selectedMarker to localStorage under the key "labCorpLocation"
 
   useEffect(() => {
     if (selectedMarker) {
-      localStorage.setItem("labCorpLocation", String(selectedMarker._id))
+      localStorage.setItem("labCorpLocation", String(selectedMarker._id));
     }
-  }, [selectedMarker])
+  }, [selectedMarker]);
 
   const googleReverseGeoCode = gql`
     query reverseGeoCodeAddress {
@@ -548,10 +548,10 @@ export const Step9 = () => {
         }
       }
     }
-  `
-  const result = useQuery(googleReverseGeoCode, {})
+  `;
+  const result = useQuery(googleReverseGeoCode, {});
 
-  if (!result.loading) console.log(result, "dataForReverse")
+  if (!result.loading) console.log(result, "dataForReverse");
 
   const labcorpLocationsQuery = gql`
     query getAllLabs {
@@ -566,21 +566,21 @@ export const Step9 = () => {
         longitude
       }
     }
-  `
-  const labCorpLocations = useQuery(labcorpLocationsQuery)
+  `;
+  const labCorpLocations = useQuery(labcorpLocationsQuery);
   function generateLabLocationsMapMarkers() {
     return labCorpLocations?.data?.getLabLocations.map((location: any) => {
       return (
         <MapMarker
           onSelectOfMarker={() => {
-            setSelectedMarker(location)
+            setSelectedMarker(location);
           }}
           lat={location.latitude}
           lng={location.longitude}
           text={location.name}
         />
-      )
-    })
+      );
+    });
   }
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
@@ -590,28 +590,28 @@ export const Step9 = () => {
           query: "reverseGeoCodeAddress",
           component: "Step9",
         },
-      })
+      });
     }
-  }, [result])
+  }, [result]);
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
-    console.log(labCorpLocations, "labCorpLocations")
+    console.log(labCorpLocations, "labCorpLocations");
     if (labCorpLocations.error) {
       Sentry.captureException(new Error(labCorpLocations.error.message), {
         tags: {
           query: "getAllLabs",
           component: "Step9",
         },
-      })
+      });
     }
-  }, [labCorpLocations])
+  }, [labCorpLocations]);
   const defaultProps = {
     center: {
       lat: result?.data?.reverseGeoCode[0].geometry.location.lat,
       lng: result?.data?.reverseGeoCode[0].geometry.location.lng,
     },
     zoom: 13,
-  }
+  };
   return (
     <div>
       <Question
@@ -628,7 +628,7 @@ export const Step9 = () => {
                 defaultZoom={defaultProps.zoom}
                 debounced={false}
                 onGoogleApiLoaded={({ map, maps }) => {
-                  console.log(map, maps)
+                  console.log(map, maps);
                   // refresh the map once the lat and long are loaded from the graphql query
                   if (result?.data?.reverseGeoCode[0].geometry.location.lat) {
                     map.setCenter(
@@ -636,7 +636,7 @@ export const Step9 = () => {
                         result?.data?.reverseGeoCode[0].geometry.location.lat,
                         result?.data?.reverseGeoCode[0].geometry.location.lng
                       )
-                    )
+                    );
                   }
                 }}
               >
@@ -691,12 +691,12 @@ export const Step9 = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
 Step9.validation = Yup.object().shape({
   hasRequiredLabs: Yup.boolean(),
-})
+});
 export const list = [
   {
     component: Step1,
@@ -751,4 +751,4 @@ export const list = [
     beforePrev,
     // beforeNext,
   },
-]
+];

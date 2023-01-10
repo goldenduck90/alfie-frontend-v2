@@ -1,20 +1,20 @@
-import { useField } from "formik"
-import { ChangeEventHandler, FC } from "react"
-import { useCachedState } from "../../hooks/useCachedState"
+import { useField } from "formik";
+import { ChangeEventHandler, FC } from "react";
+import { useCachedState } from "../../hooks/useCachedState";
 
 export type CheckboxArgs = {
-  setError: (value: string | undefined) => void
-  setCheckboxes: (strArr: string[]) => void
-  id: string
-  checked: boolean
-  checkboxes: string[]
-  values: string[]
-}
+  setError: (value: string | undefined) => void;
+  setCheckboxes: (strArr: string[]) => void;
+  id: string;
+  checked: boolean;
+  checkboxes: string[];
+  values: string[];
+};
 export interface ICheckboxGroup {
-  name: string
-  items: string[]
-  cache?: boolean
-  onChange?: (props: CheckboxArgs) => void
+  name: string;
+  items: string[];
+  cache?: boolean;
+  onChange?: (props: CheckboxArgs) => void;
 }
 
 export const CheckboxGroup: FC<ICheckboxGroup> = ({
@@ -23,17 +23,17 @@ export const CheckboxGroup: FC<ICheckboxGroup> = ({
   name,
   onChange,
 }) => {
-  const [, { value, error }, { setValue, setError }] = useField(name)
-  const [, setCachedValue] = useCachedState(name, value || [])
-  const isManualOnChange = !!onChange
+  const [, { value, error }, { setValue, setError }] = useField(name);
+  const [, setCachedValue] = useCachedState(name, value || []);
+  const isManualOnChange = !!onChange;
 
   const handleChange = (checked: boolean, id: string) => {
-    let newValue = [...value] as string[]
+    let newValue = [...value] as string[];
     if (checked) {
-      newValue.push(id)
-      setError(undefined)
+      newValue.push(id);
+      setError(undefined);
     } else {
-      newValue = newValue.filter((val: string) => val !== id)
+      newValue = newValue.filter((val: string) => val !== id);
     }
     if (isManualOnChange) {
       onChange({
@@ -41,32 +41,32 @@ export const CheckboxGroup: FC<ICheckboxGroup> = ({
         checked,
         setCheckboxes: (strArr: string[]) => {
           if (cache) {
-            setCachedValue(strArr)
+            setCachedValue(strArr);
           }
-          setValue(strArr)
+          setValue(strArr);
         },
         id,
         checkboxes: items,
         values: newValue,
-      })
+      });
     } else {
       if (cache) {
-        setCachedValue(newValue)
+        setCachedValue(newValue);
       }
-      setValue(newValue)
+      setValue(newValue);
     }
-  }
+  };
 
   return (
     <div>
       {items.map((item) => {
-        const checked = value?.find?.((id: string) => id === item) || false
+        const checked = value?.find?.((id: string) => id === item) || false;
 
         const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (
           event
         ) => {
-          handleChange(event.target.checked, item)
-        }
+          handleChange(event.target.checked, item);
+        };
         return (
           <div
             key={item}
@@ -87,9 +87,9 @@ export const CheckboxGroup: FC<ICheckboxGroup> = ({
               {item}
             </label>
           </div>
-        )
+        );
       })}
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
     </div>
-  )
-}
+  );
+};

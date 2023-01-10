@@ -1,6 +1,6 @@
-import React from "react"
-import { SelectInput } from "../../../components/inputs/SelectInput"
-import { States } from "../../../utils/states"
+import React from "react";
+import { SelectInput } from "../../../src/components/inputs/SelectInput";
+import { States } from "../../../utils/states";
 
 export const Location = () => {
   return (
@@ -22,5 +22,5 @@ export const Location = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

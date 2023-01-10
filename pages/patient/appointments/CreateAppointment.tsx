@@ -1,19 +1,19 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid"
-import * as Sentry from "@sentry/react"
-import { FormikProvider } from "formik"
-import { useFormikWizard } from "formik-wizard-form"
-import { useEffect } from "react"
-import * as Yup from "yup"
-import { Button } from "../../../components/Button"
-import { Loading } from "../../../components/Loading"
-import { TextLink } from "../../../components/TextLink"
-import { Role } from "../../../graphql/generated"
-import { parseError } from "../../../utils/parseError"
-import { AppointmentConfirmed } from "./steps/AppointmentConfirmed"
-import { AppointmentDetails } from "./steps/AppointmentDetails"
-import { AvailabilityWrapper } from "./steps/Availability"
-import { ProviderSelection } from "./steps/ProviderSelection"
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
+import * as Sentry from "@sentry/react";
+import { FormikProvider } from "formik";
+import { useFormikWizard } from "formik-wizard-form";
+import { useEffect } from "react";
+import * as Yup from "yup";
+import { Button } from "../../../src/components/Button";
+import { Loading } from "../../../src/components/Loading";
+import { TextLink } from "../../../src/components/TextLink";
+import { Role } from "../../../graphql/generated";
+import { parseError } from "../../../utils/parseError";
+import { AppointmentConfirmed } from "./steps/AppointmentConfirmed";
+import { AppointmentDetails } from "./steps/AppointmentDetails";
+import { AvailabilityWrapper } from "./steps/Availability";
+import { ProviderSelection } from "./steps/ProviderSelection";
 
 export const userEaQuery = gql`
   query UserEa {
@@ -26,7 +26,7 @@ export const userEaQuery = gql`
       eaHealthCoachId
     }
   }
-`
+`;
 
 const createAppointmentMutaton = gql`
   mutation CreateAppointment($input: CreateAppointmentInput!) {
@@ -34,11 +34,11 @@ const createAppointmentMutaton = gql`
       eaAppointmentId
     }
   }
-`
+`;
 
 export const CreateAppointment = () => {
-  const { data, loading, error } = useQuery(userEaQuery)
-  const [createAppointment] = useMutation(createAppointmentMutaton)
+  const { data, loading, error } = useQuery(userEaQuery);
+  const [createAppointment] = useMutation(createAppointmentMutaton);
 
   const createAppointmentForm = useFormikWizard({
     initialValues: {
@@ -53,8 +53,8 @@ export const CreateAppointment = () => {
       notes: "",
     },
     onSubmit: (_, { resetForm }) => {
-      resetForm()
-      window.location.replace("/dashboard")
+      resetForm();
+      window.location.replace("/dashboard");
     },
     validateOnNext: true,
     validateOnChange: false,
@@ -70,14 +70,14 @@ export const CreateAppointment = () => {
             setFieldValue(
               "userEaProviderId",
               String(data.me.provider.eaProviderId)
-            )
+            );
           } else if (
             providerType === Role.HealthCoach &&
             data.me?.eaHealthCoachId
           ) {
-            setFieldValue("userEaProviderId", data.me.eaHealthCoachId)
+            setFieldValue("userEaProviderId", data.me.eaHealthCoachId);
           } else {
-            setFieldValue("userEaProviderId", null)
+            setFieldValue("userEaProviderId", null);
           }
         },
       },
@@ -100,8 +100,8 @@ export const CreateAppointment = () => {
         }),
         beforeNext: async (values, { setSubmitting, setStatus }) => {
           try {
-            setStatus(null)
-            setSubmitting(true)
+            setStatus(null);
+            setSubmitting(true);
             const result = await createAppointment({
               variables: {
                 input: {
@@ -113,13 +113,13 @@ export const CreateAppointment = () => {
                   notes: values.notes,
                 },
               },
-            })
-            console.log(result)
-            setSubmitting(false)
+            });
+            console.log(result);
+            setSubmitting(false);
           } catch (err) {
-            const msg = parseError(err)
-            setSubmitting(false)
-            setStatus({ error: msg })
+            const msg = parseError(err);
+            setSubmitting(false);
+            setStatus({ error: msg });
           }
         },
       },
@@ -127,7 +127,7 @@ export const CreateAppointment = () => {
         component: AppointmentConfirmed,
       },
     ],
-  })
+  });
 
   const {
     renderComponent,
@@ -138,7 +138,7 @@ export const CreateAppointment = () => {
     isSubmitting,
     currentStepIndex,
     isLastStep,
-  } = createAppointmentForm
+  } = createAppointmentForm;
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -147,12 +147,12 @@ export const CreateAppointment = () => {
           query: "UserEa",
           component: "CreateAppointment",
         },
-      })
+      });
     }
-  }, [error])
-  if (loading) return <Loading />
+  }, [error]);
+  if (loading) return <Loading />;
 
-  if (error) return <div>Error</div>
+  if (error) return <div>Error</div>;
 
   return (
     // <ApplicationLayout title="Create Appointment">
@@ -205,5 +205,5 @@ export const CreateAppointment = () => {
       </FormikProvider>
     </div>
     // </ApplicationLayout>
-  )
-}
+  );
+};

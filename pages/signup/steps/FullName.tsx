@@ -1,5 +1,5 @@
-import React from "react"
-import { TextInput } from "../../../components/inputs/TextInput"
+import React from "react";
+import { TextInput } from "../../../src/components/inputs/TextInput";
 
 export const FullName = () => {
   return (
@@ -20,5 +20,5 @@ export const FullName = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

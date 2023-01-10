@@ -1,5 +1,5 @@
-import React from "react"
-import { SelectInput } from "../../../components/inputs/SelectInput"
+import React from "react";
+import { SelectInput } from "../../../src/components/inputs/SelectInput";
 
 export const BiologicalSex = () => {
   return (
@@ -36,5 +36,5 @@ export const BiologicalSex = () => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};

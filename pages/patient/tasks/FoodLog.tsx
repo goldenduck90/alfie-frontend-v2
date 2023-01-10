@@ -1,14 +1,14 @@
-import * as Yup from "yup"
-import { FormikProvider, useFormik } from "formik"
-import { Button } from "../../../components/Button"
-import { convertFormValuesIntoAnswers, parseCachedVal } from "../helpers"
-import { Question } from "../Question"
-import { BackButton } from "../../../components/BackButton"
+import * as Yup from "yup";
+import { FormikProvider, useFormik } from "formik";
+import { Button } from "../../../src/components/Button";
+import { convertFormValuesIntoAnswers, parseCachedVal } from "../helpers";
+import { Question } from "../Question";
+import { BackButton } from "../../../src/components/BackButton";
 
-import { useMutation, gql } from "@apollo/client"
-import { useNavigate } from "react-router"
-import { useNotificationDispatch } from "../../../context/NotificationContext"
-import { TextInput } from "../../../components/inputs/TextInput"
+import { useMutation, gql } from "@apollo/client";
+import { useNavigate } from "react-router";
+import { useNotificationDispatch } from "../../../context/NotificationContext";
+import { TextInput } from "../../../src/components/inputs/TextInput";
 
 const completeUserTaskMutation = gql`
   mutation CompleteTask($input: CompleteUserTaskInput!) {
@@ -16,42 +16,42 @@ const completeUserTaskMutation = gql`
       completed
     }
   }
-`
+`;
 export const FoodLog = ({ userTaskId = "" }) => {
-  const notificationDispatchers = useNotificationDispatch()
-  const navigate = useNavigate()
+  const notificationDispatchers = useNotificationDispatch();
+  const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("breakfast")
-    localStorage.removeItem("lunch")
-    localStorage.removeItem("dinner")
-  }
+    localStorage.removeItem("breakfast");
+    localStorage.removeItem("lunch");
+    localStorage.removeItem("dinner");
+  };
   const onCompleted = () => {
-    clearLocalStorage()
+    clearLocalStorage();
     notificationDispatchers.displayNotification(
       "Food Log Entry logged successfully",
       "Your results have been saved",
       "success"
-    )
-    navigate("/dashboard?refetch=true")
-  }
-  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation)
+    );
+    navigate("/dashboard?refetch=true");
+  };
+  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
 
   const initialValues = {
     breakfast: parseCachedVal(localStorage.breakfast, ""),
     lunch: parseCachedVal(localStorage.lunch, ""),
     dinner: parseCachedVal(localStorage.dinner, ""),
-  }
+  };
   const onSubmit = async (values = initialValues) => {
-    const answers = convertFormValuesIntoAnswers(values)
-    const input = { _id: userTaskId, answers }
+    const answers = convertFormValuesIntoAnswers(values);
+    const input = { _id: userTaskId, answers };
     console.log("log: values", {
       input,
       values,
       convertedValues: convertFormValuesIntoAnswers(values),
-    })
-    await completeUserTask({ variables: { input } })
-    onCompleted()
-  }
+    });
+    await completeUserTask({ variables: { input } });
+    onCompleted();
+  };
 
   const formikValues = useFormik({
     initialValues,
@@ -59,8 +59,8 @@ export const FoodLog = ({ userTaskId = "" }) => {
     validationSchema: Yup.object().shape({
       breakfast: Yup.string().required("Please enter a value"),
     }),
-  })
-  const { handleSubmit, errors } = formikValues
+  });
+  const { handleSubmit, errors } = formikValues;
   function questionText() {
     return (
       <>
@@ -68,7 +68,7 @@ export const FoodLog = ({ userTaskId = "" }) => {
           Please enter the food you ate for breakfast, lunch and dinner.
         </p>
       </>
-    )
+    );
   }
   return (
     <FormikProvider value={formikValues}>
@@ -131,5 +131,5 @@ export const FoodLog = ({ userTaskId = "" }) => {
         </div>
       </div>
     </FormikProvider>
-  )
-}
+  );
+};

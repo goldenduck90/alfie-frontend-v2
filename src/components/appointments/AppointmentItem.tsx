@@ -1,10 +1,10 @@
-import React, { useMemo } from "react"
-import { format, isToday, isTomorrow } from "date-fns"
-import { Role } from "../../graphql/generated"
-import { roleToText } from "../../utils/roleToText"
-import { Link } from "react-router-dom"
-import { PencilIcon, XIcon } from "@heroicons/react/solid"
-import { gql, useMutation } from "@apollo/client"
+import React, { useMemo } from "react";
+import { format, isToday, isTomorrow } from "date-fns";
+import { Role } from "../../graphql/generated";
+import { roleToText } from "../../../utils/roleToText";
+import { Link } from "react-router-dom";
+import { PencilIcon, XIcon } from "@heroicons/react/solid";
+import { gql, useMutation } from "@apollo/client";
 
 const cancelAppointmentMutation = gql`
   mutation CancelAppointment($eaAppointmentId: String!) {
@@ -12,7 +12,7 @@ const cancelAppointmentMutation = gql`
       message
     }
   }
-`
+`;
 
 export const AppointmentItem = ({
   id,
@@ -22,45 +22,45 @@ export const AppointmentItem = ({
   meetLink,
   actions = false,
 }: {
-  id: string
-  providerName: string
-  providerType: Role
-  startTimeInUtc: string
-  meetLink: string
-  actions?: boolean
+  id: string;
+  providerName: string;
+  providerType: Role;
+  startTimeInUtc: string;
+  meetLink: string;
+  actions?: boolean;
 }) => {
-  const [cancelAppointment] = useMutation(cancelAppointmentMutation)
+  const [cancelAppointment] = useMutation(cancelAppointmentMutation);
 
   const onClickCancel = async () => {
     const answer = window.confirm(
       "Are you sure you want to cancel this appointment?"
-    )
+    );
 
     if (answer) {
       const { data } = await cancelAppointment({
         variables: {
           eaAppointmentId: id,
         },
-      })
+      });
 
       if (data.cancelAppointment.message) {
-        window.alert(data.cancelAppointment.message)
-        window.location.reload()
+        window.alert(data.cancelAppointment.message);
+        window.location.reload();
       }
     }
-  }
+  };
 
   const formattedTime = useMemo(() => {
-    const startTime = new Date(startTimeInUtc)
+    const startTime = new Date(startTimeInUtc);
 
     if (isToday(startTime)) {
-      return `Today @ ${format(startTime, "h:mm aa")}`
+      return `Today @ ${format(startTime, "h:mm aa")}`;
     } else if (isTomorrow(startTime)) {
-      return `Tomorrow @ ${format(startTime, "h:mm aa")}`
+      return `Tomorrow @ ${format(startTime, "h:mm aa")}`;
     }
 
-    return format(startTime, "MM/dd/yy @ h:mm aa")
-  }, [startTimeInUtc])
+    return format(startTime, "MM/dd/yy @ h:mm aa");
+  }, [startTimeInUtc]);
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-between w-full h-full bg-white rounded-md px-4 py-3 my-4">
@@ -107,5 +107,5 @@ export const AppointmentItem = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};

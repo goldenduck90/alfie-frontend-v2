@@ -1,13 +1,13 @@
 import { gql, useMutation } from "@apollo/client"
-import { Wrapper } from "../../components/layouts/Wrapper"
-import { IconInput } from "../../components/inputs/IconInput"
-import { Checkbox } from "../../components/inputs/Checkbox"
-import { Button } from "../../components/Button"
+import { Wrapper } from "../../src/components/layouts/Wrapper"
+import { IconInput } from "../../src/components/inputs/IconInput"
+import { Checkbox } from "../../src/components/inputs/Checkbox"
+import { Button } from "../../src/components/Button"
 import { LockClosedIcon, UserIcon } from "@heroicons/react/solid"
 import { FormikProvider, useFormik } from "formik"
 import * as Yup from "yup"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
-import { useAuth } from "../../hooks/useAuth"
+import { useAuth } from "../../src/hooks/useAuth"
 import { parseError } from "../../utils/parseError"
 
 const loginMutation = gql`

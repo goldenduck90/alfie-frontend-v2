@@ -1,26 +1,26 @@
-import { gql, useMutation, useQuery } from "@apollo/client"
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid"
-import * as Sentry from "@sentry/react"
-import { FormikProvider } from "formik"
-import { useFormikWizard } from "formik-wizard-form"
-import { useEffect } from "react"
-import { useParams } from "react-router"
-import * as Yup from "yup"
-import { Button } from "../../../components/Button"
-import { ApplicationLayout } from "../../../components/layouts/ApplicationLayout"
-import { Loading } from "../../../components/Loading"
-import { TextLink } from "../../../components/TextLink"
-import { parseError } from "../../../utils/parseError"
-import { AppointmentConfirmed } from "./steps/AppointmentConfirmed"
-import { AppointmentDetails } from "./steps/AppointmentDetails"
-import { AvailabilityWrapper } from "./steps/Availability"
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
+import * as Sentry from "@sentry/react";
+import { FormikProvider } from "formik";
+import { useFormikWizard } from "formik-wizard-form";
+import { useEffect } from "react";
+import { useParams } from "react-router";
+import * as Yup from "yup";
+import { Button } from "../../../src/components/Button";
+import { ApplicationLayout } from "../../../src/components/layouts/ApplicationLayout";
+import { Loading } from "../../../src/components/Loading";
+import { TextLink } from "../../../src/components/TextLink";
+import { parseError } from "../../../utils/parseError";
+import { AppointmentConfirmed } from "./steps/AppointmentConfirmed";
+import { AppointmentDetails } from "./steps/AppointmentDetails";
+import { AvailabilityWrapper } from "./steps/Availability";
 const updateAppointmentMutaton = gql`
   mutation UpdateAppointment($input: UpdateAppointmentInput!) {
     updateAppointment(input: $input) {
       eaAppointmentId
     }
   }
-`
+`;
 
 const appointmentQuery = gql`
   query Appointment($eaAppointmentId: String!) {
@@ -37,14 +37,14 @@ const appointmentQuery = gql`
       }
     }
   }
-`
+`;
 
 export const RescheduleAppointment = () => {
-  const { id } = useParams()
+  const { id } = useParams();
   const { data, loading, error } = useQuery(appointmentQuery, {
     variables: { eaAppointmentId: id },
-  })
-  const [updateAppointment] = useMutation(updateAppointmentMutaton)
+  });
+  const [updateAppointment] = useMutation(updateAppointmentMutaton);
 
   const updateAppointmentForm = useFormikWizard({
     initialValues: {
@@ -60,8 +60,8 @@ export const RescheduleAppointment = () => {
       notes: "",
     },
     onSubmit: (_, { resetForm }) => {
-      resetForm()
-      window.location.replace("/appointments")
+      resetForm();
+      window.location.replace("/appointments");
     },
     validateOnNext: true,
     validateOnChange: false,
@@ -86,8 +86,8 @@ export const RescheduleAppointment = () => {
         }),
         beforeNext: async (values, { setSubmitting, setStatus }) => {
           try {
-            setStatus(null)
-            setSubmitting(true)
+            setStatus(null);
+            setSubmitting(true);
             const result = await updateAppointment({
               variables: {
                 input: {
@@ -100,13 +100,13 @@ export const RescheduleAppointment = () => {
                   notes: values.notes,
                 },
               },
-            })
-            console.log(result)
-            setSubmitting(false)
+            });
+            console.log(result);
+            setSubmitting(false);
           } catch (err) {
-            const msg = parseError(err)
-            setSubmitting(false)
-            setStatus({ error: msg })
+            const msg = parseError(err);
+            setSubmitting(false);
+            setStatus({ error: msg });
           }
         },
       },
@@ -114,7 +114,7 @@ export const RescheduleAppointment = () => {
         component: AppointmentConfirmed,
       },
     ],
-  })
+  });
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -123,27 +123,27 @@ export const RescheduleAppointment = () => {
           query: "Appointment",
           component: "RescheduleAppointment",
         },
-      })
+      });
     }
-  }, [error])
+  }, [error]);
   useEffect(() => {
-    const { userEaProviderId, eaProvider } = updateAppointmentForm.values
-    const { setFieldValue } = updateAppointmentForm
-    if (loading) return
-    if (error) return
-    if (!data) return
-    const { appointment } = data
-    if (!appointment) return
-    if (userEaProviderId) return
-    if (eaProvider) return
+    const { userEaProviderId, eaProvider } = updateAppointmentForm.values;
+    const { setFieldValue } = updateAppointmentForm;
+    if (loading) return;
+    if (error) return;
+    if (!data) return;
+    const { appointment } = data;
+    if (!appointment) return;
+    if (userEaProviderId) return;
+    if (eaProvider) return;
 
-    setFieldValue("selectedDate", new Date(appointment.startTimeInUtc))
-    setFieldValue("endTimeInUtc", appointment.endTimeInUtc)
-    setFieldValue("eaProvider", appointment.eaProvider)
-    setFieldValue("userEaProviderId", appointment.eaProvider.id)
-    setFieldValue("providerType", appointment.eaProvider.type)
-    setFieldValue("notes", appointment.notes)
-  }, [updateAppointmentForm, data, error, loading])
+    setFieldValue("selectedDate", new Date(appointment.startTimeInUtc));
+    setFieldValue("endTimeInUtc", appointment.endTimeInUtc);
+    setFieldValue("eaProvider", appointment.eaProvider);
+    setFieldValue("userEaProviderId", appointment.eaProvider.id);
+    setFieldValue("providerType", appointment.eaProvider.type);
+    setFieldValue("notes", appointment.notes);
+  }, [updateAppointmentForm, data, error, loading]);
 
   const {
     renderComponent,
@@ -154,11 +154,11 @@ export const RescheduleAppointment = () => {
     isSubmitting,
     currentStepIndex,
     isLastStep,
-  } = updateAppointmentForm
+  } = updateAppointmentForm;
 
-  if (loading) return <Loading />
+  if (loading) return <Loading />;
 
-  if (error) return <div>Error</div>
+  if (error) return <div>Error</div>;
 
   return (
     <ApplicationLayout title="Reschedule Appointment">
@@ -213,5 +213,5 @@ export const RescheduleAppointment = () => {
         </FormikProvider>
       </div>
     </ApplicationLayout>
-  )
-}
+  );
+};

@@ -5,8 +5,8 @@ import axios from "axios"
 import { FormikProvider, useFormik } from "formik"
 import { useNavigate } from "react-router"
 
-import { Button } from "../../../components/Button"
-import { FileBox } from "../../../components/inputs/FileBox"
+import { Button } from "../../../src/components/Button"
+import { FileBox } from "../../../src/components/inputs/FileBox"
 import { useNotificationDispatch } from "../../../context/NotificationContext"
 import {
   FileInput,
@@ -14,7 +14,7 @@ import {
   SignedUrlRequest,
   SignedUrlResponse,
 } from "../../../graphql/generated"
-import { useAuth } from "../../../hooks/useAuth"
+import { useAuth } from "../../../src/hooks/useAuth"
 import { parseError } from "../../../utils/parseError"
 import { s3Key } from "../../../utils/s3Key"
 

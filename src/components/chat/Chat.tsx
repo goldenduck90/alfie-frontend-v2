@@ -1,53 +1,54 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import React, { useMemo, useState } from "react"
-import { Channel, useSendbirdStateContext } from "@sendbird/uikit-react"
-import { useAuth } from "../../hooks/useAuth"
-import { Role } from "../../graphql/generated"
-import ChannelPreview from "@sendbird/uikit-react/ChannelList/components/ChannelPreview"
-import ChannelListUI from "@sendbird/uikit-react/ChannelList"
-import { ChannelProvider } from "@sendbird/uikit-react/Channel/context"
-import { ChannelHeader } from "./ChannelHeader"
-import { ChannelListHeader } from "./ChannelListHeader"
-import { useNotificationDispatch } from "../../context/NotificationContext"
+import React, { useMemo, useState } from "react";
+import { Channel, useSendbirdStateContext } from "@sendbird/uikit-react";
+import { useAuth } from "../../hooks/useAuth";
+import { Role } from "../../graphql/generated";
+import ChannelPreview from "@sendbird/uikit-react/ChannelList/components/ChannelPreview";
+import ChannelListUI from "@sendbird/uikit-react/ChannelList";
+import { ChannelProvider } from "@sendbird/uikit-react/Channel/context";
+import { ChannelHeader } from "./ChannelHeader";
+import { ChannelListHeader } from "./ChannelListHeader";
+import { useNotificationDispatch } from "../../context/NotificationContext";
 
 export const Chat = () => {
-  const { user } = useAuth()
-  const [currentChannelUrl, setCurrentChannelUrl] = useState<string>("")
-  const [toggleChannelDrawer, setToggleChannelDrawer] = useState<boolean>(false)
-  const [query, setQuery] = useState("")
-  const { stores } = useSendbirdStateContext()
-  const { displayNotification } = useNotificationDispatch()
-  const sendBirdError = stores.sdkStore.error
+  const { user } = useAuth();
+  const [currentChannelUrl, setCurrentChannelUrl] = useState<string>("");
+  const [toggleChannelDrawer, setToggleChannelDrawer] =
+    useState<boolean>(false);
+  const [query, setQuery] = useState("");
+  const { stores } = useSendbirdStateContext();
+  const { displayNotification } = useNotificationDispatch();
+  const sendBirdError = stores.sdkStore.error;
 
   if (sendBirdError) {
     displayNotification(
       "error",
       "Error with chat please try again later",
       "error"
-    )
+    );
   }
 
-  const handleDrawerToggle = () => setToggleChannelDrawer(!toggleChannelDrawer)
+  const handleDrawerToggle = () => setToggleChannelDrawer(!toggleChannelDrawer);
 
   const queries = useMemo(() => {
     if (query.length === 0) {
-      return undefined
+      return undefined;
     } else {
       return {
         channelListQuery: {
           nicknameContainsFilter: query,
         },
-      }
+      };
     }
-  }, [query])
+  }, [query]);
 
   function showDrawer() {
     if (user?.role === Role.Patient) {
-      return "hidden"
+      return "hidden";
     } else if (toggleChannelDrawer) {
-      return "block"
+      return "block";
     } else {
-      return "hidden lg:block"
+      return "hidden lg:block";
     }
   }
 
@@ -64,9 +65,9 @@ export const Chat = () => {
           className={`overflow-y-auto border ${showDrawer()}`}
           onChannelSelect={(channel) => {
             if (channel && channel.url) {
-              setCurrentChannelUrl(channel.url)
+              setCurrentChannelUrl(channel.url);
             } else {
-              setCurrentChannelUrl("")
+              setCurrentChannelUrl("");
             }
           }}
           renderHeader={() => (
@@ -87,7 +88,7 @@ export const Chat = () => {
                 renderChannelAction={() => <></>}
                 onLeaveChannel={() => undefined}
               />
-            )
+            );
           }}
         />
       </div>
@@ -111,5 +112,5 @@ export const Chat = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,18 +1,18 @@
-import { useQuery } from "@apollo/client"
-import * as Sentry from "@sentry/react"
-import { useEffect } from "react"
-import { AppointmentItem } from "../../../components/appointments/AppointmentItem"
-import { ApplicationLayout } from "../../../components/layouts/ApplicationLayout"
-import { Loading } from "../../../components/Loading"
-import { EaAppointment } from "../../../graphql/generated"
-import { appointmentsQuery } from "../Dashboard"
+import { useQuery } from "@apollo/client";
+import * as Sentry from "@sentry/react";
+import { useEffect } from "react";
+import { AppointmentItem } from "../../../src/components/appointments/AppointmentItem";
+import { ApplicationLayout } from "../../../src/components/layouts/ApplicationLayout";
+import { Loading } from "../../../src/components/Loading";
+import { EaAppointment } from "../../../graphql/generated";
+import { appointmentsQuery } from "../Dashboard";
 
 export const AppointmentsPage = ({ limit = 100 }: { limit?: number }) => {
   const { data, loading, error } = useQuery(appointmentsQuery, {
     variables: {
       limit,
     },
-  })
+  });
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -21,9 +21,9 @@ export const AppointmentsPage = ({ limit = 100 }: { limit?: number }) => {
           query: "appointmentsQuery",
           component: "AppointmentsPage",
         },
-      })
+      });
     }
-  }, [error])
+  }, [error]);
   return (
     <ApplicationLayout title="Appointments">
       <div className="flex flex-col w-full lg:w-3/4">
@@ -52,5 +52,5 @@ export const AppointmentsPage = ({ limit = 100 }: { limit?: number }) => {
           ))}
       </div>
     </ApplicationLayout>
-  )
-}
+  );
+};

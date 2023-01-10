@@ -1,8 +1,8 @@
 import React from "react";
 import { gql, useMutation } from "@apollo/client";
-import { Wrapper } from "../../components/layouts/Wrapper";
-import { IconInput } from "../../components/inputs/IconInput";
-import { Button } from "../../components/Button";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { IconInput } from "../../src/components/inputs/IconInput";
+import { Button } from "../../src/components/Button";
 import { UserIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import { Link } from "react-router-dom";

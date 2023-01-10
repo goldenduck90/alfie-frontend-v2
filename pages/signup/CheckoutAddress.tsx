@@ -1,17 +1,17 @@
-import React from "react"
-import { Wrapper } from "../../components/layouts/Wrapper"
-import { Logo } from "../../components/Logo"
-import { gql, useMutation } from "@apollo/client"
-import { useNavigate, useParams } from "react-router"
-import { Button } from "../../components/Button"
-import { Checkbox } from "../../components/inputs/Checkbox"
-import { ArrowRightIcon } from "@heroicons/react/solid"
-import { FormikProvider, useFormik } from "formik"
-import { SelectInput } from "../../components/inputs/SelectInput"
-import { States } from "../../utils/states"
-import { TextInput } from "../../components/inputs/TextInput"
-import * as Yup from "yup"
-import { parseError } from "../../utils/parseError"
+import React from "react";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { Logo } from "../../src/components/Logo";
+import { gql, useMutation } from "@apollo/client";
+import { useNavigate, useParams } from "react-router";
+import { Button } from "../../src/components/Button";
+import { Checkbox } from "../../src/components/inputs/Checkbox";
+import { ArrowRightIcon } from "@heroicons/react/solid";
+import { FormikProvider, useFormik } from "formik";
+import { SelectInput } from "../../src/components/inputs/SelectInput";
+import { States } from "../../utils/states";
+import { TextInput } from "../../src/components/inputs/TextInput";
+import * as Yup from "yup";
+import { parseError } from "../../utils/parseError";
 
 const createOrUpdateStripeSessionMutation = gql`
   mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
@@ -21,14 +21,14 @@ const createOrUpdateStripeSessionMutation = gql`
       }
     }
   }
-`
+`;
 
 export const CheckoutAddress = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [createOrUpdateStripeSession] = useMutation(
     createOrUpdateStripeSessionMutation
-  )
+  );
 
   const form = useFormik({
     initialValues: {
@@ -65,24 +65,24 @@ export const CheckoutAddress = () => {
           variables: {
             input: values,
           },
-        })
+        });
 
-        const { checkout } = data.createOrUpdateStripeSession
-        resetForm()
-        navigate(`/signup/checkout/${checkout._id}/payment`)
+        const { checkout } = data.createOrUpdateStripeSession;
+        resetForm();
+        navigate(`/signup/checkout/${checkout._id}/payment`);
       } catch (err) {
-        const msg = parseError(err)
-        setStatus({ error: msg })
+        const msg = parseError(err);
+        setStatus({ error: msg });
       }
     },
-  })
+  });
 
   if (!id) {
-    navigate("/signup")
+    navigate("/signup");
   }
 
   // const { checkout, paymentLink } = data.checkout
-  const { submitForm, isSubmitting } = form
+  const { submitForm, isSubmitting } = form;
 
   return (
     <Wrapper>
@@ -186,5 +186,5 @@ export const CheckoutAddress = () => {
         </div>
       </FormikProvider>
     </Wrapper>
-  )
-}
+  );
+};

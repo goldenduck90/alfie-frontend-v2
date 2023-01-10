@@ -1,12 +1,12 @@
-import { useField } from "formik"
-import { ChangeEventHandler, FC } from "react"
-import { useCachedState } from "../../hooks/useCachedState"
+import { useField } from "formik";
+import { ChangeEventHandler, FC } from "react";
+import { useCachedState } from "../../hooks/useCachedState";
 
 export interface ISliderRange {
-  name: string
-  cache?: boolean
-  min?: number
-  max?: number
+  name: string;
+  cache?: boolean;
+  min?: number;
+  max?: number;
 }
 export const SliderRange: FC<ISliderRange> = ({
   name,
@@ -14,15 +14,15 @@ export const SliderRange: FC<ISliderRange> = ({
   min,
   max,
 }) => {
-  const [, { value, error }, { setValue, setError }] = useField(name)
-  const [, setCachedValue] = useCachedState(name, value, cache)
+  const [, { value, error }, { setValue, setError }] = useField(name);
+  const [, setCachedValue] = useCachedState(name, value, cache);
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     if (cache) {
-      setCachedValue(e.target.value)
+      setCachedValue(e.target.value);
     }
-    setValue(e.target.value)
-    setError(undefined)
-  }
+    setValue(e.target.value);
+    setError(undefined);
+  };
 
   return (
     <div className="flex flex-col">
@@ -38,5 +38,5 @@ export const SliderRange: FC<ISliderRange> = ({
       />
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
     </div>
-  )
-}
+  );
+};

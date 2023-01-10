@@ -1,14 +1,14 @@
-import { gql, useMutation } from "@apollo/client"
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid"
-import { FormikProvider } from "formik"
-import { useFormikWizard, WizardProps } from "formik-wizard-form"
-import { useNavigate } from "react-router"
-import { BackButton } from "../../../../components/BackButton"
-import { Button } from "../../../../components/Button"
-import { useNotificationDispatch } from "../../../../context/NotificationContext"
-import { convertFormValuesIntoAnswers } from "../../helpers"
-import * as Steps from "./Steps"
-const TOTAL_STEPS = Steps.list.length - 1
+import { gql, useMutation } from "@apollo/client";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
+import { FormikProvider } from "formik";
+import { useFormikWizard, WizardProps } from "formik-wizard-form";
+import { useNavigate } from "react-router";
+import { BackButton } from "../../../../src/components/BackButton";
+import { Button } from "../../../../src/components/Button";
+import { useNotificationDispatch } from "../../../../context/NotificationContext";
+import { convertFormValuesIntoAnswers } from "../../helpers";
+import * as Steps from "./Steps";
+const TOTAL_STEPS = Steps.list.length - 1;
 
 const completeUserTaskMutation = gql`
   mutation CompleteTask($input: CompleteUserTaskInput!) {
@@ -16,41 +16,41 @@ const completeUserTaskMutation = gql`
       completed
     }
   }
-`
+`;
 export const Tefq = ({ userTaskId = "" }) => {
-  const notificationDispatchers = useNotificationDispatch()
-  const navigate = useNavigate()
+  const notificationDispatchers = useNotificationDispatch();
+  const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("alwaysEating")
-    localStorage.removeItem("smallHelpings")
-    localStorage.removeItem("anxiousEating")
-    localStorage.removeItem("uncomfortableEating")
-    localStorage.removeItem("eatingWithOthers")
-    localStorage.removeItem("overeatingWhenBlue")
-    localStorage.removeItem("delicacyEating")
-    localStorage.removeItem("bottomlessPit")
-    localStorage.removeItem("alwaysHungry")
-    localStorage.removeItem("lonelyEating")
-    localStorage.removeItem("holdBack")
-    localStorage.removeItem("fatFoods")
-    localStorage.removeItem("alwaysHungry2")
-    localStorage.removeItem("howOftenHungry")
-    localStorage.removeItem("avoidStockingUp")
-    localStorage.removeItem("conciouslyEatLess")
-    localStorage.removeItem("eatingBinges")
-    localStorage.removeItem("restraint")
-  }
+    localStorage.removeItem("alwaysEating");
+    localStorage.removeItem("smallHelpings");
+    localStorage.removeItem("anxiousEating");
+    localStorage.removeItem("uncomfortableEating");
+    localStorage.removeItem("eatingWithOthers");
+    localStorage.removeItem("overeatingWhenBlue");
+    localStorage.removeItem("delicacyEating");
+    localStorage.removeItem("bottomlessPit");
+    localStorage.removeItem("alwaysHungry");
+    localStorage.removeItem("lonelyEating");
+    localStorage.removeItem("holdBack");
+    localStorage.removeItem("fatFoods");
+    localStorage.removeItem("alwaysHungry2");
+    localStorage.removeItem("howOftenHungry");
+    localStorage.removeItem("avoidStockingUp");
+    localStorage.removeItem("conciouslyEatLess");
+    localStorage.removeItem("eatingBinges");
+    localStorage.removeItem("restraint");
+  };
   const onCompleted = () => {
-    clearLocalStorage()
+    clearLocalStorage();
     notificationDispatchers.displayNotification(
       "Your answers have been submitted",
       "Your results have been saved",
       "success"
-    )
-    navigate("/dashboard?refetch=true")
-  }
+    );
+    navigate("/dashboard?refetch=true");
+  };
 
-  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation)
+  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
 
   const wizardConfig: WizardProps = {
     initialValues: Steps.initialValues,
@@ -59,9 +59,9 @@ export const Tefq = ({ userTaskId = "" }) => {
     activeStepIndex: Number(localStorage.tefqSteps) || 0, // TODO
     steps: Steps.list,
     onSubmit: async () => null,
-  }
+  };
 
-  const tefqForm = useFormikWizard(wizardConfig)
+  const tefqForm = useFormikWizard(wizardConfig);
 
   const {
     handlePrev,
@@ -72,19 +72,19 @@ export const Tefq = ({ userTaskId = "" }) => {
     currentStepIndex,
     isLastStep,
     values,
-  } = tefqForm
+  } = tefqForm;
   const onSubmit = async () => {
-    const answers = convertFormValuesIntoAnswers(values)
-    const input = { _id: userTaskId, answers }
+    const answers = convertFormValuesIntoAnswers(values);
+    const input = { _id: userTaskId, answers };
     console.log("log: values", {
       input,
       values,
       convertedValues: convertFormValuesIntoAnswers(values),
-    })
+    });
 
-    await completeUserTask({ variables: { input } })
-    onCompleted()
-  }
+    await completeUserTask({ variables: { input } });
+    onCompleted();
+  };
   return (
     <>
       <BackButton location="dashboard" />
@@ -120,5 +120,5 @@ export const Tefq = ({ userTaskId = "" }) => {
         </div>
       </FormikProvider>
     </>
-  )
-}
+  );
+};

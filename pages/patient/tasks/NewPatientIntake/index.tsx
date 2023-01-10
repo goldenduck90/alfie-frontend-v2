@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { gql, useMutation } from "@apollo/client"
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid"
-import { FormikProvider } from "formik"
-import { useFormikWizard, WizardProps } from "formik-wizard-form"
-import { useNavigate } from "react-router"
-import { BackButton } from "../../../../components/BackButton"
-import { Button } from "../../../../components/Button"
-import { useNotificationDispatch } from "../../../../context/NotificationContext"
-import { convertFormValuesIntoAnswers } from "../../helpers"
-import * as Steps from "./Steps"
+import { gql, useMutation } from "@apollo/client";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
+import { FormikProvider } from "formik";
+import { useFormikWizard, WizardProps } from "formik-wizard-form";
+import { useNavigate } from "react-router";
+import { BackButton } from "../../../../src/components/BackButton";
+import { Button } from "../../../../src/components/Button";
+import { useNotificationDispatch } from "../../../../context/NotificationContext";
+import { convertFormValuesIntoAnswers } from "../../helpers";
+import * as Steps from "./Steps";
 
 const completeUserTaskMutation = gql`
   mutation CompleteTask($input: CompleteUserTaskInput!) {
@@ -16,36 +16,36 @@ const completeUserTaskMutation = gql`
       completed
     }
   }
-`
+`;
 
-const TOTAL_STEPS = Steps.list.length - 1
+const TOTAL_STEPS = Steps.list.length - 1;
 
 export const NewPatientIntake = ({ userTaskId = "" }) => {
-  const notificationDispatchers = useNotificationDispatch()
-  const navigate = useNavigate()
+  const notificationDispatchers = useNotificationDispatch();
+  const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("weightManagementMethods")
-    localStorage.removeItem("conditions")
-    localStorage.removeItem("previousConditions")
-    localStorage.removeItem("medications")
-    localStorage.removeItem("hasSurgicalHistory")
-    localStorage.removeItem("allergies")
-    localStorage.removeItem("usePillPack")
-    localStorage.removeItem("labCorpLocation")
-    localStorage.removeItem("pharmacy")
-    localStorage.removeItem("pharmacyLocation")
-  }
+    localStorage.removeItem("weightManagementMethods");
+    localStorage.removeItem("conditions");
+    localStorage.removeItem("previousConditions");
+    localStorage.removeItem("medications");
+    localStorage.removeItem("hasSurgicalHistory");
+    localStorage.removeItem("allergies");
+    localStorage.removeItem("usePillPack");
+    localStorage.removeItem("labCorpLocation");
+    localStorage.removeItem("pharmacy");
+    localStorage.removeItem("pharmacyLocation");
+  };
   const onCompleted = () => {
-    clearLocalStorage()
+    clearLocalStorage();
     notificationDispatchers.displayNotification(
       "Intake logged successfully",
       "Your results have been saved",
       "success"
-    )
-    navigate("/dashboard?refetch=true")
-  }
+    );
+    navigate("/dashboard?refetch=true");
+  };
 
-  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation)
+  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
 
   const wizardConfig: WizardProps = {
     initialValues: Steps.initialValues,
@@ -54,9 +54,9 @@ export const NewPatientIntake = ({ userTaskId = "" }) => {
     activeStepIndex: Number(localStorage.questionnaireStep) || 0, // TODO
     steps: Steps.list,
     onSubmit: async () => null,
-  }
+  };
 
-  const questionairreForm = useFormikWizard(wizardConfig)
+  const questionairreForm = useFormikWizard(wizardConfig);
   const {
     handlePrev,
     handleNext,
@@ -66,26 +66,26 @@ export const NewPatientIntake = ({ userTaskId = "" }) => {
     currentStepIndex,
     isLastStep,
     values,
-  } = questionairreForm
-  console.log(isNextDisabled, "isNextDisabled")
+  } = questionairreForm;
+  console.log(isNextDisabled, "isNextDisabled");
   const onSubmit = async () => {
     // add labCorpLocation from localStorage to values before calling convertFormValuesIntoAnswers into answers
-    const labCorpLocation: any = localStorage.getItem("labCorpLocation")
-    const pharmacyLocation: any = localStorage.getItem("pharmacy")
+    const labCorpLocation: any = localStorage.getItem("labCorpLocation");
+    const pharmacyLocation: any = localStorage.getItem("pharmacy");
     const convertLabCorpLocationAnswer = {
       labCorpLocation: labCorpLocation,
       pharmacyLocation: pharmacyLocation,
-    }
+    };
     // Add new key value pair to values object as a new variable to pass into convertFormValuesIntoAnswers
-    const newValues = { ...values, ...convertLabCorpLocationAnswer }
+    const newValues = { ...values, ...convertLabCorpLocationAnswer };
 
-    const answers = convertFormValuesIntoAnswers(newValues)
+    const answers = convertFormValuesIntoAnswers(newValues);
 
-    const input = { _id: userTaskId, answers }
-    console.log(input, "input")
-    await completeUserTask({ variables: { input } })
-    onCompleted()
-  }
+    const input = { _id: userTaskId, answers };
+    console.log(input, "input");
+    await completeUserTask({ variables: { input } });
+    onCompleted();
+  };
   return (
     <>
       <BackButton location="dashboard" />
@@ -120,5 +120,5 @@ export const NewPatientIntake = ({ userTaskId = "" }) => {
         </div>
       </FormikProvider>
     </>
-  )
-}
+  );
+};

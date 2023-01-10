@@ -1,18 +1,18 @@
-import { gql, useQuery } from "@apollo/client"
+import { gql, useQuery } from "@apollo/client";
 import {
   faPeopleGroup,
   faPills,
   faSyringe,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import * as Sentry from "@sentry/react"
-import { useEffect, useMemo } from "react"
-import { useNavigate, useParams } from "react-router"
-import { Button } from "../../components/Button"
-import { FeatureSection } from "../../components/FeatureSection"
-import { Wrapper } from "../../components/layouts/Wrapper"
-import { Loading } from "../../components/Loading"
-import { Logo } from "../../components/Logo"
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import * as Sentry from "@sentry/react";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router";
+import { Button } from "../../src/components/Button";
+import { FeatureSection } from "../../src/components/FeatureSection";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { Loading } from "../../src/components/Loading";
+import { Logo } from "../../src/components/Logo";
 
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
@@ -24,17 +24,17 @@ const getCheckoutQuery = gql`
       }
     }
   }
-`
+`;
 
 export const Checkout = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const { data, loading, error } = useQuery(getCheckoutQuery, {
     variables: {
       id,
     },
-  })
+  });
 
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
@@ -44,23 +44,23 @@ export const Checkout = () => {
           query: "GetCheckout",
           component: "Checkout",
         },
-      })
+      });
     }
-  }, [error])
+  }, [error]);
   const weightLossValue = useMemo(() => {
-    if (!data) return "15% of your current weight"
+    if (!data) return "15% of your current weight";
 
-    const weightInLbs = parseInt(data.checkout.checkout.weightInLbs)
-    return `${weightInLbs * 0.15} pounds`
-  }, [data])
+    const weightInLbs = parseInt(data.checkout.checkout.weightInLbs);
+    return `${weightInLbs * 0.15} pounds`;
+  }, [data]);
 
-  if (loading) return <Loading />
+  if (loading) return <Loading />;
 
   if (error) {
-    navigate("/")
+    navigate("/");
   }
 
-  const { checkout } = data.checkout
+  const { checkout } = data.checkout;
 
   return (
     <Wrapper>
@@ -88,7 +88,7 @@ export const Checkout = () => {
             <Button
               title="Checkout"
               onPress={() => {
-                navigate(`/signup/checkout/${id}/address`)
+                navigate(`/signup/checkout/${id}/address`);
               }}
               bold
             />
@@ -141,5 +141,5 @@ export const Checkout = () => {
         </div>
       </div>
     </Wrapper>
-  )
-}
+  );
+};

@@ -1,14 +1,14 @@
-import { gql, useMutation } from "@apollo/client"
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid"
-import { FormikProvider } from "formik"
-import { useFormikWizard, WizardProps } from "formik-wizard-form"
-import { useNavigate } from "react-router"
-import { BackButton } from "../../../../components/BackButton"
-import { Button } from "../../../../components/Button"
-import { useNotificationDispatch } from "../../../../context/NotificationContext"
-import { convertFormValuesIntoAnswers } from "../../helpers"
-import * as Steps from "./Steps"
-const TOTAL_STEPS = Steps.list.length - 1
+import { gql, useMutation } from "@apollo/client";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
+import { FormikProvider } from "formik";
+import { useFormikWizard, WizardProps } from "formik-wizard-form";
+import { useNavigate } from "react-router";
+import { BackButton } from "../../../../src/components/BackButton";
+import { Button } from "../../../../src/components/Button";
+import { useNotificationDispatch } from "../../../../context/NotificationContext";
+import { convertFormValuesIntoAnswers } from "../../helpers";
+import * as Steps from "./Steps";
+const TOTAL_STEPS = Steps.list.length - 1;
 
 const completeUserTaskMutation = gql`
   mutation CompleteTask($input: CompleteUserTaskInput!) {
@@ -16,37 +16,37 @@ const completeUserTaskMutation = gql`
       completed
     }
   }
-`
+`;
 export const Gsrs = ({ userTaskId = "" }) => {
-  const notificationDispatchers = useNotificationDispatch()
-  const navigate = useNavigate()
+  const notificationDispatchers = useNotificationDispatch();
+  const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("painOrDiscomfort")
-    localStorage.removeItem("heartburn")
-    localStorage.removeItem("acidReflux")
-    localStorage.removeItem("hungerPains")
-    localStorage.removeItem("nausea")
-    localStorage.removeItem("bloated")
-    localStorage.removeItem("burping")
-    localStorage.removeItem("constipation")
-    localStorage.removeItem("diarrhea")
-    localStorage.removeItem("looseStools")
-    localStorage.removeItem("gas")
-    localStorage.removeItem("hardStools")
-    localStorage.removeItem("urgentBowel")
-    localStorage.removeItem("completeBowels")
-  }
+    localStorage.removeItem("painOrDiscomfort");
+    localStorage.removeItem("heartburn");
+    localStorage.removeItem("acidReflux");
+    localStorage.removeItem("hungerPains");
+    localStorage.removeItem("nausea");
+    localStorage.removeItem("bloated");
+    localStorage.removeItem("burping");
+    localStorage.removeItem("constipation");
+    localStorage.removeItem("diarrhea");
+    localStorage.removeItem("looseStools");
+    localStorage.removeItem("gas");
+    localStorage.removeItem("hardStools");
+    localStorage.removeItem("urgentBowel");
+    localStorage.removeItem("completeBowels");
+  };
   const onCompleted = () => {
-    clearLocalStorage()
+    clearLocalStorage();
     notificationDispatchers.displayNotification(
       "Your answers have been submitted",
       "Your results have been saved",
       "success"
-    )
-    navigate("/dashboard?refetch=true")
-  }
+    );
+    navigate("/dashboard?refetch=true");
+  };
 
-  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation)
+  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
 
   const wizardConfig: WizardProps = {
     initialValues: Steps.initialValues,
@@ -55,9 +55,9 @@ export const Gsrs = ({ userTaskId = "" }) => {
     activeStepIndex: Number(localStorage.gsrsStep) || 0, // TODO
     steps: Steps.list,
     onSubmit: async () => null,
-  }
+  };
 
-  const gsrsForm = useFormikWizard(wizardConfig)
+  const gsrsForm = useFormikWizard(wizardConfig);
 
   const {
     handlePrev,
@@ -68,19 +68,19 @@ export const Gsrs = ({ userTaskId = "" }) => {
     currentStepIndex,
     isLastStep,
     values,
-  } = gsrsForm
+  } = gsrsForm;
   const onSubmit = async () => {
-    const answers = convertFormValuesIntoAnswers(values)
-    const input = { _id: userTaskId, answers }
+    const answers = convertFormValuesIntoAnswers(values);
+    const input = { _id: userTaskId, answers };
     console.log("log: values", {
       input,
       values,
       convertedValues: convertFormValuesIntoAnswers(values),
-    })
+    });
 
-    await completeUserTask({ variables: { input } })
-    onCompleted()
-  }
+    await completeUserTask({ variables: { input } });
+    onCompleted();
+  };
   return (
     <>
       <BackButton location="dashboard" />
@@ -116,5 +116,5 @@ export const Gsrs = ({ userTaskId = "" }) => {
         </div>
       </FormikProvider>
     </>
-  )
-}
+  );
+};

@@ -1,14 +1,18 @@
-import React, { useState } from "react"
-import { Wrapper } from "../../components/layouts/Wrapper"
-import { Logo } from "../../components/Logo"
-import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
-import { Button } from "../../components/Button"
-import * as Sentry from "@sentry/react"
+import React, { useState } from "react";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { Logo } from "../../src/components/Logo";
+import {
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import { Button } from "../../src/components/Button";
+import * as Sentry from "@sentry/react";
 
 export const CheckoutPayment = () => {
-  const [loading, setLoading] = useState(false)
-  const stripe = useStripe()
-  const elements = useElements()
+  const [loading, setLoading] = useState(false);
+  const stripe = useStripe();
+  const elements = useElements();
 
   const handleSubmit = async () => {
     // We don't want to let default form submission happen here,
@@ -17,10 +21,10 @@ export const CheckoutPayment = () => {
     if (!stripe || !elements) {
       // Stripe.js has not yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
-      return
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     const result = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
@@ -28,22 +32,22 @@ export const CheckoutPayment = () => {
       confirmParams: {
         return_url: process.env.REACT_APP_STRIPE_SUCCESS_URL || "",
       },
-    })
+    });
 
     if (result.error) {
       // Show error to your customer (for example, payment details incomplete)
-      console.log(result.error.message)
-      alert(result.error.message)
-      Sentry.captureException(result.error)
+      console.log(result.error.message);
+      alert(result.error.message);
+      Sentry.captureException(result.error);
     } else {
       Sentry.captureMessage(
         `Payment successful: ${JSON.stringify(result.error)}`,
         "info"
-      )
-      console.log(result)
+      );
+      console.log(result);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return (
     <Wrapper>
@@ -88,5 +92,5 @@ export const CheckoutPayment = () => {
         </div>
       </div>
     </Wrapper>
-  )
-}
+  );
+};

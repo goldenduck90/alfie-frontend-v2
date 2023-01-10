@@ -1,19 +1,19 @@
-import { MailIcon, PhoneIcon } from "@heroicons/react/solid"
-import React, { useMemo } from "react"
-import { Checkbox } from "../../../components/inputs/Checkbox"
-import { IconInput } from "../../../components/inputs/IconInput"
+import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
+import React, { useMemo } from "react";
+import { Checkbox } from "../../../src/components/inputs/Checkbox";
+import { IconInput } from "../../../src/components/inputs/IconInput";
 
 export const EmailCapture = () => {
-  const fullName = localStorage.getItem("fullName") || ""
-  const weight = localStorage.getItem("weight") || ""
+  const fullName = localStorage.getItem("fullName") || "";
+  const weight = localStorage.getItem("weight") || "";
 
   const weightLossValue = useMemo(() => {
-    if (!weight) return "15% of your current weight"
+    if (!weight) return "15% of your current weight";
 
-    const weightInLbs = parseInt(weight)
-    const roundedWeightLoss = Math.round(weightInLbs * 0.15)
-    return `${roundedWeightLoss} pounds`
-  }, [weight])
+    const weightInLbs = parseInt(weight);
+    const roundedWeightLoss = Math.round(weightInLbs * 0.15);
+    return `${roundedWeightLoss} pounds`;
+  }, [weight]);
 
   return (
     <div>
@@ -56,5 +56,5 @@ export const EmailCapture = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,13 +1,13 @@
-import { ApolloError, gql, useQuery } from "@apollo/client"
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid"
-import * as Sentry from "@sentry/react"
-import { addDays, format, isToday } from "date-fns"
-import { useField } from "formik"
-import { useEffect } from "react"
-import { IconButton } from "../../../../components/IconButton"
-import { Spinner } from "../../../../components/Spinner"
-import { Role, Timeslot } from "../../../../graphql/generated"
-import { roleToText } from "../../../../utils/roleToText"
+import { ApolloError, gql, useQuery } from "@apollo/client";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
+import * as Sentry from "@sentry/react";
+import { addDays, format, isToday } from "date-fns";
+import { useField } from "formik";
+import { useEffect } from "react";
+import { IconButton } from "../../../../src/components/IconButton";
+import { Spinner } from "../../../../src/components/Spinner";
+import { Role, Timeslot } from "../../../../graphql/generated";
+import { roleToText } from "../../../../utils/roleToText";
 const allTimeslotsQuery = gql`
   query AllTimeslots($input: AllTimeslotsInput!) {
     allTimeslots(input: $input) {
@@ -29,7 +29,7 @@ const allTimeslotsQuery = gql`
       }
     }
   }
-`
+`;
 
 const providerTimeslotsQuery = gql`
   query ProviderTimeslots($input: ProviderTimeslotsInput!) {
@@ -52,33 +52,33 @@ const providerTimeslotsQuery = gql`
       }
     }
   }
-`
+`;
 
 const TimeslotButton = ({
   timeslot,
   tz,
 }: {
-  timeslot: Timeslot
-  tz: string
+  timeslot: Timeslot;
+  tz: string;
 }) => {
   const [
     ,
     { value: startTimeInUtc },
     { setValue: setStartTimeInUtc, setError: setStartTimeError },
-  ] = useField("startTimeInUtc")
+  ] = useField("startTimeInUtc");
   const [, , { setValue: setEndTimeInUtc, setError: setEndTimeError }] =
-    useField("endTimeInUtc")
+    useField("endTimeInUtc");
   const [, , { setValue: setEaProvider, setError: setEaProviderError }] =
-    useField("eaProvider")
+    useField("eaProvider");
 
   const onClick = () => {
-    setEaProvider(timeslot.eaProvider)
-    setStartTimeInUtc(timeslot.startTimeInUtc)
-    setEndTimeInUtc(timeslot.endTimeInUtc)
-    setStartTimeError(undefined)
-    setEndTimeError(undefined)
-    setEaProviderError(undefined)
-  }
+    setEaProvider(timeslot.eaProvider);
+    setStartTimeInUtc(timeslot.startTimeInUtc);
+    setEndTimeInUtc(timeslot.endTimeInUtc);
+    setStartTimeError(undefined);
+    setEndTimeError(undefined);
+    setEaProviderError(undefined);
+  };
 
   return (
     <button
@@ -89,8 +89,8 @@ const TimeslotButton = ({
       {format(new Date(timeslot.startTimeInUtc), "h:mm aa")} -{" "}
       {format(new Date(timeslot.endTimeInUtc), "h:mm aa")} ({tz})
     </button>
-  )
-}
+  );
+};
 
 const Scheduler = ({
   timeslots,
@@ -103,20 +103,20 @@ const Scheduler = ({
   setSelectedDate,
   first = false,
 }: {
-  timeslots: Timeslot[]
-  tz: string
-  total?: number
-  loading?: boolean
-  error?: ApolloError
-  providerType: Role
-  selectedDate: Date
-  setSelectedDate: (date: Date) => void
-  first?: boolean
+  timeslots: Timeslot[];
+  tz: string;
+  total?: number;
+  loading?: boolean;
+  error?: ApolloError;
+  providerType: Role;
+  selectedDate: Date;
+  setSelectedDate: (date: Date) => void;
+  first?: boolean;
 }) => {
-  const provider = roleToText(providerType)
-  const [, { error: startTimeError }] = useField("startTimeInUtc")
-  const [, { error: endTimeError }] = useField("endTimeInUtc")
-  const [, { value: reschedule }] = useField("reschedule")
+  const provider = roleToText(providerType);
+  const [, { error: startTimeError }] = useField("startTimeInUtc");
+  const [, { error: endTimeError }] = useField("endTimeInUtc");
+  const [, { value: reschedule }] = useField("reschedule");
 
   return (
     <div>
@@ -189,17 +189,17 @@ const Scheduler = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const AllProviders = () => {
   const timezone =
     new Date()
       .toLocaleString("en", { timeZoneName: "short" })
       .split(" ")
-      .pop() || "UTC"
-  const [, { value: providerType }] = useField("providerType")
-  const [, { value: selectedDate }, { setValue }] = useField("selectedDate")
+      .pop() || "UTC";
+  const [, { value: providerType }] = useField("providerType");
+  const [, { value: selectedDate }, { setValue }] = useField("selectedDate");
 
   const { data, loading, error } = useQuery(allTimeslotsQuery, {
     variables: {
@@ -209,7 +209,7 @@ const AllProviders = () => {
         eaServiceId: "1",
       },
     },
-  })
+  });
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -218,9 +218,9 @@ const AllProviders = () => {
           query: "AllTimeslots",
           component: "AllProviders",
         },
-      })
+      });
     }
-  }, [error])
+  }, [error]);
 
   return (
     <Scheduler
@@ -234,18 +234,18 @@ const AllProviders = () => {
       providerType={providerType}
       first
     />
-  )
-}
+  );
+};
 
 const SpecificProvider = () => {
   const timezone =
     new Date()
       .toLocaleString("en", { timeZoneName: "short" })
       .split(" ")
-      .pop() || "UTC"
-  const [, { value: providerType }] = useField("providerType")
-  const [, { value: userEaProviderId }] = useField("userEaProviderId")
-  const [, { value: selectedDate }, { setValue }] = useField("selectedDate")
+      .pop() || "UTC";
+  const [, { value: providerType }] = useField("providerType");
+  const [, { value: userEaProviderId }] = useField("userEaProviderId");
+  const [, { value: selectedDate }, { setValue }] = useField("selectedDate");
 
   const { data, loading, error } = useQuery(providerTimeslotsQuery, {
     variables: {
@@ -255,7 +255,7 @@ const SpecificProvider = () => {
         eaServiceId: "1",
       },
     },
-  })
+  });
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -264,9 +264,9 @@ const SpecificProvider = () => {
           query: "ProviderTimeslots",
           component: "SpecificProvider",
         },
-      })
+      });
     }
-  }, [error])
+  }, [error]);
   return (
     <Scheduler
       timeslots={data?.providerTimeslots?.timeslots}
@@ -278,19 +278,19 @@ const SpecificProvider = () => {
       error={error}
       providerType={providerType}
     />
-  )
-}
+  );
+};
 
 export const AvailabilityWrapper = () => {
-  const [, { value }] = useField("userEaProviderId")
-  const [, { value: providerType }] = useField("providerType")
+  const [, { value }] = useField("userEaProviderId");
+  const [, { value: providerType }] = useField("providerType");
 
-  if (!providerType) return null // if reschedule, wait until we get this data from api and add to form
+  if (!providerType) return null; // if reschedule, wait until we get this data from api and add to form
 
-  console.log(value)
+  console.log(value);
   if (value) {
-    return <SpecificProvider />
+    return <SpecificProvider />;
   }
 
-  return <AllProviders />
-}
+  return <AllProviders />;
+};

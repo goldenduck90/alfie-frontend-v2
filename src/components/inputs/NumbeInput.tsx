@@ -1,19 +1,19 @@
-import React, { FC, RefObject } from "react"
-import { useField } from "formik"
-import { useCachedState } from "../../hooks/useCachedState"
+import React, { FC, RefObject } from "react";
+import { useField } from "formik";
+import { useCachedState } from "../../hooks/useCachedState";
 
 export interface INumberInput {
-  inputRef?: RefObject<HTMLInputElement>
-  name: string
-  placeholder: string
-  type?: "number" | "tel"
-  position?: "left" | "right"
-  addonText?: string
-  disabled?: boolean
-  showError?: boolean
-  maxLength?: number
-  nextFieldRef?: RefObject<HTMLInputElement>
-  cache?: boolean
+  inputRef?: RefObject<HTMLInputElement>;
+  name: string;
+  placeholder: string;
+  type?: "number" | "tel";
+  position?: "left" | "right";
+  addonText?: string;
+  disabled?: boolean;
+  showError?: boolean;
+  maxLength?: number;
+  nextFieldRef?: RefObject<HTMLInputElement>;
+  cache?: boolean;
 }
 
 export const NumberInput: FC<INumberInput> = ({
@@ -29,22 +29,22 @@ export const NumberInput: FC<INumberInput> = ({
   nextFieldRef,
   cache,
 }) => {
-  const [, { value, error }, { setValue, setError }] = useField(name)
-  const [, setCachedValue] = useCachedState(name, value, cache)
+  const [, { value, error }, { setValue, setError }] = useField(name);
+  const [, setCachedValue] = useCachedState(name, value, cache);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = Number(e.target.value)
+    const val = Number(e.target.value);
 
-    if (isNaN(val) || (`${val}`.length > maxLength && maxLength)) return
+    if (isNaN(val) || (`${val}`.length > maxLength && maxLength)) return;
     if (cache) {
-      setCachedValue(val)
+      setCachedValue(val);
     }
-    setValue(val)
+    setValue(val);
 
     if (nextFieldRef && `${val}`.length === maxLength) {
-      nextFieldRef.current?.focus()
+      nextFieldRef.current?.focus();
     }
-  }
+  };
 
   return (
     <>
@@ -65,8 +65,8 @@ export const NumberInput: FC<INumberInput> = ({
           placeholder={placeholder}
           value={value}
           onFocus={(e) => {
-            e.currentTarget.select()
-            setError(undefined)
+            e.currentTarget.select();
+            setError(undefined);
           }}
           onChange={onChange}
           disabled={disabled}
@@ -81,5 +81,5 @@ export const NumberInput: FC<INumberInput> = ({
         <span className="text-red-500 text-sm">{error}</span>
       )}
     </>
-  )
-}
+  );
+};

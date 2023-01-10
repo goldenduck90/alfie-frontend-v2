@@ -1,10 +1,10 @@
 import { gql, useQuery } from "@apollo/client"
 import * as Sentry from "@sentry/react"
 import { useEffect } from "react"
-import { PractitionerApplicationLayout } from "../../components/layouts/PractitionerApplicationLayout"
-import { QuickViewCard } from "../../components/practitioner/dashboard/QuickViewCard"
-import { Patient, Table } from "../../components/practitioner/Table"
-import { useAuth } from "../../hooks/useAuth"
+import { PractitionerApplicationLayout } from "../../src/components/layouts/PractitionerApplicationLayout"
+import { QuickViewCard } from "../../src/components/practitioner/dashboard/QuickViewCard"
+import { Patient, Table } from "../../src/components/practitioner/Table"
+import { useAuth } from "../../src/hooks/useAuth"
 
 const PractitionerDashboard = () => {
   const getAllProviderPatientsQuery = gql`

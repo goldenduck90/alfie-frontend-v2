@@ -1,11 +1,11 @@
-import { gql, useQuery } from "@apollo/client"
-import * as Sentry from "@sentry/react"
-import { Elements } from "@stripe/react-stripe-js"
-import { loadStripe } from "@stripe/stripe-js"
-import { useEffect } from "react"
-import { useNavigate, useParams } from "react-router"
-import { Loading } from "../../components/Loading"
-import { CheckoutPayment } from "./CheckoutPayment"
+import { gql, useQuery } from "@apollo/client";
+import * as Sentry from "@sentry/react";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
+import { Loading } from "../../src/components/Loading";
+import { CheckoutPayment } from "./CheckoutPayment";
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
     checkout(id: $id) {
@@ -15,16 +15,16 @@ const getCheckoutQuery = gql`
       }
     }
   }
-`
+`;
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY!)
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY!);
 
 export const StripeWrapper = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const {
     data,
@@ -34,7 +34,7 @@ export const StripeWrapper = () => {
     variables: {
       id,
     },
-  })
+  });
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -43,21 +43,21 @@ export const StripeWrapper = () => {
           query: "GetCheckout",
           component: "StripeWrapper",
         },
-      })
+      });
     }
-  }, [error])
+  }, [error]);
 
   if (!id) {
-    navigate("/signup")
+    navigate("/signup");
   }
 
-  if (fetching) return <Loading />
+  if (fetching) return <Loading />;
 
   if (error) {
-    navigate("/")
+    navigate("/");
   }
 
-  const { stripeClientSecret } = data.checkout.checkout
+  const { stripeClientSecret } = data.checkout.checkout;
 
   return (
     <Elements
@@ -68,5 +68,5 @@ export const StripeWrapper = () => {
     >
       <CheckoutPayment />
     </Elements>
-  )
-}
+  );
+};

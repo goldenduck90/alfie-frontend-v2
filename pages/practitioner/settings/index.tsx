@@ -1,41 +1,41 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { gql, useMutation, useQuery } from "@apollo/client"
-import * as Sentry from "@sentry/react"
-import React, { useEffect, useState } from "react"
-import { WorkingPlan } from "../../../@types/easyAppointmentTypes"
-import { Button } from "../../../components/Button"
-import UnControlledDropDown from "../../../components/inputs/UnControlledDropDown"
-import { UnControlledTextInput } from "../../../components/inputs/UnControlledTextInput"
-import { PractitionerApplicationLayout } from "../../../components/layouts/PractitionerApplicationLayout"
-import { useNotificationDispatch } from "../../../context/NotificationContext"
+import { gql, useMutation, useQuery } from "@apollo/client";
+import * as Sentry from "@sentry/react";
+import React, { useEffect, useState } from "react";
+import { WorkingPlan } from "../../../@types/easyAppointmentTypes";
+import { Button } from "../../../src/components/Button";
+import UnControlledDropDown from "../../../src/components/inputs/UnControlledDropDown";
+import { UnControlledTextInput } from "../../../src/components/inputs/UnControlledTextInput";
+import { PractitionerApplicationLayout } from "../../../src/components/layouts/PractitionerApplicationLayout";
+import { useNotificationDispatch } from "../../../context/NotificationContext";
 function generateUUID() {
-  let d = new Date().getTime() //Timestamp
+  let d = new Date().getTime(); //Timestamp
   let d2 =
     (typeof performance !== "undefined" &&
       performance.now &&
       performance.now() * 1000) ||
-    0 //Time in microseconds since page-load or 0 if unsupported
+    0; //Time in microseconds since page-load or 0 if unsupported
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    let r = Math.random() * 16 //random number between 0 and 16
+    let r = Math.random() * 16; //random number between 0 and 16
     if (d > 0) {
       //Use timestamp until depleted
-      r = (d + r) % 16 | 0
-      d = Math.floor(d / 16)
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
     } else {
       //Use microseconds since page-load if supported
-      r = (d2 + r) % 16 | 0
-      d2 = Math.floor(d2 / 16)
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
     }
-    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16)
-  })
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
 }
 export const Settings = () => {
-  const userData = localStorage.getItem("user")
-  const notificationDispatchers = useNotificationDispatch()
-  const [user, setUser] = useState<any>(userData && JSON.parse(userData))
-  const [workingPlan, setWorkingPlan] = useState<any>([])
-  const [workingBreaks, setWorkingBreaks] = useState<any>([])
+  const userData = localStorage.getItem("user");
+  const notificationDispatchers = useNotificationDispatch();
+  const [user, setUser] = useState<any>(userData && JSON.parse(userData));
+  const [workingPlan, setWorkingPlan] = useState<any>([]);
+  const [workingBreaks, setWorkingBreaks] = useState<any>([]);
   const getProfile = gql`
     query getProvider($eaProviderId: String!) {
       getAProvider(eaProviderId: $eaProviderId) {
@@ -101,7 +101,7 @@ export const Settings = () => {
         }
       }
     }
-  `
+  `;
   const updateProfile = gql`
     mutation updateEaProfile(
       $eaProviderId: String!
@@ -126,18 +126,18 @@ export const Settings = () => {
         }
       }
     }
-  `
+  `;
 
   const { data, loading, error } = useQuery(getProfile, {
     variables: {
       eaProviderId: user?.eaProviderId,
     },
-  })
+  });
   // use mutation
-  const [updateProfileMutation] = useMutation(updateProfile)
+  const [updateProfileMutation] = useMutation(updateProfile);
   React.useEffect(() => {
     const providerWorkingPlan: WorkingPlan =
-      data?.getAProvider?.settings?.workingPlan
+      data?.getAProvider?.settings?.workingPlan;
     if (providerWorkingPlan) {
       const convertedWorkingPlan = Object.entries(providerWorkingPlan).map(
         ([key, value]: any) => {
@@ -146,22 +146,22 @@ export const Settings = () => {
             start: value.start,
             end: value.end,
             breaks: value.breaks,
-          }
+          };
         }
-      )
+      );
       // Add breaks to the workingBreaks state
       const userBreaks = convertedWorkingPlan.map((day: any) => {
         // add day to the breaks array of objects so on each break
         return day.breaks.map((breaks: any) => {
-          return { ...breaks, day: day.day, id: generateUUID() }
-        })
-      })
+          return { ...breaks, day: day.day, id: generateUUID() };
+        });
+      });
       // flatten the breaks array
-      const flattenedBreaks = userBreaks.flat()
-      setWorkingBreaks(flattenedBreaks)
-      setWorkingPlan(convertedWorkingPlan)
+      const flattenedBreaks = userBreaks.flat();
+      setWorkingBreaks(flattenedBreaks);
+      setWorkingPlan(convertedWorkingPlan);
     }
-  }, [data])
+  }, [data]);
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -170,9 +170,9 @@ export const Settings = () => {
           query: "getProvider",
           component: "Settings",
         },
-      })
+      });
     }
-  }, [error])
+  }, [error]);
   function updateWorkingPlanStart(e: any, schedule: any) {
     setWorkingPlan((prev: any) => {
       return prev.map((item: any) => {
@@ -180,11 +180,11 @@ export const Settings = () => {
           return {
             ...item,
             start: e.target.value,
-          }
+          };
         }
-        return item
-      })
-    })
+        return item;
+      });
+    });
   }
   function updateWorkingPlanEnd(e: any, schedule: any) {
     setWorkingPlan((prev: any) => {
@@ -193,11 +193,11 @@ export const Settings = () => {
           return {
             ...item,
             end: e.target.value,
-          }
+          };
         }
-        return item
-      })
-    })
+        return item;
+      });
+    });
   }
   async function saveWorkingPlan() {
     try {
@@ -207,7 +207,7 @@ export const Settings = () => {
           workingPlan: workingPlan.reduce((acc: any, item: any) => {
             const groupedBreaks = workingBreaks.filter(
               (usersBreaks: any) => usersBreaks.day === item.day
-            )
+            );
             return {
               ...acc,
               [item.day]: {
@@ -215,29 +215,29 @@ export const Settings = () => {
                 end: item.end,
                 // remove id and day from breaks
                 breaks: groupedBreaks.map((handledBreak: any) => {
-                  const { id, day, ...rest } = handledBreak
-                  return rest
+                  const { id, day, ...rest } = handledBreak;
+                  return rest;
                 }),
               },
-            }
+            };
           }, {}),
         },
-      }
-      console.log(input, "inputinputinput")
+      };
+      console.log(input, "inputinputinput");
       const response = await updateProfileMutation({
         variables: {
           eaProviderId: user?.eaProviderId,
           input,
         },
-      })
+      });
       notificationDispatchers.displayNotification(
         "Success",
         "You have successfully updated your working plan",
         "success"
-      )
-      console.log(response, "response")
+      );
+      console.log(response, "response");
     } catch (err) {
-      console.log(err, "error")
+      console.log(err, "error");
     }
   }
   function addNewBreaksRow() {
@@ -250,13 +250,13 @@ export const Settings = () => {
           day: "monday",
           id: generateUUID(),
         },
-      ]
-    })
+      ];
+    });
   }
   function removeBreak(selectedBreak: any) {
     setWorkingBreaks((prev: any) => {
-      return prev.filter((item: any) => item.id !== selectedBreak.id)
-    })
+      return prev.filter((item: any) => item.id !== selectedBreak.id);
+    });
   }
   function updateWorkingBreaksStart(e: any, selectedBreak: any) {
     setWorkingBreaks((prev: any) => {
@@ -265,14 +265,14 @@ export const Settings = () => {
           return {
             ...item,
             start: e.target.value,
-          }
+          };
         }
-        return item
-      })
-    })
+        return item;
+      });
+    });
   }
   function updateWorkingBreaksEnd(e: any, selectedBreak: any) {
-    console.log(e.target.value, selectedBreak)
+    console.log(e.target.value, selectedBreak);
     // find the working breaks by breakId and update the found one with the new value for the start time
     setWorkingBreaks((prev: any) => {
       return prev.map((item: any) => {
@@ -280,29 +280,29 @@ export const Settings = () => {
           return {
             ...item,
             end: e.target.value,
-          }
+          };
         }
-        return item
-      })
-    })
+        return item;
+      });
+    });
   }
   function saveBreakToWorkingPlan(schedule: any) {
     // find the working plan by day and update the breaks with the new breaks. So if workingBreaks has two breaks for monday and workingPlan has one break for monday then update the workingPlan with the two breaks from workingBreaks
     setWorkingPlan((prev: any) => {
       return prev.map((item: any) => {
-        console.log(item, "item")
-        console.log(schedule, "schedule")
+        console.log(item, "item");
+        console.log(schedule, "schedule");
         //  if the day of the working plan matches the day of the working breaks then add all the breaks to the working plan breaks
         if (item.day === schedule.day) {
           return {
             ...item,
             // push all the breaks from workingBreaks to the workingPlan
             breaks: [...item.breaks].concat(schedule.breaks),
-          }
+          };
         }
-        return item
-      })
-    })
+        return item;
+      });
+    });
   }
   function updateWorkingBreaksDay(e: any, selectedBreak: any) {
     setWorkingBreaks((prev: any) => {
@@ -311,11 +311,11 @@ export const Settings = () => {
           return {
             ...item,
             day: e,
-          }
+          };
         }
-        return item
-      })
-    })
+        return item;
+      });
+    });
   }
   return (
     <PractitionerApplicationLayout title="Settings">
@@ -377,7 +377,7 @@ export const Settings = () => {
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           <UnControlledTextInput
                             handleChange={(e: any) => {
-                              updateWorkingPlanStart(e, schedule)
+                              updateWorkingPlanStart(e, schedule);
                             }}
                             name="start"
                             placeholder=""
@@ -391,7 +391,7 @@ export const Settings = () => {
                             placeholder=""
                             value={schedule.end}
                             handleChange={(e: any) => {
-                              updateWorkingPlanEnd(e, schedule)
+                              updateWorkingPlanEnd(e, schedule);
                             }}
                             type="time"
                           />
@@ -464,7 +464,7 @@ export const Settings = () => {
                     <td className="whitespace-nowrap py-4 pl-4 text-sm font-medium text-gray-900 sm:pl-6">
                       <UnControlledTextInput
                         handleChange={(e: any) => {
-                          updateWorkingBreaksStart(e, breaks)
+                          updateWorkingBreaksStart(e, breaks);
                         }}
                         name="start"
                         placeholder="start"
@@ -475,7 +475,7 @@ export const Settings = () => {
                     <td className="whitespace-nowrap py-4 pl-4 text-sm font-medium text-gray-900 sm:pl-6">
                       <UnControlledTextInput
                         handleChange={(e: any) => {
-                          updateWorkingBreaksEnd(e, breaks)
+                          updateWorkingBreaksEnd(e, breaks);
                         }}
                         name="end"
                         placeholder="end"
@@ -509,5 +509,5 @@ export const Settings = () => {
         </div>
       </div>
     </PractitionerApplicationLayout>
-  )
-}
+  );
+};

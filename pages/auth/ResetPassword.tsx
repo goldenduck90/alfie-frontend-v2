@@ -1,13 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
-import { Wrapper } from "../../components/layouts/Wrapper";
-import { IconInput } from "../../components/inputs/IconInput";
-import { Button } from "../../components/Button";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { IconInput } from "../../src/components/inputs/IconInput";
+import { Button } from "../../src/components/Button";
 import { LockClosedIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
 import { parseError } from "../../utils/parseError";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../src/hooks/useAuth";
 
 const resetPasswordMutation = gql`
   mutation ResetPassword($input: ResetPasswordInput!) {

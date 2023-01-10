@@ -1,30 +1,30 @@
-import React from "react"
-import { Role } from "../../graphql/generated"
-import { useAuth } from "../../hooks/useAuth"
+import React from "react";
+import { Role } from "../../graphql/generated";
+import { useAuth } from "../../hooks/useAuth";
 
-import ChannelAvatar from "@sendbird/uikit-react/ui/ChannelAvatar"
-import { useSendbirdStateContext } from "@sendbird/uikit-react"
-import { useChannelContext } from "@sendbird/uikit-react/Channel/context"
+import ChannelAvatar from "@sendbird/uikit-react/ui/ChannelAvatar";
+import { useSendbirdStateContext } from "@sendbird/uikit-react";
+import { useChannelContext } from "@sendbird/uikit-react/Channel/context";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 export const ChannelHeader = ({
   handleDrawerToggle,
 }: {
-  handleDrawerToggle: () => void
+  handleDrawerToggle: () => void;
 }) => {
-  const { config } = useSendbirdStateContext()
-  const { currentGroupChannel } = useChannelContext()
-  const { user } = useAuth()
+  const { config } = useSendbirdStateContext();
+  const { currentGroupChannel } = useChannelContext();
+  const { user } = useAuth();
 
-  if (!currentGroupChannel) return null
+  if (!currentGroupChannel) return null;
 
   const members = currentGroupChannel.members
     .map((item) => item.nickname)
     // remove undefined
     .filter(Boolean)
-    .join(", ")
+    .join(", ");
 
   return (
     <div className="flex relative">
@@ -48,5 +48,5 @@ export const ChannelHeader = ({
         <p className="font-bold text-lg pl-2">{members}</p>
       </div>
     </div>
-  )
-}
+  );
+};

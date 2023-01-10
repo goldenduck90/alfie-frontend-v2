@@ -1,15 +1,15 @@
 // import * as Yup from "yup"
-import { FormikProvider, useFormik } from "formik"
-import { BackButton } from "../../../components/BackButton"
-import { SliderRange } from "../../../components/inputs/SliderRange"
-import { TextInput } from "../../../components/inputs/TextInput"
-import { convertFormValuesIntoAnswers, parseCachedVal } from "../helpers"
-import { Question } from "../Question"
+import { FormikProvider, useFormik } from "formik";
+import { BackButton } from "../../../src/components/BackButton";
+import { SliderRange } from "../../../src/components/inputs/SliderRange";
+import { TextInput } from "../../../src/components/inputs/TextInput";
+import { convertFormValuesIntoAnswers, parseCachedVal } from "../helpers";
+import { Question } from "../Question";
 
-import { gql, useMutation } from "@apollo/client"
-import { useNavigate } from "react-router"
-import { Button } from "../../../components/Button"
-import { useNotificationDispatch } from "../../../context/NotificationContext"
+import { gql, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router";
+import { Button } from "../../../src/components/Button";
+import { useNotificationDispatch } from "../../../context/NotificationContext";
 
 const completeUserTaskMutation = gql`
   mutation CompleteTask($input: CompleteUserTaskInput!) {
@@ -17,52 +17,52 @@ const completeUserTaskMutation = gql`
       completed
     }
   }
-`
+`;
 export const MpHunger = ({ userTaskId = "" }) => {
-  const notificationDispatchers = useNotificationDispatch()
-  const navigate = useNavigate()
+  const notificationDispatchers = useNotificationDispatch();
+  const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("foodEaten")
-    localStorage.removeItem("hungerLevel1Hour")
-    localStorage.removeItem("hungerLevel30Mins")
-  }
+    localStorage.removeItem("foodEaten");
+    localStorage.removeItem("hungerLevel1Hour");
+    localStorage.removeItem("hungerLevel30Mins");
+  };
   const onCompleted = () => {
-    clearLocalStorage()
+    clearLocalStorage();
     notificationDispatchers.displayNotification(
       "Hunger logged successfully",
       "Your results have been saved",
       "success"
-    )
-    navigate("/dashboard?refetch=true")
-  }
+    );
+    navigate("/dashboard?refetch=true");
+  };
 
-  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation)
+  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
 
   const initialValues = {
     foodEaten: parseCachedVal(localStorage.foodEaten, ""),
     hungerLevel1Hour: parseCachedVal(localStorage.hungerLevel1Hour, ""),
     hungerLevel30Mins: parseCachedVal(localStorage.hungerLevel30Mins, ""),
-  }
+  };
   const onSubmit = async (values = initialValues) => {
-    const answers = convertFormValuesIntoAnswers(values)
-    const input = { _id: userTaskId, answers }
+    const answers = convertFormValuesIntoAnswers(values);
+    const input = { _id: userTaskId, answers };
     console.log("log: values", {
       input,
       values,
       convertedValues: convertFormValuesIntoAnswers(values),
-    })
+    });
 
-    await completeUserTask({ variables: { input } })
-    onCompleted()
-  }
+    await completeUserTask({ variables: { input } });
+    onCompleted();
+  };
   const formikValues = useFormik({
     initialValues,
     onSubmit,
     // TODO: check if any validation is needed now
     // validationSchema: Yup.object().shape({
     // }),
-  })
-  const { handleSubmit, errors } = formikValues
+  });
+  const { handleSubmit, errors } = formikValues;
   return (
     <FormikProvider value={formikValues}>
       <BackButton location="dashboard" />
@@ -118,5 +118,5 @@ export const MpHunger = ({ userTaskId = "" }) => {
         </div>
       </div>
     </FormikProvider>
-  )
-}
+  );
+};

@@ -8,39 +8,39 @@ import {
   faCog,
   faCommentDots,
   faUserGroup,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Dialog, Transition } from "@headlessui/react"
-import { XIcon } from "@heroicons/react/outline"
-import { Fragment, useEffect, useState } from "react"
-import { useLocation } from "react-router"
-import { Link } from "react-router-dom"
-import { useIntercom } from "react-use-intercom"
-import { useAuth } from "../../hooks/useAuth"
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dialog, Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
+import { Fragment, useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
+import { useIntercom } from "react-use-intercom";
+import { useAuth } from "../../hooks/useAuth";
 
 function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ")
+  return classes.filter(Boolean).join(" ");
 }
 
 export const PractitionerApplicationLayout = ({
   children,
   title,
 }: {
-  children: React.ReactNode
-  title: string
+  children: React.ReactNode;
+  title: string;
 }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { user } = useAuth()
-  const location = useLocation()
-  const { boot } = useIntercom()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
+  const location = useLocation();
+  const { boot } = useIntercom();
 
   useEffect(() => {
     boot({
       email: user?.email,
       name: user?.name,
-    })
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   const navigation = [
     {
@@ -78,13 +78,13 @@ export const PractitionerApplicationLayout = ({
       name: "Logout",
       href: "/",
       action: () => {
-        window.location.href = "/"
-        localStorage.clear()
+        window.location.href = "/";
+        localStorage.clear();
       },
       icon: <FontAwesomeIcon icon={faArrowRightFromBracket} className="h-5" />,
       current: false,
     },
-  ]
+  ];
   return (
     <>
       <div>
@@ -285,5 +285,5 @@ export const PractitionerApplicationLayout = ({
         </div>
       </div>
     </>
-  )
-}
+  );
+};

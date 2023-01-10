@@ -4,17 +4,17 @@ import {
   CheckCircleIcon,
   ChevronRightIcon,
   XCircleIcon,
-} from "@heroicons/react/solid"
-import { PatientTasksSkeletonLoader } from "../../components/loading/PatientTasksSkeletonLoader"
+} from "@heroicons/react/solid";
+import { PatientTasksSkeletonLoader } from "../../src/components/loading/PatientTasksSkeletonLoader";
 
 export const PatientTasks = ({
   loading,
   data,
   selectATask,
 }: {
-  loading: boolean
-  data: any
-  selectATask: (task: any) => void
+  loading: boolean;
+  data: any;
+  selectATask: (task: any) => void;
 }) => {
   return (
     <>
@@ -140,5 +140,5 @@ export const PatientTasks = ({
       </ul> */}
       </div>
     </>
-  )
-}
+  );
+};

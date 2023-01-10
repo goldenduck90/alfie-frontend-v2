@@ -1,4 +1,4 @@
-import { OptionInput } from "../components/inputs/SelectInput"
+import { OptionInput } from "../src/components/inputs/SelectInput";
 
 // list of states and provinces in USA
 export const States: OptionInput[] = [
@@ -61,9 +61,9 @@ export const States: OptionInput[] = [
   { label: "West Virginia", value: "WV" },
   { label: "Wisconsin", value: "WI" },
   { label: "Wyoming", value: "WY" },
-]
+];
 
 export const getStateByAbbreviation = (value: string) =>
-  States.find((state) => state.value === value)
+  States.find((state) => state.value === value);
 
-export const ValidStates = ["VA", "MD", "DC", "NY", "NJ", "CA", "FL", "TX"]
+export const ValidStates = ["VA", "MD", "DC", "NY", "NJ", "CA", "FL", "TX"];

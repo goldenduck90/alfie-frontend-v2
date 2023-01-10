@@ -1,11 +1,11 @@
 import { gql, useQuery } from "@apollo/client"
 import * as Sentry from "@sentry/react"
 import { useEffect } from "react"
-import { AppointmentList } from "../../components/appointments/AppointmentList"
-import { ApplicationLayout } from "../../components/layouts/ApplicationLayout"
-import { Loading } from "../../components/Loading"
-import { DashboardTaskList } from "../../components/tasks/DashboardTaskList"
-import { useAuth } from "../../hooks/useAuth"
+import { AppointmentList } from "../../src/components/appointments/AppointmentList"
+import { ApplicationLayout } from "../../src/components/layouts/ApplicationLayout"
+import { Loading } from "../../src/components/Loading"
+import { DashboardTaskList } from "../../src/components/tasks/DashboardTaskList"
+import { useAuth } from "../../src/hooks/useAuth"
 import PractitionerDashboard from "../practitioner/PractitionerDashboard"
 
 export const appointmentsQuery = gql`

@@ -1,8 +1,8 @@
-import { FormikProps, FormikValues } from "formik"
-import * as Yup from "yup"
-import { SelectInput } from "../../../../components/inputs/SelectInput"
-import { parseCachedVal } from "../../helpers"
-import { Question } from "../../Question"
+import { FormikProps, FormikValues } from "formik";
+import * as Yup from "yup";
+import { SelectInput } from "../../../../src/components/inputs/SelectInput";
+import { parseCachedVal } from "../../helpers";
+import { Question } from "../../Question";
 
 export const initialValues = {
   painOrDiscomfort: parseCachedVal(localStorage.painOrDiscomfort, ""),
@@ -19,23 +19,23 @@ export const initialValues = {
   hardStools: parseCachedVal(localStorage.hardStools, ""),
   urgentBowel: parseCachedVal(localStorage.urgentBowel, ""),
   completeBowels: parseCachedVal(localStorage.completeBowels, ""),
-}
+};
 
 type StepProps = (
   values: FormikValues,
   formikBag: FormikProps<FormikValues>,
   currentStepIndex: number
-) => Promise<unknown>
+) => Promise<unknown>;
 
 export const beforePrev: StepProps = (_value, _params, currentStepIndex) => {
-  _params.setErrors({})
-  localStorage.setItem("gsrsStep", String(currentStepIndex - 1))
-  return Promise.resolve()
-}
+  _params.setErrors({});
+  localStorage.setItem("gsrsStep", String(currentStepIndex - 1));
+  return Promise.resolve();
+};
 export const beforeNext: StepProps = (_values, _params, currentStepIndex) => {
-  localStorage.setItem("gsrsStrep", String(currentStepIndex + 1))
-  return Promise.resolve()
-}
+  localStorage.setItem("gsrsStrep", String(currentStepIndex + 1));
+  return Promise.resolve();
+};
 const options = [
   {
     label: "No discomfort at all",
@@ -65,7 +65,7 @@ const options = [
     label: "Very severe discomfort",
     value: "Very severe discomfort",
   },
-]
+];
 
 export const Step1 = () => {
   return (
@@ -81,11 +81,11 @@ export const Step1 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step1.validation = Yup.object().shape({
   painOrDiscomfort: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step2 = () => {
   return (
@@ -100,11 +100,11 @@ export const Step2 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step2.validation = Yup.object().shape({
   heartBurn: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step3 = () => {
   return (
@@ -119,11 +119,11 @@ export const Step3 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step3.validation = Yup.object().shape({
   acidReflux: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step4 = () => {
   return (
@@ -138,11 +138,11 @@ export const Step4 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step4.validation = Yup.object().shape({
   hungerPains: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step5 = () => {
   return (
@@ -157,11 +157,11 @@ export const Step5 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step5.validation = Yup.object().shape({
   nausea: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step6 = () => {
   return (
@@ -176,11 +176,11 @@ export const Step6 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step6.validation = Yup.object().shape({
   rumbling: Yup.string().required("Please select a value"),
-})
+});
 
 export const Step7 = () => {
   return (
@@ -195,11 +195,11 @@ export const Step7 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step7.validation = Yup.object().shape({
   bloated: Yup.string().required("Please select a value"),
-})
+});
 export const Step8 = () => {
   return (
     <Question
@@ -213,11 +213,11 @@ export const Step8 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step8.validation = Yup.object().shape({
   burping: Yup.string().required("Please select a value"),
-})
+});
 export const Step9 = () => {
   return (
     <Question
@@ -231,11 +231,11 @@ export const Step9 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step9.validation = Yup.object().shape({
   gas: Yup.string().required("Please select a value"),
-})
+});
 export const Step10 = () => {
   return (
     <Question
@@ -249,11 +249,11 @@ export const Step10 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step10.validation = Yup.object().shape({
   constipation: Yup.string().required("Please select a value"),
-})
+});
 export const Step11 = () => {
   return (
     <Question
@@ -267,11 +267,11 @@ export const Step11 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step11.validation = Yup.object().shape({
   diarrhea: Yup.string().required("Please select a value"),
-})
+});
 export const Step12 = () => {
   return (
     <Question
@@ -285,11 +285,11 @@ export const Step12 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step12.validation = Yup.object().shape({
   looseStools: Yup.string().required("Please select a value"),
-})
+});
 export const Step13 = () => {
   return (
     <Question
@@ -303,11 +303,11 @@ export const Step13 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step13.validation = Yup.object().shape({
   hardStools: Yup.string().required("Please select a value"),
-})
+});
 export const Step14 = () => {
   return (
     <Question
@@ -321,11 +321,11 @@ export const Step14 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step14.validation = Yup.object().shape({
   urgentBowel: Yup.string().required("Please select a value"),
-})
+});
 export const Step15 = () => {
   return (
     <Question
@@ -339,11 +339,11 @@ export const Step15 = () => {
         />
       }
     />
-  )
-}
+  );
+};
 Step15.validation = Yup.object().shape({
   completeBowels: Yup.string().required("Please select a value"),
-})
+});
 export const list = [
   {
     component: Step1,
@@ -434,4 +434,4 @@ export const list = [
     beforePrev,
     beforeNext,
   },
-]
+];

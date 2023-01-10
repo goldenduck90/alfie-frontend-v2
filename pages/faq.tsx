@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* This example requires Tailwind CSS v2.0+ */
-import { Disclosure } from "@headlessui/react"
-import { ChevronDownIcon } from "@heroicons/react/outline"
-import { ApplicationLayout } from "../components/layouts/ApplicationLayout"
+import { Disclosure } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/outline";
+import { ApplicationLayout } from "../src/components/layouts/ApplicationLayout";
 
 const QuestionOneHTML = () => {
   return (
@@ -24,8 +24,8 @@ const QuestionOneHTML = () => {
         makes sense in your case, and the clinical evidence for it.
       </p>
     </div>
-  )
-}
+  );
+};
 const QuestionTwoHTML = () => {
   return (
     <div>
@@ -40,8 +40,8 @@ const QuestionTwoHTML = () => {
         States.
       </p>
     </div>
-  )
-}
+  );
+};
 const faqs = [
   {
     question:
@@ -53,10 +53,10 @@ const faqs = [
       "I have been having symptoms from taking the medication. What should I do?",
     answer: <QuestionTwoHTML />,
   },
-]
+];
 
 function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ")
+  return classes.filter(Boolean).join(" ");
 }
 
 export const Faq = () => {
@@ -98,5 +98,5 @@ export const Faq = () => {
         </div>
       </div>
     </ApplicationLayout>
-  )
-}
+  );
+};

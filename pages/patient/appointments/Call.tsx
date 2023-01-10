@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useParams } from "react-router"
-import DailyIframe from "@daily-co/daily-js"
-import React from "react"
-import { ApplicationLayout } from "../../../components/layouts/ApplicationLayout"
-import { useAuth } from "../../../hooks/useAuth"
-import { PractitionerApplicationLayout } from "../../../components/layouts/PractitionerApplicationLayout"
+import { useParams } from "react-router";
+import DailyIframe from "@daily-co/daily-js";
+import React from "react";
+import { ApplicationLayout } from "../../../src/components/layouts/ApplicationLayout";
+import { useAuth } from "../../../src/hooks/useAuth";
+import { PractitionerApplicationLayout } from "../../../src/components/layouts/PractitionerApplicationLayout";
 
 export const Call = () => {
-  const user = useAuth()
-  const { id } = useParams()
+  const user = useAuth();
+  const { id } = useParams();
   React.useEffect(() => {
     //   DailyIframe.createFrame()
     const callFrame = DailyIframe.wrap(
       document.getElementById("call-frame") as any
-    )
-    callFrame.join({ url: `https://alfie.daily.co/${id}` })
-    callFrame.setUserName(String(user?.user?.name))
-  }, [id, user])
+    );
+    callFrame.join({ url: `https://alfie.daily.co/${id}` });
+    callFrame.setUserName(String(user?.user?.name));
+  }, [id, user]);
 
   return (
     <>
@@ -39,5 +39,5 @@ export const Call = () => {
         </ApplicationLayout>
       )}
     </>
-  )
-}
+  );
+};

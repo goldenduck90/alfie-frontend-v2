@@ -1,9 +1,9 @@
-import React, { useState } from "react"
-import { Header } from "../../components/Header"
-import { Sidebar } from "../../components/Sidebar"
+import React, { useState } from "react";
+import { Header } from "../Header";
+import { Sidebar } from "../Sidebar";
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [showSidebar, toggleSidebar] = useState(false)
+  const [showSidebar, toggleSidebar] = useState(false);
 
   return (
     <div className="flex">
@@ -14,5 +14,5 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { gql, useLazyQuery, useQuery } from "@apollo/client"
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   FilterIcon,
   PaperClipIcon,
-} from "@heroicons/react/solid"
-import * as Sentry from "@sentry/react"
-import { useEffect, useState } from "react"
+} from "@heroicons/react/solid";
+import * as Sentry from "@sentry/react";
+import { useEffect, useState } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -17,14 +17,17 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts"
-import { UnControlledTextInput } from "../../../components/inputs/UnControlledTextInput"
-import { PractitionerApplicationLayout } from "../../../components/layouts/PractitionerApplicationLayout"
-import { SkeletonLoader } from "../../../components/loading/PatientSkeletonLoader"
+} from "recharts";
+import { UnControlledTextInput } from "../../../src/components/inputs/UnControlledTextInput";
+import { PractitionerApplicationLayout } from "../../../src/components/layouts/PractitionerApplicationLayout";
+import { SkeletonLoader } from "../../../src/components/loading/PatientSkeletonLoader";
 
-import { Patient, PatientWeights } from "../../../components/practitioner/Table"
-import { SlideOver } from "../../../components/SlideOver"
-import { PatientTasks } from "../PatientTasks"
+import {
+  Patient,
+  PatientWeights,
+} from "../../../src/components/practitioner/Table";
+import { SlideOver } from "../../../src/components/SlideOver";
+import { PatientTasks } from "../PatientTasks";
 
 const getAllProviderPatientsQuery = gql`
   query getAllPatientsByProvider {
@@ -50,7 +53,7 @@ const getAllProviderPatientsQuery = gql`
       }
     }
   }
-`
+`;
 const getTasksQuery = gql`
   query getTasksByPatient($userId: String!) {
     getAllUserTasksByUser(userId: $userId) {
@@ -70,37 +73,37 @@ const getTasksQuery = gql`
       completedAt
     }
   }
-`
+`;
 export const Patients = () => {
-  const patients = useQuery(getAllProviderPatientsQuery)
-  const [selectedTask, setSelectedTask] = useState<any>(null)
-  const [taskView, setTaskViewOpen] = useState<boolean>(false)
-  const [showPatientDetails, setShowPatientDetails] = useState<boolean>(false)
-  const [showPatientTasks, setShowPatientTasks] = useState<boolean>(false)
-  const [showPatientMedical, setShowPatientMedical] = useState<boolean>(false)
+  const patients = useQuery(getAllProviderPatientsQuery);
+  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [taskView, setTaskViewOpen] = useState<boolean>(false);
+  const [showPatientDetails, setShowPatientDetails] = useState<boolean>(false);
+  const [showPatientTasks, setShowPatientTasks] = useState<boolean>(false);
+  const [showPatientMedical, setShowPatientMedical] = useState<boolean>(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient>(
     null || patients.data?.getAllPatientsByPractitioner[0]
-  )
+  );
   useEffect(() => {
     if (selectedPatient?._id) {
       const allPatients = patients.data?.getAllPatientsByPractitioner.find(
         (patient: Patient) => patient._id === String(selectedPatient?._id)
-      )
-      setSelectedPatient(allPatients)
+      );
+      setSelectedPatient(allPatients);
     } else {
       // Just set the first patient in the list to the selected patient
-      setSelectedPatient(patients.data?.getAllPatientsByPractitioner[0])
+      setSelectedPatient(patients.data?.getAllPatientsByPractitioner[0]);
     }
-  }, [selectedPatient?._id, patients.data?.getAllPatientsByPractitioner])
+  }, [selectedPatient?._id, patients.data?.getAllPatientsByPractitioner]);
 
   // use lazy query to make the call in a useEffect
-  const [getTasks, { data, loading }] = useLazyQuery(getTasksQuery)
+  const [getTasks, { data, loading }] = useLazyQuery(getTasksQuery);
   useEffect(() => {
-    console.log("selected patient", selectedPatient?._id)
+    console.log("selected patient", selectedPatient?._id);
     if (selectedPatient?._id) {
-      getTasks({ variables: { userId: String(selectedPatient?._id) } })
+      getTasks({ variables: { userId: String(selectedPatient?._id) } });
     }
-  }, [selectedPatient?._id, getTasks])
+  }, [selectedPatient?._id, getTasks]);
 
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
@@ -110,127 +113,127 @@ export const Patients = () => {
           query: "getAllPatientsByProvider",
           component: "Patients",
         },
-      })
+      });
     }
-  }, [patients])
+  }, [patients]);
   const buildDirectory = () => {
-    const directory: any = []
+    const directory: any = [];
     patients.data?.getAllPatientsByPractitioner.forEach((patient: any) => {
-      const name = patient.name.split(" ")
+      const name = patient.name.split(" ");
       // capitalize first letter of name
-      const firstLetter = name[0][0].toUpperCase()
+      const firstLetter = name[0][0].toUpperCase();
       const patientObj = {
         id: patient._id,
         name: patient.name,
-      }
+      };
 
       if (directory[firstLetter]) {
-        directory[firstLetter].push(patientObj)
+        directory[firstLetter].push(patientObj);
       } else {
-        directory[firstLetter] = [patientObj]
+        directory[firstLetter] = [patientObj];
       }
-    })
+    });
     //   put directory in alphabetical order
     const sortedDirectory = Object.keys(directory)
       .sort()
       .reduce((obj: any, key: any) => {
-        obj[key] = directory[key]
-        return obj
-      }, {})
-    return sortedDirectory
-  }
+        obj[key] = directory[key];
+        return obj;
+      }, {});
+    return sortedDirectory;
+  };
 
-  const directory = buildDirectory()
+  const directory = buildDirectory();
 
   const selectedPatientWeight = selectedPatient?.weights.map(
     (weight: PatientWeights) => {
-      const today = new Date()
-      const weightDate = new Date(weight.date)
+      const today = new Date();
+      const weightDate = new Date(weight.date);
       if (today > weightDate) {
-        return weight
+        return weight;
       } else {
-        return null
+        return null;
       }
     }
-  ) as PatientWeights[]
+  ) as PatientWeights[];
   function selectATask(task: any) {
-    setTaskViewOpen(true)
-    setSelectedTask(task)
+    setTaskViewOpen(true);
+    setSelectedTask(task);
   }
   const medicalQuestionnaire = data?.getAllUserTasksByUser.find(
     (task: any) => task.task.name === "Medical Questionnaire"
-  )
-  const medicalQuestionnaireAnswers = medicalQuestionnaire?.answers
+  );
+  const medicalQuestionnaireAnswers = medicalQuestionnaire?.answers;
   function questionnaireNames(name: string) {
     switch (name) {
       case "weightLossAttemptTime":
-        return "Weight Loss Attempt"
+        return "Weight Loss Attempt";
       case "weightManagementMethods":
-        return "Weight Management Methods"
+        return "Weight Management Methods";
       case "conditions":
-        return "Conditions"
+        return "Conditions";
       case "medications":
-        return "Medications"
+        return "Medications";
       case "previousConditions":
-        return "Previous Conditions"
+        return "Previous Conditions";
       case "hasSurgicalHistory":
-        return "Surgical History"
+        return "Surgical History";
       case "usePillPack":
-        return "Pill Pack"
+        return "Pill Pack";
       case "hasRequiredLabs":
-        return "Has Labs"
+        return "Has Labs";
       case "pharmacyLocation":
-        return "Pharmacy Location"
+        return "Pharmacy Location";
       case "labCorpLocation":
-        return "LabCorp Location"
+        return "LabCorp Location";
       default:
-        return name
+        return name;
     }
   }
   const answers = medicalQuestionnaireAnswers?.map((answer: any) => {
     return {
       key: questionnaireNames(answer.key),
       value: answer.value,
-    }
-  })
-  const allTasks = data?.getAllUserTasksByUser
+    };
+  });
+  const allTasks = data?.getAllUserTasksByUser;
   const waistTasks = allTasks?.filter(
     (task: any) => task.task.name === "Waist Measurement"
-  )
+  );
   const weightTasks = allTasks?.filter(
     (task: any) => task.task.name === "Enter your Weight"
-  )
+  );
   const stepTasks = allTasks?.filter(
     (task: any) => task.task.name === "Metabolic Profile: Activity"
-  )
-  console.log(allTasks, "allTasks")
+  );
+  console.log(allTasks, "allTasks");
   const bloodPressureTask = allTasks?.filter(
     (task: any) => task.task.name === "Log your Blood Pressure"
-  )
+  );
   const weightData = weightTasks?.map((task: any) => {
     return {
       date: new Date(task.completedAt).toLocaleDateString(),
       value: task.answers[0]?.value,
-    }
-  })
+    };
+  });
   const waistData = waistTasks?.map((task: any) => {
     return {
       date: new Date(task.completedAt).toLocaleDateString(),
       value: task.answers[0]?.value,
-    }
-  })
+    };
+  });
   const stepData = stepTasks?.map((task: any) => {
     return {
       date: new Date(task.completedAt).toLocaleDateString(),
       value: task.answers[0]?.value,
-    }
-  })
+    };
+  });
   const bloodPressureData = bloodPressureTask?.map((task: any) => {
     return {
       date: new Date(task.completedAt).toLocaleDateString(),
       value: task.answers[0]?.value,
-    }
-  })
+    };
+  });
   return (
     <PractitionerApplicationLayout title="Patients">
       {/* 
@@ -279,7 +282,7 @@ export const Patients = () => {
                       placeholder="Search"
                       // className="w-full"
                       handleChange={(e: any) => {
-                        console.log(e.target.value)
+                        console.log(e.target.value);
                       }}
                     />
                   </div>
@@ -313,7 +316,7 @@ export const Patients = () => {
                             patients.data?.getAllPatientsByPractitioner.find(
                               (patient: Patient) => patient._id === person.id
                             )
-                          )
+                          );
                         }}
                       >
                         <div className="relative flex items-center space-x-3 px-6 py-5 focus-within:ring-2 focus-within:ring-inset focus-within:ringroyalBlue hover:bg-gray-50">
@@ -349,7 +352,7 @@ export const Patients = () => {
           <div className="overflow-hidden bg-white shadow sm:rounded-lg mb-10">
             <div
               onClick={() => {
-                setShowPatientDetails(!showPatientDetails)
+                setShowPatientDetails(!showPatientDetails);
               }}
               className="flex flex-row items-center justify-between cursor-pointer"
             >
@@ -500,7 +503,7 @@ export const Patients = () => {
             <div className="flex flex-col bg-white shadow rounded-lg overflow-hidden">
               <div
                 onClick={() => {
-                  setShowPatientTasks(!showPatientTasks)
+                  setShowPatientTasks(!showPatientTasks);
                 }}
                 className="flex flex-row items-center justify-between cursor-pointer"
               >
@@ -514,7 +517,7 @@ export const Patients = () => {
                 </div>
                 <div
                   onClick={() => {
-                    setShowPatientTasks(!showPatientTasks)
+                    setShowPatientTasks(!showPatientTasks);
                   }}
                   className="pr-4 cursor-pointer"
                 >
@@ -546,7 +549,7 @@ export const Patients = () => {
             <div className="flex flex-col bg-white shadow rounded-lg overflow-hidden">
               <div
                 onClick={() => {
-                  setShowPatientMedical(!showPatientMedical)
+                  setShowPatientMedical(!showPatientMedical);
                 }}
                 className="flex flex-row items-center justify-between cursor-pointer"
               >
@@ -560,7 +563,7 @@ export const Patients = () => {
                 </div>
                 <div
                   onClick={() => {
-                    setShowPatientMedical(!showPatientMedical)
+                    setShowPatientMedical(!showPatientMedical);
                   }}
                   className="pr-4 cursor-pointer"
                 >
@@ -725,5 +728,5 @@ export const Patients = () => {
         </div>
       </div>
     </PractitionerApplicationLayout>
-  )
-}
+  );
+};

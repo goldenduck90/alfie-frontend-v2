@@ -1,5 +1,5 @@
-import React from "react"
-import { SelectInput } from "../../../../components/inputs/SelectInput"
+import React from "react";
+import { SelectInput } from "../../../../src/components/inputs/SelectInput";
 
 export const ProviderSelection = () => {
   return (
@@ -31,5 +31,5 @@ export const ProviderSelection = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,13 +1,13 @@
-import React, { useEffect } from "react"
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Wrapper } from "../../components/layouts/Wrapper"
+import React, { useEffect } from "react";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
 
 const Success = () => {
   // run once
   useEffect(() => {
-    localStorage.clear()
-  }, [])
+    localStorage.clear();
+  }, []);
 
   return (
     <Wrapper>
@@ -57,7 +57,7 @@ const Success = () => {
         </div>
       </div>
     </Wrapper>
-  )
-}
+  );
+};
 
-export default Success
+export default Success;
