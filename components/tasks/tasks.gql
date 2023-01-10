@@ -1,0 +1,16 @@
+query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
+  userTasks(input: { limit: $limit, offset: $offset, completed: $completed }) {
+    total
+    userTasks {
+      _id
+      task {
+        _id
+        name
+        type
+      }
+      dueAt
+      pastDue
+      createdAt
+    }
+  }
+}

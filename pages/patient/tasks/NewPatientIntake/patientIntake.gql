@@ -1,0 +1,13 @@
+# query GetGoogleAutoComplete($input: GoogleAutoCompleteInput!) {
+#   getGoogleAutoComplete(input: $input) {
+#     predictions {
+#       description
+#     }
+#   }
+# }
+
+# mutation CompleteUserTask($input: CreateUserTaskInput!) {
+#   completeUserTask(input: $input) {
+#     message
+#   }
+# }
