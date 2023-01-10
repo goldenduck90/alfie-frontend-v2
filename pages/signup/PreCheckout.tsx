@@ -13,11 +13,11 @@ import * as Yup from "yup";
 import { WeightLossMotivator } from "./steps/WeightLossMotivator";
 import { useFormikWizard } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
-import { ValidStates } from "../../utils/states";
+import { ValidStates } from "../../src/utils/states";
 import { ProgressBar } from "../../src/components/ProgressBar";
 import { Logo } from "../../src/components/Logo";
 import { gql, useMutation } from "@apollo/client";
-import { parseError } from "../../utils/parseError";
+import { parseError } from "../../src/utils/parseError";
 import { Gender } from "../../graphql/generated";
 
 const TOTAL_STEPS = 6;

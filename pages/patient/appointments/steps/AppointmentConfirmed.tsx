@@ -1,21 +1,21 @@
-import { format } from "date-fns"
-import { useField } from "formik"
-import React from "react"
-import { roleToText } from "../../../../utils/roleToText"
+import { format } from "date-fns";
+import { useField } from "formik";
+import React from "react";
+import { roleToText } from "../../../../src/utils/roleToText";
 
 export const AppointmentConfirmed = () => {
   const tz =
     new Date()
       .toLocaleString("en", { timeZoneName: "short" })
       .split(" ")
-      .pop() || "UTC"
-  const [, { value: eaProvider }] = useField("eaProvider")
-  const [, { value: providerType }] = useField("providerType")
-  const [, { value: startTimeInUtc }] = useField("startTimeInUtc")
-  const [, { value: endTimeInUtc }] = useField("endTimeInUtc")
-  const [, { value: notes }] = useField("notes")
-  const [, { value: reschedule }] = useField("reschedule")
-  const provider = roleToText(providerType)
+      .pop() || "UTC";
+  const [, { value: eaProvider }] = useField("eaProvider");
+  const [, { value: providerType }] = useField("providerType");
+  const [, { value: startTimeInUtc }] = useField("startTimeInUtc");
+  const [, { value: endTimeInUtc }] = useField("endTimeInUtc");
+  const [, { value: notes }] = useField("notes");
+  const [, { value: reschedule }] = useField("reschedule");
+  const provider = roleToText(providerType);
 
   return (
     <div>
@@ -72,5 +72,5 @@ export const AppointmentConfirmed = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};

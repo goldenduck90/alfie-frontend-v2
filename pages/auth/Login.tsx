@@ -1,14 +1,14 @@
-import { gql, useMutation } from "@apollo/client"
-import { Wrapper } from "../../src/components/layouts/Wrapper"
-import { IconInput } from "../../src/components/inputs/IconInput"
-import { Checkbox } from "../../src/components/inputs/Checkbox"
-import { Button } from "../../src/components/Button"
-import { LockClosedIcon, UserIcon } from "@heroicons/react/solid"
-import { FormikProvider, useFormik } from "formik"
-import * as Yup from "yup"
-import { Link, useNavigate, useSearchParams } from "react-router-dom"
-import { useAuth } from "../../src/hooks/useAuth"
-import { parseError } from "../../utils/parseError"
+import { gql, useMutation } from "@apollo/client";
+import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { IconInput } from "../../src/components/inputs/IconInput";
+import { Checkbox } from "../../src/components/inputs/Checkbox";
+import { Button } from "../../src/components/Button";
+import { LockClosedIcon, UserIcon } from "@heroicons/react/solid";
+import { FormikProvider, useFormik } from "formik";
+import * as Yup from "yup";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../src/hooks/useAuth";
+import { parseError } from "../../src/utils/parseError";
 
 const loginMutation = gql`
   mutation Login($input: LoginInput!) {
@@ -23,20 +23,20 @@ const loginMutation = gql`
       }
     }
   }
-`
+`;
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
     .email("Please enter a valid email address.")
     .required("Please enter your email address."),
   password: Yup.string().required("Please enter your password."),
-})
+});
 
 const Login = () => {
-  const navigate = useNavigate()
-  const [search] = useSearchParams()
-  const { setSession } = useAuth()
-  const [login] = useMutation(loginMutation)
+  const navigate = useNavigate();
+  const [search] = useSearchParams();
+  const { setSession } = useAuth();
+  const [login] = useMutation(loginMutation);
 
   const loginForm = useFormik({
     initialValues: {
@@ -53,7 +53,7 @@ const Login = () => {
     validateOnChange: false,
     validationSchema: LoginSchema,
     onSubmit: async (values, { setErrors, resetForm }) => {
-      const { email, password, remember } = values
+      const { email, password, remember } = values;
 
       try {
         const { data } = await login({
@@ -64,25 +64,25 @@ const Login = () => {
               remember,
             },
           },
-        })
-        const { token, user } = data.login
-        setSession({ newToken: token, newUser: user })
+        });
+        const { token, user } = data.login;
+        setSession({ newToken: token, newUser: user });
 
-        const path = search.get("redirect") || "/dashboard"
-        resetForm()
-        navigate(path)
+        const path = search.get("redirect") || "/dashboard";
+        resetForm();
+        navigate(path);
       } catch (err) {
-        const msg = parseError(err)
+        const msg = parseError(err);
         setErrors({
           error: msg,
           email: " ",
           password: " ",
-        })
+        });
       }
     },
-  })
+  });
 
-  const { isSubmitting, submitForm, errors } = loginForm
+  const { isSubmitting, submitForm, errors } = loginForm;
 
   return (
     <Wrapper>
@@ -155,8 +155,8 @@ const Login = () => {
         </div>
       </FormikProvider>
     </Wrapper>
-  )
-}
+  );
+};
 
-Login.isAuthorized = false
-export default Login
+Login.isAuthorized = false;
+export default Login;

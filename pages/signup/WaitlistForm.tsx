@@ -7,8 +7,8 @@ import { MailIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { parseError } from "../../utils/parseError";
-import { getStateByAbbreviation } from "../../utils/states";
+import { parseError } from "../../src/utils/parseError";
+import { getStateByAbbreviation } from "../../src/utils/states";
 
 const subscribeEmailMutation = gql`
   mutation SubscribeEmail($input: SubscribeEmailInput!) {

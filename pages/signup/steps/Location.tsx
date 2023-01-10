@@ -1,6 +1,6 @@
 import React from "react";
 import { SelectInput } from "../../../src/components/inputs/SelectInput";
-import { States } from "../../../utils/states";
+import { States } from "../../../src/utils/states";
 
 export const Location = () => {
   return (

@@ -7,7 +7,7 @@ import { UserIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
-import { parseError } from "../../utils/parseError";
+import { parseError } from "../../src/utils/parseError";
 
 const forgotPasswordMutation = gql`
   mutation ForgotPassword($input: ForgotPasswordInput!) {

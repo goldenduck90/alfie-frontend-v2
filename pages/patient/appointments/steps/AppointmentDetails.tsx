@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { useField } from "formik";
 import React from "react";
 import { TextArea } from "../../../../src/components/inputs/TextArea";
-import { roleToText } from "../../../../utils/roleToText";
+import { roleToText } from "../../../../src/utils/roleToText";
 
 export const AppointmentDetails = () => {
   const tz =

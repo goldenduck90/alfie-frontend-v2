@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react"
-import { gql, useMutation } from "@apollo/client"
-import axios from "axios"
-import { FormikProvider, useFormik } from "formik"
-import { useNavigate } from "react-router"
+import { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+import axios from "axios";
+import { FormikProvider, useFormik } from "formik";
+import { useNavigate } from "react-router";
 
-import { Button } from "../../../src/components/Button"
-import { FileBox } from "../../../src/components/inputs/FileBox"
-import { useNotificationDispatch } from "../../../context/NotificationContext"
+import { Button } from "../../../src/components/Button";
+import { FileBox } from "../../../src/components/inputs/FileBox";
+import { useNotificationDispatch } from "../../../context/NotificationContext";
 import {
   FileInput,
   FileType,
   SignedUrlRequest,
   SignedUrlResponse,
-} from "../../../graphql/generated"
-import { useAuth } from "../../../src/hooks/useAuth"
-import { parseError } from "../../../utils/parseError"
-import { s3Key } from "../../../utils/s3Key"
+} from "../../../graphql/generated";
+import { useAuth } from "../../../src/hooks/useAuth";
+import { parseError } from "../../../src/utils/parseError";
+import { s3Key } from "../../../src/utils/s3Key";
 
 type FormFields = {
-  idPhoto: FileList | null
-  insurancePhoto: FileList | null
-}
+  idPhoto: FileList | null;
+  insurancePhoto: FileList | null;
+};
 
 const requestSignedUrlsMutation = gql`
   mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
@@ -30,60 +30,60 @@ const requestSignedUrlsMutation = gql`
       key
     }
   }
-`
+`;
 
 export const IdAndInsuranceUpload = ({
   userTaskId,
 }: {
-  userTaskId: string
+  userTaskId: string;
 }) => {
-  const notificationDispatchers = useNotificationDispatch()
+  const notificationDispatchers = useNotificationDispatch();
 
-  const { user } = useAuth()
-  const navigate = useNavigate()
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const onCompleted = () => {
     notificationDispatchers.displayNotification(
       "ID and Insurance uploaded successfully",
       "Your results have been saved",
       "success"
-    )
-    navigate("/dashboard?refetch=true")
-  }
+    );
+    navigate("/dashboard?refetch=true");
+  };
   const initialValues: FormFields = {
     idPhoto: null,
     insurancePhoto: null,
-  }
+  };
   const completeUploadUserTaskMutation = gql`
     mutation completeUploadFiles($files: [FileInput!]!) {
       completeUpload(files: $files) {
         _id
       }
     }
-  `
+  `;
   const completeUserTaskMutation = gql`
     mutation CompleteTask($input: CompleteUserTaskInput!) {
       completeUserTask(input: $input) {
         completed
       }
     }
-  `
-  const [completeUploadFiles] = useMutation(completeUploadUserTaskMutation)
-  const [requestSignedurls] = useMutation(requestSignedUrlsMutation)
-  const [completeUserTask] = useMutation(completeUserTaskMutation)
+  `;
+  const [completeUploadFiles] = useMutation(completeUploadUserTaskMutation);
+  const [requestSignedurls] = useMutation(requestSignedUrlsMutation);
+  const [completeUserTask] = useMutation(completeUserTaskMutation);
   const iDAndInsuranceForm = useFormik({
     initialValues,
     validateOnChange: false,
     onSubmit: async (values, { setErrors, setStatus }) => {
-      console.log(values, "values")
-      if (!values.idPhoto) return
-      if (!values.insurancePhoto) return
-      if (!user) return
+      console.log(values, "values");
+      if (!values.idPhoto) return;
+      if (!values.insurancePhoto) return;
+      if (!user) return;
 
       const idKey = s3Key({
         fileName: "ID_PHOTO",
         fileType: `${values.idPhoto[0].name.split(".").pop()}`,
         folder: `${user.name}`,
-      })
+      });
 
       const uploadRequests: SignedUrlRequest[] = [
         {
@@ -112,13 +112,13 @@ export const IdAndInsuranceUpload = ({
           ],
           contentType: values.idPhoto[0].type || "",
         },
-      ]
+      ];
 
       const insuranceKey = s3Key({
         fileName: "INSURANCE_CARD",
         fileType: `${values.insurancePhoto[0].name.split(".").pop()}`,
         folder: `${user.name}`,
-      })
+      });
 
       uploadRequests.push({
         key: insuranceKey,
@@ -141,38 +141,38 @@ export const IdAndInsuranceUpload = ({
           },
         ],
         contentType: values.insurancePhoto[0].type || "",
-      })
+      });
 
       try {
         const { data } = await requestSignedurls({
           variables: {
             requests: uploadRequests,
           },
-        })
+        });
 
         const files: FileInput[] = await Promise.all(
           data.requestSignedUrls.map(async (signedUrl: SignedUrlResponse) => {
-            if (!values.idPhoto) return
+            if (!values.idPhoto) return;
 
-            const { key, url } = signedUrl
-            let file
+            const { key, url } = signedUrl;
+            let file;
 
             if (key === idKey) {
-              file = values.idPhoto[0]
+              file = values.idPhoto[0];
             } else if (key === insuranceKey && values.insurancePhoto) {
-              file = values.insurancePhoto[0]
+              file = values.insurancePhoto[0];
             } else {
-              throw new Error("No file found")
+              throw new Error("No file found");
             }
 
             const response = await axios.put(url, file, {
               headers: {
                 "Content-Type": file.type,
               },
-            })
+            });
 
             if (response.status !== 200) {
-              throw new Error("Upload failed")
+              throw new Error("Upload failed");
             }
             return {
               key,
@@ -185,14 +185,14 @@ export const IdAndInsuranceUpload = ({
               }`,
               versionId: response.headers["x-amz-version-id"],
               createdAt: response.headers.date,
-            }
+            };
           })
-        )
+        );
         await completeUploadFiles({
           variables: {
             files,
           },
-        })
+        });
         const input = {
           _id: userTaskId,
           answers: files.map((file) => ({
@@ -200,45 +200,45 @@ export const IdAndInsuranceUpload = ({
             value: file.url,
             type: "FILE",
           })),
-        }
-        await completeUserTask({ variables: { input } })
-        console.log(files)
-        onCompleted()
+        };
+        await completeUserTask({ variables: { input } });
+        console.log(files);
+        onCompleted();
       } catch (error) {
-        console.log(error)
-        const msg = parseError(error)
+        console.log(error);
+        const msg = parseError(error);
 
         if (values.insurancePhoto) {
           setErrors({
             insurancePhoto: " ",
-          })
+          });
         }
 
         setStatus({
           error: msg,
-        })
+        });
         setErrors({
           idPhoto: " ",
-        })
+        });
       }
     },
-  })
+  });
 
-  const { submitForm, isSubmitting } = iDAndInsuranceForm
-  const [selectedImage, setSelectedImage] = useState()
-  const [selectedInsuranceImage, setSelectedInsuranceImage] = useState()
+  const { submitForm, isSubmitting } = iDAndInsuranceForm;
+  const [selectedImage, setSelectedImage] = useState();
+  const [selectedInsuranceImage, setSelectedInsuranceImage] = useState();
 
   // This function will be triggered when the file field change
   const idImageChange = (e: any) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedImage(e.target.files[0])
+      setSelectedImage(e.target.files[0]);
     }
-  }
+  };
   const insuranceImageChange = (e: any) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedInsuranceImage(e.target.files[0])
+      setSelectedInsuranceImage(e.target.files[0]);
     }
-  }
+  };
   return (
     <FormikProvider value={iDAndInsuranceForm}>
       <div className="min-w-full md:min-w-0 max-w-lg">
@@ -302,5 +302,5 @@ export const IdAndInsuranceUpload = ({
         </div>
       </div>
     </FormikProvider>
-  )
-}
+  );
+};

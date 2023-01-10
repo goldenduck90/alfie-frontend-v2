@@ -10,7 +10,7 @@ import { Button } from "../../../src/components/Button";
 import { ApplicationLayout } from "../../../src/components/layouts/ApplicationLayout";
 import { Loading } from "../../../src/components/Loading";
 import { TextLink } from "../../../src/components/TextLink";
-import { parseError } from "../../../utils/parseError";
+import { parseError } from "../../../src/utils/parseError";
 import { AppointmentConfirmed } from "./steps/AppointmentConfirmed";
 import { AppointmentDetails } from "./steps/AppointmentDetails";
 import { AvailabilityWrapper } from "./steps/Availability";

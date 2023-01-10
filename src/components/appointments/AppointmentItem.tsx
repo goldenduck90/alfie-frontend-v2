@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { format, isToday, isTomorrow } from "date-fns";
 import { Role } from "../../graphql/generated";
-import { roleToText } from "../../../utils/roleToText";
+import { roleToText } from "../../utils/roleToText";
 import { Link } from "react-router-dom";
 import { PencilIcon, XIcon } from "@heroicons/react/solid";
 import { gql, useMutation } from "@apollo/client";

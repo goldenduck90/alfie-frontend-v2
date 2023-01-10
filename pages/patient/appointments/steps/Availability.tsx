@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { IconButton } from "../../../../src/components/IconButton";
 import { Spinner } from "../../../../src/components/Spinner";
 import { Role, Timeslot } from "../../../../graphql/generated";
-import { roleToText } from "../../../../utils/roleToText";
+import { roleToText } from "../../../../src/utils/roleToText";
 const allTimeslotsQuery = gql`
   query AllTimeslots($input: AllTimeslotsInput!) {
     allTimeslots(input: $input) {

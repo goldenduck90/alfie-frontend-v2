@@ -8,10 +8,10 @@ import { Checkbox } from "../../src/components/inputs/Checkbox";
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import { SelectInput } from "../../src/components/inputs/SelectInput";
-import { States } from "../../utils/states";
+import { States } from "../../src/utils/states";
 import { TextInput } from "../../src/components/inputs/TextInput";
 import * as Yup from "yup";
-import { parseError } from "../../utils/parseError";
+import { parseError } from "../../src/utils/parseError";
 
 const createOrUpdateStripeSessionMutation = gql`
   mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {

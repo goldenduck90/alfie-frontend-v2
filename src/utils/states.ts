@@ -1,4 +1,4 @@
-import { OptionInput } from "../src/components/inputs/SelectInput";
+import { OptionInput } from "../components/inputs/SelectInput";
 
 // list of states and provinces in USA
 export const States: OptionInput[] = [

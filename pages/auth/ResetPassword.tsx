@@ -6,7 +6,7 @@ import { LockClosedIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
-import { parseError } from "../../utils/parseError";
+import { parseError } from "../../src/utils/parseError";
 import { useAuth } from "../../src/hooks/useAuth";
 
 const resetPasswordMutation = gql`
