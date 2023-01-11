@@ -1,14 +1,14 @@
 import { gql, useMutation } from "@apollo/client";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
-import { IconInput } from "../../src/components/inputs/IconInput";
-import { Checkbox } from "../../src/components/inputs/Checkbox";
-import { Button } from "../../src/components/Button";
+import { Wrapper } from "../src/components/layouts/Wrapper";
+import { IconInput } from "../src/components/inputs/IconInput";
+import { Checkbox } from "../src/components/inputs/Checkbox";
+import { Button } from "../src/components/Button";
 import { LockClosedIcon, UserIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../../src/hooks/useAuth";
-import { parseError } from "../../src/utils/parseError";
+import { useAuth } from "../src/hooks/useAuth";
+import { parseError } from "../src/utils/parseError";
+import Link from "next/link";
 
 const loginMutation = gql`
   mutation Login($input: LoginInput!) {
@@ -33,8 +33,6 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [search] = useSearchParams();
   const { setSession } = useAuth();
   const [login] = useMutation(loginMutation);
 
@@ -46,9 +44,9 @@ const Login = () => {
       remember: false,
     },
     initialErrors: {
-      error: search.get("redirect")
-        ? "Your session has expired. Please login again."
-        : "",
+      // error: search.get("redirect")
+      //   ? "Your session has expired. Please login again."
+      //   : "",
     },
     validateOnChange: false,
     validationSchema: LoginSchema,
@@ -68,9 +66,9 @@ const Login = () => {
         const { token, user } = data.login;
         setSession({ newToken: token, newUser: user });
 
-        const path = search.get("redirect") || "/dashboard";
+        // const path = search.get("redirect") || "/dashboard";
         resetForm();
-        navigate(path);
+        // navigate(path);
       } catch (err) {
         const msg = parseError(err);
         setErrors({
@@ -87,11 +85,7 @@ const Login = () => {
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <img
-          src={require("../../assets/logo.png")}
-          alt="Alfie"
-          className="w-36"
-        />
+        <img src={"/assets/logo.png"} alt="Alfie" className="w-36" />
       </div>
       <FormikProvider value={loginForm}>
         <div className="flex flex-col px-8 sm:px-14 pt-14 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
@@ -134,7 +128,7 @@ const Login = () => {
             />
             <div className="pt-3">
               <Link
-                to="/forgot-password"
+                href="/forgot-password"
                 className="font-mulish text-sm text-indigo-800 hover:text-indigo-600"
               >
                 Forgot Password
@@ -145,7 +139,7 @@ const Login = () => {
             <p className="font-mulish text-center text-sm text-gray-400 pt-6">
               Haven&apos;t signed up yet?{" "}
               <Link
-                to="/signup"
+                href="/signup"
                 className="text-indigo-800 hover:text-indigo-600"
               >
                 Click here to see if you are eligible for Alfie.

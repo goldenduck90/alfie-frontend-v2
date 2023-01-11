@@ -1,13 +1,13 @@
 import React from "react";
 import { gql, useMutation } from "@apollo/client";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
-import { IconInput } from "../../src/components/inputs/IconInput";
-import { Button } from "../../src/components/Button";
+import { Wrapper } from "../src/components/layouts/Wrapper";
+import { IconInput } from "../src/components/inputs/IconInput";
+import { Button } from "../src/components/Button";
 import { UserIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
-import { Link } from "react-router-dom";
 import * as Yup from "yup";
-import { parseError } from "../../src/utils/parseError";
+import { parseError } from "../src/utils/parseError";
+import Link from "next/link";
 
 const forgotPasswordMutation = gql`
   mutation ForgotPassword($input: ForgotPasswordInput!) {
@@ -61,11 +61,7 @@ const ForgotPassword = () => {
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <img
-          src={require("../../assets/logo.png")}
-          alt="Alfie"
-          className="w-36"
-        />
+        <img src={"/assets/logo.png"} alt="Alfie" className="w-36" />
       </div>
       <FormikProvider value={forgotForm}>
         <div className="flex flex-col px-8 sm:px-14 pt-8 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
@@ -102,7 +98,7 @@ const ForgotPassword = () => {
             />
             <div className="pt-3">
               <Link
-                to="/login"
+                href="/login"
                 className="font-mulish text-sm text-indigo-800 hover:text-indigo-600"
               >
                 Login
@@ -113,7 +109,7 @@ const ForgotPassword = () => {
             <p className="font-mulish text-center text-sm text-gray-400 pt-6">
               Haven&apos;t signed up yet?{" "}
               <Link
-                to="/signup"
+                href="/signup"
                 className="text-indigo-800 hover:text-indigo-600"
               >
                 Click here to see if you are eligible for Alfie.

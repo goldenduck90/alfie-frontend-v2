@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import { Button } from "../../../src/components/Button";
 import { Loading } from "../../../src/components/Loading";
 import { TextLink } from "../../../src/components/TextLink";
-import { Role } from "../../../graphql/generated";
+import { Role } from "../../../src/graphql/generated";
 import { parseError } from "../../../src/utils/parseError";
 import { AppointmentConfirmed } from "./steps/AppointmentConfirmed";
 import { AppointmentDetails } from "./steps/AppointmentDetails";
@@ -36,7 +36,11 @@ const createAppointmentMutaton = gql`
   }
 `;
 
-export const CreateAppointment = () => {
+export const CreateAppointment = ({
+  healthCoach,
+}: {
+  healthCoach: boolean;
+}) => {
   const { data, loading, error } = useQuery(userEaQuery);
   const [createAppointment] = useMutation(createAppointmentMutaton);
 

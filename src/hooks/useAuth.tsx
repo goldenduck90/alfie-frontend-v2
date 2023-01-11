@@ -1,32 +1,28 @@
-import React, { createContext, useContext, useMemo, useState } from "react"
-import { User } from "../graphql/generated"
+import React, { createContext, useContext, useMemo, useState } from "react";
+import { User } from "../graphql/generated";
 // add an optional value to the User type of eaProviderId
 
 // type AuthUser = Pick<User, "_id" | "name" | "email" | "role">
-type AuthUser = Pick<User, "_id" | "name" | "email" | "role" | "provider">
+type AuthUser = Pick<User, "_id" | "name" | "email" | "role" | "provider">;
 interface AuthContextType {
-  user?: AuthUser
-  token?: string
+  user?: AuthUser;
+  token?: string;
   setSession: ({
     newUser,
     newToken,
   }: {
-    newUser: User
-    newToken: string
-  }) => void
-  logout: () => void
+    newUser: User;
+    newToken: string;
+  }) => void;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null)
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const userData = localStorage.getItem("user")
-  const [user, setUser] = useState<AuthUser | undefined>(
-    userData && JSON.parse(userData)
-  )
-  const [token, setToken] = useState<string | undefined>(
-    localStorage.getItem("token") || undefined
-  )
+  // const userData = localStorage.getItem("user")
+  const [user, setUser] = useState<AuthUser | undefined>(undefined);
+  const [token, setToken] = useState<string | undefined>(undefined);
 
   const value = useMemo(
     () => ({
@@ -36,31 +32,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         newUser,
         newToken,
       }: {
-        newUser: AuthUser
-        newToken: string
+        newUser: AuthUser;
+        newToken: string;
       }) => {
-        localStorage.setItem("user", JSON.stringify(newUser))
-        localStorage.setItem("token", newToken)
-        setUser(newUser)
-        setToken(newToken)
+        setUser(newUser);
+        setToken(newToken);
       },
       logout: () => {
-        setUser(undefined)
-        setToken(undefined)
-        localStorage.removeItem("user")
-        localStorage.removeItem("token")
+        setUser(undefined);
+        setToken(undefined);
       },
     }),
     [user, token]
-  )
+  );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
 
 export const useAuth = () => {
-  const contextValue = useContext(AuthContext)
+  const contextValue = useContext(AuthContext);
   if (contextValue === null) {
-    throw Error("Context has not been Provided!")
+    throw Error("Context has not been Provided!");
   }
-  return contextValue
-}
+  return contextValue;
+};
