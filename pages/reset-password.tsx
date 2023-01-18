@@ -1,13 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
-import { IconInput } from "../../src/components/inputs/IconInput";
-import { Button } from "../../src/components/Button";
+import { Wrapper } from "../src/components/layouts/Wrapper";
+import { IconInput } from "../src/components/inputs/IconInput";
+import { Button } from "../src/components/Button";
 import { LockClosedIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
-import { Link, useParams, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
-import { parseError } from "../../src/utils/parseError";
-import { useAuth } from "../../src/hooks/useAuth";
+import { parseError } from "../src/utils/parseError";
+import { useAuth } from "../src/hooks/useAuth";
+import Link from 'next/link'
 
 const resetPasswordMutation = gql`
   mutation ResetPassword($input: ResetPasswordInput!) {
@@ -37,10 +37,10 @@ const resetPasswordSchema = Yup.object().shape({
 });
 
 const ResetPassword = ({ register = false }: { register?: boolean }) => {
-  const { token } = useParams();
+  // const { token } = useParams();
   const { setSession } = useAuth();
   const [resetPassword] = useMutation(resetPasswordMutation);
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
 
   const provider = searchParams.get("provider");
 
@@ -136,7 +136,7 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
             />
             <div className="pt-3">
               <Link
-                to="/login"
+                href="/login"
                 className="font-mulish text-sm text-indigo-800 hover:text-indigo-600"
               >
                 Login
@@ -147,7 +147,7 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
             <p className="font-mulish text-center text-sm text-gray-400 pt-6">
               Haven&apos;t signed up yet?{" "}
               <Link
-                to="/signup"
+                href="/signup"
                 className="text-indigo-800 hover:text-indigo-600"
               >
                 Click here to see if you are eligible for Alfie.

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-empty-function */
-/* This example requires Tailwind CSS v2.0+ */
 import {
   faArrowRightFromBracket,
   faCalendarDays,
@@ -13,10 +10,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { Fragment, useEffect, useState } from "react";
-import { useLocation } from "react-router";
-import { Link } from "react-router-dom";
 import { useIntercom } from "react-use-intercom";
 import { useAuth } from "../../hooks/useAuth";
+import Link from "next/link";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -31,7 +27,6 @@ export const PractitionerApplicationLayout = ({
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuth();
-  const location = useLocation();
   const { boot } = useIntercom();
 
   useEffect(() => {
@@ -142,9 +137,9 @@ export const PractitionerApplicationLayout = ({
                   </Transition.Child>
                   <div className="h-0 flex-1 overflow-y-auto pt-5 pb-4">
                     <div className="flex flex-shrink-0 items-center px-4">
-                      <Link to="/dashboard">
+                      <Link href="/dashboard">
                         <img
-                          src={require("../../assets/logo-white.png")}
+                          src="/assets/logo-white.png"
                           className="h-8 lg:h-10"
                           alt="Alfie"
                         />
@@ -155,7 +150,7 @@ export const PractitionerApplicationLayout = ({
                         <Link
                           onClick={item.action ? item.action : () => {}}
                           key={item.name}
-                          to={item.href}
+                          href={item.href}
                           className={classNames(
                             item.current
                               ? "bg-indigo-700 text-white"
@@ -200,7 +195,7 @@ export const PractitionerApplicationLayout = ({
           <div className="flex min-h-0 flex-1 flex-col bg-royalBlue">
             <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
               <div className="flex flex-shrink-0 items-center px-4">
-                <Link to="/dashboard">
+                <Link href="/dashboard">
                   <img
                     src={require("../../assets/logo-white.png")}
                     className="h-8 lg:h-10"
@@ -213,7 +208,7 @@ export const PractitionerApplicationLayout = ({
                   <Link
                     onClick={item.action ? item.action : () => {}}
                     key={item.name}
-                    to={item.href}
+                    href={item.href}
                     className={classNames(
                       item.current
                         ? "bg-indigo-700 text-white"

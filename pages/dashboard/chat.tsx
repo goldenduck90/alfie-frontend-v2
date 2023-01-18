@@ -1,11 +1,12 @@
 import React from "react";
-import { ApplicationLayout } from "../src/components/layouts/ApplicationLayout";
-import "@sendbird/uikit-react/dist/index.css";
-import { useAuth } from "../src/hooks/useAuth";
-import { ChatPage } from "../src/components/chat";
+import { ApplicationLayout } from "../../src/components/layouts/ApplicationLayout";
 
-export default function Chat() {
-  const { user } = useAuth();
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { ChatPage } from "../../src/components/chat";
+import "@sendbird/uikit-react/dist/index.css";
+
+function Chat() {
+  const { user } = useCurrentUserStore();
   const SendBirdId = process.env.REACT_APP_SENDBIRD_APP_ID;
 
   const sendBirdParams =
@@ -19,3 +20,7 @@ export default function Chat() {
 Chat.getLayout = (page: React.ReactNode) => (
   <ApplicationLayout title="Chat">{page}</ApplicationLayout>
 );
+
+Chat.isAuthRequired = true;
+
+export default Chat;

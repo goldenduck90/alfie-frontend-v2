@@ -1,6 +1,6 @@
 import React from "react";
 import { Role } from "../../graphql/generated";
-import { useAuth } from "../../hooks/useAuth";
+import { useCheckRole } from "@src/hooks/useCheckRole";
 
 import ChannelAvatar from "@sendbird/uikit-react/ui/ChannelAvatar";
 import { useSendbirdStateContext } from "@sendbird/uikit-react";
@@ -16,7 +16,8 @@ export const ChannelHeader = ({
 }) => {
   const { config } = useSendbirdStateContext();
   const { currentGroupChannel } = useChannelContext();
-  const { user } = useAuth();
+
+  const isPatientRole = useCheckRole([Role.Patient]);
 
   if (!currentGroupChannel) return null;
 
@@ -30,7 +31,7 @@ export const ChannelHeader = ({
     <div className="flex relative">
       <button
         className={`absolute left-3 top-7 ${
-          user?.role === Role.Patient ? "hidden" : "block lg:hidden"
+          isPatientRole ? "hidden" : "block lg:hidden"
         }`}
         onClick={handleDrawerToggle}
       >

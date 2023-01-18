@@ -1,5 +1,5 @@
-import React from "react"
-import { useField } from "formik"
+import React from "react";
+import { useField } from "formik";
 
 export const IconInput = ({
   name,
@@ -8,13 +8,13 @@ export const IconInput = ({
   disabled = false,
   icon,
 }: {
-  name: string
-  placeholder: string
-  type?: "text" | "password" | "email" | "date" | "number" | "tel"
-  disabled?: boolean
-  icon: JSX.Element
+  name: string;
+  placeholder: string;
+  type?: "text" | "password" | "email" | "date" | "number" | "tel";
+  disabled?: boolean;
+  icon: JSX.Element;
 }) => {
-  const [, { value, error }, { setValue, setError }] = useField(name)
+  const [, { value, error }, { setValue, setError }] = useField(name);
 
   return (
     <>
@@ -28,7 +28,7 @@ export const IconInput = ({
         </span>
         <input
           type={type}
-          className="font-mulish w-full py-2 rounded-sm pl-10 appearance-none focus:outline-none placeholder-gray-400 bg-white"
+          className="font-mulish w-full py-2 rounded-sm pl-10 appearance-none focus:outline-none placeholder-gray-400 bg-white text-black"
           placeholder={placeholder}
           value={value}
           onFocus={() => setError(undefined)}
@@ -38,5 +38,5 @@ export const IconInput = ({
       </div>
       {error && <span className="text-red-500 text-sm">{error}</span>}
     </>
-  )
-}
+  );
+};

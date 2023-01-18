@@ -1,5 +1,3 @@
-/* eslint-disable no-empty-function */
-/* This example requires Tailwind CSS v2.0+ */
 import {
   faArrowRightFromBracket,
   faCalendarDays,
@@ -14,15 +12,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
-import { useLocation } from "react-router";
-import { Link } from "react-router-dom";
 import { useIntercom } from "react-use-intercom";
-import { useAuth } from "../../hooks/useAuth";
-
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export const ApplicationLayout = ({
   children,
@@ -32,36 +25,34 @@ export const ApplicationLayout = ({
   title: string;
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user } = useAuth();
-  const location = useLocation();
-  const { boot } = useIntercom();
+  const { user } = useCurrentUserStore();
+  // const { boot } = useIntercom();
 
-  useEffect(() => {
-    boot({
-      email: user?.email,
-      name: user?.name,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   boot({
+  //     email: user?.email,
+  //     name: user?.name,
+  //   });
+  // }, []);
 
   const navigation = [
     {
       name: "Dashboard",
       href: "/dashboard",
       icon: <FontAwesomeIcon className="h-5" icon={faChartArea} />,
-      current: location.pathname === "/dashboard" ? true : false,
+      // current: location.pathname === "/dashboard" ? true : false,
     },
     {
       name: "Tasks",
       href: "/tasks",
       icon: <FontAwesomeIcon className="h-5" icon={faTasks} />,
-      current: location.pathname === "/tasks" ? true : false,
+      // current: location.pathname === "/tasks" ? true : false,
     },
     {
       name: "Appointments",
       href: "/appointments",
       icon: <FontAwesomeIcon className="h-5" icon={faCalendarDays} />,
-      current: location.pathname === "/appointments" ? true : false,
+      // current: location.pathname === "/appointments" ? true : false,
     },
     // {
     //   name: "Medications",
@@ -71,26 +62,27 @@ export const ApplicationLayout = ({
     // },
     {
       name: "Billing",
-      href: "/billing",
+      href: "/dashboard/billing",
       icon: <FontAwesomeIcon className="h-5" icon={faCreditCard} />,
-      current: location.pathname === "/billing" ? true : false,
+      // current: location.pathname === "/billing" ? true : false,
     },
     {
       name: "Chat",
-      href: "/chat",
+      href: "/dashboard/chat",
       icon: <FontAwesomeIcon className="h-5" icon={faCommentDots} />,
-      current: location.pathname === "/chat" ? true : false,
+      // current: location.pathname === "/chat" ? true : false,
     },
     {
       name: "FAQ",
       href: "/faq",
       icon: <FontAwesomeIcon className="h-5" icon={faCircleQuestion} />,
-      current: location.pathname === "/faq" ? true : false,
+      // current: location.pathname === "/faq" ? true : false,
     },
     {
       name: "Logout",
       href: "/",
       action: () => {
+        // so bad!
         window.location.href = "/";
         localStorage.clear();
       },
@@ -155,9 +147,9 @@ export const ApplicationLayout = ({
                   </Transition.Child>
                   <div className="h-0 flex-1 overflow-y-auto pt-5 pb-4">
                     <div className="flex flex-shrink-0 items-center px-4">
-                      <Link to="/dashboard">
+                      <Link href="/dashboard">
                         <img
-                          src={require("../../assets/logo-white.png")}
+                          src="/assets/logo-white.png"
                           className="h-8 lg:h-10"
                           alt="Alfie"
                         />
@@ -166,15 +158,16 @@ export const ApplicationLayout = ({
                     <nav className="mt-5 space-y-1 px-2">
                       {navigation.map((item) => (
                         <Link
-                          onClick={item.action ? item.action : () => {}}
+                          // onClick={item.action ? item.action : () => {}}
                           key={item.name}
-                          to={item.href}
-                          className={classNames(
-                            item.current
-                              ? "bg-indigo-700 text-white"
-                              : "text-white hover:bg-indigo-700 hover:bg-opacity-75",
+                          href={item.href}
+                          className={
                             "group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                          )}
+                            // classNames(
+                            //   item.current
+                            //     ? "bg-indigo-700 text-white"
+                            //     : "text-white hover:bg-indigo-700 hover:bg-opacity-75",
+                          }
                         >
                           <div>{item.icon}</div>
                           <div className="mx-4 font-medium text-lg">
@@ -213,9 +206,9 @@ export const ApplicationLayout = ({
           <div className="flex min-h-0 flex-1 flex-col bg-royalBlue">
             <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
               <div className="flex flex-shrink-0 items-center px-4">
-                <Link to="/dashboard">
+                <Link href="/dashboard">
                   <img
-                    src={require("../../assets/logo-white.png")}
+                    src="assets/logo-white.png"
                     className="h-8 lg:h-10"
                     alt="Alfie"
                   />
@@ -226,13 +219,13 @@ export const ApplicationLayout = ({
                   <Link
                     onClick={item.action ? item.action : () => {}}
                     key={item.name}
-                    to={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-indigo-700 text-white"
-                        : "text-white hover:bg-indigo-700 hover:bg-opacity-75",
-                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                    )}
+                    href={item.href}
+                    className={
+                      `group flex items-center px-2 py-2 text-sm font-medium rounded-md`
+                      //   {item.current
+                      //     ? "bg-indigo-700 text-white"
+                      //     : "text-white hover:bg-indigo-700 hover:bg-opacity-75",}
+                    }
                   >
                     <div>{item.icon}</div>
                     <div className="mx-4 font-medium text-lg">{item.name}</div>

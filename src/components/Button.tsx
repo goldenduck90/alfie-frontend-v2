@@ -1,5 +1,5 @@
-import React from "react"
-import { Spinner } from "./Spinner"
+import React from "react";
+import { Spinner } from "./Spinner";
 
 export const Button = ({
   title,
@@ -15,19 +15,19 @@ export const Button = ({
   bold = false,
   customClass = "",
 }: {
-  title: string
-  scheme?: "primary" | "secondary" | "no-border"
-  fullWidth?: boolean
-  onPress: () => void
-  buttonLeft?: React.ReactNode
-  buttonRight?: React.ReactNode
-  loading?: boolean
-  disabled?: boolean
-  spinnerSize?: number
-  spinnerMr?: number
-  spinnerMl?: number
-  bold?: boolean
-  customClass?: string
+  title: string;
+  scheme?: "primary" | "secondary" | "no-border";
+  fullWidth?: boolean;
+  onPress: () => void;
+  buttonLeft?: React.ReactNode;
+  buttonRight?: React.ReactNode;
+  loading?: boolean;
+  disabled?: boolean;
+  spinnerSize?: number;
+  spinnerMr?: number;
+  spinnerMl?: number;
+  bold?: boolean;
+  customClass?: string;
 }) => (
   <button
     className={`
@@ -71,4 +71,4 @@ export const Button = ({
       />
     )}
   </button>
-)
+);

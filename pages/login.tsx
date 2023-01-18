@@ -9,6 +9,9 @@ import * as Yup from "yup";
 import { useAuth } from "../src/hooks/useAuth";
 import { parseError } from "../src/utils/parseError";
 import Link from "next/link";
+import { useLoginMutation } from "../src/hooks/useLoginMutation";
+import { useRouter } from "next/router";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 
 const loginMutation = gql`
   mutation Login($input: LoginInput!) {
@@ -33,9 +36,10 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = () => {
-  const { setSession } = useAuth();
+  const { setUser } = useCurrentUserStore();
   const [login] = useMutation(loginMutation);
-
+  const { mutateAsync } = useLoginMutation();
+  const router = useRouter();
   const loginForm = useFormik({
     initialValues: {
       error: "",
@@ -54,6 +58,8 @@ const Login = () => {
       const { email, password, remember } = values;
 
       try {
+        await mutateAsync({ email, password });
+
         const { data } = await login({
           variables: {
             input: {
@@ -64,11 +70,11 @@ const Login = () => {
           },
         });
         const { token, user } = data.login;
-        setSession({ newToken: token, newUser: user });
 
-        // const path = search.get("redirect") || "/dashboard";
+        // setSession({ newToken: token, newUser: user });
+        setUser(user);
         resetForm();
-        // navigate(path);
+        router.replace("/dashboard");
       } catch (err) {
         const msg = parseError(err);
         setErrors({
@@ -88,7 +94,7 @@ const Login = () => {
         <img src={"/assets/logo.png"} alt="Alfie" className="w-36" />
       </div>
       <FormikProvider value={loginForm}>
-        <div className="flex flex-col px-8 sm:px-14 pt-14 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
+        <div className="flex flex-col px-14 pt-14 pb-10 bg-white rounded-md gap-5">
           {errors.error && (
             <div className="text-red-500 text-sm text-center">
               {errors.error}
@@ -136,7 +142,7 @@ const Login = () => {
             </div>
           </div>
           <div className="flex flex-col border-t border-gray-200">
-            <p className="font-mulish text-center text-sm text-gray-400 pt-6">
+            <p className="text-center text-sm text-gray-400 pt-6">
               Haven&apos;t signed up yet?{" "}
               <Link
                 href="/signup"

@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import React, { useMemo, useState } from "react";
 import { Channel, useSendbirdStateContext } from "@sendbird/uikit-react";
-import { useAuth } from "../../hooks/useAuth";
 import { Role } from "../../graphql/generated";
 import ChannelPreview from "@sendbird/uikit-react/ChannelList/components/ChannelPreview";
 import ChannelListUI from "@sendbird/uikit-react/ChannelList";
@@ -9,9 +7,10 @@ import { ChannelProvider } from "@sendbird/uikit-react/Channel/context";
 import { ChannelHeader } from "./ChannelHeader";
 import { ChannelListHeader } from "./ChannelListHeader";
 import { useNotificationDispatch } from "../../context/NotificationContext";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 
 export const Chat = () => {
-  const { user } = useAuth();
+  const { user } = useCurrentUserStore();
   const [currentChannelUrl, setCurrentChannelUrl] = useState<string>("");
   const [toggleChannelDrawer, setToggleChannelDrawer] =
     useState<boolean>(false);
@@ -55,7 +54,7 @@ export const Chat = () => {
   return (
     <div className="flex relative">
       <div
-        className={`h-[83vh] lg:relative absolute z-10 bg-white ${
+        className={`h-[83vh] relative z-10 bg-white ${
           user?.role === Role.Patient ? "hidden" : ""
         }`}
       >
