@@ -6,7 +6,6 @@ import { Button } from "../src/components/Button";
 import { LockClosedIcon, UserIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../src/hooks/useAuth";
 import { parseError } from "../src/utils/parseError";
 import Link from "next/link";
 import { useLoginMutation } from "../src/hooks/useLoginMutation";
@@ -43,8 +42,12 @@ const Login = () => {
   const loginForm = useFormik({
     initialValues: {
       error: "",
-      email: "",
-      password: "",
+      email:
+        //  "robert@joinalfie.com",
+        "dpgozza@gmail.com",
+      password:
+        //  "Letmein1!",
+        "Password1!",
       remember: false,
     },
     initialErrors: {
@@ -94,7 +97,7 @@ const Login = () => {
         <img src={"/assets/logo.png"} alt="Alfie" className="w-36" />
       </div>
       <FormikProvider value={loginForm}>
-        <div className="flex flex-col px-14 pt-14 pb-10 bg-white rounded-md gap-5">
+        <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-md gap-5">
           {errors.error && (
             <div className="text-red-500 text-sm text-center">
               {errors.error}

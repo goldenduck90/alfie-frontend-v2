@@ -46,6 +46,7 @@ export default withIronSessionApiRoute(
     if (response.ok) {
       const { data } = await response.json();
       (req.session as any).token = data.login.token;
+      (req.session as any).user = data.login.user;
 
       await req.session.save();
       return res.json({ user: data.login.user });
@@ -55,6 +56,7 @@ export default withIronSessionApiRoute(
   },
   {
     cookieName: "Alfie:sessionCookie",
+    //Todo: password should be environment driven
     password: "complex_password_at_least_32_characters_long",
 
     cookieOptions: {

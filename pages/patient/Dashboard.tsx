@@ -1,12 +1,12 @@
-import { gql, useQuery } from "@apollo/client"
-import * as Sentry from "@sentry/react"
-import { useEffect } from "react"
-import { AppointmentList } from "../../src/components/appointments/AppointmentList"
-import { ApplicationLayout } from "../../src/components/layouts/ApplicationLayout"
-import { Loading } from "../../src/components/Loading"
-import { DashboardTaskList } from "../../src/components/tasks/DashboardTaskList"
-import { useAuth } from "../../src/hooks/useAuth"
-import PractitionerDashboard from "../practitioner/PractitionerDashboard"
+import { gql, useQuery } from "@apollo/client";
+import * as Sentry from "@sentry/react";
+import { useEffect } from "react";
+import { AppointmentList } from "../../src/components/appointments/AppointmentList";
+
+import { Loading } from "../../src/components/Loading";
+import { DashboardTaskList } from "../../src/components/tasks/DashboardTaskList";
+import { useAuth } from "../../src/hooks/useAuth";
+import PractitionerDashboard from "../practitioner/PractitionerDashboard";
 
 export const appointmentsQuery = gql`
   query AppointmentsQuery($limit: Float) {
@@ -20,14 +20,14 @@ export const appointmentsQuery = gql`
       }
     }
   }
-`
+`;
 
 const PatientDashboard = () => {
   const { data, loading, error } = useQuery(appointmentsQuery, {
     variables: {
       limit: 20,
     },
-  })
+  });
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -36,25 +36,23 @@ const PatientDashboard = () => {
           query: "AppointmentsQuery",
           component: "PatientDashboard",
         },
-      })
+      });
     }
-  }, [error])
+  }, [error]);
   return (
-    <ApplicationLayout title="Dashboard">
-      <div className="flex md:flex-row sm:flex-col">
-        <DashboardTaskList />
-        {loading && <Loading />}
-        {error && <div>{error.message}</div>}
-        {data?.appointments.length > 0 && (
-          <AppointmentList appointments={data.appointments} />
-        )}
-      </div>
-    </ApplicationLayout>
-  )
-}
+    <div className="flex md:flex-row sm:flex-col bg-white p-6 rounded-lg">
+      <DashboardTaskList />
+      {loading && <Loading />}
+      {error && <div>{error.message}</div>}
+      {data?.appointments.length > 0 && (
+        <AppointmentList appointments={data.appointments} />
+      )}
+    </div>
+  );
+};
 
 const Dashboard = () => {
-  const { user } = useAuth()
+  const { user } = useAuth();
   Sentry.setUser(
     user
       ? {
@@ -62,12 +60,12 @@ const Dashboard = () => {
           email: user.email,
         }
       : null
-  )
+  );
   if (user?.role === "Doctor" || user?.role === "Practitioner") {
-    return <PractitionerDashboard />
+    return <PractitionerDashboard />;
   } else {
-    return <PatientDashboard />
+    return <PatientDashboard />;
   }
-}
+};
 
-export default Dashboard
+export default Dashboard;

@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
 import React, { useEffect, useState } from "react";
 import { WorkingPlan } from "../../../@types/easyAppointmentTypes";
 import { Button } from "../../../src/components/Button";
 import UnControlledDropDown from "../../../src/components/inputs/UnControlledDropDown";
 import { UnControlledTextInput } from "../../../src/components/inputs/UnControlledTextInput";
-import { PractitionerApplicationLayout } from "../../../src/components/layouts/PractitionerApplicationLayout";
-import { useNotificationDispatch } from "../../../context/NotificationContext";
+import { Layout } from "../../../src/components/layouts/Layout";
+// import { useNotificationDispatch } from "../../../context/NotificationContext";
 function generateUUID() {
   let d = new Date().getTime(); //Timestamp
   let d2 =
@@ -30,9 +29,9 @@ function generateUUID() {
     return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
   });
 }
-export const Settings = () => {
+function Settings() {
   const userData = localStorage.getItem("user");
-  const notificationDispatchers = useNotificationDispatch();
+  const notificationDispatchers = useNotificationStore();
   const [user, setUser] = useState<any>(userData && JSON.parse(userData));
   const [workingPlan, setWorkingPlan] = useState<any>([]);
   const [workingBreaks, setWorkingBreaks] = useState<any>([]);
@@ -223,18 +222,20 @@ export const Settings = () => {
           }, {}),
         },
       };
-      console.log(input, "inputinputinput");
+
       const response = await updateProfileMutation({
         variables: {
           eaProviderId: user?.eaProviderId,
           input,
         },
       });
-      notificationDispatchers.displayNotification(
-        "Success",
-        "You have successfully updated your working plan",
-        "success"
-      );
+      notificationDispatchers.addNotification({
+        type: "success",
+        title: "Success",
+        description: "You have successfully updated your working plan",
+        displayNotification: true,
+        id: "a",
+      });
       console.log(response, "response");
     } catch (err) {
       console.log(err, "error");
@@ -318,7 +319,7 @@ export const Settings = () => {
     });
   }
   return (
-    <PractitionerApplicationLayout title="Settings">
+    <>
       <div className="overflow-visible p-8">
         <div className="flex flex-row justify-between items-center">
           <div>
@@ -508,6 +509,9 @@ export const Settings = () => {
           </div>
         </div>
       </div>
-    </PractitionerApplicationLayout>
+    </>
   );
-};
+}
+Settings.getLayout = (page: any) => <Layout>{page}</Layout>;
+
+export default Settings;

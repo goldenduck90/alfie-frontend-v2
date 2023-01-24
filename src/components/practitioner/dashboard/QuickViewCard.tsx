@@ -1,13 +1,13 @@
-import { CalendarIcon } from "@heroicons/react/solid"
-import { UsersIcon } from "@heroicons/react/outline"
-import { Link } from "react-router-dom"
+import { CalendarIcon } from "@heroicons/react/solid";
+import { UsersIcon } from "@heroicons/react/outline";
+import Link from "next/link";
 
 export const QuickViewCard = ({
   totalPatients,
   totalAppointments,
 }: {
-  totalPatients: number
-  totalAppointments: number
+  totalPatients: number;
+  totalAppointments: number;
 }) => {
   const stats = [
     {
@@ -24,7 +24,7 @@ export const QuickViewCard = ({
       icon: CalendarIcon,
       link: "/appointments",
     },
-  ]
+  ];
   return (
     <div>
       <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -48,7 +48,7 @@ export const QuickViewCard = ({
               <div className="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
                 <div className="text-sm">
                   <Link
-                    to={item.link}
+                    href={item.link}
                     className="font-medium text-royalBlue hover:text-royalBlue"
                   >
                     View all<span className="sr-only"> {item.name} stats</span>
@@ -60,5 +60,5 @@ export const QuickViewCard = ({
         ))}
       </dl>
     </div>
-  )
-}
+  );
+};

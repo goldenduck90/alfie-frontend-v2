@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import {
   ChevronDownIcon,
@@ -19,7 +17,7 @@ import {
   YAxis,
 } from "recharts";
 import { UnControlledTextInput } from "../../../src/components/inputs/UnControlledTextInput";
-import { PractitionerApplicationLayout } from "../../../src/components/layouts/PractitionerApplicationLayout";
+import { Layout } from "@src/components/layouts/Layout";
 import { SkeletonLoader } from "../../../src/components/loading/PatientSkeletonLoader";
 
 import {
@@ -27,7 +25,7 @@ import {
   PatientWeights,
 } from "../../../src/components/practitioner/Table";
 import { SlideOver } from "../../../src/components/SlideOver";
-import { PatientTasks } from "../PatientTasks";
+import { PatientTasks } from "../../practitioner/PatientTasks";
 
 const getAllProviderPatientsQuery = gql`
   query getAllPatientsByProvider {
@@ -74,7 +72,7 @@ const getTasksQuery = gql`
     }
   }
 `;
-export const Patients = () => {
+const Patients = () => {
   const patients = useQuery(getAllProviderPatientsQuery);
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [taskView, setTaskViewOpen] = useState<boolean>(false);
@@ -231,11 +229,11 @@ export const Patients = () => {
   const bloodPressureData = bloodPressureTask?.map((task: any) => {
     return {
       date: new Date(task.completedAt).toLocaleDateString(),
-      value: task.answers[0]?.value,
+      value: task.answers?.[0]?.value,
     };
   });
   return (
-    <PractitionerApplicationLayout title="Patients">
+    <>
       {/* 
           Build two columns nav on the left and patient info on the right
            */}
@@ -246,7 +244,7 @@ export const Patients = () => {
         setIsOpen={() => setTaskViewOpen(!taskView)}
       />
       <div className="flex flex-row ">
-        <div className="flex flex-col w-1/3 pr-24">
+        <div className="flex flex-col w-1/3 pr-10">
           <div className="flex flex-col">
             <nav
               className="           
@@ -509,7 +507,7 @@ export const Patients = () => {
               >
                 <div className="px-4 py-5 sm:px-6">
                   <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Patient's Tasks
+                    Patient&apos;s Tasks
                   </h3>
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">
                     All patient tasks are listed here.
@@ -727,6 +725,10 @@ export const Patients = () => {
           </div>
         </div>
       </div>
-    </PractitionerApplicationLayout>
+    </>
   );
 };
+
+Patients.getLayout = (page: any) => <Layout title="Patients">{page}</Layout>;
+
+export default Patients;

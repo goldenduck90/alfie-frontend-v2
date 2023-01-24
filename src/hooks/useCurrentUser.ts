@@ -2,7 +2,7 @@ import { create } from "zustand";
 import type { User } from "../graphql/generated";
 
 interface CurrentUserStoreType {
-  user: User | null;
+  user: User | null | undefined;
   setUser: (user: User) => void;
   clear: () => void;
 }

@@ -2,7 +2,7 @@ import "../styles/globals.css";
 import React from "react";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
-import { AuthProvider } from "../src/hooks/useAuth";
+import { SessionProvider } from "../src/context/SessionContext";
 import { IntercomProvider } from "react-use-intercom";
 import { client } from "../src/graphql";
 import { ShowNotification } from "../src/components/ShowNotifications";
@@ -25,15 +25,14 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     <>
       <QueryClientProvider client={queryClient}>
         <ApolloProvider client={client}>
-          <AuthProvider //isAuthRequired={isAuthRequired}
-          >
+          <SessionProvider authRequired={isAuthRequired}>
             <IntercomProvider
               appId={process.env.REACT_APP_INTERCOM_APP_ID || ""}
             >
               <Component {...pageProps} />
               <ShowNotification />
             </IntercomProvider>
-          </AuthProvider>
+          </SessionProvider>
         </ApolloProvider>
       </QueryClientProvider>
     </>

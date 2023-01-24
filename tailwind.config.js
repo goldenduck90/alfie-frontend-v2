@@ -30,7 +30,7 @@ module.exports = {
         brand: {
           berry: "#0024A8",
           "berry-shade": "#001B7C",
-          "berry-tint-1": "#5677EF",
+          "berry-tint-1": "#2649CA",
           "berry-tint-2": "#64748B",
           indigo: "#0C52E8",
           "indigo-shade": "#023BB4",

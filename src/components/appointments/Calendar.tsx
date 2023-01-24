@@ -8,7 +8,6 @@ import { Fragment, useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Link from "next/link";
-import "./calendar.css";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");

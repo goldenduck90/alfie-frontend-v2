@@ -1,42 +1,31 @@
-import {
-  faArrowRightFromBracket,
-  faCalendarDays,
-  faChartArea,
-  faCircleQuestion,
-  faCommentDots,
-  // faCommentDots,
-  faCog,
-  faUserGroup,
-  faCreditCard,
-  // faPills,
-  faTasks,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { Navigation } from "@sentry/react/types/types";
 import { Role } from "@src/graphql/generated";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { useLogoutMutation } from "@src/hooks/useLogoutMutation";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 import { useIntercom } from "react-use-intercom";
+import { Navbar } from "../navigation/NavBar";
+import { NavigationItem } from "../navigation/NavigationItem";
 
 interface LayoutProps {
   children: React.ReactNode;
-  title: string;
+  title?: string;
+  subtitle?: string;
 }
 
-interface NavigationItem {
-  name: string;
-  href: string;
-  icon: React.ReactNode;
-  action?: () => void;
-}
+// interface NavigationItem {
+//   name: string;
+//   href: string;
+//   action?: () => void;
+// }
 
-export const Layout = ({ children, title }: LayoutProps) => {
+export const Layout = ({ children, title, subtitle }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, clear } = useCurrentUserStore();
+  const { user } = useCurrentUserStore();
   const router = useRouter();
   // const { boot } = useIntercom();
 
@@ -47,279 +36,99 @@ export const Layout = ({ children, title }: LayoutProps) => {
   //   });
   // }, []);
 
-  const navigation: NavigationItem[] = [
+  let navigation: any[] = [];
+  const patientNavigation = [
     {
       name: "Dashboard",
       href: "/dashboard",
-      icon: <FontAwesomeIcon className="h-5" icon={faChartArea} />,
     },
     {
       name: "Tasks",
       href: "/dashboard/tasks",
-      icon: <FontAwesomeIcon className="h-5" icon={faTasks} />,
     },
     {
       name: "Appointments",
       href: "/dashboard/appointments",
-      icon: <FontAwesomeIcon className="h-5" icon={faCalendarDays} />,
-    },
-    // {
-    //   name: "Medications",
-    //   href: "/medications",
-    //   icon: <FontAwesomeIcon className="h-5" icon={faPills} />,
-    // },
-    {
-      name: "Billing",
-      href: "/dashboard/billing",
-      icon: <FontAwesomeIcon className="h-5" icon={faCreditCard} />,
     },
     {
       name: "Chat",
       href: "/dashboard/chat",
-      icon: <FontAwesomeIcon className="h-5" icon={faCommentDots} />,
     },
-    {
-      name: "FAQ",
-      href: "/dashboard/faq",
-      icon: <FontAwesomeIcon className="h-5" icon={faCircleQuestion} />,
-    },
-    {
-      name: "Logout",
-      href: "/",
-      action: () => {
-        router.replace("/");
-        clear();
-      },
-      icon: <FontAwesomeIcon icon={faArrowRightFromBracket} className="h-5" />,
-    },
+    // {
+    //   name: "Medications",
+    //   href: "/medications",
+    // },
+    // {
+    //   name: "Billing",
+    //   href: "/dashboard/billing",
+    // },
+    // {
+    //   name: "FAQ",
+    //   href: "/dashboard/faq",
+    // },
+    // {
+    //   name: "Logout",
+    //   href: "/",
+    //   action: async () => {
+    //     try {
+    //       router.replace("/");
+    //       await logout.mutateAsync();
+    //       clear();
+    //     } catch (e) {
+    //       console.log(e);
+    //     }
+    //   },
+    // },
   ];
-  //? Patient Role includes Tasks, billing, and Frequently Asked Questions
-  if (user?.role === Role.Patient) {
-    navigation.push();
-  }
 
-  if (user?.role === Role.Practitioner) {
-    navigation.push();
-  }
-
-  const otherNavigation: {
-    name: string;
-    href: string;
-    icon: React.ReactNode;
-    action?: () => void;
-  }[] = [
+  const providerNavigation = [
     {
       name: "Dashboard",
       href: "/dashboard",
-      icon: <FontAwesomeIcon className="h-5" icon={faChartArea} />,
     },
     {
       name: "Appointments",
-      href: "/practitioner/appointments",
-      icon: <FontAwesomeIcon className="h-5" icon={faCalendarDays} />,
+      href: "/dashboard/appointments",
     },
     {
       name: "My Patients",
-      href: "/patients",
-      icon: <FontAwesomeIcon className="h-5" icon={faUserGroup} />,
+      href: "/dashboard/patients",
     },
     {
       name: "Chat",
-      href: "/chat",
-      icon: <FontAwesomeIcon className="h-5" icon={faCommentDots} />,
-    },
-    {
-      name: "Settings",
-      href: "/settings",
-      icon: <FontAwesomeIcon className="h-5" icon={faCog} />,
-    },
-    {
-      name: "Logout",
-      href: "/",
-      icon: <FontAwesomeIcon icon={faArrowRightFromBracket} className="h-5" />,
+      href: "/dashboard/chat",
     },
   ];
+
+  //? Patient Role includes Tasks, billing, and Frequently Asked Questions
+  if (user?.role === Role.Patient) {
+    navigation = patientNavigation;
+  } else if (user?.role === Role.Practitioner) {
+    navigation = providerNavigation;
+  }
+
   return (
-    <div>
-      <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-40 md:hidden"
-          onClose={setSidebarOpen}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="transition-opacity ease-linear duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity ease-linear duration-300"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-          </Transition.Child>
+    <>
+      <Navbar navItems={navigation} />
+      <main className="flex w-full">
+        {(title || subtitle) && (
+          <div className="fixed w-full h-52 top-16 bg-brand-berry" />
+        )}
+        <div className="mx-auto px-4 md:px-8 lg:py-6 sm:py-6 md:py-6 z-10 mt-24 w-full max-w-7xl justify-center">
+          {title && (
+            <div className="pb-8">
+              <h1 className="text-4xl font-semibold text-white">{title}</h1>
+              {subtitle && (
+                <h2 className="text-base font-normal text-brand-heavenly-tint-1">
+                  {subtitle}
+                </h2>
+              )}
+            </div>
+          )}
 
-          <div className="fixed inset-0 z-40 flex">
-            <Transition.Child
-              as={Fragment}
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-x-full"
-              enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-x-0"
-              leaveTo="-translate-x-full"
-            >
-              <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-royalBlue">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-in-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in-out duration-300"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="absolute top-0 right-0 -mr-12 pt-2">
-                    <button
-                      type="button"
-                      className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <span className="sr-only">Close sidebar</span>
-                      <XIcon
-                        className="h-6 w-6 text-white"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
-                </Transition.Child>
-                <div className="h-0 flex-1 overflow-y-auto pt-5 pb-4">
-                  <div className="flex flex-shrink-0 items-center px-4">
-                    <Link href="/dashboard">
-                      <img
-                        src="/assets/logo-white.png"
-                        className="h-8 lg:h-10"
-                        alt="Alfie"
-                      />
-                    </Link>
-                  </div>
-                  <nav className="mt-5 space-y-1 px-2">
-                    {navigation.map((item) => (
-                      <Link
-                        // onClick={item.action ? item.action : () => {}}
-                        key={item.name}
-                        href={item.href}
-                        className={
-                          "group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                          // classNames(
-                          //   item.current
-                          //     ? "bg-indigo-700 text-white"
-                          //     : "text-white hover:bg-indigo-700 hover:bg-opacity-75",
-                        }
-                      >
-                        <div>{item.icon}</div>
-                        <div className="mx-4 font-medium text-lg">
-                          {item.name}
-                        </div>
-                      </Link>
-                    ))}
-                  </nav>
-                </div>
-                <div className="flex flex-shrink-0 border-t border-royalBlue p-4">
-                  <div className="flex flex-shrink-0 border-t border-indigo-800 p-4">
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-white">
-                        {user?.name}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-            <div className="w-14 flex-shrink-0" aria-hidden="true">
-              {/* Force sidebar to shrink to fit close icon */}
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
-
-      {/* Static sidebar for desktop */}
-      <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-        {/* Sidebar component, swap this element with another sidebar if you like */}
-        <div className="flex min-h-0 flex-1 flex-col bg-royalBlue">
-          <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-            <div className="flex flex-shrink-0 items-center px-4">
-              <Link href="/dashboard">
-                <img
-                  src="assets/logo-white.png"
-                  className="h-8 lg:h-10"
-                  alt="Alfie"
-                />
-              </Link>
-            </div>
-            <nav className="mt-5 flex-1 space-y-1 px-2">
-              {navigation.map((item) => (
-                <Link
-                  onClick={item.action ? item.action : () => {}}
-                  key={item.name}
-                  href={item.href}
-                  className={
-                    `group flex items-center px-2 py-2 text-sm font-medium rounded-md`
-                    //   {item.current
-                    //     ? "bg-indigo-700 text-white"
-                    //     : "text-white hover:bg-indigo-700 hover:bg-opacity-75",}
-                  }
-                >
-                  <div>{item.icon}</div>
-                  <div className="mx-4 font-medium text-lg">{item.name}</div>
-                </Link>
-              ))}
-            </nav>
-          </div>
-          <div className="flex flex-shrink-0 border-t border-indigo-800 p-4">
-            <div className="ml-3">
-              <p className="text-sm font-medium text-white">{user?.name}</p>
-            </div>
-          </div>
+          {children}
         </div>
-      </div>
-      <div className="flex flex-1 flex-col md:pl-64">
-        <div className="sticky top-0 z-10 bg-gray-100 pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">
-          <button
-            type="button"
-            className="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <span className="sr-only">Open sidebar</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-              />
-            </svg>
-          </button>
-        </div>
-        <main className="flex-1">
-          <div className="py-6">
-            <div className="mx-auto px-4 sm:px-6 md:px-8 pb-4">
-              <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
-            </div>
-            <div className="mx-autopx-4 px-4 md:px-8 lg:py-6 sm:py-6 md:py-6">
-              {/* Replace with your content */}
-              {children}
-              {/* /End replace */}
-            </div>
-          </div>
-        </main>
-      </div>
-    </div>
+      </main>
+    </>
   );
 };

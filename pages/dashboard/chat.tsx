@@ -1,5 +1,5 @@
 import React from "react";
-import { ApplicationLayout } from "../../src/components/layouts/ApplicationLayout";
+import { Layout } from "../../src/components/layouts/Layout";
 
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { ChatPage } from "../../src/components/chat";
@@ -18,7 +18,7 @@ function Chat() {
 }
 
 Chat.getLayout = (page: React.ReactNode) => (
-  <ApplicationLayout title="Chat">{page}</ApplicationLayout>
+  <Layout title="Chat">{page}</Layout>
 );
 
 Chat.isAuthRequired = true;

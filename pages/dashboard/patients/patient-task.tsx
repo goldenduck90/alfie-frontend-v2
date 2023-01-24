@@ -4,7 +4,7 @@ import {
   ChevronRightIcon,
   XCircleIcon,
 } from "@heroicons/react/solid";
-import { PatientTasksSkeletonLoader } from "../../src/components/loading/PatientTasksSkeletonLoader";
+import { PatientTasksSkeletonLoader } from "@src/components/loading/PatientTasksSkeletonLoader";
 import { Layout } from "@src/components/layouts/Layout";
 
 const PatientTasks = ({
@@ -142,5 +142,3 @@ const PatientTasks = ({
     </>
   );
 };
-
-export default PatientTasks;
