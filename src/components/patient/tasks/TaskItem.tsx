@@ -1,11 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { format, isToday, isTomorrow, formatDistance } from "date-fns";
 import Link from "next/link";
-import { Button } from "../Button2";
-import {
-  CheckCircleIcon,
-  HeartIcon,
-} from "@heroicons/react/solid";
+import { Button } from "../../Button2";
+import { CheckCircleIcon, HeartIcon } from "@heroicons/react/solid";
 import {
   CalendarIcon,
   InformationCircleIcon,
@@ -124,8 +121,8 @@ export const TaskItem = ({
             { children: "Metabolic Profile (Hunger)", isCompleted: true },
             { children: "Metabolic Profile (Hunger)" },
             { children: "Another Profile (Pain)" },
-          ].map((subTasks, index) => {
-            return <SubTask {...subTasks} />;
+          ].map((subTasks, i) => {
+            return <SubTask key={i} {...subTasks} />;
           })}
         </div>
       )}

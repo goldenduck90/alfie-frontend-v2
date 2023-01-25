@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { AppointmentList } from "../../src/components/appointments/AppointmentList";
 
 import { Loading } from "../../src/components/Loading";
-import { DashboardTaskList } from "../../src/components/tasks/DashboardTaskList";
+import { DashboardTaskList } from "../../src/components/patient/tasks/DashboardTaskList";
 import { useAuth } from "../../src/hooks/useAuth";
 import PractitionerDashboard from "../practitioner/PractitionerDashboard";
 

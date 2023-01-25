@@ -2,10 +2,10 @@ import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { useEffect } from "react";
-import { UserTask } from "../../graphql/generated";
-import { Loading } from "../Loading";
+import { UserTask } from "../../../graphql/generated";
+import { Loading } from "../../Loading";
 import { TaskItem } from "./TaskItem";
-import { Button } from "../Button2";
+import { Button } from "../../Button2";
 
 const userTasksQuery = gql`
   query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
@@ -73,20 +73,22 @@ export const TasksPage = () => {
           <h2 className="text-xl md:text-2xl font-bold font-mulish">
             {taskFilter} tasks
           </h2>
-          {result.data.userTasks.userTasks.map((userTask: UserTask) => (
-            <div className="pt-6">
-              <TaskItem
-                key={userTask._id}
-                id={userTask._id}
-                type={userTask?.task?.type || ""}
-                title={userTask?.task?.name || ""}
-                createdAt={userTask.createdAt}
-                dueAt={userTask.dueAt}
-                pastDue={userTask.pastDue}
-                actionText="Complete"
-              />
-            </div>
-          ))}
+          {result.data.userTasks.userTasks.map(
+            (userTask: UserTask, i: number) => (
+              <div className="pt-6" key={i}>
+                <TaskItem
+                  key={userTask._id}
+                  id={userTask._id}
+                  type={userTask?.task?.type || ""}
+                  title={userTask?.task?.name || ""}
+                  createdAt={userTask.createdAt}
+                  dueAt={userTask.dueAt}
+                  pastDue={userTask.pastDue}
+                  actionText="Complete"
+                />
+              </div>
+            )
+          )}
           <div className="mt-2 md:mt-4 flex flex-col md:flex-row items-center justify-center md:justify-end">
             <span className="text-gray-700 text-sm mb-1 md:text-md font-mulish font-medium md:hidden">
               1 of {result.data.userTasks.total}

@@ -1,11 +1,11 @@
-import { EaAppointment } from "../../graphql/generated"
-import { SeeAll } from "../SeeAll"
-import { TaskItem } from "../tasks/TaskItem"
+import { EaAppointment } from "../../graphql/generated";
+import { SeeAll } from "../SeeAll";
+import { TaskItem } from "../patient/tasks/TaskItem";
 
 export const AppointmentList = ({
   appointments,
 }: {
-  appointments: EaAppointment[]
+  appointments: EaAppointment[];
 }) => {
   return (
     <div className="w-full lg:w-full md:pl-12">
@@ -37,5 +37,5 @@ export const AppointmentList = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};

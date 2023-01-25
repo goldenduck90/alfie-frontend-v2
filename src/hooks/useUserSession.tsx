@@ -17,7 +17,7 @@ export function useSession() {
     },
     {
       onSuccess: (data) => {
-        console.log({ data });
+        // console.log({ data });
       },
       onError: (error) => {
         console.log({ error });

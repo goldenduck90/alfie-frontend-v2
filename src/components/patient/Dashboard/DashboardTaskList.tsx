@@ -1,10 +1,10 @@
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
+import { DashboardCard } from "@src/components/DashboardCard";
+
+import Link from "next/link";
 import React from "react";
-import { TaskType, UserTask } from "../../graphql/generated";
-import { Button } from "../Button2";
-import { SeeAll } from "../SeeAll";
-import { TaskItem } from "./TaskItem";
+import { TaskType, UserTask } from "../../../graphql/generated";
 
 const userTasksQuery = gql`
   query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
@@ -35,7 +35,7 @@ export const DashboardTaskList = () => {
       completed: false,
     },
   });
-  console.log(result);
+
   const filteredTasks = result.data?.userTasks.userTasks.filter((task: any) => {
     return (
       task.task.type === TaskType.WeightLog ||
@@ -66,38 +66,40 @@ export const DashboardTaskList = () => {
   //     });
   //   }
   // }, [result]);
-  if (result.loading) return <> Loadingadaadada</>;
+  if (result.loading) return <> Loading</>;
   return (
-    <div className="lg:w-full w-full pb-10">
+    <div className="w-full md:min-w-[49.5%]">
       {result.error && <div>{result.error.message}</div>}
       {!result.error && (
         <>
-          <div className="flex space-x-2">
-            <Button buttonType="secondary">Test</Button>
-            <Button buttonType="accent">Test</Button>
-          </div>
-          {tasks.map((userTask: UserTask, i: number) => (
-            <div className="pt-6" key={i}>
-              <TaskItem
-                key={userTask._id}
-                id={userTask._id}
-                type={userTask?.task?.type || ""}
-                title={userTask?.task?.name || ""}
-                createdAt={userTask.createdAt}
-                dueAt={userTask.dueAt}
-                pastDue={userTask.pastDue}
-                actionText="Complete"
-              />
-            </div>
-          ))}
-          <div className="mt-2 md:mt-4 flex flex-col md:flex-row items-center justify-center md:justify-end">
-            <span className="text-gray-700 text-sm mb-1 md:text-md font-mulish font-medium md:hidden">
-              1 of {result.data.userTasks.total}
-            </span>
-            <SeeAll path="/tasks" name="tasks" />
-          </div>
+          <DashboardCard
+            cardHeader={
+              <div className="flex justify-between">
+                <h3 className="font-bold">Tasks</h3>{" "}
+                <Link href="/dashboard/tasks">
+                  <p className="font-semibold">View all</p>
+                </Link>
+              </div>
+            }
+            items={[1, 2]}
+          />
         </>
       )}
     </div>
   );
 };
+
+// {tasks.map((userTask: UserTask, i: number) => (
+//   <div className="pt-6" key={i}>
+//               <TaskItem
+//                 key={userTask._id}
+//                 id={userTask._id}
+//                 type={userTask?.task?.type || ""}
+//                 title={userTask?.task?.name || ""}
+//                 createdAt={userTask.createdAt}
+//                 dueAt={userTask.dueAt}
+//                 pastDue={userTask.pastDue}
+//                 actionText="Complete"
+//                 />
+//             </div>
+//                 ))}

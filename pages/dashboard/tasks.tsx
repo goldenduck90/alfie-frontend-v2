@@ -1,4 +1,4 @@
-import { TasksPage } from "@src/components/tasks/TasksPage";
+import { TasksPage } from "@src/components/patient/tasks/TasksPage";
 import { Layout } from "../../src/components/layouts/Layout";
 
 export default function Tasks() {

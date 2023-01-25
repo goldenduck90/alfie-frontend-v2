@@ -17,7 +17,9 @@ export function Navbar({ navItems }: NavbarProps) {
   const { clear } = useCurrentUserStore();
 
   const navigationItems = navItems.map((item, i) => (
-    <NavigationItem href={item.href}>{item.name}</NavigationItem>
+    <NavigationItem key={i} href={item.href}>
+      {item.name}
+    </NavigationItem>
   ));
 
   return (
