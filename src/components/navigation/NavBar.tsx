@@ -1,11 +1,13 @@
 import { MenuAlt2Icon } from "@heroicons/react/solid";
-import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
-import { useLogoutMutation } from "@src/hooks/useLogoutMutation";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { NavigationItem } from "./NavigationItem";
-import { NavUser } from "./NavUser";
+import dynamic from "next/dynamic";
+
+const NavUser = dynamic(() => import("./NavUser"), {
+  ssr: false,
+});
 
 interface NavbarProps {
   navItems: any[];
@@ -13,8 +15,6 @@ interface NavbarProps {
 
 export function Navbar({ navItems }: NavbarProps) {
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const logout = useLogoutMutation();
-  const { clear } = useCurrentUserStore();
 
   const navigationItems = navItems.map((item, i) => (
     <NavigationItem key={i} href={item.href}>
@@ -23,7 +23,7 @@ export function Navbar({ navItems }: NavbarProps) {
   ));
 
   return (
-    <div className="fixed top-0 flex flex-row w-full z-[999]">
+    <div className="fixed top-0 flex flex-row w-full z-[98]">
       <div className="flex flex-col items-center bg-brand-berry w-full border-b-[1px] border-brand-berry-tint-1">
         <nav className="flex flex-row justify-between p-4 md:px-8 max-w-7xl w-full">
           <div className="flex items-center">

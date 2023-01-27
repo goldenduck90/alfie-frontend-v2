@@ -98,7 +98,10 @@ export const TaskItem = ({
         </div>
         <div className="hidden md:flex">
           {hasSubTasks ? (
-            "2/4 completed"
+            <div className="text-gray-600 flex">
+              <CheckCircleIcon className="h-5 w-5 mt-[2px] mr-1" /> 2/4
+              completed
+            </div>
           ) : (
             <Link
               passHref
@@ -141,7 +144,10 @@ export const TaskItem = ({
         </div>
         <div>
           {hasSubTasks ? (
-            "2/4 completed"
+            <div className="flex text-gray-600">
+              <CheckCircleIcon className="h-5 w-5 mt-[2px] mr-1" /> 2/4
+              completed
+            </div>
           ) : (
             <Link
               passHref
@@ -187,7 +193,8 @@ function SubTask({
       {isCompleted ? (
         <div className="flex text-green-500 border-t-[1px] justify-end border-t-green-500 -m-4 mt-4 py-4 px-6 md:m-0 md:p-0 md:border-0">
           {" "}
-          <CheckCircleIcon className="h-5 w-5 text-green-500" /> Completed
+          <CheckCircleIcon className="h-5 w-5 text-green-500 mt-[2px] mr-1" />{" "}
+          Completed
         </div>
       ) : (
         <>

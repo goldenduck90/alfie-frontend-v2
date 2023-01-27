@@ -11,7 +11,7 @@ export function PatientDashboard() {
     <div className="flex flex-col">
       <div className="md:flex md:gap-x-4  ">
         <Chart />
-        <YourWeight />
+        <YourWeight isLoading={true} />
       </div>
       <div className="md:flex  md:gap-x-4 ">
         <DashboardTaskList />
@@ -19,7 +19,7 @@ export function PatientDashboard() {
       </div>
       <div className="md:flex md:pb">
         <BodyMassIndex />
-        <BeforeAndAfter />
+        <BeforeAndAfter isLoading={true} />
       </div>
     </div>
   );

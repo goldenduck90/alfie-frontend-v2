@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { DashboardCard } from "@src/components/DashboardCard";
+import { DashboardPreviewItem } from "@src/components/DashboardPreviewItem";
 
 import Link from "next/link";
 import React from "react";
@@ -66,7 +67,14 @@ export const DashboardTaskList = () => {
   //     });
   //   }
   // }, [result]);
-  if (result.loading) return <> Loading</>;
+  const renderItems = [0, 1]?.map((item, i) => (
+    <DashboardPreviewItem
+      key={i}
+      {...(item as any)}
+      isLoading={result.loading}
+    />
+  ));
+
   return (
     <div className="w-full md:min-w-[49.5%]">
       {result.error && <div>{result.error.message}</div>}
@@ -81,8 +89,9 @@ export const DashboardTaskList = () => {
                 </Link>
               </div>
             }
-            items={[1, 2]}
-          />
+          >
+            {renderItems}
+          </DashboardCard>
         </>
       )}
     </div>

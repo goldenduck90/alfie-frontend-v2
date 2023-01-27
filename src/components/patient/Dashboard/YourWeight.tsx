@@ -3,9 +3,14 @@ import { CakeIcon, PencilIcon } from "@heroicons/react/solid";
 import { Button } from "@src/components/Button2";
 import { DashboardCard } from "@src/components/DashboardCard";
 import { Line } from "@src/components/Line";
+import { PlaceHolderLine } from "@src/components/PlaceHolderLine";
 import React from "react";
 
-export function YourWeight() {
+interface YourWeightProps {
+  isLoading?: boolean;
+}
+
+export function YourWeight({ isLoading }: YourWeightProps) {
   return (
     <DashboardCard
       className="w-full md:min-w-[370px] md:max-w-[400px] "
@@ -18,10 +23,11 @@ export function YourWeight() {
             <div className="flex flex-col w-full">
               <div className="flex flex-row justify-between items-center pb-2">
                 <h2 className="text-gray-900 ">Your Weight</h2>
-                <Button>Update Weight</Button>
+                <Button disabled={isLoading}>Update Weight</Button>
               </div>
               <p className="text-gray-900 text-5xl">
-                86.4 <span className="text-gray-600 text-sm">kg</span>
+                {isLoading ? 0 : 86.4}{" "}
+                <span className="text-gray-600 text-sm">kg</span>
               </p>
             </div>
           </div>
@@ -33,15 +39,21 @@ export function YourWeight() {
         <div>
           <CakeIcon className="h-5 w-5 mr-2 mt-[2px]" />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           <div className="flex flex-row justify-between items-center pb-2">
             <h2 className="text-gray-900 ">Your goal</h2>
             <PencilIcon className="h-4 w-4 text-gray-400" />
           </div>
-          <p>
-            It will take you 23 more weeks to reach your goal. You&apos;re
-            smashing it, and you&apos;re on an excellent track to losing weight!
-          </p>
+
+          {isLoading ? (
+            <PlaceHolderLine amount={3} />
+          ) : (
+            <p>
+              It will take you 23 more weeks to reach your goal. You&apos;re
+              smashing it, and you&apos;re on an excellent track to losing
+              weight!
+            </p>
+          )}
         </div>
       </div>
     </DashboardCard>

@@ -6,6 +6,7 @@ import { UserTask } from "../../../graphql/generated";
 import { Loading } from "../../Loading";
 import { TaskItem } from "./TaskItem";
 import { Button } from "../../Button2";
+import { LoadingTaskItem } from "./LoadingTaskItems";
 
 const userTasksQuery = gql`
   query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
@@ -50,7 +51,7 @@ export const TasksPage = () => {
       });
     }
   }, [result]);
-  if (result.loading) return <Loading />;
+
   return (
     <div>
       {result.error && <div>{result.error.message}</div>}
@@ -73,7 +74,7 @@ export const TasksPage = () => {
           <h2 className="text-xl md:text-2xl font-bold font-mulish">
             {taskFilter} tasks
           </h2>
-          {result.data.userTasks.userTasks.map(
+          {result?.data?.userTasks?.userTasks.map(
             (userTask: UserTask, i: number) => (
               <div className="pt-6" key={i}>
                 <TaskItem
@@ -89,9 +90,19 @@ export const TasksPage = () => {
               </div>
             )
           )}
+          {result.loading && (
+            <div className="pt-6">
+              {Array(6)
+                .fill("")
+                .map((_, i) => (
+                  <LoadingTaskItem />
+                ))}
+            </div>
+          )}
+
           <div className="mt-2 md:mt-4 flex flex-col md:flex-row items-center justify-center md:justify-end">
             <span className="text-gray-700 text-sm mb-1 md:text-md font-mulish font-medium md:hidden">
-              1 of {result.data.userTasks.total}
+              1 of {result?.data?.userTasks?.total || 1}
             </span>
           </div>
         </div>

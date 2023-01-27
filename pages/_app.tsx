@@ -6,7 +6,11 @@ import { SessionProvider } from "../src/context/SessionContext";
 import { IntercomProvider } from "react-use-intercom";
 import { client } from "../src/graphql";
 import { ShowNotification } from "../src/components/ShowNotifications";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import {
+  QueryClientProvider,
+  QueryClient,
+  Hydrate,
+} from "@tanstack/react-query";
 interface CustomAppProps extends AppProps {
   Component: AppProps["Component"] & {
     getLayout?: (page: React.ReactNode) => React.ReactNode;
@@ -20,20 +24,23 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   const getLayout = Component.getLayout || ((page: React.ReactNode) => page);
 
   const [queryClient] = React.useState(() => new QueryClient());
+  const ComponentWithLayout = getLayout(<Component {...pageProps} />);
 
-  return getLayout(
+  return (
     <>
       <QueryClientProvider client={queryClient}>
-        <ApolloProvider client={client}>
-          <SessionProvider authRequired={isAuthRequired}>
-            <IntercomProvider
-              appId={process.env.REACT_APP_INTERCOM_APP_ID || ""}
-            >
-              <Component {...pageProps} />
-              <ShowNotification />
-            </IntercomProvider>
-          </SessionProvider>
-        </ApolloProvider>
+        <Hydrate state={pageProps.dehydratedState}>
+          <ApolloProvider client={client}>
+            <SessionProvider authRequired={isAuthRequired}>
+              <IntercomProvider
+                appId={process.env.REACT_APP_INTERCOM_APP_ID || ""}
+              >
+                {ComponentWithLayout}
+                <ShowNotification />
+              </IntercomProvider>
+            </SessionProvider>
+          </ApolloProvider>
+        </Hydrate>
       </QueryClientProvider>
     </>
   );

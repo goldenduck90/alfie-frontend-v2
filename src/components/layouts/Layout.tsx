@@ -17,12 +17,6 @@ interface LayoutProps {
   subtitle?: string;
 }
 
-// interface NavigationItem {
-//   name: string;
-//   href: string;
-//   action?: () => void;
-// }
-
 export const Layout = ({ children, title, subtitle }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useCurrentUserStore();
@@ -54,31 +48,6 @@ export const Layout = ({ children, title, subtitle }: LayoutProps) => {
       name: "Chat",
       href: "/dashboard/chat",
     },
-    // {
-    //   name: "Medications",
-    //   href: "/medications",
-    // },
-    // {
-    //   name: "Billing",
-    //   href: "/dashboard/billing",
-    // },
-    // {
-    //   name: "FAQ",
-    //   href: "/dashboard/faq",
-    // },
-    // {
-    //   name: "Logout",
-    //   href: "/",
-    //   action: async () => {
-    //     try {
-    //       router.replace("/");
-    //       await logout.mutateAsync();
-    //       clear();
-    //     } catch (e) {
-    //       console.log(e);
-    //     }
-    //   },
-    // },
   ];
 
   const providerNavigation = [

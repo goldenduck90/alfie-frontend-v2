@@ -1,9 +1,13 @@
 import { DashboardCard } from "@src/components/DashboardCard";
+import { DashboardPreviewItem } from "@src/components/DashboardPreviewItem";
 import Link from "next/link";
 import React from "react";
 
 export function DashboardAppointments() {
   const tasks = Array(2).fill(" ");
+  const renderItems = tasks.map((item, i) => (
+    <DashboardPreviewItem key={i} {...(item as any)} isLoading />
+  ));
   return (
     <>
       <DashboardCard
@@ -16,8 +20,9 @@ export function DashboardAppointments() {
             </Link>
           </div>
         }
-        items={tasks}
-      />
+      >
+        {renderItems}
+      </DashboardCard>
     </>
   );
 }

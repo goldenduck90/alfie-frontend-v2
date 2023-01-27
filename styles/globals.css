@@ -1,11 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+/* 
 @font-face {
   font-family: "Mulish";
   src: url("/assets/Mulish/Mulish-VariableFont_wght.ttf") format("truetype");
-}
+} */
 
 html,
 body {
@@ -14,7 +14,7 @@ body {
 }
 
 * {
-  @apply font-mulish;
+  /* @apply font-mulish; */
 }
 
 body {
