@@ -31,8 +31,8 @@ export const Button = ({
 }) => (
   <button
     className={`
-      bg-royalBlue 
-      hover:bg-indigo-700 
+      bg-brand-berry 
+      hover:bg-brand-berry-shade 
       ${!loading && disabled && "disabled:bg-gray-200"}
       text-white 
       py-2.5 

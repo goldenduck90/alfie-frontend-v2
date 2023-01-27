@@ -38,7 +38,7 @@ export const ChannelHeader = ({
         <FontAwesomeIcon className="px-1" icon={faArrowLeft} />
       </button>
 
-      <div className="flex flex-col w-full px-5 py-2 items-center">
+      <div className="flex flex-col w-full px-5 py-2 items-center border-b shadow-sm">
         <ChannelAvatar
           channel={currentGroupChannel}
           userId={config.userId}

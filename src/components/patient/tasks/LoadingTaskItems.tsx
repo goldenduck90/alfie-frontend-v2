@@ -1,6 +1,6 @@
 import { HeartIcon, ClockIcon, CalendarIcon } from "@heroicons/react/outline";
-import { Button } from "@src/components/Button2";
-import { PlaceHolderLine } from "@src/components/PlaceHolderLine";
+import { Button } from "@src/components/ui/Button";
+import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 
 import React from "react";
 

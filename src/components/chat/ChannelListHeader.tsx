@@ -1,24 +1,33 @@
-import React from "react"
-import { faClose } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import React from "react";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const ChannelListHeader = ({
   query,
   onSetQuery,
   handleDrawerToggle,
 }: {
-  query: string
-  onSetQuery: (query: string) => void
-  handleDrawerToggle: () => void
+  query: string;
+  onSetQuery: (query: string) => void;
+  handleDrawerToggle: () => void;
 }) => {
+  const [value, setValue] = React.useState(query);
+
+  React.useEffect(() => {
+    const interval = setTimeout(() => {
+      onSetQuery(value);
+    }, 500);
+    return () => clearTimeout(interval);
+  }, [value]);
+
   return (
-    <div className="bg-white z-[1] absolute shadow-sm font-mulish w-full text-left px-5 py-4 font-bold flex justify-between">
+    <div className="bg-white z-[1] border absolute shadow-sm w-full text-left px-5 py-4 font-bold flex justify-between">
       <input
         className="font-mulish w-full px-3 py-1 focus:outline-none appearance-none rounded-sm border"
         onChange={(e) => {
-          onSetQuery(e.target.value)
+          setValue(e.target.value);
         }}
-        value={query}
+        value={value}
         placeholder="Search channels"
       />
 
@@ -28,5 +37,5 @@ export const ChannelListHeader = ({
         </button>
       </div>
     </div>
-  )
-}
+  );
+};

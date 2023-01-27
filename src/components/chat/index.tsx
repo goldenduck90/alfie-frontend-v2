@@ -1,25 +1,27 @@
-import React from "react"
-import { SendBirdProvider } from "@sendbird/uikit-react"
+import React from "react";
+import { SendBirdProvider } from "@sendbird/uikit-react";
 
-import { Chat } from "./Chat"
+import { Chat } from "./Chat";
 
 export const ChatPage = ({
   appId,
   userId,
 }: {
-  appId: string
-  userId: string
+  appId: string;
+  userId: string;
 }) => {
   const colorSet = {
-    "--sendbird-light-primary-500": "#6366f1",
-    "--sendbird-light-primary-400": "#818cf8",
-    "--sendbird-light-primary-300": "#a5b4fc",
-    "--sendbird-light-primary-200": "#c7d2fe",
-    "--sendbird-light-primary-100": "#e0e7ff",
-  }
+    "--sendbird-light-primary-500": "#0648D4",
+    "--sendbird-light-primary-400": "#0C52E8",
+    "--sendbird-light-primary-300": "#4B80F2",
+    "--sendbird-light-primary-200": "#A1BCF7",
+    "--sendbird-light-primary-100": "#D7E2FC",
+  };
   return (
     <SendBirdProvider appId={appId} userId={userId} colorSet={colorSet}>
-      <Chat />
+      <div className="flex flex-col max-w-5xl m-auto">
+        <Chat />
+      </div>
     </SendBirdProvider>
-  )
-}
+  );
+};

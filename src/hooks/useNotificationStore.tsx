@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 export interface INotification {
-  displayNotification: boolean;
   title: string;
   description: string;
   type: "success" | "error" | "info";

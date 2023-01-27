@@ -3,7 +3,7 @@ import React from "react";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { BellIcon, ChevronDownIcon } from "@heroicons/react/outline";
 import { DropdownMenu } from "../ui/DropdownMenu";
-import { Line } from "../Line";
+import { Line } from "../ui/Line";
 import { Item } from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
 import { useLogoutMutation } from "@src/hooks/useLogoutMutation";
@@ -21,7 +21,7 @@ export default function NavUser() {
   ];
 
   const renderUserItems = userItems.map((item, i) => (
-    <DropdownItem {...item} />
+    <DropdownItem {...item} key={i} />
   ));
   return (
     <>

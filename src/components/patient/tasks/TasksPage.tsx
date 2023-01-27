@@ -3,9 +3,8 @@ import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { useEffect } from "react";
 import { UserTask } from "../../../graphql/generated";
-import { Loading } from "../../Loading";
 import { TaskItem } from "./TaskItem";
-import { Button } from "../../Button2";
+import { Button } from "../../ui/Button";
 import { LoadingTaskItem } from "./LoadingTaskItems";
 
 const userTasksQuery = gql`

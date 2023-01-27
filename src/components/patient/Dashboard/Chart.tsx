@@ -1,4 +1,4 @@
-import { DashboardCard } from "@src/components/DashboardCard";
+import { DashboardCard } from "@src/components/ui/DashboardCard";
 import React from "react";
 import {
   LineChart,

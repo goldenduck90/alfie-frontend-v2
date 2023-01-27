@@ -1,6 +1,6 @@
 import { CakeIcon } from "@heroicons/react/solid";
 import { PencilIcon } from "@heroicons/react/outline";
-import { DashboardCard } from "@src/components/DashboardCard";
+import { DashboardCard } from "@src/components/ui/DashboardCard";
 import React from "react";
 
 export function BodyMassIndex() {

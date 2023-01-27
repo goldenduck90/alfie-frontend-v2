@@ -6,8 +6,8 @@ import ChannelListUI from "@sendbird/uikit-react/ChannelList";
 import { ChannelProvider } from "@sendbird/uikit-react/Channel/context";
 import { ChannelHeader } from "./ChannelHeader";
 import { ChannelListHeader } from "./ChannelListHeader";
-import { useNotificationDispatch } from "../../context/NotificationContext";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
 
 export const Chat = () => {
   const { user } = useCurrentUserStore();
@@ -16,16 +16,19 @@ export const Chat = () => {
     useState<boolean>(false);
   const [query, setQuery] = useState("");
   const { stores } = useSendbirdStateContext();
-  const { displayNotification } = useNotificationDispatch();
+  const { addNotification } = useNotificationStore();
   const sendBirdError = stores.sdkStore.error;
 
-  if (sendBirdError) {
-    displayNotification(
-      "error",
-      "Error with chat please try again later",
-      "error"
-    );
-  }
+  React.useEffect(() => {
+    if (sendBirdError) {
+      addNotification({
+        type: "error",
+        description: "Error with chat please try again later",
+        id: "",
+        title: "Chat Error",
+      });
+    }
+  }, [sendBirdError]);
 
   const handleDrawerToggle = () => setToggleChannelDrawer(!toggleChannelDrawer);
 
@@ -52,16 +55,12 @@ export const Chat = () => {
   }
 
   return (
-    <div className="flex relative">
-      <div
-        className={`h-[83vh] relative z-10 bg-white ${
-          user?.role === Role.Patient ? "hidden" : ""
-        }`}
-      >
+    <div className="flex relative h-[75vh] rounded-lg">
+      <div className={`h-[75vh] relative z-10 bg-white ${showDrawer()}`}>
         <ChannelListUI
           queries={queries}
           allowProfileEdit={false}
-          className={`overflow-y-auto border ${showDrawer()}`}
+          className={`overflow-y-auto border`}
           onChannelSelect={(channel) => {
             if (channel && channel.url) {
               setCurrentChannelUrl(channel.url);
@@ -91,7 +90,7 @@ export const Chat = () => {
           }}
         />
       </div>
-      <div className="flex-row w-full h-[83vh] absolute lg:relative z-90 ">
+      <div className="flex-row w-full h-[75vh] absolute lg:relative z-90">
         {toggleChannelDrawer && (
           <div
             onClick={handleDrawerToggle}

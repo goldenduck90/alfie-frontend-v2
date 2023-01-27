@@ -16,8 +16,8 @@ export function useLogoutMutation() {
       });
     },
     {
-      onSuccess: (data) => {
-        router.replace("/");
+      onSuccess: async (data) => {
+        await router.replace("/login");
         clear();
       },
       onError: (error) => {

@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
-import { DashboardCard } from "@src/components/DashboardCard";
-import { DashboardPreviewItem } from "@src/components/DashboardPreviewItem";
+import { DashboardCard } from "@src/components/ui/DashboardCard";
+import { DashboardPreviewItem } from "@src/components/ui/DashboardPreviewItem";
 
 import Link from "next/link";
 import React from "react";

@@ -1,9 +1,9 @@
 import { ChipIcon } from "@heroicons/react/outline";
 import { CakeIcon, PencilIcon } from "@heroicons/react/solid";
-import { Button } from "@src/components/Button2";
-import { DashboardCard } from "@src/components/DashboardCard";
-import { Line } from "@src/components/Line";
-import { PlaceHolderLine } from "@src/components/PlaceHolderLine";
+import { Button } from "@src/components/ui/Button";
+import { DashboardCard } from "@src/components/ui/DashboardCard";
+import { Line } from "@src/components/ui/Line";
+import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import React from "react";
 
 interface YourWeightProps {

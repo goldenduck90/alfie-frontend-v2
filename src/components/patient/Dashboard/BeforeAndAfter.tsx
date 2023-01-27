@@ -1,8 +1,8 @@
 import { UserIcon } from "@heroicons/react/outline";
-import { Button } from "@src/components/Button2";
+import { Button } from "@src/components/ui/Button";
 
-import { DashboardCard } from "@src/components/DashboardCard";
-import { PlaceHolderLine } from "@src/components/PlaceHolderLine";
+import { DashboardCard } from "@src/components/ui/DashboardCard";
+import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import React from "react";
 
 interface BeforeAndAfterProps {

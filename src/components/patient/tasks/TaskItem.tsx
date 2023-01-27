@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { format, isToday, isTomorrow, formatDistance } from "date-fns";
 import Link from "next/link";
-import { Button } from "../../Button2";
+import { Button } from "../../ui/Button";
 import { CheckCircleIcon, HeartIcon } from "@heroicons/react/solid";
 import {
   CalendarIcon,
