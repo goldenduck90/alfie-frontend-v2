@@ -1,8 +1,8 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider } from "formik";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "../../src/components/Button";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
+// import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../Button";
+import { Wrapper } from "../layouts/Wrapper";
 import { BiologicalSex } from "./steps/BiologicalSex";
 import { BMI } from "./steps/BMI";
 import { DateOfBirth } from "./steps/DateOfBirth";
@@ -13,12 +13,14 @@ import * as Yup from "yup";
 import { WeightLossMotivator } from "./steps/WeightLossMotivator";
 import { useFormikWizard } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
-import { ValidStates } from "../../src/utils/states";
-import { ProgressBar } from "../../src/components/ProgressBar";
-import { Logo } from "../../src/components/Logo";
+import { ValidStates } from "../../utils/states";
+import { ProgressBar } from "../ProgressBar";
+import { Logo } from "../Logo";
 import { gql, useMutation } from "@apollo/client";
-import { parseError } from "../../src/utils/parseError";
+import { parseError } from "../../utils/parseError";
 import { Gender } from "../../graphql/generated";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const TOTAL_STEPS = 6;
 
@@ -34,7 +36,7 @@ const createOrFindCheckoutMutation = gql`
 `;
 
 export const PreCheckout = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
 
   const preCheckoutForm = useFormikWizard({
@@ -90,7 +92,7 @@ export const PreCheckout = () => {
 
         const { checkout } = data.createOrFindCheckout;
         resetForm();
-        navigate(`/signup/checkout/${checkout._id}`);
+        router.push(`/signup/checkout/${checkout._id}`);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
@@ -172,7 +174,7 @@ export const PreCheckout = () => {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
 
           if (!ValidStates.includes(location)) {
-            navigate("/signup/waitlist");
+            router.push("/signup/waitlist");
           }
 
           return Promise.resolve();
@@ -200,7 +202,7 @@ export const PreCheckout = () => {
             parseInt(heightFeet) * 12 + parseInt(heightInches);
           const bmi = (weight / (heightInInches * heightInInches)) * 703;
           if (bmi < 27) {
-            navigate("/signup/ineligible");
+            router.push("/signup/ineligible");
           } else {
             localStorage.setItem("heightFeet", heightFeet);
             localStorage.setItem("heightInches", heightInches);
@@ -276,7 +278,7 @@ export const PreCheckout = () => {
               <p className="font-mulish text-center text-sm text-gray-400 pt-6">
                 Already have an account?{" "}
                 <Link
-                  to="/login"
+                  href="/login"
                   className="text-indigo-800 hover:text-indigo-600"
                 >
                   Click here to login.

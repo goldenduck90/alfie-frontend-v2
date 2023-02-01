@@ -4,8 +4,8 @@ import * as Sentry from "@sentry/react";
 import { useEffect } from "react";
 import { UserTask } from "../../../graphql/generated";
 import { TaskItem } from "./TaskItem";
-import { Button } from "../../ui/Button";
 import { LoadingTaskItem } from "./LoadingTaskItems";
+import { ToggleGroup } from "@src/components/ui/ToggleGroup";
 
 const userTasksQuery = gql`
   query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
@@ -51,24 +51,31 @@ export const TasksPage = () => {
     }
   }, [result]);
 
+  const toggleItems = [
+    {
+      content: (
+        <div>
+          Active Tasks <span className="">12</span>
+        </div>
+      ),
+      value: "active",
+    },
+    {
+      content: (
+        <div>
+          Completed Tasks <span className="">4</span>
+        </div>
+      ),
+      value: "completed",
+    },
+  ];
   return (
     <div>
       {result.error && <div>{result.error.message}</div>}
       {!result.error && (
         <div className="flex flex-col bg-white p-6 rounded-lg">
           <div className="flex flex-row pb-8">
-            <Button
-              buttonType="tertiary"
-              onClick={() => setTaskFilter("Active")}
-            >
-              Active
-            </Button>
-            <Button
-              buttonType="secondary"
-              onClick={() => setTaskFilter("Completed")}
-            >
-              Completed
-            </Button>
+            <ToggleGroup defaultValue="active" items={toggleItems} />
           </div>
           <h2 className="text-xl md:text-2xl font-bold font-mulish">
             {taskFilter} tasks
@@ -94,7 +101,7 @@ export const TasksPage = () => {
               {Array(6)
                 .fill("")
                 .map((_, i) => (
-                  <LoadingTaskItem />
+                  <LoadingTaskItem key={i} />
                 ))}
             </div>
           )}

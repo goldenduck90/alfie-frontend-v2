@@ -1,17 +1,17 @@
 import React from "react";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
-import { Logo } from "../../src/components/Logo";
+import { Wrapper } from "../layouts/Wrapper";
+import { Logo } from "../Logo";
 import { gql, useMutation } from "@apollo/client";
-import { useNavigate, useParams } from "react-router";
-import { Button } from "../../src/components/Button";
-import { Checkbox } from "../../src/components/inputs/Checkbox";
+// import { useNavigate, useParams } from "react-router";
+import { Button } from "../Button";
+import { Checkbox } from "../inputs/Checkbox";
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
-import { SelectInput } from "../../src/components/inputs/SelectInput";
-import { States } from "../../src/utils/states";
-import { TextInput } from "../../src/components/inputs/TextInput";
+import { SelectInput } from "../inputs/SelectInput";
+import { States } from "../../utils/states";
+import { TextInput } from "../inputs/TextInput";
 import * as Yup from "yup";
-import { parseError } from "../../src/utils/parseError";
+import { parseError } from "../../utils/parseError";
 
 const createOrUpdateStripeSessionMutation = gql`
   mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
@@ -24,15 +24,15 @@ const createOrUpdateStripeSessionMutation = gql`
 `;
 
 export const CheckoutAddress = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  // const { id } = useParams();
+  // const navigate = useNavigate();
   const [createOrUpdateStripeSession] = useMutation(
     createOrUpdateStripeSessionMutation
   );
 
   const form = useFormik({
     initialValues: {
-      _id: id,
+      _id: "",
       shipping: {
         line1: "",
         line2: "",
@@ -69,7 +69,7 @@ export const CheckoutAddress = () => {
 
         const { checkout } = data.createOrUpdateStripeSession;
         resetForm();
-        navigate(`/signup/checkout/${checkout._id}/payment`);
+        // navigate(`/signup/checkout/${checkout._id}/payment`);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
@@ -77,9 +77,9 @@ export const CheckoutAddress = () => {
     },
   });
 
-  if (!id) {
-    navigate("/signup");
-  }
+  // if (!id) {
+  //   navigate("/signup");
+  // }
 
   // const { checkout, paymentLink } = data.checkout
   const { submitForm, isSubmitting } = form;

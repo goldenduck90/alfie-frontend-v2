@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useField } from "formik";
-import { NumberInput } from "../../../src/components/inputs/NumbeInput";
+import { NumberInput } from "../../inputs/NumbeInput";
 
 export const BMI = () => {
   const fullName = localStorage.getItem("fullName") || "";

@@ -1,5 +1,5 @@
 import React from "react";
-import { SelectInput } from "../../../src/components/inputs/SelectInput";
+import { SelectInput } from "../../inputs/SelectInput";
 
 export const BiologicalSex = () => {
   return (

@@ -1,14 +1,15 @@
 import React, { useEffect, useMemo } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
-import { IconInput } from "../../src/components/inputs/IconInput";
-import { Button } from "../../src/components/Button";
+import { Wrapper } from "../layouts/Wrapper";
+import { IconInput } from "../inputs/IconInput";
+import { Button } from "../Button";
 import { MailIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { parseError } from "../../src/utils/parseError";
-import { getStateByAbbreviation } from "../../src/utils/states";
+import { parseError } from "../../utils/parseError";
+import { getStateByAbbreviation } from "../../utils/states";
+import { useRouter } from "next/router";
+import Image from "next/image";
 
 const subscribeEmailMutation = gql`
   mutation SubscribeEmail($input: SubscribeEmailInput!) {
@@ -18,16 +19,16 @@ const subscribeEmailMutation = gql`
   }
 `;
 
-const WaitlistForm = () => {
-  const navigation = useNavigate();
+export function WaitListForm() {
+  const router = useRouter();
   const [subscribeEmail] = useMutation(subscribeEmailMutation);
 
   useEffect(() => {
     if (localStorage.getItem("fullName") || localStorage.getItem("location"))
       return;
 
-    navigation("/signup");
-  }, [navigation]);
+    router.push("/signup");
+  }, [router]);
 
   const subscribeEmailForm = useFormik({
     initialValues: {
@@ -74,10 +75,11 @@ const WaitlistForm = () => {
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <img
-          src={require("../../assets/logo.png")}
+        <Image
+          src={require("/assets/logo.png")}
           alt="Alfie"
-          className="w-36"
+          height={60}
+          width={144}
         />
       </div>
       <FormikProvider value={subscribeEmailForm}>
@@ -131,6 +133,4 @@ const WaitlistForm = () => {
       </FormikProvider>
     </Wrapper>
   );
-};
-
-export default WaitlistForm;
+}

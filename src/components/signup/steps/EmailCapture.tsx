@@ -1,7 +1,7 @@
 import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
 import React, { useMemo } from "react";
-import { Checkbox } from "../../../src/components/inputs/Checkbox";
-import { IconInput } from "../../../src/components/inputs/IconInput";
+import { Checkbox } from "../../inputs/Checkbox";
+import { IconInput } from "../../inputs/IconInput";
 
 export const EmailCapture = () => {
   const fullName = localStorage.getItem("fullName") || "";
@@ -20,7 +20,7 @@ export const EmailCapture = () => {
       <p className="mb-10 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
         Great news, <span className="capitalize">{fullName.split(" ")[0]}</span>
         ! With Alfie, you could lose over {weightLossValue} in under 6 months.
-        We'll design a customized plan for you that includes metabolic
+        We&apos;ll design a customized plan for you that includes metabolic
         profiling, doctor-managed care, and accountability.
       </p>
 

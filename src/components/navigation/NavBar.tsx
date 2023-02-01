@@ -4,6 +4,8 @@ import Image from "next/image";
 import React from "react";
 import { NavigationItem } from "./NavigationItem";
 import dynamic from "next/dynamic";
+import { Role } from "@src/graphql/generated";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 
 const NavUser = dynamic(() => import("./NavUser"), {
   ssr: false,
@@ -15,6 +17,8 @@ interface NavbarProps {
 
 export function Navbar({ navItems }: NavbarProps) {
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const { user } = useCurrentUserStore();
+  const isAdmin = user?.role === Role.Admin;
 
   const navigationItems = navItems.map((item, i) => (
     <NavigationItem key={i} href={item.href}>
@@ -25,6 +29,12 @@ export function Navbar({ navItems }: NavbarProps) {
   return (
     <div className="fixed top-0 flex flex-row w-full z-[98]">
       <div className="flex flex-col items-center bg-brand-berry w-full border-b-[1px] border-brand-berry-tint-1">
+        {/* //TODO: Create Role Changing for admin  */}
+        {isAdmin && (
+          <div className=" w-full top-0 z-[98] bg-brand-berry p-2">
+            Role Changing component
+          </div>
+        )}
         <nav className="flex flex-row justify-between p-4 md:px-8 max-w-7xl w-full">
           <div className="flex items-center">
             <button

@@ -1,11 +1,12 @@
 import React from "react";
-import { TextInput } from "../../../src/components/inputs/TextInput";
+import { TextInput } from "../../inputs/TextInput";
 
 export const FullName = () => {
   return (
     <div>
       <p className="mb-10 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
-        Let's answer a few questions to see how much you can lose with Alfie.
+        Let&apos;s answer a few questions to see how much you can lose with
+        Alfie.
       </p>
 
       <div className="flex-flex-col mb-5">

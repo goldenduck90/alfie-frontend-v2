@@ -1,6 +1,6 @@
 import { useField } from "formik";
 import React from "react";
-import { SelectInput } from "../../../src/components/inputs/SelectInput";
+import { SelectInput } from "../../inputs/SelectInput";
 
 export const WeightLossMotivator = () => {
   const [, { value }] = useField("fullName");

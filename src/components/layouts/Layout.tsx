@@ -21,6 +21,7 @@ export const Layout = ({ children, title, subtitle }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useCurrentUserStore();
   const router = useRouter();
+  const isAdmin = user?.role === Role.Admin;
   // const { boot } = useIntercom();
 
   // useEffect(() => {
@@ -74,10 +75,12 @@ export const Layout = ({ children, title, subtitle }: LayoutProps) => {
     navigation = patientNavigation;
   } else if (user?.role === Role.Practitioner) {
     navigation = providerNavigation;
+  } else if (isAdmin) {
+    navigation = providerNavigation;
   }
 
   return (
-    <>
+    <div className="relative">
       <Navbar navItems={navigation} />
       <main className="flex w-full">
         {(title || subtitle) && (
@@ -98,6 +101,6 @@ export const Layout = ({ children, title, subtitle }: LayoutProps) => {
           {children}
         </div>
       </main>
-    </>
+    </div>
   );
 };

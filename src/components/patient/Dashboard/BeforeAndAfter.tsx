@@ -6,10 +6,10 @@ import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import React from "react";
 
 interface BeforeAndAfterProps {
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
-export function BeforeAndAfter({ isLoading = true }: BeforeAndAfterProps) {
+export function BeforeAndAfter({ isLoading }: BeforeAndAfterProps) {
   return (
     <DashboardCard cardHeader={""} className="w-full">
       <div className="flex flex-row">

@@ -1,6 +1,6 @@
 import { CalendarIcon } from "@heroicons/react/solid";
 import React from "react";
-import { IconInput } from "../../../src/components/inputs/IconInput";
+import { IconInput } from "../../inputs/IconInput";
 
 export const DateOfBirth = () => {
   return (

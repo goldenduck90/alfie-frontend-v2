@@ -3,10 +3,10 @@ import { DashboardPreviewItem } from "@src/components/ui/DashboardPreviewItem";
 import Link from "next/link";
 import React from "react";
 
-export function DashboardAppointments() {
+export function DashboardAppointments({ isLoading }: any) {
   const tasks = Array(2).fill(" ");
   const renderItems = tasks.map((item, i) => (
-    <DashboardPreviewItem key={i} {...(item as any)} isLoading />
+    <DashboardPreviewItem key={i} {...(item as any)} isLoading={isLoading} />
   ));
   return (
     <>

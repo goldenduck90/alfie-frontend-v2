@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
+import { Wrapper } from "../layouts/Wrapper";
+import Image from "next/image";
 
 const Success = () => {
   // run once
@@ -12,10 +13,11 @@ const Success = () => {
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <img
-          src={require("../../assets/logo.png")}
+        <Image
+          src={require("/assets/logo.png")}
           alt="Alfie"
-          className="w-36"
+          width={144}
+          height={60}
         />
       </div>
       <div className="flex flex-col px-8 sm:px-14 pt-12 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
@@ -31,8 +33,8 @@ const Success = () => {
         </div>
         <div className="flex flex-col text-center border-t border-gray-200">
           <p className="font-mulish text-md text-gray-900 pt-6">
-            Please check your email to complete your signup. If you don't see an
-            email from us in your inbox, please check your spam folder.
+            Please check your email to complete your signup. If you don&apos;t
+            see an email from us in your inbox, please check your spam folder.
           </p>
           <p className="font-mulish text-md text-gray-900 pt-6">
             If you have any questions, please reach out to us at{" "}

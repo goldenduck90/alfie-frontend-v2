@@ -6,13 +6,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/react";
+import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
-import { useNavigate, useParams } from "react-router";
-import { Button } from "../../src/components/Button";
-import { FeatureSection } from "../../src/components/FeatureSection";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
-import { Loading } from "../../src/components/Loading";
-import { Logo } from "../../src/components/Logo";
+import { Button } from "../Button";
+import { FeatureSection } from "../FeatureSection";
+import { Wrapper } from "../layouts/Wrapper";
+import { Loading } from "../Loading";
+import { Logo } from "../Logo";
 
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
@@ -27,12 +27,12 @@ const getCheckoutQuery = gql`
 `;
 
 export const Checkout = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  // const { id } = useParams();
+  const router = useRouter();
 
   const { data, loading, error } = useQuery(getCheckoutQuery, {
     variables: {
-      id,
+      id: "",
     },
   });
 
@@ -57,7 +57,7 @@ export const Checkout = () => {
   if (loading) return <Loading />;
 
   if (error) {
-    navigate("/");
+    router.push("/");
   }
 
   const { checkout } = data.checkout;
@@ -68,8 +68,8 @@ export const Checkout = () => {
       <div className="flex flex-col px-6 md:px-8 pt-8 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 max-w-lg">
         <p className="mb-4 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
           <span className="capitalize">{checkout.name.split(" ")[0]}</span>,
-          you'll lose over {weightLossValue} in 6 months with Alfie, the virtual
-          precision medicine clinic for people struggling with obesity.
+          you&apos;ll lose over {weightLossValue} in 6 months with Alfie, the
+          virtual precision medicine clinic for people struggling with obesity.
         </p>
 
         <div className="flex flex-col md:flex-row justify-between md:items-center pb-4">
@@ -88,7 +88,7 @@ export const Checkout = () => {
             <Button
               title="Checkout"
               onPress={() => {
-                navigate(`/signup/checkout/${id}/address`);
+                router.push(`/signup/checkout/${"id"}/address`);
               }}
               bold
             />
@@ -97,7 +97,7 @@ export const Checkout = () => {
 
         <div className="flex flex-col">
           <h3 className="font-mulish text-xl text-gray-800 font-bold mb-8">
-            What's Included
+            What&apos;s Included
           </h3>
           <FeatureSection
             icon={

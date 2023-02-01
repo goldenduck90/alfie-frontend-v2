@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Wrapper } from "../../src/components/layouts/Wrapper";
-import { Logo } from "../../src/components/Logo";
+import { Wrapper } from "../layouts/Wrapper";
+import { Logo } from "../Logo";
 import {
   PaymentElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { Button } from "../../src/components/Button";
+import { Button } from "../Button";
 import * as Sentry from "@sentry/react";
 
 export const CheckoutPayment = () => {

@@ -49,6 +49,7 @@ export const DashboardTaskList = () => {
     filteredTasks?.length > 0
       ? filteredTasks
       : result?.data?.userTasks?.userTasks;
+
   // React.useEffect(() => {
   //   if (param !== null) {
   //     result.refetch();
@@ -67,6 +68,7 @@ export const DashboardTaskList = () => {
   //     });
   //   }
   // }, [result]);
+
   const renderItems = [0, 1]?.map((item, i) => (
     <DashboardPreviewItem
       key={i}
@@ -77,38 +79,23 @@ export const DashboardTaskList = () => {
 
   return (
     <div className="w-full md:min-w-[49.5%]">
-      {result.error && <div>{result.error.message}</div>}
-      {!result.error && (
-        <>
-          <DashboardCard
-            cardHeader={
-              <div className="flex justify-between">
-                <h3 className="font-bold">Tasks</h3>{" "}
-                <Link href="/dashboard/tasks">
-                  <p className="font-semibold">View all</p>
-                </Link>
-              </div>
-            }
-          >
-            {renderItems}
-          </DashboardCard>
-        </>
-      )}
+      <div>
+        <DashboardCard
+          cardHeader={
+            <div className="flex justify-between">
+              <h3 className="font-bold">Tasks</h3>{" "}
+              <Link href="/dashboard/tasks">
+                <p className="font-semibold">View all</p>
+              </Link>
+            </div>
+          }
+        >
+          {result.error && (
+            <div className="h-full">{result?.error?.message}</div>
+          )}
+          {renderItems}
+        </DashboardCard>
+      </div>
     </div>
   );
 };
-
-// {tasks.map((userTask: UserTask, i: number) => (
-//   <div className="pt-6" key={i}>
-//               <TaskItem
-//                 key={userTask._id}
-//                 id={userTask._id}
-//                 type={userTask?.task?.type || ""}
-//                 title={userTask?.task?.name || ""}
-//                 createdAt={userTask.createdAt}
-//                 dueAt={userTask.dueAt}
-//                 pastDue={userTask.pastDue}
-//                 actionText="Complete"
-//                 />
-//             </div>
-//                 ))}

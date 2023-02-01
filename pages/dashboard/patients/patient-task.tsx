@@ -7,7 +7,7 @@ import {
 import { PatientTasksSkeletonLoader } from "@src/components/loading/PatientTasksSkeletonLoader";
 import { Layout } from "@src/components/layouts/Layout";
 
-const PatientTasks = ({
+export const PatientTasks = ({
   loading,
   data,
   selectATask,

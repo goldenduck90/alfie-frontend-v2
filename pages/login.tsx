@@ -43,11 +43,11 @@ const Login = () => {
     initialValues: {
       error: "",
       email:
-        // "robert@joinalfie.com",
-        "dpgozza@gmail.com",
+        // "dpgozza@gmail.com",
+        "robert@joinalfie.com",
       password:
-        // "Letmein1!",
-        "Password1!",
+        // "Password1!",
+        "Letmein1!",
       remember: false,
     },
     initialErrors: {

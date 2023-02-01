@@ -7,7 +7,12 @@ const Appointments = () => {
 };
 
 Appointments.getLayout = (page: React.ReactNode) => (
-  <Layout title="Appointments">{page}</Layout>
+  <Layout
+    title="Appointments"
+    subtitle="View and manage your medical appointments."
+  >
+    {page}
+  </Layout>
 );
 
 export default Appointments;

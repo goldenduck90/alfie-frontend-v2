@@ -25,7 +25,7 @@ import {
   PatientWeights,
 } from "../../../src/components/practitioner/Table";
 import { SlideOver } from "../../../src/components/SlideOver";
-import { PatientTasks } from "../../practitioner/PatientTasks";
+import { PatientTasks } from "./patient-task";
 
 const getAllProviderPatientsQuery = gql`
   query getAllPatientsByProvider {

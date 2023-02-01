@@ -4,7 +4,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Loading } from "../../src/components/Loading";
+import { Loading } from "../Loading";
 import { CheckoutPayment } from "./CheckoutPayment";
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
