@@ -3,7 +3,7 @@ import { FormikProvider, useFormik } from "formik";
 import { Button } from "../../Button";
 import { convertFormValuesIntoAnswers, parseCachedVal } from "../helpers";
 import { Question } from "../Question";
-import { BackButton } from "../../BackButton";
+import { BackButton } from "../../ui/BackButton";
 
 import { useMutation, gql } from "@apollo/client";
 import { useNavigate } from "react-router";

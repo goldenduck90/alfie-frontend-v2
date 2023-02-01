@@ -4,7 +4,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider } from "formik";
 import { useFormikWizard, WizardProps } from "formik-wizard-form";
 import { useNavigate } from "react-router";
-import { BackButton } from "../../../BackButton";
+import { BackButton } from "../../../ui/BackButton";
 import { Button } from "../../../Button";
 import { useNotificationDispatch } from "../../../../context/NotificationContext";
 import { convertFormValuesIntoAnswers } from "../../helpers";

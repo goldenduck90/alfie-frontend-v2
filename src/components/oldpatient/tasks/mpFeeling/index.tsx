@@ -2,7 +2,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider } from "formik";
 import { Button } from "../../../Button";
 import { useFormikWizard, WizardProps } from "formik-wizard-form";
-import { BackButton } from "../../../BackButton";
+import { BackButton } from "../../../ui/BackButton";
 import * as Steps from "./Steps";
 import { convertFormValuesIntoAnswers } from "../../helpers";
 import { useMutation, gql } from "@apollo/client";
