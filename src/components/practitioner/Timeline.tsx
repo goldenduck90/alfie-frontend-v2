@@ -1,5 +1,5 @@
-import { ChartBarIcon } from "@heroicons/react/outline"
-import { CheckIcon, ThumbUpIcon, UserIcon } from "@heroicons/react/solid"
+import { ChartBarIcon } from "@heroicons/react/outline";
+import { CheckIcon, ThumbUpIcon, UserIcon } from "@heroicons/react/solid";
 
 const timeline = [
   {
@@ -52,11 +52,10 @@ const timeline = [
     icon: CheckIcon,
     iconBackground: "bg-green-500",
   },
-]
+];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ")
+  return classes.filter(Boolean).join(" ");
 }
 
 export const Timeline = () => {
@@ -92,7 +91,7 @@ export const Timeline = () => {
                       {event.content}{" "}
                       <a
                         href={event.href}
-                        className="font-medium text-royalBlue"
+                        className="font-medium text-brand-berry"
                       >
                         {event.target}
                       </a>
@@ -108,5 +107,5 @@ export const Timeline = () => {
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};

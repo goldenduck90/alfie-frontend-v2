@@ -60,8 +60,8 @@ function classNames(...classes: any) {
 
 const Faq = () => {
   return (
-    <div>
-      <div className="mx-auto max-w-7xl py-12 px-4 sm:py-16 sm:px-6 lg:px-8">
+    <div className="bg-white border p-6 shadow-lg rounded-xl">
+      <div className="mx-auto max-w-7xl px-4 sm:py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl divide-y-2 divide-gray-200">
           <dl className="space-y-6 divide-y divide-gray-200">
             {faqs.map((faq) => (

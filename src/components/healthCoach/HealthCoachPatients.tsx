@@ -5,15 +5,8 @@ import {
   PaperClipIcon,
 } from "@heroicons/react/solid";
 import * as Sentry from "@sentry/react";
-import { UnControlledTextInput } from "@src/components/inputs/UnControlledTextInput";
-import { SkeletonLoader } from "@src/components/loading/PatientSkeletonLoader";
-import {
-  Patient,
-  PatientWeights,
-} from "@src/components/practitioner/dashboard/Table";
-import { SlideOver } from "@src/components/SlideOver";
-
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   CartesianGrid,
   Legend,
@@ -23,12 +16,17 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Layout } from "@src/components/layouts/Layout";
-import { PatientTasks } from "@src/components/practitioner/patients/PatientTasks";
+import { UnControlledTextInput } from "../../components/inputs/UnControlledTextInput";
+import { PractitionerApplicationLayout } from "../../components/layouts/PractitionerApplicationLayout";
+import { SkeletonLoader } from "../../components/loading/PatientSkeletonLoader";
+
+import { Patient, PatientWeights } from "../../components/practitioner/Table";
+import { SlideOver } from "../../components/SlideOver";
+import { PatientTasks } from "../practitioner/PatientTasks";
 
 const getAllProviderPatientsQuery = gql`
   query getAllPatientsByProvider {
-    getAllPatientsByPractitioner {
+    getAllPatientsByHealthCoach {
       _id
       name
       gender
@@ -51,6 +49,7 @@ const getAllProviderPatientsQuery = gql`
     }
   }
 `;
+
 const getTasksQuery = gql`
   query getTasksByPatient($userId: String!) {
     getAllUserTasksByUser(userId: $userId) {
@@ -71,29 +70,37 @@ const getTasksQuery = gql`
     }
   }
 `;
-function Patients() {
+export const HealthCoachPatients = () => {
   const patients = useQuery(getAllProviderPatientsQuery);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [taskView, setTaskViewOpen] = useState<boolean>(false);
   const [showPatientDetails, setShowPatientDetails] = useState<boolean>(false);
   const [showPatientTasks, setShowPatientTasks] = useState<boolean>(false);
   const [showPatientMedical, setShowPatientMedical] = useState<boolean>(false);
+  const findPatientInPatients = patients.data?.getAllPatientsByHealthCoach.find(
+    (patient: Patient) => patient._id === searchParams.get("id")
+  );
+  console.log("findPatientInPatients", findPatientInPatients);
   const [selectedPatient, setSelectedPatient] = useState<Patient>(
-    null || patients.data?.getAllPatientsByPractitioner[0]
+    null || patients.data?.getAllPatientsByHealthCoach[0]
   );
   const [patientFilterValue, setPatientFilterValue] = useState<string>("");
-
   useEffect(() => {
     if (selectedPatient?._id) {
-      const allPatients = patients.data?.getAllPatientsByPractitioner.find(
+      const allPatients = patients.data?.getAllPatientsByHealthCoach.find(
         (patient: Patient) => patient._id === String(selectedPatient?._id)
       );
       setSelectedPatient(allPatients);
     } else {
       // Just set the first patient in the list to the selected patient
-      setSelectedPatient(patients.data?.getAllPatientsByPractitioner[0]);
+      setSelectedPatient(findPatientInPatients);
     }
-  }, [selectedPatient?._id, patients.data?.getAllPatientsByPractitioner]);
+  }, [
+    selectedPatient?._id,
+    patients.data?.getAllPatientsByHealthCoach,
+    findPatientInPatients,
+  ]);
 
   // use lazy query to make the call in a useEffect
   const [getTasks, { data, loading }] = useLazyQuery(getTasksQuery);
@@ -116,7 +123,7 @@ function Patients() {
   }, [patients]);
 
   // filters by first and last name ignoring spaces
-  const filterPatients = patients.data?.getAllPatientsByPractitioner?.filter(
+  const filterPatients = patients.data?.getAllPatientsByHealthCoach?.filter(
     (patient: Patient) => {
       // Sorry about the split here and in the build directory
       // db needs to separate first and last name
@@ -258,17 +265,17 @@ function Patients() {
     };
   });
   return (
-    <div>
+    <PractitionerApplicationLayout title="Patients">
       <SlideOver
         selectedTask={selectedTask}
         title={selectedTask?.task.name}
         isOpen={taskView}
         setIsOpen={() => setTaskViewOpen(!taskView)}
       />
-      <div className="flex flex-row h-[73vh]">
+      <div className="flex flex-row h-[84vh]">
         <div className="flex flex-col w-1/4 overflow-y-auto">
           <nav
-            className="flex flex-col overflow-y-auto h-[73vh] w-full bg-white shadow-md rounded-md px-4"
+            className="flex flex-col overflow-y-auto h-[84vh] w-full bg-white shadow-md rounded-md px-4"
             aria-label="Directory"
           >
             {/* 
@@ -315,7 +322,7 @@ function Patients() {
                         }
                         onClick={() => {
                           setSelectedPatient(
-                            patients.data?.getAllPatientsByPractitioner.find(
+                            patients.data?.getAllPatientsByHealthCoach.find(
                               (patient: Patient) => patient._id === person.id
                             )
                           );
@@ -346,12 +353,12 @@ function Patients() {
             </div>
           </nav>
         </div>
-        <div className="flex flex-col w-3/4 pl-8 overflow-y-auto gap-5">
+        <div className="flex flex-col w-3/4 pl-8 overflow-y-auto">
           {patients?.loading && <SkeletonLoader />}
           {/* <ResponsiveContainer width="100%" height="100%"> */}
 
           {/* </ResponsiveContainer> */}
-          <div className="bg-white shadow sm:rounded-lg">
+          <div className="bg-white shadow sm:rounded-lg mb-10">
             <div
               onClick={() => {
                 setShowPatientDetails(!showPatientDetails);
@@ -360,7 +367,7 @@ function Patients() {
             >
               <div className="px-4 py-5 sm:px-6">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  {selectedPatient?.name}&apos;s Information
+                  {selectedPatient?.name}'s Information
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">
                   Patient details
@@ -501,7 +508,7 @@ function Patients() {
               </div>
             )}
           </div>
-          <div className="gap-5">
+          <div>
             <div className="flex flex-col bg-white shadow rounded-lg overflow-hidden">
               <div
                 onClick={() => {
@@ -511,7 +518,7 @@ function Patients() {
               >
                 <div className="px-4 py-5 sm:px-6">
                   <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Patient&apos;s Tasks
+                    Patient's Tasks
                   </h3>
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">
                     All patient tasks are listed here.
@@ -547,7 +554,7 @@ function Patients() {
               </div>
             </div> */}
           </div>
-          <div className="">
+          <div className="pt-10">
             <div className="flex flex-col bg-white shadow rounded-lg overflow-hidden">
               <div
                 onClick={() => {
@@ -603,11 +610,11 @@ function Patients() {
               </div>
             </div> */}
           </div>
-          <div className="">
+          <div className="pt-10">
             {/* <ProTable score={selectedPatient?.score} /> */}
           </div>
           <div>
-            <div className="flex flex-col pb-10 flex-wrap justify-around">
+            <div className="flex flex-row pb-10 flex-wrap justify-around pt-10">
               <div>
                 <h3 className="text-lg font-medium leading-6 text-gray-900 pb-2">
                   Weight
@@ -731,13 +738,6 @@ function Patients() {
           </div>
         </div>
       </div>
-    </div>
+    </PractitionerApplicationLayout>
   );
-}
-
-Patients.isAuthRequired = true;
-Patients.getLayout = (page: React.ReactNode) => (
-  <Layout title="Patients">{page}</Layout>
-);
-
-export default Patients;
+};
