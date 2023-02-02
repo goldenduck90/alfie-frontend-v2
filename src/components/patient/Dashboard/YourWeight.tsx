@@ -4,6 +4,7 @@ import { Button } from "@src/components/ui/Button";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { Line } from "@src/components/ui/Line";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
+import { SliderRanger } from "@src/components/ui/SliderRange";
 import React from "react";
 
 interface YourWeightProps {
@@ -54,6 +55,9 @@ export function YourWeight({ isLoading }: YourWeightProps) {
               weight!
             </p>
           )}
+          <div className="pt-8 flex w-full">
+            <SliderRanger />
+          </div>
         </div>
       </div>
     </DashboardCard>

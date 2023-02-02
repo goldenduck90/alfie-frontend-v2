@@ -1,5 +1,6 @@
 import React from "react";
 import { useField } from "formik";
+import { Control, useController } from "react-hook-form";
 
 export const IconInput = ({
   name,
@@ -40,3 +41,54 @@ export const IconInput = ({
     </>
   );
 };
+
+export function IconHookInput({
+  name,
+  icon,
+  placeholder,
+  disabled,
+  control,
+  ...props
+}: {
+  name: string;
+  icon: JSX.Element;
+  control: Control<any>;
+} & React.InputHTMLAttributes<HTMLInputElement>) {
+  const {
+    field,
+    fieldState: { invalid },
+    formState,
+  } = useController({
+    name,
+    control,
+  });
+  /**
+   * If field is invalid border will be red
+   * If form has any errors, border will be red
+   */
+  return (
+    <>
+      <div
+        className={`${
+          invalid ? "border-red-500" : "border-gray-300"
+        } relative w-full border rounded-sm`}
+      >
+        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+          {icon}
+        </span>
+        <input
+          {...props}
+          {...field}
+          className="font-mulish w-full py-2 rounded-sm pl-10 appearance-none focus:outline-none placeholder-gray-400 bg-white text-black"
+          placeholder={placeholder}
+          disabled={disabled}
+        />
+      </div>
+      {invalid && (
+        <span className="text-red-500 text-sm">
+          {formState?.errors?.[name]?.message as string}
+        </span>
+      )}
+    </>
+  );
+}

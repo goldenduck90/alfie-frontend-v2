@@ -109,7 +109,7 @@ export const TaskItem = ({
               href={
                 meetingLocation
                   ? `/appointments/call/${getQueryParamIdFromMeetingUrl}`
-                  : `/task/${type}/${id}`
+                  : `/dashboard/tasks/${id}`
               }
             >
               <Button buttonType="secondary">{actionText}</Button>
@@ -155,7 +155,7 @@ export const TaskItem = ({
               href={
                 meetingLocation
                   ? `/appointments/call/${getQueryParamIdFromMeetingUrl}`
-                  : `/task/${type}/${id}`
+                  : `/dashboard/tasks/${id}`
               }
             >
               <Button buttonType="secondary">{actionText}</Button>
