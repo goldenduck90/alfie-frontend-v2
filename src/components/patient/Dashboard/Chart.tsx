@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
   Line,
+  ResponsiveContainer,
 } from "recharts";
 import dayjs from "dayjs";
 
@@ -18,15 +19,19 @@ const data = [
   },
   {
     date: "2021-02-01",
-    weight: 120,
+    weight: 77,
   },
   {
     date: "2021-03-01",
-    weight: 70,
+    weight: 60,
   },
   {
     date: "2021-04-01",
-    weight: 120,
+    weight: 45,
+  },
+  {
+    date: "2021-05-01",
+    weight: 10,
   },
 ];
 
@@ -37,28 +42,35 @@ export function Chart() {
       cardHeader={<h2 className="font-semibold">Your weight over time</h2>}
     >
       <div className="flex content-center w-full pt-8">
-        <LineChart height={400} width={800} data={data}>
-          <CartesianGrid strokeDasharray="0 0" vertical={false} />
-          <XAxis
-            dataKey="date"
-            strokeWidth={0}
-            tickFormatter={(unixTime) => dayjs(unixTime).format("MMM")}
-          />
-          <YAxis
-            domain={[0, 150]}
-            axisLine={false}
-            tickFormatter={(weight) => `${weight} kg`}
-          />
-          <Tooltip />
-          <Legend />
-          <Line
-            type="linear"
-            dataKey="weight"
-            stroke="#0C52E8"
-            strokeWidth={3}
-            activeDot={{ r: 8 }}
-          />
-        </LineChart>
+        <ResponsiveContainer width="100%" height={450}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="0 0" vertical={false} />
+            <XAxis
+              dataKey="date"
+              strokeWidth={0}
+              tickFormatter={(unixTime) => dayjs(unixTime).format("MMM")}
+            />
+            <YAxis
+              domain={[0, "auto"]}
+              type="number"
+              dataKey={"weight"}
+              axisLine={false}
+              tickLine={false}
+              tickCount={5}
+              tickFormatter={(weight) => `${weight} kg`}
+            />
+            <Line
+              type="linear"
+              dataKey="weight"
+              stroke="#0C52E8"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 8 }}
+            />
+            <Tooltip />
+            <Legend />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </DashboardCard>
   );
