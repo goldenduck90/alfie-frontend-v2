@@ -26,7 +26,7 @@ interface QuestionProps<T extends React.FC<QuestionComponentProps>> {
   Component: T;
 }
 
-const metabolicQuestions: QuestionProps<any>[] = [
+const medicalQuestions: QuestionProps<any>[] = [
   {
     id: "q1",
     question: "How long have you been trying to lose weight?",
@@ -75,6 +75,47 @@ const metabolicQuestions: QuestionProps<any>[] = [
   },
 ];
 
+const metabolicQuestions: QuestionProps<any>[] = [
+  {
+    id: "q1",
+    question: 'How often do you feel tense or "impatient"?',
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <MultiCheckboxFormQuestion
+        {...props}
+        multiple={false}
+        options={[
+          "Most of the time",
+          "A lot of the time",
+          "From time to time",
+          "Not at all",
+        ]}
+      />
+    ),
+    validation: z.string().array().nonempty("At least one option is required"),
+  },
+];
+
+const gastroQuestions: QuestionProps<any>[] = [
+  {
+    id: "q1",
+    question:
+      "Have you been bothered by pain or discomfort in your upper abdomen or the pit of your stomach during the past week?",
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <MultiCheckboxFormQuestion
+        {...props}
+        multiple={false}
+        options={[
+          "Most of the time",
+          "A lot of the time",
+          "From time to time, ocassionally",
+          "Not at all",
+        ]}
+      />
+    ),
+    validation: z.string().array().nonempty("At least one option is required"),
+  },
+];
+
 function createPersistedFormState(formName: string) {
   return create<any>(
     persist(
@@ -94,16 +135,31 @@ function createPersistedFormState(formName: string) {
 }
 
 export function Question() {
+  return (
+    <div className="flex flex-col gap-y-3">
+      <Questionnaire allQuestions={medicalQuestions} formName="medical" />
+      <Questionnaire allQuestions={metabolicQuestions} formName="metabolic" />
+      <Questionnaire allQuestions={gastroQuestions} formName="gastro" />
+    </div>
+  );
+}
+
+function Questionnaire({
+  allQuestions,
+  formName,
+}: {
+  allQuestions: QuestionProps<any>[];
+  formName: string;
+}) {
   const [step, setStep] = useState(0);
-  const onSubmit = createPersistedFormState("questionnaire")((state: any) => ({
+  const onSubmit = createPersistedFormState(formName)((state: any) => ({
     setFormState: state.setFormState,
   }));
   const { handleSubmit, control, trigger } = useForm({
-    defaultValues: getStoredForm("questionnaire"),
+    defaultValues: getStoredForm(formName),
     reValidateMode: "onBlur",
   });
 
-  const allQuestions = metabolicQuestions;
   const question = allQuestions?.[step];
   const Component = question?.Component;
   const endQuestion = step + 1 === allQuestions?.length;
@@ -247,7 +303,7 @@ export function MultiCheckboxFormQuestion({
           id={option}
           className="flex gap-x-3 gap-y-3 pb-2 items-center"
         >
-          <label className="text-lg font-bold text-center">{option}</label>
+          <label className="text-left">{option}</label>
           <input
             {...field}
             onChange={(e) => {
