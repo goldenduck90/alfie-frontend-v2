@@ -133,7 +133,12 @@ function createPersistedFormState(formName: string) {
     )
   );
 }
-
+/**
+ * Goal is to in the future only provide questions and type then the form works out of the box.
+ * Will need individual custom final submits
+ * Still requires final result mapping to API call
+ *
+ */
 export function Question() {
   return (
     <div className="flex flex-col gap-y-3">
