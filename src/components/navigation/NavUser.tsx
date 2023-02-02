@@ -7,6 +7,7 @@ import { Line } from "../ui/Line";
 import { Item } from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
 import { useLogoutMutation } from "@src/hooks/useLogoutMutation";
+import Link from "next/link";
 
 export default function NavUser() {
   const { user } = useCurrentUserStore();
@@ -15,9 +16,18 @@ export default function NavUser() {
   const router = useRouter();
 
   const userItems = [
-    { label: "Account details", onClick: () => router.push("/dashboard") },
-    { label: "Plan & billing", onClick: () => router.push("/dashboard") },
-    { label: "Notifications", onClick: () => router.push("/dashboard") },
+    {
+      label: "Account details",
+      onClick: () => router.push("/settings/account-details"),
+    },
+    {
+      label: "Plan & billing",
+      onClick: () => router.push("/settings/plan-&-billing"),
+    },
+    {
+      label: "Notifications",
+      onClick: () => router.push("/settings/notifications"),
+    },
   ];
 
   const renderUserItems = userItems.map((item, i) => (
@@ -26,10 +36,15 @@ export default function NavUser() {
   return (
     <>
       <div className="flex items-center">
-        <button className="relative p-1 hover:bg-brand-berry-shade rounded-xl mr-2 lg:mr-6">
-          <div className="absolute h-[15px] w-[15px] bg-red-500 border-[3px] border-brand-berry rounded-full top-1 right-1" />
-          <BellIcon className="h-6 w-6 text-brand-heavenly-tint-1 m-1" />
-        </button>
+        <Link href="/settings/notifications" passHref legacyBehavior>
+          <button className="relative p-1 hover:bg-brand-berry-shade rounded-xl mr-2 lg:mr-6">
+            {/* //TODO: this needs to check if there are any new notifications? */}
+            {true && (
+              <div className="absolute h-[15px] w-[15px] bg-red-500 border-[3px] border-brand-berry rounded-full top-1 right-1" />
+            )}
+            <BellIcon className="h-6 w-6 text-brand-heavenly-tint-1 m-1" />
+          </button>
+        </Link>
         <DropdownMenu
           trigger={
             <div className="flex rounded-xl hover:bg-brand-berry-shade p-1">
