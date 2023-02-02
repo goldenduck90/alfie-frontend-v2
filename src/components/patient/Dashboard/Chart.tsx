@@ -9,6 +9,7 @@ import {
   Legend,
   Line,
   ResponsiveContainer,
+  ReferenceLine,
 } from "recharts";
 import dayjs from "dayjs";
 
@@ -69,7 +70,47 @@ export function Chart() {
               dot={false}
               activeDot={{ r: 8 }}
             />
-            <Tooltip />
+            <Tooltip
+              offset={0}
+              content={({ payload, active }) => {
+                if (!active) return null;
+                const value = payload?.[0]?.value;
+                if (!value) return null;
+                return (
+                  <div className="py-1 px-2 text-center bg-black text-white rounded-full">
+                    {`${value} kg`}
+                  </div>
+                );
+              }}
+            />
+            <ReferenceLine
+              y={35}
+              stroke="#E99298"
+              label={(props) => {
+                console.log({ props });
+                return (
+                  <svg {...props} className="p-1 rounded-full bg-red-300">
+                    <rect
+                      x={10}
+                      y={props?.viewBox?.y - 13}
+                      rx="8"
+                      ry="6"
+                      width={60}
+                      height={25}
+                      fill={"#E99298"}
+                    />
+                    <text
+                      x={25}
+                      y={props?.viewBox?.y + 4}
+                      className="text-sm text-white p-1 rounded-full bg-red-300"
+                      fill="white"
+                    >
+                      Goal
+                    </text>
+                  </svg>
+                );
+              }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
