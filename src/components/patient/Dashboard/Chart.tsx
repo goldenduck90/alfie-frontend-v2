@@ -9,35 +9,53 @@ import {
   Legend,
   Line,
 } from "recharts";
+import dayjs from "dayjs";
+
+const data = [
+  {
+    date: "2021-01-01",
+    weight: 90,
+  },
+  {
+    date: "2021-02-01",
+    weight: 120,
+  },
+  {
+    date: "2021-03-01",
+    weight: 70,
+  },
+  {
+    date: "2021-04-01",
+    weight: 120,
+  },
+];
 
 export function Chart() {
   return (
     <DashboardCard
-      className="w-full md:max-w-[75%] md:min-w-max"
+      className="w-full md:max-w-[75%] md:min-w-max py-4"
       cardHeader={<h2 className="font-semibold">Your weight over time</h2>}
     >
-      <div className="flex content-center">
-        <LineChart
-          height={200}
-          width={500}
-          // className="w-full"
-          data={[]}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
-          <YAxis />
+      <div className="flex content-center w-full pt-8">
+        <LineChart height={400} width={800} data={data}>
+          <CartesianGrid strokeDasharray="0 0" vertical={false} />
+          <XAxis
+            dataKey="date"
+            strokeWidth={0}
+            tickFormatter={(unixTime) => dayjs(unixTime).format("MMM")}
+          />
+          <YAxis
+            domain={[0, 150]}
+            axisLine={false}
+            tickFormatter={(weight) => `${weight} kg`}
+          />
           <Tooltip />
           <Legend />
           <Line
-            type="monotone"
-            dataKey="value"
-            stroke="#8884d8"
+            type="linear"
+            dataKey="weight"
+            stroke="#0C52E8"
+            strokeWidth={3}
             activeDot={{ r: 8 }}
           />
         </LineChart>
