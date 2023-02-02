@@ -78,7 +78,7 @@ export const DashboardTaskList = () => {
   ));
 
   return (
-    <div className="w-full md:min-w-[49.5%]">
+    <div className="w-full md:min-w-[49.2%]">
       <div>
         <DashboardCard
           cardHeader={
