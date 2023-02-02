@@ -4,28 +4,74 @@ import { Button } from "../ui/Button";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { z, ZodError } from "zod";
-interface QuestionProps {
-  id: string;
+
+interface QuestionComponentProps {
+  control: Control<any>;
+  validation?: z.ZodType<any, any>;
+  name: string;
   question: string;
 }
 
-const metabolicQuestions: QuestionProps[] = [
+interface SingleFormQuestionProps extends QuestionComponentProps {}
+
+interface MultiCheckboxQuestionProps extends QuestionComponentProps {
+  options: string[];
+  multiple?: boolean;
+}
+
+interface QuestionProps<T extends React.FC<QuestionComponentProps>> {
+  id: string;
+  question: string;
+  validation?: z.ZodType<any, any>;
+  Component: T;
+}
+
+const metabolicQuestions: QuestionProps<any>[] = [
   {
     id: "q1",
     question: "How long have you been trying to lose weight?",
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <MultiCheckboxFormQuestion
+        {...props}
+        multiple={false}
+        options={[
+          "My whole life",
+          "Several years",
+          "6-12 Months",
+          "Less than 6 Months",
+        ]}
+      />
+    ),
+    validation: z.string().array().nonempty("At least one option is required"),
   },
   {
     id: "q2",
     question:
       "Have you tried any of the following weight management methods in the past?",
+    Component: SingleFormQuestion,
+    validation: z.string().min(1, "Required"),
   },
   {
     id: "q3",
     question: "Do you have any of the following conditions?",
+    Component: SingleFormQuestion,
+    validation: z.string().min(1, "Required"),
   },
   {
     id: "q4",
     question: "Please list any medication allergies you are aware of:",
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <MultiCheckboxFormQuestion
+        {...props}
+        options={[
+          "Penicillin",
+          "Aspirin",
+          "Ibuprofen",
+          "Other",
+          "None of the Above",
+        ]}
+      />
+    ),
   },
 ];
 
@@ -57,21 +103,22 @@ export function Question() {
     reValidateMode: "onBlur",
   });
 
-  const allQuestions: QuestionProps[] = metabolicQuestions;
+  const allQuestions = metabolicQuestions;
   const question = allQuestions?.[step];
+  const Component = question?.Component;
   const endQuestion = step + 1 === allQuestions?.length;
 
   return (
-    <div className="bg-white border rounded-md p-4 flex gap-x-2">
+    <div className="bg-white border rounded-md p-4 flex gap-x-2 items-center">
       {step > 0 && <Button onClick={() => setStep((s) => s - 1)}>Back</Button>}
-      <div className="">
-        {!!question && (
-          <SingleFormQuestion
+      <div className="flex flex-col items-center w-full gap-y-3">
+        {!!Component && (
+          <Component
             control={control}
             key={question?.id}
             name={question.id}
             question={question.question}
-            validation={z.string().min(1, "Required")}
+            validation={question.validation}
           />
         )}
         {endQuestion && <p>Finished</p>}
@@ -115,17 +162,12 @@ function getStoredForm(formName: string) {
   }
 }
 
-export function SingleFormQuestion<T extends string>({
+export function SingleFormQuestion({
   name,
   question,
   control,
   validation,
-}: {
-  name: T;
-  question: string;
-  control: Control<any>;
-  validation?: any;
-}) {
+}: SingleFormQuestionProps) {
   const {
     field,
     fieldState: { invalid },
@@ -133,6 +175,53 @@ export function SingleFormQuestion<T extends string>({
   } = useController({
     name,
     control,
+    rules: {
+      validate: (v) => {
+        try {
+          if (!validation) return true;
+          validation?.parse?.(v);
+          return true;
+        } catch (error) {
+          if (error instanceof ZodError) {
+            const message = error?.issues?.[0]?.message;
+            return message || "Invaid";
+          }
+          return false;
+        }
+      },
+    },
+  });
+
+  return (
+    <React.Fragment>
+      <fieldset id={name} className="flex flex-col gap-y-3 pb-2 items-center">
+        <label className="text-lg font-bold text-center">{question}</label>
+        <input
+          {...field}
+          className="border p-1 rounded-md border-black max-w-[300px]"
+        />
+      </fieldset>
+      {invalid && <p>{errors?.[name]?.message as string}</p>}
+    </React.Fragment>
+  );
+}
+
+export function MultiCheckboxFormQuestion({
+  name,
+  question,
+  control,
+  validation,
+  options,
+  multiple = true,
+}: MultiCheckboxQuestionProps) {
+  const {
+    field,
+    fieldState: { invalid },
+    formState: { errors },
+  } = useController({
+    name,
+    control,
+    defaultValue: [],
     rules: {
       validate: (v) => {
         try {
@@ -151,13 +240,33 @@ export function SingleFormQuestion<T extends string>({
 
   return (
     <React.Fragment>
-      <fieldset id={name} className="flex flex-col gap-y-3 pb-2">
-        <label>{question}</label>
-        <input
-          {...field}
-          className="border p-1 rounded-md border-black max-w-[300px]"
-        />
-      </fieldset>
+      <label className="text-lg font-bold text-center">{question}</label>
+      {options?.map((option) => (
+        <fieldset
+          key={option}
+          id={option}
+          className="flex gap-x-3 gap-y-3 pb-2 items-center"
+        >
+          <label className="text-lg font-bold text-center">{option}</label>
+          <input
+            {...field}
+            onChange={(e) => {
+              if (e.target.checked) {
+                if (multiple) {
+                  field.onChange([...field.value, option]);
+                } else {
+                  field.onChange([option]);
+                }
+              } else {
+                field.onChange(field.value.filter((v: string) => v !== option));
+              }
+            }}
+            checked={field?.value?.includes(option)}
+            className="border p-1 rounded-md border-black max-w-[300px]"
+            type="checkbox"
+          />
+        </fieldset>
+      ))}
       {invalid && <p>{errors?.[name]?.message as string}</p>}
     </React.Fragment>
   );
