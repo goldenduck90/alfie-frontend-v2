@@ -45,6 +45,12 @@ export default withIronSessionApiRoute(
 
     if (response.ok) {
       const { data } = await response.json();
+      if (!data) {
+        return res
+          .status(401)
+          .json({ message: "Invalid credentials! Please try again." });
+      }
+
       (req.session as any).token = data.login.token;
       (req.session as any).user = data.login.user;
 
@@ -52,7 +58,9 @@ export default withIronSessionApiRoute(
       return res.json({ user: data.login.user });
     }
 
-    return res.status(401).json({ message: "Invalid credentials" });
+    return res
+      .status(401)
+      .json({ message: "Invalid credentials! Please try again." });
   },
   {
     cookieName: "Alfie:sessionCookie",

@@ -61,7 +61,10 @@ export function IconHookInput({
     name,
     control,
   });
-
+  /**
+   * If field is invalid border will be red
+   * If form has any errors, border will be red
+   */
   return (
     <>
       <div
@@ -81,7 +84,7 @@ export function IconHookInput({
       </div>
       {invalid && (
         <span className="text-red-500 text-sm">
-          {formState?.errors?.[name] as string}
+          {formState?.errors?.[name]?.message as string}
         </span>
       )}
     </>
