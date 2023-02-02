@@ -33,12 +33,16 @@ export const TasksPage = () => {
   const [taskFilter, setTaskFilter] = React.useState<"Active" | "Completed">(
     "Active"
   );
+
   const result = useQuery(userTasksQuery, {
     variables: {
       limit: 100,
-      completed: false,
+      completed: taskFilter === "Completed",
     },
   });
+
+  console.log({ Results: result });
+
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (result.error) {
@@ -69,6 +73,10 @@ export const TasksPage = () => {
       value: "completed",
     },
   ];
+
+  console.log({
+    tasks: result?.data?.userTasks?.userTasks,
+  });
   return (
     <div>
       {result.error && <div>{result.error.message}</div>}
