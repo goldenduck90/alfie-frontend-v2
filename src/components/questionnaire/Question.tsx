@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from "react";
-import {
-  Control,
-  SubmitHandler,
-  useController,
-  useForm,
-  UseFormSetError,
-} from "react-hook-form";
+import React, { useState } from "react";
+import { Control, useController, useForm } from "react-hook-form";
 import { Button } from "../ui/Button";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { z, ZodError } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 interface QuestionProps {
   id: string;
   question: string;
@@ -59,7 +52,7 @@ export function Question() {
   const onSubmit = createPersistedFormState("questionnaire")((state: any) => ({
     setFormState: state.setFormState,
   }));
-  const { handleSubmit, control, trigger, setError } = useForm({
+  const { handleSubmit, control, trigger } = useForm({
     defaultValues: getStoredForm("questionnaire"),
     reValidateMode: "onBlur",
   });
@@ -148,7 +141,7 @@ export function SingleFormQuestion<T extends string>({
         } catch (error) {
           if (error instanceof ZodError) {
             const message = error?.issues?.[0]?.message;
-            return message || "Required";
+            return message || "Invaid";
           }
           return false;
         }
