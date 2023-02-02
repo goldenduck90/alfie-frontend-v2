@@ -42,13 +42,14 @@ export function Chart() {
       cardHeader={<h2 className="font-semibold">Your weight over time</h2>}
     >
       <div className="flex content-center w-full pt-8">
-        <ResponsiveContainer width="100%" height={450}>
+        <ResponsiveContainer width="100%" height={312}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
               strokeWidth={0}
               tickFormatter={(unixTime) => dayjs(unixTime).format("MMM")}
+              tickMargin={15}
             />
             <YAxis
               domain={[0, "auto"]}
@@ -58,6 +59,7 @@ export function Chart() {
               tickLine={false}
               tickCount={5}
               tickFormatter={(weight) => `${weight} kg`}
+              tickMargin={10}
             />
             <Line
               type="linear"
@@ -68,7 +70,6 @@ export function Chart() {
               activeDot={{ r: 8 }}
             />
             <Tooltip />
-            <Legend />
           </LineChart>
         </ResponsiveContainer>
       </div>
