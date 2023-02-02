@@ -302,13 +302,12 @@ export function MultiCheckboxFormQuestion({
   return (
     <React.Fragment>
       <label className="text-lg font-bold text-center">{question}</label>
-      {options?.map((option) => (
+      {options?.map((option, index) => (
         <fieldset
           key={option}
           id={option}
           className="flex gap-x-3 gap-y-3 pb-2 items-center"
         >
-          <label className="text-left">{option}</label>
           <input
             {...field}
             onChange={(e) => {
@@ -326,6 +325,7 @@ export function MultiCheckboxFormQuestion({
             className="border p-1 rounded-md border-black max-w-[300px]"
             type="checkbox"
           />
+          <label className="text-left">{option}</label>
         </fieldset>
       ))}
       {invalid && <p>{errors?.[name]?.message as string}</p>}
