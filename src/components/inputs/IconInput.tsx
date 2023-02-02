@@ -48,6 +48,7 @@ export function IconHookInput({
   placeholder,
   disabled,
   control,
+  ...props
 }: {
   name: string;
   icon: JSX.Element;
@@ -76,6 +77,7 @@ export function IconHookInput({
           {icon}
         </span>
         <input
+          {...props}
           {...field}
           className="font-mulish w-full py-2 rounded-sm pl-10 appearance-none focus:outline-none placeholder-gray-400 bg-white text-black"
           placeholder={placeholder}
