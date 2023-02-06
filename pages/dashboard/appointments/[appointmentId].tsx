@@ -1,9 +1,14 @@
 import { Layout } from "@src/components/layouts/Layout";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { ClockIcon, DocumentTextIcon } from "@heroicons/react/outline";
+import {
+  ClockIcon,
+  DocumentTextIcon,
+  LocationMarkerIcon,
+} from "@heroicons/react/outline";
 import { Line } from "@src/components/ui/Line";
-// import { AppointmentDetails } from "@src/components/patient/task/TaskPage";
+import { IconButton } from "@src/components/IconButton";
+import { CalendarIcon, ChatIcon } from "@heroicons/react/outline";
 
 const appointmentDetailsQuery = gql`
   query AppointmentDetailsQuery($appointmentId: String!) {
@@ -18,6 +23,14 @@ const appointmentDetailsQuery = gql`
       appointmentStartTime
       meetingLocation
       providerType
+    }
+  }
+`;
+
+const cancelAppointmentMutation = gql`
+  mutation CancelAppointment($eaAppointmentId: String!) {
+    cancelAppointment(eaAppointmentId: $eaAppointmentId) {
+      message
     }
   }
 `;
@@ -41,8 +54,12 @@ function AppointmentDetails() {
           <div className="border-b md:border-r md:border-b-0 flex flex-col items-center max-w-[232px] pb-4 md:pb-0">
             <div className="bg-brand-peachy h-28 w-28 rounded-full mx-[60px] " />
             <p>noah pierre</p>
-            <p>noah pierre</p>
-            <p>noah pierre</p>
+            <p>Gastroenterology</p>
+            <div className="flex gap-2 pt-3">
+              <IconButton icon={ChatIcon} iconColor="primary-500" />
+              <IconButton icon={CalendarIcon} iconColor="primary-500" />
+              <IconButton icon={LocationMarkerIcon} iconColor="primary-500" />
+            </div>
           </div>
           <div className="pt-4 md:pt-0">
             {[1, 1, 1, 1].map(() => (
@@ -53,7 +70,7 @@ function AppointmentDetails() {
                 <div>
                   <h2>8:00 - 8:30 AM</h2>
                   <p className="text-gray-400">Saturday, 29 January 2023</p>
-                  <p>
+                  <p className="text-gray-400">
                     An introductory meeting with a doctor, and patient medical
                     interview in the field of gastroenterology.
                   </p>

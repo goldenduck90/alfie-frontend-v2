@@ -1,4 +1,4 @@
-import { Navigation } from "@sentry/react/types/types";
+import React from "react";
 import { Role } from "@src/graphql/generated";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { useIntercom } from "react-use-intercom";
@@ -20,16 +20,16 @@ export const Layout = ({
 }: LayoutProps) => {
   const { user } = useCurrentUserStore();
   const isAdmin = user?.role === Role.Admin;
-  // const { boot } = useIntercom();
+  const { boot } = useIntercom();
 
-  // useEffect(() => {
-  //   boot({
-  //     email: user?.email,
-  //     name: user?.name,
-  //   });
-  // }, []);
+  React.useEffect(() => {
+    boot({
+      email: user?.email,
+      name: user?.name,
+    });
+  }, []);
 
-  let navigation: any[] = [];
+  let navigation: { name: string; href: string }[] = [];
   const patientNavigation = [
     {
       name: "Dashboard",
