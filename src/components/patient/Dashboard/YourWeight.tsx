@@ -27,8 +27,8 @@ export function YourWeight({ isLoading }: YourWeightProps) {
                 <Button disabled={isLoading}>Update Weight</Button>
               </div>
               <p className="text-gray-900 text-5xl">
-                {isLoading ? 0 : 86.4}{" "}
-                <span className="text-gray-600 text-sm">kg</span>
+                {isLoading ? 0 : 165}{" "}
+                <span className="text-gray-600 text-sm">lbs</span>
               </p>
             </div>
           </div>

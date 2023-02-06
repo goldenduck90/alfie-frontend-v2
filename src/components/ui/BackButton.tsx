@@ -15,7 +15,7 @@ export const BackButton = (props: {
 
   return (
     <button
-      className="border border-brand-berry-tint-2 py-2 px-3"
+      className="border rounded-xl border-brand-berry-tint-2 p-2"
       onClick={handleBack}
     >
       <props.icon className="h-5 w-5 text-white" />

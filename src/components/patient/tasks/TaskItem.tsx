@@ -71,10 +71,7 @@ export const TaskItem = ({
             <h3 className="text-gray-900 font-bold">
               {appointmentStartTime ? `Appointment with ${title}` : title}
             </h3>
-            <p className="text-gray-700">
-              We need to verify your insurance and identity in order to give you
-              an access to our services.
-            </p>
+            <p className="text-gray-700"></p>
           </div>
         </div>
         <div className="hidden md:flex">
@@ -82,7 +79,7 @@ export const TaskItem = ({
             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
             aria-hidden="true"
           />
-          <p>5 min</p>
+          <p>{}</p>
         </div>
 
         <div className="hidden md:flex">

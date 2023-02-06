@@ -7,6 +7,7 @@ import { NavigationItem } from "./NavigationItem";
 
 import dynamic from "next/dynamic";
 import { MobileNav } from "./MobileNav";
+
 const NavUser = dynamic(() => import("./NavUser"), {
   ssr: false,
 });
@@ -17,6 +18,7 @@ interface NavbarProps {
 
 export function Navbar({ navItems }: NavbarProps) {
   const { user } = useCurrentUserStore();
+  console.log({ user });
   const isAdmin = user?.role === Role.Admin;
 
   const navigationItems = navItems.map((item, i) => (

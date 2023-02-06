@@ -16,23 +16,23 @@ import dayjs from "dayjs";
 const data = [
   {
     date: "2021-01-01",
-    weight: 90,
+    weight: 200,
   },
   {
     date: "2021-02-01",
-    weight: 77,
+    weight: 190,
   },
   {
     date: "2021-03-01",
-    weight: 60,
+    weight: 185,
   },
   {
     date: "2021-04-01",
-    weight: 45,
+    weight: 170,
   },
   {
     date: "2021-05-01",
-    weight: 10,
+    weight: 165,
   },
 ];
 
@@ -53,13 +53,13 @@ export function Chart() {
               tickMargin={15}
             />
             <YAxis
-              domain={[0, "auto"]}
+              domain={[100, "auto"]}
               type="number"
               dataKey={"weight"}
               axisLine={false}
               tickLine={false}
               tickCount={5}
-              tickFormatter={(weight) => `${weight} kg`}
+              tickFormatter={(weight) => `${weight}lbs`}
               tickMargin={10}
             />
             <Line
@@ -78,7 +78,7 @@ export function Chart() {
                 if (!value) return null;
                 return (
                   <div className="py-1 px-2 text-center bg-black text-white rounded-full">
-                    {`${value} kg`}
+                    {`${value} lbs`}
                   </div>
                 );
               }}
@@ -87,7 +87,7 @@ export function Chart() {
               y={35}
               stroke="#E99298"
               label={(props) => {
-                console.log({ props });
+                // console.log({ props });
                 return (
                   <svg {...props} className="p-1 rounded-full bg-red-300">
                     <rect

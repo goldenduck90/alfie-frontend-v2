@@ -2,10 +2,10 @@ import React from "react";
 import * as RadixCheckbox from "@radix-ui/react-checkbox";
 import { CheckIcon } from "@heroicons/react/solid";
 
-interface CheckboxProps {
-  label: string | JSX.Element;
-  checked: boolean;
-  onCheckedChange: () => void;
+export interface CheckboxProps {
+  label?: string | JSX.Element;
+  checked?: boolean;
+  onCheckedChange?: () => void;
   defaultChecked?: boolean;
   disabled?: boolean;
   required?: boolean;

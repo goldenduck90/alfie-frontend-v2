@@ -7,7 +7,7 @@ export interface DashboardPreviewItemProps {
   title: string;
   subtitle?: string;
   href: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   renderDate: { date: string; time: string };
   isLoading?: boolean;
 }
@@ -29,9 +29,13 @@ export function DashboardPreviewItem({
     >
       <div className="flex flex-row justify-between w-full">
         <div className="flex">
-          <div className="flex mr-4 rounded-full bg-brand-peachy w-10 h-10 items-center justify-center min-w-[40px]">
+          <div
+            className={`flex mr-4 rounded-full bg-brand-peachy w-10 h-10 items-center justify-center min-w-[40px] ${
+              isLoading ? "animate-pulse" : ""
+            }`}
+          >
             {isLoading ? (
-              1
+              ""
             ) : (
               <HeartIcon className="h-6 w-6 text-brand-peachy-shade" />
             )}
@@ -45,10 +49,8 @@ export function DashboardPreviewItem({
                 </div>
               ) : (
                 <>
-                  <h2 className="">{title} Log your Blood Pressure</h2>
-                  <p className="text-gray-500">
-                    {subtitle} Log your Blood Pressure
-                  </p>
+                  <h2 className="">{title}</h2>
+                  <p className="text-gray-500">{subtitle}</p>
                 </>
               )}
             </div>
@@ -57,7 +59,7 @@ export function DashboardPreviewItem({
               <PlaceHolderLine />
             </div>
           ) : (
-            <h2 className="self-center">{title} Log your Blood Pressure</h2>
+            <h2 className="self-center">{title} </h2>
           )}
         </div>
         <ChevronRightIcon className="h-5 w-5 self-center " />
@@ -70,8 +72,8 @@ export function DashboardPreviewItem({
             <PlaceHolderLine />
           ) : (
             <>
-              <p>{renderDate?.date}May 9, 2022</p>
-              <p className="text-gray-500">{renderDate?.time}8:00 - 8:45 am</p>
+              <p>{renderDate?.date}</p>
+              <p className="text-gray-500">{renderDate?.time}</p>
             </>
           )}
         </div>

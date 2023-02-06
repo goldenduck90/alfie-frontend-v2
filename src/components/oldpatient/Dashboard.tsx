@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { AppointmentList } from "../appointments/AppointmentList";
 
 import { Loading } from "../Loading";
-import { DashboardTaskList } from "../../src/components/patient/tasks/DashboardTaskList";
 import { useAuth } from "../../hooks/useAuth";
 import PractitionerDashboard from "../practitioner/dashboard/PractitionerDashboard";
+import { DashboardTaskList } from "../patient/Dashboard/DashboardTaskList";
 
 export const appointmentsQuery = gql`
   query AppointmentsQuery($limit: Float) {

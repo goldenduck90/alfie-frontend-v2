@@ -1,18 +1,20 @@
-import { Wrapper } from "../src/components/layouts/Wrapper";
-import { IconHookInput } from "../src/components/inputs/IconInput";
-import { CheckboxHook } from "../src/components/inputs/Checkbox";
-import { Button } from "../src/components/Button";
-import { LockClosedIcon, UserIcon } from "@heroicons/react/solid";
-import { parseError } from "../src/utils/parseError";
+import React from "react";
 import Link from "next/link";
-import { useLoginMutation } from "../src/hooks/useLoginMutation";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { User } from "@src/graphql/generated";
+import { parseError } from "../src/utils/parseError";
+import { useLoginMutation } from "../src/hooks/useLoginMutation";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
+
+import { Wrapper } from "../src/components/layouts/Wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback } from "react";
-import { User } from "@src/graphql/generated";
+import { Button } from "../src/components/ui/Button";
+import { HookTextField } from "@src/components/ui/hookComponents/HookTextField";
+import { LockClosedIcon, UserIcon } from "@heroicons/react/solid";
+import { HookCheckbox } from "@src/components/ui/hookComponents/HookCheckBox";
 
 const LoginFormSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -31,12 +33,14 @@ const Login = () => {
       defaultValues: {
         email: "dpgozza@gmail.com",
         password: "Password1!",
+        // email: "robert@joinalfie.com",
+        // password: "Letmein1!",
         remember: false,
       },
       resolver: zodResolver(LoginFormSchema),
     });
 
-  const onSubmission = useCallback(
+  const onSubmission = React.useCallback(
     async (form: LoginForm) => {
       const { email, password, remember } = form;
       try {
@@ -72,36 +76,38 @@ const Login = () => {
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <img src={"/assets/logo.png"} alt="Alfie" className="w-36" />
+        <Image src={"/assets/logo.png"} height={58} width={144} alt="Alfie" />
       </div>
-      <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-md gap-5">
+      <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         {!!formState?.errors?.root?.serverError && (
           <div className="text-red-500 text-sm text-center">
             {formState?.errors?.root?.serverError?.message}
           </div>
         )}
         <div className="pb-2">
-          <IconHookInput
+          <HookTextField
             control={control}
             name="email"
             placeholder="Email address"
             type="email"
             disabled={isSubmitting}
-            icon={<UserIcon className="h-5 w-5 text-indigo-800" />}
+            leftIcon={<UserIcon className="h-5 w-5 text-brand-berry" />}
+            inputSize="medium"
           />
         </div>
         <div className="pb-3">
-          <IconHookInput
+          <HookTextField
             control={control}
             name="password"
             placeholder="Password"
             type="password"
             disabled={isSubmitting}
-            icon={<LockClosedIcon className="h-5 w-5 text-indigo-800" />}
+            leftIcon={<LockClosedIcon className="h-5 w-5 text-brand-berry" />}
+            inputSize="medium"
           />
         </div>
         <div className="pb-3">
-          <CheckboxHook
+          <HookCheckbox
             control={control}
             name="remember"
             label="Remember me"
@@ -110,15 +116,17 @@ const Login = () => {
         </div>
         <div className="pb-3 flex flex-col items-center">
           <Button
-            title="Login"
-            onPress={handleSubmit(onSubmission)}
+            onClick={handleSubmit(onSubmission)}
             disabled={isSubmitting}
             fullWidth
-          />
+            size="medium"
+          >
+            Login
+          </Button>
           <div className="pt-3">
             <Link
               href="/forgot-password"
-              className="font-mulish text-sm text-indigo-800 hover:text-indigo-600"
+              className="font-mulish text-sm text-brand-berry hover:text-brand-berry-tint-1"
             >
               Forgot Password
             </Link>
@@ -129,7 +137,7 @@ const Login = () => {
             Haven&apos;t signed up yet?{" "}
             <Link
               href="/signup"
-              className="text-indigo-800 hover:text-indigo-600"
+              className="text-brand-berry hover:text-brand-berry-tint-1"
             >
               Click here to see if you are eligible for Alfie.
             </Link>

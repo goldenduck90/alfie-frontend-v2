@@ -41,7 +41,7 @@ export const TextField = React.forwardRef(
     };
 
     return (
-      <div className="">
+      <div>
         {label && <label htmlFor={labelHtmlFor}>{label}</label>}
         <div
           className={`flex ring-2 ring-transparent focus-within:ring-primary-500 
