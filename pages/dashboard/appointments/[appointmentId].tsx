@@ -9,6 +9,7 @@ import {
 import { Line } from "@src/components/ui/Line";
 import { IconButton } from "@src/components/IconButton";
 import { CalendarIcon, ChatIcon } from "@heroicons/react/outline";
+import { Button } from "@src/components/ui/Button";
 
 const appointmentDetailsQuery = gql`
   query AppointmentDetailsQuery($appointmentId: String!) {
@@ -62,22 +63,25 @@ function AppointmentDetails() {
             </div>
           </div>
           <div className="pt-4 md:pt-0">
-            {[1, 1, 1, 1].map(() => (
+            {[1, 1, 1].map(() => (
               <div className="flex pb-6 md:pl-6">
                 <div>
-                  <ClockIcon className="w-6 h-6 mr-2 mt-[3px]" />
+                  <ClockIcon className="w-6 h-6 mr-2 " />
                 </div>
                 <div>
                   <h2>8:00 - 8:30 AM</h2>
                   <p className="text-gray-400">Saturday, 29 January 2023</p>
                   <p className="text-gray-400">
                     An introductory meeting with a doctor, and patient medical
-                    interview in the field of gastroenterology.
                   </p>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+        <div className="bg-gray-50 md:-m-6 p-6 md:mt-2 flex justify-end gap-2 border-t rounded-b-xl">
+          <Button buttonType="urgent">Cancel this visit</Button>
+          <Button>Reschedule</Button>
         </div>
       </div>
       <div>
