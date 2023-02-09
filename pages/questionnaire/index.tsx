@@ -1,4 +1,4 @@
-import { Layout } from "@src/components/layouts/Layout";
+import { QuestionnaireLayout } from "@src/components/layouts/QuestionaireLayout";
 import { Question } from "@src/components/questionnaire/Question";
 
 export default function Page() {
@@ -6,12 +6,9 @@ export default function Page() {
 }
 
 Page.getLayout = (page: React.ReactNode) => (
-  <Layout
-    title="Questions"
-    subtitle="Complete your active tasks and manage archived ones."
-  >
+  <QuestionnaireLayout title="Medical Questionnaire">
     {page}
-  </Layout>
+  </QuestionnaireLayout>
 );
 
 Page.isAuthRequired = true;

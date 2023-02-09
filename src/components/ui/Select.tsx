@@ -28,9 +28,7 @@ export const Select = ({
     <RadixSelect.Item
       key={i}
       className={`px-4 flex bg-white w-full outline-none py-2 hover:bg-gray-100 cursor-pointer
-      ${i + 1 !== items.length ? "border-0 border-b" : ""}
-
-      `}
+      ${i + 1 !== items.length ? "border-0 border-b" : ""}`}
       value={value}
     >
       <RadixSelect.ItemText>{label}</RadixSelect.ItemText>

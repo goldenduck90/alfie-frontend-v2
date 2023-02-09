@@ -18,7 +18,6 @@ interface NavbarProps {
 
 export function Navbar({ navItems }: NavbarProps) {
   const { user } = useCurrentUserStore();
-  console.log({ user });
   const isAdmin = user?.role === Role.Admin;
 
   const navigationItems = navItems.map((item, i) => (

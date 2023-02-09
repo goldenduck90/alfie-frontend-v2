@@ -57,8 +57,8 @@ export function DashboardAppointments({ isLoading }: any) {
           </div>
         }
       >
-        {error ||
-          (data?.appointments.length === 0 && "no appointments scheduled")}
+        {(error || data?.appointments.length === 0) &&
+          "no appointments scheduled"}
         {loading && loadItems}
         {data && renderItems}
       </DashboardCard>

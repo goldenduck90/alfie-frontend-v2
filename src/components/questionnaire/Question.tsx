@@ -4,6 +4,7 @@ import { Button } from "../ui/Button";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { z, ZodError } from "zod";
+import { QuestionContainer } from "./QuestionContainer";
 
 interface QuestionComponentProps {
   control: Control<any>;
@@ -141,10 +142,22 @@ function createPersistedFormState(formName: string) {
  */
 export function Question() {
   return (
-    <div className="flex flex-col gap-y-3">
-      <Questionnaire allQuestions={medicalQuestions} formName="medical" />
-      <Questionnaire allQuestions={metabolicQuestions} formName="metabolic" />
-      <Questionnaire allQuestions={gastroQuestions} formName="gastro" />
+    <div className="flex flex-col gap-y-3 items-center w-full">
+      <Questionnaire
+        allQuestions={medicalQuestions}
+        formName="medical"
+        helper="test"
+      />
+      <Questionnaire
+        allQuestions={metabolicQuestions}
+        formName="metabolic"
+        helper="check all that apply"
+      />
+      <Questionnaire
+        allQuestions={gastroQuestions}
+        formName="gastro"
+        helper="check one"
+      />
     </div>
   );
 }
@@ -152,9 +165,11 @@ export function Question() {
 function Questionnaire({
   allQuestions,
   formName,
+  helper,
 }: {
   allQuestions: QuestionProps<any>[];
   formName: string;
+  helper?: string;
 }) {
   const [step, setStep] = useState(0);
   const onSubmit = createPersistedFormState(formName)((state: any) => ({
@@ -170,7 +185,7 @@ function Questionnaire({
   const endQuestion = step + 1 === allQuestions?.length;
 
   return (
-    <div className="bg-white border rounded-md p-4 flex gap-x-2 items-center">
+    <QuestionContainer helper={helper}>
       {step > 0 && <Button onClick={() => setStep((s) => s - 1)}>Back</Button>}
       <div className="flex flex-col items-center w-full gap-y-3">
         {!!Component && (
@@ -184,6 +199,7 @@ function Questionnaire({
         )}
         {endQuestion && <p>Finished</p>}
         <Button
+          size="large"
           onClick={async () => {
             if (!question?.id) return;
             /**
@@ -209,7 +225,7 @@ function Questionnaire({
           Submit
         </Button>
       </div>
-    </div>
+    </QuestionContainer>
   );
 }
 

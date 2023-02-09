@@ -5,7 +5,7 @@ import { CheckIcon } from "@heroicons/react/solid";
 export interface CheckboxProps {
   label?: string | JSX.Element;
   checked?: boolean;
-  onCheckedChange?: () => void;
+  onChange?: (param: any) => void;
   defaultChecked?: boolean;
   disabled?: boolean;
   required?: boolean;
@@ -16,6 +16,7 @@ export function Checkbox({ label, ...props }: CheckboxProps) {
   return (
     <div className="flex">
       <RadixCheckbox.Root
+        onCheckedChange={props.onChange}
         {...props}
         className={`border-primary-600 border rounded-md h-6 w-6 ring-2 ring-transparent transition-all focus:ring-blue-500 ${
           props.checked ? "bg-primary-500" : ""
