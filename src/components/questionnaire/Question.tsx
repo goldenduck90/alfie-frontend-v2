@@ -146,9 +146,9 @@ export function Question() {
       <Questionnaire
         allQuestions={medicalQuestions}
         formName="medical"
-        helper="test"
+        helper="Select one answer"
       />
-      <Questionnaire
+      {/* <Questionnaire
         allQuestions={metabolicQuestions}
         formName="metabolic"
         helper="check all that apply"
@@ -157,7 +157,7 @@ export function Question() {
         allQuestions={gastroQuestions}
         formName="gastro"
         helper="check one"
-      />
+      /> */}
     </div>
   );
 }
@@ -197,6 +197,7 @@ function Questionnaire({
             validation={question.validation}
           />
         )}
+        <div className="pt-3" />
         {endQuestion && <p>Finished</p>}
         <Button
           size="large"
@@ -317,33 +318,47 @@ export function MultiCheckboxFormQuestion({
 
   return (
     <React.Fragment>
-      <label className="text-lg font-bold text-center">{question}</label>
-      {options?.map((option, index) => (
-        <fieldset
-          key={option}
-          id={option}
-          className="flex gap-x-3 gap-y-3 pb-2 items-center"
-        >
-          <input
-            {...field}
-            onChange={(e) => {
-              if (e.target.checked) {
-                if (multiple) {
-                  field.onChange([...field.value, option]);
-                } else {
-                  field.onChange([option]);
-                }
-              } else {
-                field.onChange(field.value.filter((v: string) => v !== option));
-              }
-            }}
-            checked={field?.value?.includes(option)}
-            className="border p-1 rounded-md border-black max-w-[300px]"
-            type="checkbox"
-          />
-          <label className="text-left">{option}</label>
-        </fieldset>
-      ))}
+      <label className="text-lg font-bold text-center pb-4">{question}</label>
+      {options?.map((option) => {
+        const checked = field?.value?.includes(option);
+        const handleChange = (e) => {
+          if (e.target.checked) {
+            if (multiple) {
+              field.onChange([...field.value, option]);
+            } else {
+              field.onChange([option]);
+            }
+          } else {
+            field.onChange(field.value.filter((v: string) => v !== option));
+          }
+        };
+
+        return (
+          <fieldset
+            key={option}
+            id={option}
+            className={`flex gap-3 items-center w-full`}
+          >
+            <div
+              className={`py-4 px-6 border rounded-sm w-full cursor-pointer ${
+                checked
+                  ? "border-primary-500 bg-primary-50"
+                  : "bg-gray-100 border-gray-100 "
+              }`}
+              onClick={handleChange}
+            >
+              <input
+                {...field}
+                onChange={handleChange}
+                checked={field?.value?.includes(option)}
+                className="border p-1 rounded-md border-black max-w-[300px]"
+                type="checkbox"
+              />
+              <label className="text-left pl-4">{option}</label>
+            </div>
+          </fieldset>
+        );
+      })}
       {invalid && <p>{errors?.[name]?.message as string}</p>}
     </React.Fragment>
   );

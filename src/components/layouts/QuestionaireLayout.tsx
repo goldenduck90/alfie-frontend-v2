@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { title } from "process";
 import { Role } from "@src/graphql/generated";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { XIcon } from "@heroicons/react/solid";
@@ -11,7 +10,10 @@ interface QuestionnaireLayoutProps {
   children: React.ReactNode;
 }
 
-export function QuestionnaireLayout({ children }: QuestionnaireLayoutProps) {
+export function QuestionnaireLayout({
+  children,
+  title,
+}: QuestionnaireLayoutProps) {
   const { user } = useCurrentUserStore();
   const isAdmin = user?.role === Role.Admin;
   const router = useRouter();
@@ -49,10 +51,10 @@ export function QuestionnaireLayout({ children }: QuestionnaireLayoutProps) {
         <div className="mx-auto px-4 md:px-8 lg:py-6 sm:py-6 md:py-6 z-10 mt-24 w-full max-w-7xl justify-center">
           <div className="flex justify-center">
             {title && (
-              <h1 className="pb-8  font-semibold text-white">{title}</h1>
+              <h1 className="pb-8 font-semibold text-white">{title}</h1>
             )}
           </div>
-
+          <div></div>
           {children}
         </div>
       </main>

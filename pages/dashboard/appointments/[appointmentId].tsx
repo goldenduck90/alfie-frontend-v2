@@ -48,10 +48,10 @@ function AppointmentDetails() {
   return (
     <div className="flex flex-col md:flex-row md:gap-6 bg-white md:bg-transparent border md:border-none p-4 md:p-0 rounded-xl">
       <div className=" md:p-6 w-full max-w-3xl rounded-xl md:border bg-white ">
-        <h2 className="font-semibold text-gray-900 pb-6">
+        <h2 className="font-semibold text-gray-900 pb-7">
           Appointment Details
         </h2>
-        <div className="flex flex-col pb-4 md:flex-row md:p-6 items-center md:[align-items:normal]">
+        <div className="flex flex-col pb-4 md:flex-row  items-center md:[align-items:normal]">
           <div className="border-b md:border-r md:border-b-0 flex flex-col items-center max-w-[232px] pb-4 md:pb-0">
             <div className="bg-brand-peachy h-28 w-28 rounded-full mx-[60px] " />
             <p>noah pierre</p>
@@ -79,7 +79,7 @@ function AppointmentDetails() {
             ))}
           </div>
         </div>
-        <div className="bg-gray-50 md:-m-6 p-6 md:mt-2 flex justify-end gap-2 border-t rounded-b-xl">
+        <div className="bg-gray-50 md:-m-6 p-4 md:mt-2 flex justify-end gap-2 border-t rounded-b-xl">
           <Button buttonType="urgent">Cancel this visit</Button>
           <Button>Reschedule</Button>
         </div>
