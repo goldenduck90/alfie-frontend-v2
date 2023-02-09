@@ -4,6 +4,8 @@ import { Role } from "@src/graphql/generated";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { XIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
+import { ProgressBar } from "../ui/ProgressBar";
+import { SliderRanger } from "../ui/SliderRange";
 
 interface QuestionnaireLayoutProps {
   title?: string;
@@ -45,7 +47,6 @@ export function QuestionnaireLayout({
           </nav>
         </div>
       </div>
-
       <main className="flex w-full">
         {title && <div className="fixed w-full h-52 top-16 bg-brand-berry" />}
         <div className="mx-auto px-4 md:px-8 lg:py-6 sm:py-6 md:py-6 z-10 mt-24 w-full max-w-7xl justify-center">
@@ -54,7 +55,11 @@ export function QuestionnaireLayout({
               <h1 className="pb-8 font-semibold text-white">{title}</h1>
             )}
           </div>
-          <div></div>
+          <div className="mx-auto max-w-[480px] w-full flex justify-center items-center pb-8 -mt-3 gap-x-4 text-white">
+            <p className="w-[20px] text-center">1</p>
+            <SliderRanger current={1} max={9} />
+            <p className="w-[20px] text-center">9</p>
+          </div>
           {children}
         </div>
       </main>

@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { Control, useController, useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import {
+  Control,
+  useController,
+  useFieldArray,
+  useForm,
+  UseFormRegister,
+} from "react-hook-form";
 import { Button } from "../ui/Button";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -8,6 +14,7 @@ import { QuestionContainer } from "./QuestionContainer";
 
 interface QuestionComponentProps {
   control: Control<any>;
+  register: UseFormRegister<any>;
   validation?: z.ZodType<any, any>;
   name: string;
   question: string;
@@ -20,12 +27,33 @@ interface MultiCheckboxQuestionProps extends QuestionComponentProps {
   multiple?: boolean;
 }
 
+interface MultiTextInputProps extends QuestionComponentProps {}
+
 interface QuestionProps<T extends React.FC<QuestionComponentProps>> {
   id: string;
   question: string;
   validation?: z.ZodType<any, any>;
   Component: T;
 }
+
+const conditions = [
+  "High blood pressure",
+  "Meal Replacements",
+  "Pre-diabetes",
+  "Joint pain",
+  "Fatty Liver disease",
+  "Prostate disease",
+  "Migraines",
+  "Arthritis",
+  "Cancer",
+  "High Cholesterol",
+  "Type II Diabetes",
+  "Sleep apnea",
+  "Back pain",
+  "Never pain",
+  "PCOS (polycystic ovary syndrome)",
+  "None of the above",
+];
 
 const medicalQuestions: QuestionProps<any>[] = [
   {
@@ -49,73 +77,94 @@ const medicalQuestions: QuestionProps<any>[] = [
     id: "q2",
     question:
       "Have you tried any of the following weight management methods in the past?",
-    Component: SingleFormQuestion,
-    validation: z.string().min(1, "Required"),
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <MultiCheckboxFormQuestion
+        {...props}
+        multiple={true}
+        options={[
+          "Calorie Counting / Restriction Diets",
+          "Meal Replacements",
+          "Intermittent fasting",
+          "Personal Trainer",
+          "Weight loss program (e.g. Noom, Weight Watchers)",
+          "Weight loss surgery",
+          "None of the above",
+        ]}
+      />
+    ),
+    validation: z.string().array().nonempty("At least one option is required"),
   },
   {
     id: "q3",
+    question: "Do you have any of the following conditions?",
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <MultiCheckboxFormQuestion
+        {...props}
+        multiple={true}
+        options={conditions}
+      />
+    ),
+    validation: z.string().array().nonempty("At least one option is required"),
+  },
+  {
+    id: "q4",
     question: "Do you have any of the following conditions?",
     Component: SingleFormQuestion,
     validation: z.string().min(1, "Required"),
   },
   {
-    id: "q4",
+    id: "q5",
+    question: "Do you have any of the following conditions?",
+    Component: SingleFormQuestion,
+    validation: z.string().min(1, "Required"),
+  },
+  {
+    id: "q6",
     question: "Please list any medication allergies you are aware of:",
-    Component: (props: MultiCheckboxQuestionProps) => (
-      <MultiCheckboxFormQuestion
-        {...props}
-        options={[
-          "Penicillin",
-          "Aspirin",
-          "Ibuprofen",
-          "Other",
-          "None of the Above",
-        ]}
-      />
-    ),
+    Component: MultipleTextInput,
   },
 ];
 
-const metabolicQuestions: QuestionProps<any>[] = [
-  {
-    id: "q1",
-    question: 'How often do you feel tense or "impatient"?',
-    Component: (props: MultiCheckboxQuestionProps) => (
-      <MultiCheckboxFormQuestion
-        {...props}
-        multiple={false}
-        options={[
-          "Most of the time",
-          "A lot of the time",
-          "From time to time",
-          "Not at all",
-        ]}
-      />
-    ),
-    validation: z.string().array().nonempty("At least one option is required"),
-  },
-];
+// const metabolicQuestions: QuestionProps<any>[] = [
+//   {
+//     id: "q1",
+//     question: 'How often do you feel tense or "impatient"?',
+//     Component: (props: MultiCheckboxQuestionProps) => (
+//       <MultiCheckboxFormQuestion
+//         {...props}
+//         multiple={false}
+//         options={[
+//           "Most of the time",
+//           "A lot of the time",
+//           "From time to time",
+//           "Not at all",
+//         ]}
+//       />
+//     ),
+//     validation: z.string().array().nonempty("At least one option is required"),
+//   },
+// ];
 
-const gastroQuestions: QuestionProps<any>[] = [
-  {
-    id: "q1",
-    question:
-      "Have you been bothered by pain or discomfort in your upper abdomen or the pit of your stomach during the past week?",
-    Component: (props: MultiCheckboxQuestionProps) => (
-      <MultiCheckboxFormQuestion
-        {...props}
-        multiple={false}
-        options={[
-          "Most of the time",
-          "A lot of the time",
-          "From time to time, ocassionally",
-          "Not at all",
-        ]}
-      />
-    ),
-    validation: z.string().array().nonempty("At least one option is required"),
-  },
-];
+// const gastroQuestions: QuestionProps<any>[] = [
+//   {
+//     id: "q1",
+//     question:
+//       "Have you been bothered by pain or discomfort in your upper abdomen or the pit of your stomach during the past week?",
+//     Component: (props: MultiCheckboxQuestionProps) => (
+//       <MultiCheckboxFormQuestion
+//         {...props}
+//         multiple={false}
+//         options={[
+//           "Most of the time",
+//           "A lot of the time",
+//           "From time to time, ocassionally",
+//           "Not at all",
+//         ]}
+//       />
+//     ),
+//     validation: z.string().array().nonempty("At least one option is required"),
+//   },
+// ];
 
 function createPersistedFormState(formName: string) {
   return create<any>(
@@ -142,22 +191,12 @@ function createPersistedFormState(formName: string) {
  */
 export function Question() {
   return (
-    <div className="flex flex-col gap-y-3 items-center w-full">
+    <div className="relative flex flex-col gap-y-3 items-center w-full">
       <Questionnaire
         allQuestions={medicalQuestions}
         formName="medical"
         helper="Select one answer"
       />
-      {/* <Questionnaire
-        allQuestions={metabolicQuestions}
-        formName="metabolic"
-        helper="check all that apply"
-      />
-      <Questionnaire
-        allQuestions={gastroQuestions}
-        formName="gastro"
-        helper="check one"
-      /> */}
     </div>
   );
 }
@@ -175,7 +214,7 @@ function Questionnaire({
   const onSubmit = createPersistedFormState(formName)((state: any) => ({
     setFormState: state.setFormState,
   }));
-  const { handleSubmit, control, trigger } = useForm({
+  const { handleSubmit, control, trigger, register } = useForm({
     defaultValues: getStoredForm(formName),
     reValidateMode: "onBlur",
   });
@@ -193,6 +232,7 @@ function Questionnaire({
             control={control}
             key={question?.id}
             name={question.id}
+            register={register}
             question={question.question}
             validation={question.validation}
           />
@@ -292,6 +332,8 @@ export function MultiCheckboxFormQuestion({
   options,
   multiple = true,
 }: MultiCheckboxQuestionProps) {
+  const inputRef = React.useRef<HTMLInputElement[]>([]);
+
   const {
     field,
     fieldState: { invalid },
@@ -319,9 +361,11 @@ export function MultiCheckboxFormQuestion({
   return (
     <React.Fragment>
       <label className="text-lg font-bold text-center pb-4">{question}</label>
-      {options?.map((option) => {
+      {options?.map((option, idx) => {
         const checked = field?.value?.includes(option);
-        const handleChange = (e) => {
+        const handleChange: React.ChangeEventHandler<HTMLInputElement> = (
+          e
+        ) => {
           if (e.target.checked) {
             if (multiple) {
               field.onChange([...field.value, option]);
@@ -338,28 +382,95 @@ export function MultiCheckboxFormQuestion({
             key={option}
             id={option}
             className={`flex gap-3 items-center w-full`}
+            onClick={() => {
+              inputRef.current?.[idx].click?.();
+            }}
           >
             <div
-              className={`py-4 px-6 border rounded-sm w-full cursor-pointer ${
+              className={`h-[56px] flex items-center px-6 border rounded-sm w-full cursor-pointer ${
                 checked
                   ? "border-primary-500 bg-primary-50"
                   : "bg-gray-100 border-gray-100 "
               }`}
-              onClick={handleChange}
             >
               <input
                 {...field}
+                ref={(ref) => {
+                  if (ref) {
+                    inputRef.current[idx] = ref;
+                  }
+                  field.ref(ref);
+                }}
+                id={`${option}-${idx}`}
                 onChange={handleChange}
                 checked={field?.value?.includes(option)}
                 className="border p-1 rounded-md border-black max-w-[300px]"
                 type="checkbox"
               />
-              <label className="text-left pl-4">{option}</label>
+              <label
+                htmlFor={`${option}-${idx}`}
+                className="text-left pl-4 pointer-events-none"
+              >
+                {option}
+              </label>
             </div>
           </fieldset>
         );
       })}
       {invalid && <p>{errors?.[name]?.message as string}</p>}
+    </React.Fragment>
+  );
+}
+
+function MultipleTextInput({
+  name,
+  question,
+  control,
+  validation,
+  register,
+}: MultiTextInputProps) {
+  const { fields, append, remove } = useFieldArray({
+    name,
+    control,
+    rules: {
+      validate: (v) => {
+        try {
+          validation?.parse?.(v);
+          return true;
+        } catch (error) {
+          if (error instanceof ZodError) {
+            const message = error?.issues?.[0]?.message;
+            return message || "Invaid";
+          }
+          return false;
+        }
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (fields?.length === 0) {
+      append("");
+    }
+  }, [fields, append]);
+
+  return (
+    <React.Fragment>
+      <label className="text-lg font-bold text-center pb-4">{question}</label>
+      {fields.map((field, index) => {
+        return (
+          <div key={field.id} className="flex w-full items-center gap-x-2">
+            <input
+              key={field.id}
+              type="text"
+              className="w-full border border-[#CBD5E1] rounded-md py-2 px-4"
+              {...register(`${name}.${index}.value`)}
+            />
+            {index > 0 && <Button onClick={() => remove(index)}>Delete</Button>}
+          </div>
+        );
+      })}
+      <Button onClick={() => append("")}>Add</Button>
     </React.Fragment>
   );
 }
