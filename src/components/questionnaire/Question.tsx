@@ -13,6 +13,7 @@ import { z, ZodError } from "zod";
 import { QuestionContainer } from "./QuestionContainer";
 import { Checkbox } from "../ui/Checkbox";
 import * as RadioGroup from "@radix-ui/react-radio-group";
+import { ChevronLeftIcon } from "@heroicons/react/outline";
 interface QuestionComponentProps {
   control: Control<any>;
   register: UseFormRegister<any>;
@@ -224,7 +225,12 @@ function Questionnaire({
     <QuestionContainer helper={helper}>
       <div className="col-span-1 flex justify-center items-center">
         {step > 0 && (
-          <Button onClick={() => setStep((s) => s - 1)}>{`<`}</Button>
+          <button
+            className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center"
+            onClick={() => setStep((s) => s - 1)}
+          >
+            <ChevronLeftIcon className="stroke-gray-600 w-8 h-8" />
+          </button>
         )}
       </div>
       <div className="col-span-10">
