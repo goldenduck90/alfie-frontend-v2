@@ -207,11 +207,7 @@ function createPersistedFormState(formName: string) {
 export function Question() {
   return (
     <div className="relative flex flex-col gap-y-3 items-center w-full">
-      <Questionnaire
-        allQuestions={medicalQuestions}
-        formName="medical"
-        helper="Select one answer"
-      />
+      <Questionnaire allQuestions={medicalQuestions} formName="medical" />
     </div>
   );
 }
@@ -219,11 +215,9 @@ export function Question() {
 function Questionnaire({
   allQuestions,
   formName,
-  helper,
 }: {
   allQuestions: QuestionProps<any>[];
   formName: string;
-  helper?: string;
 }) {
   const [step, setStep] = useState(0);
   const onSubmit = createPersistedFormState(formName)((state: any) => ({
@@ -246,7 +240,7 @@ function Questionnaire({
             className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center"
             onClick={() => setStep((s) => s - 1)}
           >
-            <ChevronLeftIcon className="stroke-gray-600 w-8 h-8" />
+            <ChevronLeftIcon className="stroke-gray-400 w-8 h-8" />
           </button>
         )}
       </div>
@@ -271,19 +265,31 @@ function Questionnaire({
                * Trigger validation step by step within form
                *
                */
-              try {
-                const valid = await trigger(question?.id);
-                if (!!valid) {
-                  handleSubmit((value) => {
-                    onSubmit.setFormState(value);
-                    setStep((s) => (s >= allQuestions.length - 1 ? 0 : s + 1));
-                  })();
+              if (!endQuestion) {
+                try {
+                  const valid = await trigger(question?.id);
+                  if (!!valid) {
+                    handleSubmit((value) => {
+                      onSubmit.setFormState(value);
+                      setStep((s) =>
+                        s >= allQuestions.length - 1 ? 0 : s + 1
+                      );
+                    })();
+                  }
+                } catch (error) {
+                  /**
+                   * This should never happen
+                   */
+                  console.log("Zod", { error });
                 }
-              } catch (error) {
-                /**
-                 * This should never happen
-                 */
-                console.log("Zod", { error });
+              } else {
+                handleSubmit((value) => {
+                  console.log("Form Values", {
+                    form: value,
+                  });
+                  localStorage.removeItem(formName);
+                  setStep((s) => 0);
+                })();
               }
             }}
           >
