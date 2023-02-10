@@ -1,12 +1,15 @@
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
+import { SliderDraggable } from "@src/components/ui/SliderRange";
 import { TextField } from "@src/components/ui/TextField";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader } from "../Dialog";
 
 export function MetabolicProfileHunger({ title }: { title: string }) {
   const [step, setStep] = useState(1);
+  const { control } = useForm({});
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
@@ -28,22 +31,24 @@ export function MetabolicProfileHunger({ title }: { title: string }) {
           </div>
         )}
         {step === 2 && (
-          <div className="flex flex-col gap-y-3">
+          <div className="flex flex-col gap-y-6">
             <div>
               <p className="font-bold text-sm">
                 Rate how satisfied you feel 30 minutes after eating this meal
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 pb-3">
                 Answer on a scale of 1-100
               </p>
+              <SliderDraggable name="rating1" control={control} />
             </div>
             <div>
               <p className="font-bold text-sm">
                 Rate how satisfied you feel 2 hours after eating this meal
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 pb-3">
                 Answer on a scale of 1-100
               </p>
+              <SliderDraggable name="rating2" control={control} />
             </div>
           </div>
         )}
