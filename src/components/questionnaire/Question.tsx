@@ -132,7 +132,12 @@ const medicalQuestions: QuestionProps<any>[] = [
             options={["Yes", "No"]}
           />
           <div className="w-full">
-            <TextAreaInput {...props} question="" name={`q4.text`} />
+            <TextAreaInput
+              {...props}
+              validation={undefined}
+              question=""
+              name={`q4.text`}
+            />
           </div>
         </React.Fragment>
       );
@@ -689,6 +694,7 @@ function TextAreaInput({
   } = useController({
     name,
     control,
+    defaultValue: "",
     rules: {
       validate: (v) => {
         try {
