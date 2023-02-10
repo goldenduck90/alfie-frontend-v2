@@ -647,7 +647,7 @@ function FinalSubmitMetabolic() {
           return (
             <div
               key={name}
-              className=" bg-gray-100 py-4 px-2 flex gap-x-2 items-center text-gray-500 first:rounded-t-md last:rounded-b-md"
+              className=" bg-gray-100 py-4 px-2 flex gap-x-2 items-center text-gray-700 first:rounded-t-md last:rounded-b-md"
             >
               <DocumentIcon className="w-6 h-6 stroke-gray-500" />
               {name}
@@ -655,10 +655,19 @@ function FinalSubmitMetabolic() {
           );
         })}
       </div>
-      <p className="py-6 px-2 ">
+      <div></div>
+      <p className="py-6 px-2">
         Use this link to schedule an appointment for routine lab work at
-        Labcorp: https://www.labcorp.com/labs-and-appointments Routine labs
-        should be covered by your insurance.
+        Labcorp:
+        <span>
+          <a
+            href={`https://www.labcorp.com/labs-and-appointment`}
+            className="text-blue-500"
+          >
+            {` https://www.labcorp.com/labs-and-appointment `}
+          </a>
+        </span>
+        Routine labs should be covered by your insurance.
       </p>
       <div className="px-2 ">
         <Checkbox label="I have already had the required labs done" />
