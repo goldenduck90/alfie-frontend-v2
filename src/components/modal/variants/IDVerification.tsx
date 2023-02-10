@@ -1,10 +1,4 @@
-import {
-  CalculatorIcon,
-  CalendarIcon,
-  ChevronLeftIcon,
-  ClockIcon,
-  XIcon,
-} from "@heroicons/react/outline";
+import { CalculatorIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import React, { useState } from "react";
 import { Button } from "../../ui/Button";

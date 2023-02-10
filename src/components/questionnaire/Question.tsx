@@ -126,16 +126,13 @@ const medicalQuestions: QuestionProps<any>[] = [
     Component: (props: RadioGroupInputProps) => {
       return (
         <React.Fragment>
-          <RadioGroupInput {...props} options={["Yes", "No"]} />
+          <RadioGroupInput
+            {...props}
+            name={`q4.select`}
+            options={["Yes", "No"]}
+          />
           <div className="w-full">
-            <p className="text text-sm font-bold py-2 text-center">
-              Please provide more details on your past surgical procedures
-            </p>
-            <textarea
-              className="p-2 border rounded-md border-gray-300 placeholder:text-gray-300 w-full"
-              placeholder="Enter text here..."
-              rows={6}
-            />
+            <TextAreaInput {...props} question="" name={`q4.text`} />
           </div>
         </React.Fragment>
       );
@@ -667,5 +664,51 @@ function FinalSubmitMetabolic() {
         <Checkbox label="I have already had the required labs done" />
       </div>
     </div>
+  );
+}
+
+function TextAreaInput({
+  name,
+  control,
+  validation,
+  question,
+}: SingleFormQuestionProps) {
+  const {
+    field,
+    fieldState: { invalid },
+    formState: { errors },
+  } = useController({
+    name,
+    control,
+    rules: {
+      validate: (v) => {
+        try {
+          if (!validation) return true;
+          validation?.parse?.(v);
+          return true;
+        } catch (error) {
+          if (error instanceof ZodError) {
+            const message = error?.issues?.[0]?.message;
+            return message || "Invaid";
+          }
+          return false;
+        }
+      },
+    },
+  });
+
+  return (
+    <React.Fragment>
+      <fieldset id={name} className="flex flex-col gap-y-3 pb-2 items-center">
+        <label className="text font-bold text-center">{question}</label>
+        <textarea
+          {...field}
+          className="p-2 border rounded-md border-gray-300 placeholder:text-gray-300 w-full"
+          placeholder="Enter text here..."
+          rows={6}
+        />
+      </fieldset>
+      {invalid && <p>{errors?.[name]?.message as string}</p>}
+    </React.Fragment>
   );
 }
