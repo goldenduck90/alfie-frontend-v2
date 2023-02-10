@@ -123,7 +123,23 @@ const medicalQuestions: QuestionProps<any>[] = [
   {
     id: "q4",
     question: "Do you have any of the following conditions?",
-    Component: SingleFormQuestion,
+    Component: (props: RadioGroupInputProps) => {
+      return (
+        <React.Fragment>
+          <RadioGroupInput {...props} options={["Yes", "No"]} />
+          <div className="w-full">
+            <p className="text text-sm font-bold py-2 text-center">
+              Please provide more details on your past surgical procedures
+            </p>
+            <textarea
+              className="p-2 border rounded-md border-gray-300 placeholder:text-gray-300 w-full"
+              placeholder="Enter text here..."
+              rows={6}
+            />
+          </div>
+        </React.Fragment>
+      );
+    },
     validation: z.string().min(1, "Required"),
     helperText: "Select one answer",
   },
