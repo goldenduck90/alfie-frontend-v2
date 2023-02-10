@@ -99,3 +99,25 @@ function Graybox() {
     </div>
   );
 }
+
+export function DialogVersion2() {
+  return (
+    <div className="w-full">
+      <div className="w-full flex justify-between items-center relative">
+        <div className="flex items-center gap-x-2">
+          <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit ">
+            <CalculatorIcon className="w-5 h-5 stroke-inherit" />
+          </div>
+          <span className="text-sm font-bold">{`ID & Insurance Verification`}</span>
+        </div>
+        <RadixDialog.Close className="" asChild>
+          <button>
+            <XIcon className="w-5 h-5" />
+          </button>
+        </RadixDialog.Close>
+      </div>
+    </div>
+  );
+}
+
+DialogModal.Expanded = DialogVersion2;

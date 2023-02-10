@@ -1,5 +1,9 @@
 import { QuestionnaireLayout } from "@src/components/layouts/QuestionaireLayout";
-import { DialogBody, DialogModal } from "@src/components/modal/Dialog";
+import {
+  DialogBody,
+  DialogModal,
+  DialogVersion2,
+} from "@src/components/modal/Dialog";
 
 export default function Page() {
   return (
@@ -27,6 +31,9 @@ export default function Page() {
           title="The Three-Factor Eating Questionnaire"
           description="We would like to know your habits and behaviours regarding eating and taking meals."
         />
+      </DialogModal>
+      <DialogModal text="ID & Insurance verification">
+        <DialogVersion2 />
       </DialogModal>
     </div>
   );
