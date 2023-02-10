@@ -4,6 +4,8 @@ import {
   DialogModal,
   DialogVersion2,
 } from "@src/components/modal/Dialog";
+import { BloodPressure } from "@src/components/modal/variants/BloodPressure";
+import { IDVerificationModal } from "@src/components/modal/variants/IDVerification";
 
 export default function Page() {
   return (
@@ -33,10 +35,10 @@ export default function Page() {
         />
       </DialogModal>
       <DialogModal text="ID & Insurance verification">
-        <DialogVersion2 title="ID & Insurance verification" />
+        <IDVerificationModal title="ID & Insurance verification" />
       </DialogModal>
       <DialogModal text="Log your Blood Pressure">
-        <DialogVersion2 title="Log your Blood Pressure" />
+        <BloodPressure title="Log your Blood Pressure" />
       </DialogModal>
     </div>
   );
