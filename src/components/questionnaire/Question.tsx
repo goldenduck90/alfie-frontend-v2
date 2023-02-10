@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Control,
   useController,
@@ -220,8 +220,8 @@ function Questionnaire({
   allQuestions: QuestionProps<any>[];
   formName: string;
 }) {
-  const ctx = useProgressContext();
-  const { setMax, current, setCurrent } = useStore(ctx, (state: any) => ({
+  const store = useProgressContext();
+  const { setMax, current, setCurrent } = useStore(store, (state: any) => ({
     setMax: state.setMax,
     setCurrent: state.setCurrent,
     current: state.current,
@@ -231,10 +231,10 @@ function Questionnaire({
     setMax(allQuestions.length);
   }, [allQuestions, setMax, setCurrent]);
 
-  const [step, setStep] = useState(0);
   const onSubmit = createPersistedFormState(formName)((state: any) => ({
     setFormState: state.setFormState,
   }));
+
   const { handleSubmit, control, trigger, register } = useForm({
     defaultValues: getStoredForm(formName),
     reValidateMode: "onBlur",
