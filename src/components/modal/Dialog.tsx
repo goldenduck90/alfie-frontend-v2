@@ -102,7 +102,7 @@ function Graybox() {
   );
 }
 
-export function DialogVersion2() {
+export function DialogVersion2({ title }: { title: string }) {
   return (
     <div className="w-full max-w-[560px]">
       <div className="w-full flex justify-between items-center relative pb-3 px-6">
@@ -110,7 +110,7 @@ export function DialogVersion2() {
           <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit">
             <CalculatorIcon className="w-5 h-5 stroke-inherit" />
           </div>
-          <span className="text-sm font-bold">{`ID & Insurance Verification`}</span>
+          <span className="text-sm font-bold">{title}</span>
         </div>
         <div className="flex items-center gap-x-2">
           <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm">
@@ -154,5 +154,3 @@ export function DialogVersion2() {
     </div>
   );
 }
-
-DialogModal.Expanded = DialogVersion2;

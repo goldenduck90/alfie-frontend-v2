@@ -33,7 +33,10 @@ export default function Page() {
         />
       </DialogModal>
       <DialogModal text="ID & Insurance verification">
-        <DialogVersion2 />
+        <DialogVersion2 title="ID & Insurance verification" />
+      </DialogModal>
+      <DialogModal text="Log your Blood Pressure">
+        <DialogVersion2 title="Log your Blood Pressure" />
       </DialogModal>
     </div>
   );
