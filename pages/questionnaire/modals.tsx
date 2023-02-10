@@ -1,11 +1,8 @@
 import { QuestionnaireLayout } from "@src/components/layouts/QuestionaireLayout";
-import {
-  DialogBody,
-  DialogModal,
-  DialogVersion2,
-} from "@src/components/modal/Dialog";
+import { DialogBody, DialogModal } from "@src/components/modal/Dialog";
 import { BloodPressure } from "@src/components/modal/variants/BloodPressure";
 import { IDVerificationModal } from "@src/components/modal/variants/IDVerification";
+import { WeightEntry } from "@src/components/modal/variants/WeightEntry";
 
 export default function Page() {
   return (
@@ -39,6 +36,9 @@ export default function Page() {
       </DialogModal>
       <DialogModal text="Log your Blood Pressure">
         <BloodPressure title="Log your Blood Pressure" />
+      </DialogModal>
+      <DialogModal text="Enter your weight">
+        <WeightEntry title="Enter your weight" />
       </DialogModal>
     </div>
   );

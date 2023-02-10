@@ -16,7 +16,7 @@ export function DialogBody({
   description: string;
 }) {
   return (
-    <div className="w-full max-w-[420px]">
+    <div className="w-full md:max-w-[420px]">
       <div className="w-full flex relative px-6">
         <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit mx-auto">
           <CalculatorIcon className="w-5 h-5 stroke-inherit" />
@@ -56,7 +56,7 @@ export function DialogModal({
       </RadixDialog.Trigger>
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-60 z-[99]" />
-        <RadixDialog.Content className="bg-white fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%] max-w-fit max-h-1/2 shadow-md py-6 rounded-md flex flex-col gap-y-3 z-[100]">
+        <RadixDialog.Content className="bg-white fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%] max-w-fit max-h-1/2 shadow-md py-6 rounded-md gap-y-3 z-[100] flex flex-col">
           {children}
         </RadixDialog.Content>
       </RadixDialog.Portal>
@@ -70,7 +70,7 @@ DialogModal.Title = function Title({
   children: React.ReactNode;
 }) {
   return (
-    <RadixDialog.Title className="text-center font-bold">
+    <RadixDialog.Title className="text-center font-bold whitespace-nowrap">
       {children}
     </RadixDialog.Title>
   );
@@ -89,7 +89,7 @@ DialogModal.Description = function Description({
 
 function Graybox() {
   return (
-    <div className="w-full py-4 px-2 rounded-md flex gap-x-4 items-center justify-center bg-gray-100 text-sm">
+    <div className="w-full py-4 px-2 rounded-md flex gap-x-4 items-center justify-center bg-gray-100 text-sm whitespace-nowrap">
       <div className="flex gap-x-1 items-center">
         <ClockIcon className="w-6 h-6" />
         <p>15 minutes</p>
@@ -112,7 +112,7 @@ export function DialogLongHeader({
   total: number;
 }) {
   return (
-    <div className="w-full flex justify-between items-center relative pb-3 px-6">
+    <div className="w-full flex justify-between items-center relative pb-3 px-6 whitespace-nowrap">
       <div className="flex items-center gap-x-2">
         <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit">
           <CalculatorIcon className="w-5 h-5 stroke-inherit" />
@@ -135,7 +135,7 @@ export function DialogLongHeader({
 
 export function DialogLongBody({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full py-6 bg-gray-50 border-t border-b border-gray-400 px-6 flex flex-col gap-y-2">
+    <div className="w-full min-w-full py-6 bg-gray-50 border-t border-b border-gray-400 px-6 flex flex-col gap-y-2">
       {children}
     </div>
   );
