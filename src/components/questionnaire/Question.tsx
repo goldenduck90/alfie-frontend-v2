@@ -7,7 +7,7 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import { Button } from "../ui/Button";
-import { create } from "zustand";
+import { create, useStore } from "zustand";
 import { persist } from "zustand/middleware";
 import { z, ZodError } from "zod";
 import { QuestionContainer } from "./QuestionContainer";
@@ -19,6 +19,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/outline";
+import { useProgressContext } from "../layouts/QuestionaireLayout";
 interface QuestionComponentProps {
   control: Control<any>;
   register: UseFormRegister<any>;
@@ -219,6 +220,17 @@ function Questionnaire({
   allQuestions: QuestionProps<any>[];
   formName: string;
 }) {
+  const ctx = useProgressContext();
+  const { setMax, current, setCurrent } = useStore(ctx, (state: any) => ({
+    setMax: state.setMax,
+    setCurrent: state.setCurrent,
+    current: state.current,
+  }));
+
+  useEffect(() => {
+    setMax(allQuestions.length);
+  }, [allQuestions, setMax, setCurrent]);
+
   const [step, setStep] = useState(0);
   const onSubmit = createPersistedFormState(formName)((state: any) => ({
     setFormState: state.setFormState,
@@ -228,17 +240,17 @@ function Questionnaire({
     reValidateMode: "onBlur",
   });
 
-  const question = allQuestions?.[step];
+  const question = allQuestions?.[current];
   const Component = question?.Component;
-  const endQuestion = step + 1 === allQuestions?.length;
+  const endQuestion = current + 1 === allQuestions?.length;
 
   return (
     <QuestionContainer helper={question?.helperText}>
       <div className="col-span-1 flex justify-center items-center">
-        {step > 0 && !endQuestion && (
+        {current > 0 && !endQuestion && (
           <button
             className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center"
-            onClick={() => setStep((s) => s - 1)}
+            onClick={() => setCurrent(current - 1)}
           >
             <ChevronLeftIcon className="stroke-gray-400 w-8 h-8" />
           </button>
@@ -271,8 +283,8 @@ function Questionnaire({
                   if (!!valid) {
                     handleSubmit((value) => {
                       onSubmit.setFormState(value);
-                      setStep((s) =>
-                        s >= allQuestions.length - 1 ? 0 : s + 1
+                      setCurrent(
+                        current >= allQuestions.length - 1 ? 0 : current + 1
                       );
                     })();
                   }
@@ -288,7 +300,7 @@ function Questionnaire({
                     form: value,
                   });
                   localStorage.removeItem(formName);
-                  setStep((s) => 0);
+                  setCurrent(0);
                 })();
               }
             }}
