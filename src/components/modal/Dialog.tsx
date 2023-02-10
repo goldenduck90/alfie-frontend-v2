@@ -112,11 +112,16 @@ export function DialogVersion2() {
           </div>
           <span className="text-sm font-bold">{`ID & Insurance Verification`}</span>
         </div>
-        <RadixDialog.Close className="" asChild>
-          <button>
-            <XIcon className="w-5 h-5" />
-          </button>
-        </RadixDialog.Close>
+        <div className="flex items-center gap-x-2">
+          <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm">
+            Step 1 out of 2
+          </span>
+          <RadixDialog.Close className="" asChild>
+            <button>
+              <XIcon className="w-5 h-5" />
+            </button>
+          </RadixDialog.Close>
+        </div>
       </div>
       <div className="w-full py-6 bg-gray-50 border-t border-b border-gray-400 px-6 flex flex-col gap-y-2 ">
         <p className="text-sm">
@@ -134,14 +139,16 @@ export function DialogVersion2() {
             </div>
             <p className="font-bold">Upload your ID photo</p>
             <p className="text-sm text-gray-500">
-              Accepted file types are: png,jpg,pdf.
+              Accepted file types are: png, jpg, pdf.
             </p>
             <Button>Upload from computer</Button>
           </div>
         </div>
       </div>
       <div className="w-full flex justify-end items-center relative pb-3 px-6 pt-6 gap-x-3">
-        <Button buttonType="secondary">Cancel</Button>
+        <RadixDialog.Close asChild>
+          <Button buttonType="secondary">Cancel</Button>
+        </RadixDialog.Close>
         <Button>Next</Button>
       </div>
     </div>
