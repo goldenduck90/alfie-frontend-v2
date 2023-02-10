@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/react";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
 import React, { useEffect, useState } from "react";
 import { WorkingPlan } from "../../@types/easyAppointmentTypes";
-import { Button } from "../../src/components/Button";
+import { Button } from "../../src/components/old/Button";
 import UnControlledDropDown from "../../src/components/inputs/UnControlledDropDown";
 import { UnControlledTextInput } from "../../src/components/inputs/UnControlledTextInput";
 import { Layout } from "../../src/components/layouts/Layout";
