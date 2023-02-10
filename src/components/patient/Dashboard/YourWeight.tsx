@@ -4,14 +4,17 @@ import { Button } from "@src/components/ui/Button";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { Line } from "@src/components/ui/Line";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
-import { SliderRanger } from "@src/components/ui/SliderRange";
+import { SliderRange } from "@src/components/ui/SliderRange";
 import React from "react";
+import { useForm } from "react-hook-form";
 
 interface YourWeightProps {
   isLoading?: boolean;
 }
 
 export function YourWeight({ isLoading }: YourWeightProps) {
+  const { control } = useForm({});
+
   return (
     <DashboardCard
       className="w-full md:min-w-[370px] md:max-w-[400px] "
@@ -55,8 +58,17 @@ export function YourWeight({ isLoading }: YourWeightProps) {
               weight!
             </p>
           )}
-          <div className="pt-8 flex w-full">
-            <SliderRanger />
+          <div className="pt-8 flex flex-col w-full gap-y-2">
+            <div className="flex gap-x-1">
+              <p className="text-4xl">
+                165.0 <span className="text-sm">lbs</span>
+              </p>
+            </div>
+            <SliderRange defaultNumber={30} />
+            <div className="w-full flex justify-between items-center text-sm text-gray-500">
+              <p>11.0 lbs to reach goal</p>
+              <p>4.5 lbs already lost</p>
+            </div>
           </div>
         </div>
       </div>
