@@ -10,7 +10,6 @@ export function SliderRanger({
   max: number;
   current: number;
 }) {
-  const [progress, setProgress] = useState(40);
   return (
     <Progress.Root
       className="relative overflow-hidden rounded-full w-full h-[10px] bg-[#E2E8F0]"
@@ -24,10 +23,6 @@ export function SliderRanger({
           }%)`,
         }}
       />
-      {/* <div
-        className="bg-red-400 h-[20px] w-[20px] "
-        style={{ transform: `translateX(-${100 - progress}%)` }}
-      /> */}
     </Progress.Root>
   );
 }
@@ -42,14 +37,13 @@ export function SliderDraggable({
   const { field } = useController({
     name,
     control,
-    defaultValue: [50],
+    defaultValue: [0],
   });
   const [showValue, setShowValue] = useState(false);
 
   return (
     <div>
       <RadixSlider.Root
-        defaultValue={[50]}
         max={100}
         step={1}
         value={field.value}
