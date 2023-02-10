@@ -13,7 +13,12 @@ import { z, ZodError } from "zod";
 import { QuestionContainer } from "./QuestionContainer";
 import { Checkbox } from "../ui/Checkbox";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { ChevronLeftIcon } from "@heroicons/react/outline";
+import {
+  ChevronLeftIcon,
+  DocumentIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/outline";
 interface QuestionComponentProps {
   control: Control<any>;
   register: UseFormRegister<any>;
@@ -38,6 +43,7 @@ interface RadioGroupInputProps extends QuestionComponentProps {
 interface QuestionProps<T extends React.FC<QuestionComponentProps>> {
   id: string;
   question: string;
+  helperText: string;
   validation?: z.ZodType<any, any>;
   Component: T;
 }
@@ -76,6 +82,7 @@ const medicalQuestions: QuestionProps<any>[] = [
       />
     ),
     validation: z.string().min(1, "At least one option is required"),
+    helperText: "Select one answer",
   },
   {
     id: "q2",
@@ -97,6 +104,7 @@ const medicalQuestions: QuestionProps<any>[] = [
       />
     ),
     validation: z.string().array().nonempty("At least one option is required"),
+    helperText: "Select all that apply",
   },
   {
     id: "q3",
@@ -109,17 +117,26 @@ const medicalQuestions: QuestionProps<any>[] = [
       />
     ),
     validation: z.string().array().nonempty("At least one option is required"),
+    helperText: "Select all that apply",
   },
   {
     id: "q4",
     question: "Do you have any of the following conditions?",
     Component: SingleFormQuestion,
     validation: z.string().min(1, "Required"),
+    helperText: "Select one answer",
   },
   {
     id: "q6",
     question: "Please list any medication allergies you are aware of:",
     Component: MultipleTextInput,
+    helperText: "Type your answer",
+  },
+  {
+    id: "q7",
+    question: "",
+    Component: FinalSubmitMetabolic,
+    helperText: "Information",
   },
 ];
 
@@ -222,9 +239,9 @@ function Questionnaire({
   const endQuestion = step + 1 === allQuestions?.length;
 
   return (
-    <QuestionContainer helper={helper}>
+    <QuestionContainer helper={question?.helperText}>
       <div className="col-span-1 flex justify-center items-center">
-        {step > 0 && (
+        {step > 0 && !endQuestion && (
           <button
             className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center"
             onClick={() => setStep((s) => s - 1)}
@@ -322,7 +339,7 @@ export function SingleFormQuestion({
   return (
     <React.Fragment>
       <fieldset id={name} className="flex flex-col gap-y-3 pb-2 items-center">
-        <label className="text-lg font-bold text-center">{question}</label>
+        <label className="text font-bold text-center">{question}</label>
         <input
           {...field}
           className="border p-1 rounded-md border-black max-w-[300px]"
@@ -367,7 +384,7 @@ export function MultiCheckboxFormQuestion({
 
   return (
     <React.Fragment>
-      <label className="text-lg font-bold text-center pb-4">{question}</label>
+      <label className="text font-bold text-center pb-4">{question}</label>
       {options?.map((option, idx) => {
         const checked = field?.value?.includes(option);
         const handleChange = (checked: boolean) => {
@@ -392,7 +409,7 @@ export function MultiCheckboxFormQuestion({
             }}
           >
             <div
-              className={`h-[56px] flex items-center px-6 border rounded-sm w-full cursor-pointer ${
+              className={`h-[56px] flex items-center px-6 border rounded-md w-full cursor-pointer ${
                 checked
                   ? "border-primary-500 bg-primary-50"
                   : "bg-gray-100 border-gray-100 "
@@ -455,7 +472,7 @@ function MultipleTextInput({
 
   return (
     <React.Fragment>
-      <label className="text-lg font-bold text-center pb-4">{question}</label>
+      <label className="text font-bold text-center pb-4">{question}</label>
       {fields.map((field, index) => {
         return (
           <div key={field.id} className="flex w-full items-center gap-x-2">
@@ -465,11 +482,20 @@ function MultipleTextInput({
               className="w-full border border-[#CBD5E1] rounded-md py-2 px-4"
               {...register(`${name}.${index}.value`)}
             />
-            {index > 0 && <Button onClick={() => remove(index)}>Delete</Button>}
+            {index > 0 && (
+              <Button buttonType="tertiary" onClick={() => remove(index)}>
+                <TrashIcon className="w-6 h-6 stroke-gray-500" />
+              </Button>
+            )}
           </div>
         );
       })}
-      <Button onClick={() => append("")}>Add</Button>
+      <button
+        className="w-full py-2 px-4 rounded-md border border-gray-400 flex items-center justify-center bg-gray-100"
+        onClick={() => append("")}
+      >
+        <PlusIcon className="w-6 h-6 stroke-gray-500" />
+      </button>
     </React.Fragment>
   );
 }
@@ -479,6 +505,7 @@ function RadioGroupInput({
   control,
   validation,
   options,
+  question,
 }: RadioGroupInputProps) {
   const {
     field,
@@ -505,6 +532,7 @@ function RadioGroupInput({
   });
   return (
     <React.Fragment>
+      <label className="text font-bold text-center pb-4">{question}</label>
       <RadioGroup.Root
         onValueChange={field.onChange}
         value={field.value}
@@ -565,6 +593,45 @@ function RadioGroupItem({
       <label htmlFor={id} className="flex flex-grow w-full">
         {value}
       </label>
+    </div>
+  );
+}
+
+const requiredDocNames = [
+  "TSH",
+  "Hb1Ac",
+  "Lipid Panel",
+  "Comprehensive Metabolic Panel",
+];
+
+function FinalSubmitMetabolic() {
+  return (
+    <div className="">
+      <p className="text font-bold text-center">
+        In order to properly determine the right medication for you, we need the
+        following labs:
+      </p>
+      <div className="flex flex-col px-2 mt-6">
+        {requiredDocNames.map((name) => {
+          return (
+            <div
+              key={name}
+              className=" bg-gray-100 py-4 px-2 flex gap-x-2 items-center text-gray-500 first:rounded-t-md last:rounded-b-md"
+            >
+              <DocumentIcon className="w-6 h-6 stroke-gray-500" />
+              {name}
+            </div>
+          );
+        })}
+      </div>
+      <p className="py-6 px-2 ">
+        Use this link to schedule an appointment for routine lab work at
+        Labcorp: https://www.labcorp.com/labs-and-appointments Routine labs
+        should be covered by your insurance.
+      </p>
+      <div className="px-2 ">
+        <Checkbox label="I have already had the required labs done" />
+      </div>
     </div>
   );
 }
