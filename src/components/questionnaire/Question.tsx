@@ -68,6 +68,19 @@ const conditions = [
 ];
 
 const medicalQuestions: QuestionProps<any>[] = [
+  // {
+  //   id: "temp1",
+  //   question:
+  //     "On a scale where 1 means no restraint in eating (eating whatever you want, whenever you want it) and 8 means total restraint (constantly limiting food intake and never giving in), what number would you give yourself?",
+  //   Component: (props: MultiCheckboxQuestionProps) => (
+  //     <RadioGroupNumberInput
+  //       {...props}
+  //       options={["1", "2", "3", "4", "5", "6", "7", "8"]}
+  //     />
+  //   ),
+  //   validation: z.string().min(1, "At least one option is required"),
+  //   helperText: "Select one answer",
+  // },
   {
     id: "q1",
     question: "How long have you been trying to lose weight?",
@@ -724,6 +737,96 @@ function TextAreaInput({
         />
       </fieldset>
       {invalid && <p>{errors?.[name]?.message as string}</p>}
+    </React.Fragment>
+  );
+}
+
+function RadioGroupNumberItem({
+  value,
+  id,
+  selected,
+}: {
+  value: string;
+  id: string;
+  selected: boolean;
+}) {
+  const buttonRef = React.useRef<HTMLButtonElement>();
+
+  return (
+    <div
+      className={`flex justify-center gap-x-4 items-center w-[40px] h-[40px] rounded-md ${
+        selected
+          ? "border border-[#0C52E8] bg-[#F2F6FF] text-[#0C52E8]"
+          : "border border-[#CBD5E1] bg-[#F8FAFC]"
+      }`}
+      onClick={() => {
+        buttonRef?.current?.click();
+      }}
+    >
+      <RadioGroup.Item
+        ref={buttonRef as any}
+        value={value}
+        id={id}
+        className={``}
+      >
+        <label htmlFor={id} className="flex flex-grow w-full">
+          {value}
+        </label>
+      </RadioGroup.Item>
+    </div>
+  );
+}
+
+function RadioGroupNumberInput({
+  name,
+  control,
+  validation,
+  options,
+  question,
+}: RadioGroupInputProps) {
+  const {
+    field,
+    fieldState: { invalid },
+    formState: { errors },
+  } = useController({
+    name,
+    control,
+    rules: {
+      validate: (v) => {
+        try {
+          if (!validation) return true;
+          validation?.parse?.(v);
+          return true;
+        } catch (error) {
+          if (error instanceof ZodError) {
+            const message = error?.issues?.[0]?.message;
+            return message || "Invaid";
+          }
+          return false;
+        }
+      },
+    },
+  });
+  return (
+    <React.Fragment>
+      <label className="text font-bold text-center pb-4">{question}</label>
+      <RadioGroup.Root
+        onValueChange={field.onChange}
+        value={field.value}
+        ref={field.ref}
+        className="flex gap-x-2 w-full justify-evenly"
+      >
+        {options.map((opt) => {
+          return (
+            <RadioGroupNumberItem
+              id={opt}
+              value={opt}
+              key={opt}
+              selected={field?.value === opt}
+            />
+          );
+        })}
+      </RadioGroup.Root>
     </React.Fragment>
   );
 }
