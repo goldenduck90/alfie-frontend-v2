@@ -11,9 +11,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { z, ZodError } from "zod";
 import { QuestionContainer } from "./QuestionContainer";
-import { HookCheckbox } from "../ui/hookComponents/HookCheckBox";
 import { Checkbox } from "../ui/Checkbox";
-
+import * as RadioGroup from "@radix-ui/react-radio-group";
 interface QuestionComponentProps {
   control: Control<any>;
   register: UseFormRegister<any>;
@@ -30,6 +29,10 @@ interface MultiCheckboxQuestionProps extends QuestionComponentProps {
 }
 
 interface MultiTextInputProps extends QuestionComponentProps {}
+
+interface RadioGroupInputProps extends QuestionComponentProps {
+  options: string[];
+}
 
 interface QuestionProps<T extends React.FC<QuestionComponentProps>> {
   id: string;
@@ -61,9 +64,8 @@ const medicalQuestions: QuestionProps<any>[] = [
     id: "q1",
     question: "How long have you been trying to lose weight?",
     Component: (props: MultiCheckboxQuestionProps) => (
-      <MultiCheckboxFormQuestion
+      <RadioGroupInput
         {...props}
-        multiple={false}
         options={[
           "My whole life",
           "Several years",
@@ -72,7 +74,7 @@ const medicalQuestions: QuestionProps<any>[] = [
         ]}
       />
     ),
-    validation: z.string().array().nonempty("At least one option is required"),
+    validation: z.string().min(1, "At least one option is required"),
   },
   {
     id: "q2",
@@ -333,8 +335,6 @@ export function MultiCheckboxFormQuestion({
   options,
   multiple = true,
 }: MultiCheckboxQuestionProps) {
-  const inputRef = React.useRef<HTMLInputElement[]>([]);
-
   const {
     field,
     fieldState: { invalid },
@@ -465,5 +465,100 @@ function MultipleTextInput({
       })}
       <Button onClick={() => append("")}>Add</Button>
     </React.Fragment>
+  );
+}
+
+function RadioGroupInput({
+  name,
+  control,
+  validation,
+  options,
+}: RadioGroupInputProps) {
+  const {
+    field,
+    fieldState: { invalid },
+    formState: { errors },
+  } = useController({
+    name,
+    control,
+    rules: {
+      validate: (v) => {
+        try {
+          if (!validation) return true;
+          validation?.parse?.(v);
+          return true;
+        } catch (error) {
+          if (error instanceof ZodError) {
+            const message = error?.issues?.[0]?.message;
+            return message || "Invaid";
+          }
+          return false;
+        }
+      },
+    },
+  });
+  return (
+    <React.Fragment>
+      <RadioGroup.Root
+        onValueChange={field.onChange}
+        value={field.value}
+        ref={field.ref}
+        className="flex flex-col gap-y-2 w-full"
+      >
+        {options.map((opt) => {
+          return (
+            <RadioGroupItem
+              id={opt}
+              value={opt}
+              key={opt}
+              selected={field?.value === opt}
+            />
+          );
+        })}
+      </RadioGroup.Root>
+    </React.Fragment>
+  );
+}
+
+function RadioGroupItem({
+  value,
+  id,
+  selected,
+}: {
+  value: string;
+  id: string;
+  selected: boolean;
+}) {
+  const buttonRef = React.useRef<HTMLButtonElement>();
+
+  return (
+    <div
+      className={`flex justify-center w-full gap-x-4 items-center py-[18px] px-[18px] rounded-md ${
+        selected
+          ? "border border-[#0C52E8] bg-[#F2F6FF]"
+          : "border border-[#F8FAFC] bg-[#F8FAFC]"
+      }`}
+      onClick={() => {
+        buttonRef?.current?.click();
+      }}
+    >
+      <RadioGroup.Item
+        ref={buttonRef as any}
+        value={value}
+        id={id}
+        className={`${
+          selected
+            ? "bg-[#0648D4] border-[#0648D4]"
+            : "bg-white border-[#CBD5E1]"
+        } w-[22px] h-[20px] rounded-full border `}
+      >
+        <RadioGroup.Indicator
+          className={`flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[8px] after:h-[8px] after:rounded-[50%] after:bg-white`}
+        />
+      </RadioGroup.Item>
+      <label htmlFor={id} className="flex flex-grow w-full">
+        {value}
+      </label>
+    </div>
   );
 }
