@@ -2,6 +2,7 @@ import { QuestionnaireLayout } from "@src/components/layouts/QuestionaireLayout"
 import { DialogBody, DialogModal } from "@src/components/modal/Dialog";
 import { BloodPressure } from "@src/components/modal/variants/BloodPressure";
 import { IDVerificationModal } from "@src/components/modal/variants/IDVerification";
+import { WaistMeasurement } from "@src/components/modal/variants/WaistMeasurement";
 import { WeightEntry } from "@src/components/modal/variants/WeightEntry";
 
 export default function Page() {
@@ -39,6 +40,9 @@ export default function Page() {
       </DialogModal>
       <DialogModal text="Enter your weight">
         <WeightEntry title="Enter your weight" />
+      </DialogModal>
+      <DialogModal text="Enter your waist measurement">
+        <WaistMeasurement title="Enter your waist measurement" />
       </DialogModal>
     </div>
   );
