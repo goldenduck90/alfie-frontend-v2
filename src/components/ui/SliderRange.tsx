@@ -1,9 +1,8 @@
-import * as Progress from "@radix-ui/react-progress";
 import { useState } from "react";
 import * as RadixSlider from "@radix-ui/react-slider";
 import { Control, useController, useForm } from "react-hook-form";
 
-export function SliderRanger({ defaultNumber }: { defaultNumber: number }) {
+export function SliderRange({ defaultNumber }: { defaultNumber: number }) {
   const { control } = useForm({});
 
   const { field } = useController({

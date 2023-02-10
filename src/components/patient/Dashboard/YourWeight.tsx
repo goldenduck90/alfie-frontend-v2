@@ -4,7 +4,7 @@ import { Button } from "@src/components/ui/Button";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { Line } from "@src/components/ui/Line";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
-import { SliderDraggable, SliderRanger } from "@src/components/ui/SliderRange";
+import { SliderRange } from "@src/components/ui/SliderRange";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -64,7 +64,7 @@ export function YourWeight({ isLoading }: YourWeightProps) {
                 165.0 <span className="text-sm">lbs</span>
               </p>
             </div>
-            <SliderRanger defaultNumber={30} />
+            <SliderRange defaultNumber={30} />
             <div className="w-full flex justify-between items-center text-sm text-gray-500">
               <p>11.0 lbs to reach goal</p>
               <p>4.5 lbs already lost</p>
