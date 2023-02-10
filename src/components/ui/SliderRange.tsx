@@ -1,29 +1,33 @@
 import * as Progress from "@radix-ui/react-progress";
 import { useState } from "react";
 import * as RadixSlider from "@radix-ui/react-slider";
-import { Control, useController } from "react-hook-form";
+import { Control, useController, useForm } from "react-hook-form";
 
-export function SliderRanger({
-  max = 9,
-  current = 1,
-}: {
-  max: number;
-  current: number;
-}) {
+export function SliderRanger({ defaultNumber }: { defaultNumber: number }) {
+  const { control } = useForm({});
+
+  const { field } = useController({
+    name: "weight",
+    control,
+    defaultValue: [defaultNumber],
+  });
+
   return (
-    <Progress.Root
-      className="relative overflow-hidden rounded-full w-full h-[10px] bg-[#E2E8F0]"
-      value={100}
-    >
-      <Progress.Indicator
-        className="bg-[#58ACE3] w-full h-full"
-        style={{
-          transform: `translateX(-${
-            100 - Math.max(0, Math.min(100, (current / max) * 100))
-          }%)`,
-        }}
-      />
-    </Progress.Root>
+    <div className="w-full">
+      <RadixSlider.Root
+        max={100}
+        disabled
+        step={1}
+        value={field.value}
+        onValueChange={field.onChange}
+        className="relative flex items-center w-full h-[8px]"
+      >
+        <RadixSlider.Track className="bg-[#E2E8F0] relative flex-grow rounded-full h-[8px]">
+          <RadixSlider.Range className="absolute h-full rounded-2xl bg-primary-500" />
+        </RadixSlider.Track>
+        <RadixSlider.Thumb className="block box-content relative w-[8px] h-[8px] bg-white border-[2px] shadow-md rounded-full border-primary-500"></RadixSlider.Thumb>
+      </RadixSlider.Root>
+    </div>
   );
 }
 
