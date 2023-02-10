@@ -1,6 +1,31 @@
 import { useState } from "react";
 import * as RadixSlider from "@radix-ui/react-slider";
 import { Control, useController, useForm } from "react-hook-form";
+import * as Progress from "@radix-ui/react-progress";
+
+export function SliderProgressBar({
+  current,
+  max,
+}: {
+  current: number;
+  max: number;
+}) {
+  return (
+    <Progress.Root
+      className="relative overflow-hidden rounded-full w-full h-[10px] bg-[#E2E8F0]"
+      value={100}
+    >
+      <Progress.Indicator
+        className="bg-[#58ACE3] w-full h-full rounded-r-md"
+        style={{
+          transform: `translateX(-${
+            100 - Math.max(0, Math.min(100, (current / max) * 100))
+          }%)`,
+        }}
+      />
+    </Progress.Root>
+  );
+}
 
 export function SliderRange({ defaultNumber }: { defaultNumber: number }) {
   const { control } = useForm({});

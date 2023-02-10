@@ -4,8 +4,7 @@ import { Role } from "@src/graphql/generated";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { XIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
-import { ProgressBar } from "../ui/ProgressBar";
-import { SliderRanger } from "../ui/SliderRange";
+import { SliderProgressBar } from "../ui/SliderRange";
 import { createStore, StoreApi, useStore } from "zustand";
 
 interface QuestionnaireLayoutProps {
@@ -80,7 +79,7 @@ export function QuestionnaireLayout({
             </div>
             <div className="mx-auto max-w-[480px] w-full flex justify-center items-center pb-8 -mt-3 gap-x-4 text-white">
               <p className="w-[20px] text-center">{current + 1}</p>
-              <SliderRanger current={current + 1} max={max} />
+              <SliderProgressBar current={current + 1} max={max} />
               <p className="w-[20px] text-center">{max}</p>
             </div>
             {children}
