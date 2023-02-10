@@ -14,7 +14,7 @@ export function QuestionContainer(props: QuestionContainerProps) {
           {props.helper}
         </div>
       </div>
-      {props.children}
+      <div className="grid grid-cols-12">{props.children}</div>
     </div>
   );
 }

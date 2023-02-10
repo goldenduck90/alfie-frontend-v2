@@ -11,6 +11,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { z, ZodError } from "zod";
 import { QuestionContainer } from "./QuestionContainer";
+import { HookCheckbox } from "../ui/hookComponents/HookCheckBox";
+import { Checkbox } from "../ui/Checkbox";
 
 interface QuestionComponentProps {
   control: Control<any>;
@@ -38,7 +40,6 @@ interface QuestionProps<T extends React.FC<QuestionComponentProps>> {
 
 const conditions = [
   "High blood pressure",
-  "Meal Replacements",
   "Pre-diabetes",
   "Joint pain",
   "Fatty Liver disease",
@@ -108,12 +109,6 @@ const medicalQuestions: QuestionProps<any>[] = [
   },
   {
     id: "q4",
-    question: "Do you have any of the following conditions?",
-    Component: SingleFormQuestion,
-    validation: z.string().min(1, "Required"),
-  },
-  {
-    id: "q5",
     question: "Do you have any of the following conditions?",
     Component: SingleFormQuestion,
     validation: z.string().min(1, "Required"),
@@ -225,47 +220,53 @@ function Questionnaire({
 
   return (
     <QuestionContainer helper={helper}>
-      {step > 0 && <Button onClick={() => setStep((s) => s - 1)}>Back</Button>}
-      <div className="flex flex-col items-center w-full gap-y-3">
-        {!!Component && (
-          <Component
-            control={control}
-            key={question?.id}
-            name={question.id}
-            register={register}
-            question={question.question}
-            validation={question.validation}
-          />
+      <div className="col-span-1 flex justify-center items-center">
+        {step > 0 && (
+          <Button onClick={() => setStep((s) => s - 1)}>{`<`}</Button>
         )}
-        <div className="pt-3" />
-        {endQuestion && <p>Finished</p>}
-        <Button
-          size="large"
-          onClick={async () => {
-            if (!question?.id) return;
-            /**
-             * Trigger validation step by step within form
-             *
-             */
-            try {
-              const valid = await trigger(question?.id);
-              if (!!valid) {
-                handleSubmit((value) => {
-                  onSubmit.setFormState(value);
-                  setStep((s) => (s >= allQuestions.length - 1 ? 0 : s + 1));
-                })();
-              }
-            } catch (error) {
-              /**
-               * This should never happen
-               */
-              console.log("Zod", { error });
-            }
-          }}
-        >
-          Submit
-        </Button>
       </div>
+      <div className="col-span-10">
+        <div className="flex flex-col items-center w-full gap-y-3">
+          {!!Component && (
+            <Component
+              control={control}
+              key={question?.id}
+              name={question.id}
+              register={register}
+              question={question.question}
+              validation={question.validation}
+            />
+          )}
+          <div className="pt-3" />
+          <Button
+            size="large"
+            onClick={async () => {
+              if (!question?.id) return;
+              /**
+               * Trigger validation step by step within form
+               *
+               */
+              try {
+                const valid = await trigger(question?.id);
+                if (!!valid) {
+                  handleSubmit((value) => {
+                    onSubmit.setFormState(value);
+                    setStep((s) => (s >= allQuestions.length - 1 ? 0 : s + 1));
+                  })();
+                }
+              } catch (error) {
+                /**
+                 * This should never happen
+                 */
+                console.log("Zod", { error });
+              }
+            }}
+          >
+            Submit
+          </Button>
+        </div>
+      </div>
+      <div className="col-span-1" />
     </QuestionContainer>
   );
 }
@@ -363,10 +364,8 @@ export function MultiCheckboxFormQuestion({
       <label className="text-lg font-bold text-center pb-4">{question}</label>
       {options?.map((option, idx) => {
         const checked = field?.value?.includes(option);
-        const handleChange: React.ChangeEventHandler<HTMLInputElement> = (
-          e
-        ) => {
-          if (e.target.checked) {
+        const handleChange = (checked: boolean) => {
+          if (checked) {
             if (multiple) {
               field.onChange([...field.value, option]);
             } else {
@@ -383,7 +382,7 @@ export function MultiCheckboxFormQuestion({
             id={option}
             className={`flex gap-3 items-center w-full`}
             onClick={() => {
-              inputRef.current?.[idx].click?.();
+              handleChange(!checked);
             }}
           >
             <div
@@ -393,19 +392,13 @@ export function MultiCheckboxFormQuestion({
                   : "bg-gray-100 border-gray-100 "
               }`}
             >
-              <input
+              <Checkbox
                 {...field}
                 ref={(ref) => {
-                  if (ref) {
-                    inputRef.current[idx] = ref;
-                  }
                   field.ref(ref);
                 }}
-                id={`${option}-${idx}`}
                 onChange={handleChange}
                 checked={field?.value?.includes(option)}
-                className="border p-1 rounded-md border-black max-w-[300px]"
-                type="checkbox"
               />
               <label
                 htmlFor={`${option}-${idx}`}

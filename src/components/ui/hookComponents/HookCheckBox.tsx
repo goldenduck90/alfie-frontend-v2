@@ -7,11 +7,6 @@ interface HookCheckboxProps extends CheckboxProps {
   control: Control<any>;
 }
 
-export function HookCheckbox({ name, control, ...props }: HookCheckboxProps) {
-  const { field } = useController({
-    name,
-    control,
-  });
-
-  return <Checkbox {...props} {...field} />;
+export function HookCheckbox({ name, ...props }: HookCheckboxProps) {
+  return <Checkbox {...props} />;
 }
