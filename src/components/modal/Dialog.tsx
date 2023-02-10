@@ -141,7 +141,7 @@ export function DialogVersion2() {
         </div>
       </div>
       <div className="w-full flex justify-end items-center relative pb-3 px-6 pt-6 gap-x-3">
-        <Button>Cancel</Button>
+        <Button buttonType="secondary">Cancel</Button>
         <Button>Next</Button>
       </div>
     </div>
