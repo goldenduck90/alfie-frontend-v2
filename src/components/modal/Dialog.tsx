@@ -5,16 +5,47 @@ import {
   XIcon,
 } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
+import React from "react";
 import { Button } from "../ui/Button";
 
-export function DialogModal({
-  text,
+export function DialogBody({
   title,
   description,
 }: {
-  text: string;
   title: string;
   description: string;
+}) {
+  return (
+    <React.Fragment>
+      <div className="w-full flex relative">
+        <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit mx-auto">
+          <CalculatorIcon className="w-5 h-5 stroke-inherit" />
+        </div>
+        <RadixDialog.Close className="absolute right-0 inset-y " asChild>
+          <button>
+            <XIcon className="w-5 h-5" />
+          </button>
+        </RadixDialog.Close>
+      </div>
+      <DialogModal.Title>{title}</DialogModal.Title>
+      <DialogModal.Description>{description}</DialogModal.Description>
+      <Graybox />
+      <div className="py-4 flex items-center justify-center">
+        <Button size="medium">Start the questionnaire</Button>
+      </div>
+      <p className="text-center text-sm text-gray-700">
+        By taking this survey you accept our Terms & Conditions.
+      </p>
+    </React.Fragment>
+  );
+}
+
+export function DialogModal({
+  text,
+  children,
+}: {
+  text: string;
+  children: React.ReactNode;
 }) {
   return (
     <RadixDialog.Root>
@@ -24,25 +55,7 @@ export function DialogModal({
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-60" />
         <RadixDialog.Content className="bg-white fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%] w-full max-w-[420px] max-h-1/2 shadow-md py-6 px-6 rounded-md flex flex-col gap-y-3">
-          <div className="w-full flex relative">
-            <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit mx-auto">
-              <CalculatorIcon className="w-5 h-5 stroke-inherit" />
-            </div>
-            <RadixDialog.Close className="absolute right-0 inset-y " asChild>
-              <button>
-                <XIcon className="w-5 h-5" />
-              </button>
-            </RadixDialog.Close>
-          </div>
-          <DialogModal.Title>{title}</DialogModal.Title>
-          <DialogModal.Description>{description}</DialogModal.Description>
-          <Graybox />
-          <div className="py-4 flex items-center justify-center">
-            <Button size="medium">Start the questionnaire</Button>
-          </div>
-          <p className="text-center text-sm text-gray-700">
-            By taking this survey you accept our Terms & Conditions.
-          </p>
+          {children}
         </RadixDialog.Content>
       </RadixDialog.Portal>
     </RadixDialog.Root>
