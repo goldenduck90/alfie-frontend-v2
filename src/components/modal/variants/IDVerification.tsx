@@ -8,7 +8,7 @@ import {
 import * as RadixDialog from "@radix-ui/react-dialog";
 import React, { useState } from "react";
 import { Button } from "../../ui/Button";
-import { DialogLongBody, DialogLongHeader } from "../Dialog";
+import { DialogLongHeader } from "../Dialog";
 
 export function IDVerificationModal({ title }: { title: string }) {
   const [step, setStep] = useState(1);
