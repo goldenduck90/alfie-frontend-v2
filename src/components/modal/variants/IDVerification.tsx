@@ -35,7 +35,7 @@ export function IDVerificationModal({ title }: { title: string }) {
           </div>
         </div>
       </div>
-      <div className="w-full flex justify-end items-center relative pb-3 px-6 pt-6 gap-x-3">
+      <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3">
         <RadixDialog.Close asChild>
           <Button buttonType="secondary">Cancel</Button>
         </RadixDialog.Close>
