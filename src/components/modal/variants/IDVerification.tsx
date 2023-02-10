@@ -1,11 +1,13 @@
 import { CalculatorIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "../../ui/Button";
 import { DialogLongHeader } from "../Dialog";
 
 export function IDVerificationModal({ title }: { title: string }) {
   const [step, setStep] = useState(1);
+  const fileInput = useRef<HTMLInputElement>();
+
   return (
     <div className="w-full md:max-w-[560px]">
       <DialogLongHeader title={title} step={step} total={2} />
@@ -27,7 +29,25 @@ export function IDVerificationModal({ title }: { title: string }) {
             </React.Fragment>
           )}
         </div>
-        <div className="w-full py-6 border rounded-md border-dashed border-blue-600 bg-primary-50 min-h-[276px] flex justify-center items-center">
+        <div className="relative w-full py-6 border rounded-md border-dashed border-blue-600 bg-primary-50 min-h-[276px] flex justify-center items-center">
+          <input
+            ref={fileInput as any}
+            type="file"
+            className="absolute inset-0 opacity-0"
+            onChange={(e) => {
+              const droppedFile = e.target?.files?.[0];
+              if (
+                droppedFile &&
+                ["image/png", "image/jpeg", "application/pdf"].includes(
+                  droppedFile.type
+                )
+              ) {
+                console.log("Valid File!");
+                console.log({ file: droppedFile });
+              }
+            }}
+            accept="image/png, image/jpeg, application/pdf"
+          />
           <div className="flex flex-col gap-y-3 items-center justify-center h-full">
             <div className="p-2 rounded-full bg-blue-100 stroke-blue-500 max-w-fit">
               <CalculatorIcon className="w-5 h-5 stroke-inherit" />
