@@ -7,7 +7,7 @@ import {
 
 export default function Page() {
   return (
-    <div className="flex flex-col gap-y-3 bg-white shadow-md border rounded-md py-3">
+    <div className="flex flex-col gap-y-3 bg-white border rounded-md py-3">
       <DialogModal text="Medical Questionnaire">
         <DialogBody
           title="Medical Questionnaire"
