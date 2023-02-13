@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fragment } from "react"
-import { Dialog, Transition } from "@headlessui/react"
-import { XIcon } from "@heroicons/react/outline"
+import { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
 
 export const SlideOver = ({
   isOpen,
@@ -9,10 +8,10 @@ export const SlideOver = ({
   title,
   selectedTask,
 }: {
-  isOpen: boolean
-  setIsOpen: (isOpen: boolean) => void
-  title: string
-  selectedTask: any
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  title: string;
+  selectedTask: any;
 }) => {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -87,5 +86,5 @@ export const SlideOver = ({
         </div>
       </Dialog>
     </Transition.Root>
-  )
-}
+  );
+};

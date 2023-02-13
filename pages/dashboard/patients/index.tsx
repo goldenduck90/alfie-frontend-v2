@@ -11,7 +11,7 @@ import {
   Patient,
   PatientWeights,
 } from "@src/components/practitioner/dashboard/Table";
-import { SlideOver } from "@src/components/SlideOver";
+import { SlideOver } from "@src/components/old/SlideOver";
 
 import { useEffect, useMemo, useState } from "react";
 import {
