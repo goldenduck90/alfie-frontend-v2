@@ -47,14 +47,6 @@ export const DashboardTaskList = () => {
   const tasks =
     filteredTasks?.length > 0 ? filteredTasks : data?.userTasks?.userTasks;
 
-  // React.useEffect(() => {
-  //   if (param !== null) {
-  //     result.refetch();
-  //     searchParams.delete("refetch");
-  //     setSearchParams(searchParams);
-  //   }
-  // }, [param, result, searchParams, setSearchParams]);
-
   React.useEffect(() => {
     //? If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -68,12 +60,12 @@ export const DashboardTaskList = () => {
   }, [error]);
 
   const loadItems = [0, 1]?.map((item, i) => (
-    <DashboardPreviewItem key={i} {...(item as any)} isLoading />
+    <DashboardPreviewItem key={`task-load-${i}`} {...(item as any)} isLoading />
   ));
 
   const resultItems = tasks?.map((item: UserTask, i: number) => (
     <DashboardPreviewItem
-      key={i}
+      key={`task-${i}`}
       href={`/dashboard/tasks/${item._id}`}
       renderDate={{ date: "", time: item.dueAt }}
       title={item?.task?.name || ""}

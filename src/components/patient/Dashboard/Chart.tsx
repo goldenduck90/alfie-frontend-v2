@@ -14,32 +14,9 @@ import {
 import dayjs from "dayjs";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 
-const data = [
-  {
-    date: "2021-01-01",
-    weight: 200,
-  },
-  {
-    date: "2021-02-01",
-    weight: 190,
-  },
-  {
-    date: "2021-03-01",
-    weight: 185,
-  },
-  {
-    date: "2021-04-01",
-    weight: 170,
-  },
-  {
-    date: "2021-05-01",
-    weight: 165,
-  },
-];
-
 export function Chart() {
   const { user } = useCurrentUserStore();
-  console.log({ user });
+  const dateSortedWeights = user?.weights.sort((a, b) => a.date - b.date);
 
   return (
     <DashboardCard
@@ -48,7 +25,7 @@ export function Chart() {
     >
       <div className="flex content-center w-full pt-8">
         <ResponsiveContainer width="100%" height={312}>
-          <LineChart data={data}>
+          <LineChart data={dateSortedWeights}>
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
@@ -57,9 +34,9 @@ export function Chart() {
               tickMargin={15}
             />
             <YAxis
-              domain={[100, "auto"]}
+              domain={[(user?.weightGoal as number) - 10, "auto"]}
               type="number"
-              dataKey={"weight"}
+              dataKey={"value"}
               axisLine={false}
               tickLine={false}
               tickCount={5}
@@ -68,7 +45,7 @@ export function Chart() {
             />
             <Line
               type="linear"
-              dataKey="weight"
+              dataKey="value"
               stroke="#0C52E8"
               strokeWidth={3}
               dot={false}
@@ -88,12 +65,15 @@ export function Chart() {
               }}
             />
             <ReferenceLine
-              y={35}
+              y={user?.weightGoal as number}
               stroke="#E99298"
               label={(props) => {
                 // console.log({ props });
                 return (
-                  <svg {...props} className="p-1 rounded-full bg-red-300">
+                  <svg
+                    {...props}
+                    className="p-1 rounded-full bg-brand-peachy-shade"
+                  >
                     <rect
                       x={10}
                       y={props?.viewBox?.y - 13}
@@ -106,7 +86,7 @@ export function Chart() {
                     <text
                       x={25}
                       y={props?.viewBox?.y + 4}
-                      className="text-sm text-white p-1 rounded-full bg-red-300"
+                      className="text-sm text-white p-1 rounded-full bg-brand-peachy-shade"
                       fill="white"
                     >
                       Goal

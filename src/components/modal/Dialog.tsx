@@ -43,16 +43,18 @@ export function DialogBody({
 }
 
 export function DialogModal({
-  text,
+  trigger,
+  triggerAsChild,
   children,
 }: {
-  text: string;
+  trigger: React.ReactNode;
   children: React.ReactNode;
+  triggerAsChild?: boolean;
 }) {
   return (
     <RadixDialog.Root>
-      <RadixDialog.Trigger className="text-black text-lg">
-        {text}
+      <RadixDialog.Trigger asChild={triggerAsChild}>
+        {trigger}
       </RadixDialog.Trigger>
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-60 z-[99]" />

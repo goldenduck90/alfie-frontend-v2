@@ -7,10 +7,52 @@ const loginMutation = `
       token
       user {
         _id
+        textOptIn
+        classifications {
+          classification
+          percentile
+          displayPercentile
+          date
+        }
+        meetingRoomUrl
         name
         email
+        phone
         role
-        eaProviderId
+        dateOfBirth
+        weightGoal
+        weights {
+          value
+          date
+        }
+        gender
+        heightInInches
+        akutePatientId
+        stripeCustomerId
+        stripeSubscriptionId
+        eaCustomerId
+        eaHealthCoachId
+        subscriptionExpiresAt
+
+        provider {
+          _id
+          type
+          akuteId
+          eaProviderId
+          npi
+          licensedStates
+          firstName
+          lastName
+          email
+          numberOfPatients
+          password
+          emailToken
+          emailTokenExpiresAt
+        }
+        pharmacyLocation
+        meetingUrl
+        labOrderSent
+        bmi
       }
     }
   }
@@ -42,6 +84,8 @@ export default withSessionRoute(async function loginRoute(req, res) {
     },
     body,
   });
+
+  console.log({ response });
 
   if (response.ok) {
     const { data } = await response.json();

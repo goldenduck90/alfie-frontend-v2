@@ -33,9 +33,9 @@ export function MobileNav({ navItems }: { navItems: any[] }) {
     <RadixDialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
       <RadixDialog.Overlay />
       <RadixDialog.Trigger>
-        <button className="md:hidden p-2 mr-2">
+        <div className="md:hidden p-2 mr-2">
           <MenuAlt2Icon className="h-4 w-4 text-white" />
-        </button>
+        </div>
       </RadixDialog.Trigger>
       <RadixDialog.Portal>
         <RadixDialog.Content className="md:hidden fixed h-screen w-screen bg-white z-[99] top-0 right-0 p-6">

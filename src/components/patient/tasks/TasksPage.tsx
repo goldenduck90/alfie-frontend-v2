@@ -82,9 +82,9 @@ export const TasksPage = () => {
       {error && <div>{error.message}</div>}
       {!error && (
         <div className="flex flex-col bg-white p-6 rounded-lg">
-          <div className="flex flex-row pb-8">
+          {/* <div className="flex flex-row pb-8">
             <ToggleGroup defaultValue="active" items={toggleItems} />
-          </div>
+          </div> */}
           <h2 className="text-xl md:text-2xl font-bold font-mulish">
             {taskFilter} tasks
           </h2>

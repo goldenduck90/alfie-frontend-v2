@@ -92,6 +92,14 @@ export type CheckoutResponse = {
   message?: Maybe<Scalars['String']>;
 };
 
+export type Classification = {
+  __typename?: 'Classification';
+  classification: Scalars['String'];
+  date: Scalars['DateTime'];
+  displayPercentile?: Maybe<Scalars['String']>;
+  percentile: Scalars['String'];
+};
+
 export type CompletePaymentIntentInput = {
   paymentIntentId: Scalars['String'];
 };
@@ -427,7 +435,7 @@ export type LoginResponse = {
   __typename?: 'LoginResponse';
   message?: Maybe<Scalars['String']>;
   token: Scalars['String'];
-  user: PartialUser;
+  user: User;
 };
 
 export type MessageResponse = {
@@ -442,6 +450,7 @@ export type Mutation = {
   batchCreateOrUpdateProviders?: Maybe<BatchCreateOrUpdateProvidersResponse>;
   bulkAssignTasksToUser: Array<UserTask>;
   cancelAppointment: MessageResponse;
+  classifyPatients: User;
   completePaymentIntent: MessageResponse;
   completeUpload: User;
   completeUserTask: UserTask;
@@ -456,6 +465,7 @@ export type Mutation = {
   login: LoginResponse;
   requestSignedUrls: Array<SignedUrlResponse>;
   resetPassword: LoginResponse;
+  scorePatients: Score;
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
   updateProviderProfile: EaProviderProfile;
@@ -486,6 +496,11 @@ export type MutationBulkAssignTasksToUserArgs = {
 
 export type MutationCancelAppointmentArgs = {
   eaAppointmentId: Scalars['String'];
+};
+
+
+export type MutationClassifyPatientsArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -559,6 +574,11 @@ export type MutationResetPasswordArgs = {
 };
 
 
+export type MutationScorePatientsArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type MutationSubscribeEmailArgs = {
   input: SubscribeEmailInput;
 };
@@ -583,16 +603,6 @@ export type MutationUpdateSubscriptionArgs = {
 export type MutationUpdateUserTaskArgs = {
   input: UpdateUserTaskInput;
   taskId: Scalars['String'];
-};
-
-export type PartialUser = {
-  __typename?: 'PartialUser';
-  _id: Scalars['String'];
-  eaHealthCoachId?: Maybe<Scalars['String']>;
-  eaProviderId?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  name: Scalars['String'];
-  role: Role;
 };
 
 export type PharmacyLocationInput = {
@@ -779,6 +789,9 @@ export type Score = {
   percentDifference30Mins?: Maybe<Scalars['Float']>;
   percentDifferenceDiastolic?: Maybe<Scalars['Float']>;
   percentDifferenceSystolic?: Maybe<Scalars['Float']>;
+  percentile?: Maybe<Scalars['String']>;
+  percentile1hour?: Maybe<Scalars['String']>;
+  percentile30mins?: Maybe<Scalars['String']>;
   providerMessage?: Maybe<Scalars['String']>;
   score?: Maybe<Scalars['Float']>;
   score1hour?: Maybe<Scalars['String']>;
@@ -887,6 +900,7 @@ export type User = {
   address: Address;
   akutePatientId?: Maybe<Scalars['String']>;
   bmi?: Maybe<Scalars['Float']>;
+  classifications?: Maybe<Array<Classification>>;
   dateOfBirth: Scalars['DateTime'];
   eaCustomerId?: Maybe<Scalars['String']>;
   eaHealthCoachId?: Maybe<Scalars['String']>;
@@ -910,6 +924,7 @@ export type User = {
   stripeSubscriptionId: Scalars['String'];
   subscriptionExpiresAt: Scalars['DateTime'];
   textOptIn?: Maybe<Scalars['Boolean']>;
+  weightGoal?: Maybe<Scalars['Float']>;
   weights: Array<Weight>;
 };
 
