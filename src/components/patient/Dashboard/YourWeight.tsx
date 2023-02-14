@@ -1,3 +1,7 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+import { gql, useQuery } from "@apollo/client";
+
 import { ChipIcon } from "@heroicons/react/outline";
 import { CakeIcon, PencilIcon } from "@heroicons/react/solid";
 import { Button } from "@src/components/ui/Button";
@@ -5,14 +9,18 @@ import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { Line } from "@src/components/ui/Line";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { SliderRange } from "@src/components/ui/SliderRange";
-import React from "react";
-import { useForm } from "react-hook-form";
 
-interface YourWeightProps {
-  isLoading?: boolean;
-}
+const YourWeightQuery = gql`
+  query YourWeight {
+    weight
+    goalProjection
+    weightLost
+    weightGoal
+  }
+`;
 
-export function YourWeight({ isLoading }: YourWeightProps) {
+export function YourWeight() {
+  const { loading, data, error } = useQuery(YourWeightQuery, {});
   const { control } = useForm({});
 
   return (
@@ -27,10 +35,10 @@ export function YourWeight({ isLoading }: YourWeightProps) {
             <div className="flex flex-col w-full">
               <div className="flex flex-row justify-between items-center pb-2">
                 <h2 className="text-gray-900 ">Your Weight</h2>
-                <Button disabled={isLoading}>Update Weight</Button>
+                <Button disabled={loading}>Update Weight</Button>
               </div>
               <p className="text-gray-900 text-5xl">
-                {isLoading ? 0 : 165}{" "}
+                {loading ? 0 : 165}{" "}
                 <span className="text-gray-600 text-sm">lbs</span>
               </p>
             </div>
@@ -49,7 +57,7 @@ export function YourWeight({ isLoading }: YourWeightProps) {
             <PencilIcon className="h-4 w-4 text-gray-400" />
           </div>
 
-          {isLoading ? (
+          {loading ? (
             <PlaceHolderLine amount={3} />
           ) : (
             <p>

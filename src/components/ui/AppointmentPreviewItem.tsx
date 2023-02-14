@@ -49,7 +49,7 @@ export function AppointmentPreviewItem({
             aria-hidden="true"
           />
           <div className="w-1/2">
-            <PlaceHolderLine />
+            <PlaceHolderLine hasTopMargin />
           </div>
         </div>
         <div>

@@ -30,7 +30,7 @@ export function DialogBody({
       <div className="w-full flex flex-col gap-y-3 px-6">
         <DialogModal.Title>{title}</DialogModal.Title>
         <DialogModal.Description>{description}</DialogModal.Description>
-        <Graybox />
+        <GrayBox />
         <div className="py-4 flex items-center justify-center">
           <Button size="medium">Start the questionnaire</Button>
         </div>
@@ -87,7 +87,7 @@ DialogModal.Description = function Description({
   );
 };
 
-function Graybox() {
+function GrayBox() {
   return (
     <div className="w-full py-4 px-2 rounded-md flex gap-x-4 items-center justify-center bg-gray-100 text-sm whitespace-nowrap">
       <div className="flex gap-x-1 items-center">

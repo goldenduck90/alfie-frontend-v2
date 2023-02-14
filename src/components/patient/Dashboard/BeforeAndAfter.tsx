@@ -1,15 +1,26 @@
+import React from "react";
+import { gql, useQuery } from "@apollo/client";
+
 import { UserIcon } from "@heroicons/react/outline";
 import { Button } from "@src/components/ui/Button";
-
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
-import React from "react";
 
-interface BeforeAndAfterProps {
-  isLoading?: boolean;
-}
+export const beforeAfterQuery = gql`
+  query BeforeAfterQuery {
+    before
+    after
+    between {
+      maybe
+    }
+  }
+`;
 
-export function BeforeAndAfter({ isLoading }: BeforeAndAfterProps) {
+export function BeforeAndAfter() {
+  const { loading, data, error } = useQuery(beforeAfterQuery, {
+    onError: (e) => console.log(e),
+  });
+
   return (
     <DashboardCard cardHeader={""} className="w-full">
       <div className="flex flex-row">
@@ -18,14 +29,14 @@ export function BeforeAndAfter({ isLoading }: BeforeAndAfterProps) {
         </div>
         <div className="flex flex-col">
           <div className="flex flex-row items-center pb-2">
-            {isLoading ? (
+            {loading ? (
               <PlaceHolderLine />
             ) : (
               <h2 className="text-gray-900 font-bold">Before and after</h2>
             )}
           </div>
 
-          {isLoading ? (
+          {loading ? (
             <div className="w-[200px]">
               <PlaceHolderLine />
             </div>
@@ -35,7 +46,7 @@ export function BeforeAndAfter({ isLoading }: BeforeAndAfterProps) {
             </p>
           )}
           <div className="pt-4">
-            <Button disabled={isLoading} buttonType="secondary">
+            <Button disabled={loading} buttonType="secondary">
               Upload photo
             </Button>
           </div>

@@ -102,15 +102,14 @@ export const TasksPage = () => {
               />
             </div>
           ))}
-          {loading && (
-            <div className="pt-6">
-              {Array(6)
-                .fill("")
-                .map((_, i) => (
+          {loading &&
+            Array(6)
+              .fill("")
+              .map((_, i) => (
+                <div className="pt-6">
                   <LoadingTaskItem key={i} />
-                ))}
-            </div>
-          )}
+                </div>
+              ))}
 
           {/* <div className="mt-2 md:mt-4 flex flex-col md:flex-row items-center justify-center md:justify-end">
             <span className="text-gray-700 text-sm mb-1 md:text-md font-mulish font-medium md:hidden">

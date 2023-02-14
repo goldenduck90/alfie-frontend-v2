@@ -9,9 +9,9 @@ export function BloodPressure({ title }: { title: string }) {
       <DialogLongHeader title={title} step={1} total={1} />
       <DialogLongBody>
         <p className="text-sm text-gray-600 mb-6">
-          If you haven't taken a recent blood pressure reading, please visit
-          your local pharmacy which may have a blood pressure machine available
-          free to use or order a blood pressure machine online.
+          If you haven&apos;t taken a recent blood pressure reading, please
+          visit your local pharmacy which may have a blood pressure machine
+          available free to use or order a blood pressure machine online.
         </p>
         <div className="flex flex-col gap-y-2">
           <p className="font-bold text-sm">

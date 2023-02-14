@@ -26,6 +26,5 @@ export function TaskPage() {
     },
   });
 
-  console.log({ taskId, taskResult });
   return <div className="border rounded-xl bg-white p-7">Task {taskId}</div>;
 }

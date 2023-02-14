@@ -12,6 +12,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import dayjs from "dayjs";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 
 const data = [
   {
@@ -37,6 +38,9 @@ const data = [
 ];
 
 export function Chart() {
+  const { user } = useCurrentUserStore();
+  console.log({ user });
+
   return (
     <DashboardCard
       className="w-full md:max-w-[75%] md:min-w-max py-4"

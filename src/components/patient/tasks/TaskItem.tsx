@@ -2,12 +2,13 @@ import React, { useState, useMemo } from "react";
 import { format, isToday, isTomorrow, formatDistance } from "date-fns";
 import Link from "next/link";
 import { Button } from "../../ui/Button";
-import { CheckCircleIcon, HeartIcon } from "@heroicons/react/solid";
+import { CheckCircleIcon } from "@heroicons/react/solid";
 import {
   CalendarIcon,
   InformationCircleIcon,
   ClockIcon,
 } from "@heroicons/react/outline";
+import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
 
 export const TaskItem = ({
   id,
@@ -64,14 +65,15 @@ export const TaskItem = ({
     <div className="bg-white border border-gray-100 rounded-xl p-4 md:p-6">
       <div className="flex flex-col justify-between gap-y-3 md:flex-row  md:gap-x-2 ">
         <div className="flex flex-shrink pb-6 md:w-1/2">
-          <div className="flex mr-4 rounded-xl bg-brand-peachy w-10 h-10 items-center justify-center min-w-[40px]">
-            <HeartIcon className="h-6 w-6 text-brand-peachy-shade" />
-          </div>
+          <ChooseTaskIcon value="heart" />
           <div className="max-w-md">
             <h3 className="text-gray-900 font-bold">
               {appointmentStartTime ? `Appointment with ${title}` : title}
             </h3>
-            <p className="text-gray-700"></p>
+            <p className="text-gray-700">
+              Complete a basic medical form so that we can tailor our services
+              to your needs.
+            </p>
           </div>
         </div>
         <div className="hidden md:flex">
@@ -79,7 +81,7 @@ export const TaskItem = ({
             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
             aria-hidden="true"
           />
-          <p>{}</p>
+          <p>{appointmentStartTime}</p>
         </div>
 
         <div className="hidden md:flex">
@@ -114,7 +116,7 @@ export const TaskItem = ({
           )}
         </div>
       </div>
-      {hasSubTasks && (
+      {false && (
         <div className="pt-4">
           {[
             { children: "Metabolic Profile (Feeling)", isCompleted: true },
@@ -163,10 +165,6 @@ export const TaskItem = ({
     </div>
   );
 };
-
-function TaskItemIcon({ Icon }: { Icon: JSX.Element }) {
-  return <div>{/* <Icon className="h-5 w-5" /> */}</div>;
-}
 
 function SubTask({
   isCompleted,

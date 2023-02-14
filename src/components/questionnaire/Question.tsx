@@ -377,7 +377,7 @@ export function SingleFormQuestion({
         } catch (error) {
           if (error instanceof ZodError) {
             const message = error?.issues?.[0]?.message;
-            return message || "Invaid";
+            return message || "Invalid";
           }
           return false;
         }
@@ -423,7 +423,7 @@ export function MultiCheckboxFormQuestion({
         } catch (error) {
           if (error instanceof ZodError) {
             const message = error?.issues?.[0]?.message;
-            return message || "Invaid";
+            return message || "Invalid";
           }
           return false;
         }
@@ -505,7 +505,7 @@ function MultipleTextInput({
         } catch (error) {
           if (error instanceof ZodError) {
             const message = error?.issues?.[0]?.message;
-            return message || "Invaid";
+            return message || "Invalid";
           }
           return false;
         }
@@ -572,7 +572,7 @@ function RadioGroupInput({
         } catch (error) {
           if (error instanceof ZodError) {
             const message = error?.issues?.[0]?.message;
-            return message || "Invaid";
+            return message || "Invalid";
           }
           return false;
         }
@@ -717,7 +717,7 @@ function TextAreaInput({
         } catch (error) {
           if (error instanceof ZodError) {
             const message = error?.issues?.[0]?.message;
-            return message || "Invaid";
+            return message || "Invalid";
           }
           return false;
         }
@@ -800,7 +800,7 @@ function RadioGroupNumberInput({
         } catch (error) {
           if (error instanceof ZodError) {
             const message = error?.issues?.[0]?.message;
-            return message || "Invaid";
+            return message || "Invalid";
           }
           return false;
         }

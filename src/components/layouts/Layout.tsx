@@ -88,7 +88,7 @@ export const Layout = ({
           <div className="flex">
             {hasBackButton && (
               <div className="pr-6 pt-1">
-                <BackButton icon={ChevronLeftIcon} />
+                <BackButton />
               </div>
             )}
             {title && (

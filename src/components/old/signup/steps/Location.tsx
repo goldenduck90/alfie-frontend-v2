@@ -6,8 +6,8 @@ export const Location = () => {
   return (
     <div>
       <p className="mb-10 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
-        Alfie is available in select US states. Check to see if we're in yours
-        now!
+        Alfie is available in select US states. Check to see if we&apos;re in
+        yours now!
       </p>
 
       <div className="flex-flex-col mb-5">

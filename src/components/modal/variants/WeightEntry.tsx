@@ -9,7 +9,7 @@ export function WeightEntry({ title }: { title: string }) {
       <DialogLongHeader title={title} step={1} total={1} />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
-          <p className="font-bold text-sm">How much do you currently weight?</p>
+          <p className="font-bold text-sm">How much do you currently weigh?</p>
           <div className="flex gap-x-3 justify-between items-center">
             <TextField
               rightIcon={<span className="pl-2 text-gray-400">lbs</span>}

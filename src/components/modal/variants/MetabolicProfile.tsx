@@ -19,9 +19,9 @@ export function MetabolicProfileHunger({ title }: { title: string }) {
           <div className="flex flex-col gap-y-2 w-full">
             <p className="text-sm text-gray-500">
               We want to understand how you rate your baseline hunger after
-              meals. For your first meal of the day, eat a meal that's between
-              300 and 400 calories. The recommended meal is 2 eggs and a piece
-              of toast. Answer the questions after 30 minutes and 2 hours
+              meals. For your first meal of the day, eat a meal that&apos;s
+              between 300 and 400 calories. The recommended meal is 2 eggs and a
+              piece of toast. Answer the questions after 30 minutes and 2 hours
               without consuming other food.
             </p>
             <p className="font-bold text-sm">What food did you eat?</p>

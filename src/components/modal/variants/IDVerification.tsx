@@ -20,12 +20,12 @@ export function IDVerificationModal({ title }: { title: string }) {
           {step === 1 ? (
             <React.Fragment>
               <p className="font-bold">ID photo</p>
-              <p>This must be a US governemnt issued ID or passport</p>
+              <p>This must be a US government issued ID or passport</p>
             </React.Fragment>
           ) : (
             <React.Fragment>
               <p className="font-bold">Insurance Card</p>
-              <p>If you don't have insurance you can skip this.</p>
+              <p>If you don&apos;t have insurance you can skip this.</p>
             </React.Fragment>
           )}
         </div>

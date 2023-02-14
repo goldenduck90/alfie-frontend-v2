@@ -17,7 +17,7 @@ export function LoadingTaskItem() {
               <PlaceHolderLine />
             </div>
             <div className="w-3/4">
-              <PlaceHolderLine amount={3} />
+              <PlaceHolderLine amount={2} />
             </div>
           </div>
         </div>
