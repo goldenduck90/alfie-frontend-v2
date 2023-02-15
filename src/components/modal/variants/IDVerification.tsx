@@ -1,12 +1,19 @@
 import { CalculatorIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import React, { useState, useRef } from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "../../ui/Button";
 import { DialogLongHeader } from "../Dialog";
 
 export function IDVerificationModal({ title }: { title: string }) {
   const [step, setStep] = useState(1);
   const fileInput = useRef<HTMLInputElement>();
+  const {} = useForm({
+    defaultValues: {
+      insurancePhoto: null,
+      idPhoto: null,
+    },
+  })
 
   return (
     <div className="w-full md:max-w-[560px]">
@@ -33,6 +40,7 @@ export function IDVerificationModal({ title }: { title: string }) {
           <input
             ref={fileInput as any}
             type="file"
+
             className="absolute inset-0 opacity-0"
             onChange={(e) => {
               const droppedFile = e.target?.files?.[0];
