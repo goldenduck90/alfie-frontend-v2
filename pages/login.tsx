@@ -31,10 +31,10 @@ const Login = () => {
   const { control, handleSubmit, reset, setError, formState } =
     useForm<LoginForm>({
       defaultValues: {
-        // email: "dpgozza@gmail.com",
-        // password: "Password1!",
-        email: "robert@joinalfie.com",
-        password: "Letmein1!",
+        email: "jordanaman117@gmail.com",
+        password: "Password1!",
+        // email: "robert@joinalfie.com",
+        // password: "Letmein1!",
         remember: false,
       },
       resolver: zodResolver(LoginFormSchema),

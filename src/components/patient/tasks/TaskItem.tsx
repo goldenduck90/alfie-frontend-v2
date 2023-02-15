@@ -9,6 +9,8 @@ import {
   ClockIcon,
 } from "@heroicons/react/outline";
 import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
+import { TaskSelector } from "./TaskSelector";
+import { TaskType } from "@src/graphql/generated";
 
 export const TaskItem = ({
   id,
@@ -23,7 +25,7 @@ export const TaskItem = ({
   providerType,
 }: {
   id: string;
-  type: string;
+  type: TaskType;
   title: string;
   createdAt: Date;
   dueAt?: Date;
@@ -59,13 +61,13 @@ export const TaskItem = ({
   }, [appointmentStartTime]);
 
   const getQueryParamIdFromMeetingUrl = meetingLocation?.split("/").pop();
-  const hasSubTasks = Math.random() >= 0.8;
+  const hasSubTasks = false; //Math.random() >= 0.8;
 
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 md:p-6">
       <div className="flex flex-col justify-between gap-y-3 md:flex-row  md:gap-x-2 ">
         <div className="flex flex-shrink pb-6 md:w-1/2">
-          <ChooseTaskIcon value="heart" />
+          <ChooseTaskIcon value={type} />
           <div className="max-w-md">
             <h3 className="text-gray-900 font-bold">
               {appointmentStartTime ? `Appointment with ${title}` : title}
@@ -102,17 +104,18 @@ export const TaskItem = ({
               completed
             </div>
           ) : (
-            <Link
-              passHref
-              legacyBehavior
-              href={
-                meetingLocation
-                  ? `/appointments/call/${getQueryParamIdFromMeetingUrl}`
-                  : `/dashboard/tasks/${id}`
-              }
-            >
-              <Button buttonType="secondary">{actionText}</Button>
-            </Link>
+            <TaskSelector type={type} userTaskId={id} />
+            // <Link
+            //   passHref
+            //   legacyBehavior
+            //   href={
+            //     meetingLocation
+            //       ? `/appointments/call/${getQueryParamIdFromMeetingUrl}`
+            //       : `/dashboard/tasks/${id}`
+            //   }
+            // >
+            //   <Button buttonType="secondary">{actionText}</Button>
+            // </Link>
           )}
         </div>
       </div>

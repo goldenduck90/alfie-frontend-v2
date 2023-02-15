@@ -1,22 +1,19 @@
 import React from "react";
-import { HeartIcon, EmojiHappyIcon, UserIcon } from "@heroicons/react/solid";
+import {
+  HeartIcon,
+  EmojiHappyIcon,
+  UserIcon,
+  DotsCircleHorizontalIcon,
+} from "@heroicons/react/solid";
+import { TaskType } from "@src/graphql/generated";
 
 interface ChooseTaskIconProps {
-  value:
-    | "med"
-    | "heart"
-    | "user"
-    | "drop"
-    | "scale"
-    | "measure"
-    | "gastro"
-    | "food"
-    | "feeling";
+  value: TaskType;
 }
 
 export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
   switch (value) {
-    case "med":
+    case TaskType.NewPatientIntakeForm:
       return (
         <TaskIconBase
           textColor="text-brand-heavenly-shade"
@@ -24,16 +21,16 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
           icon={HeartIcon}
         />
       );
-    case "heart":
+    case TaskType.MpHunger:
+    case TaskType.MpActivity:
       return (
         <TaskIconBase
           textColor="text-red-400"
           bgColor="bg-brand-peachy-tint-1"
           icon={HeartIcon}
-          //? this is the only one that actually needs the heart icon
         />
       );
-    case "user":
+    case TaskType.IdAndInsuranceUpload:
       return (
         <TaskIconBase
           textColor="text-brand-purple-shade"
@@ -41,7 +38,7 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
           icon={UserIcon}
         />
       );
-    case "drop":
+    case TaskType.BpLog:
       return (
         <TaskIconBase
           textColor="text-red-400"
@@ -49,7 +46,7 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
           icon={HeartIcon}
         />
       );
-    case "scale":
+    case TaskType.WeightLog:
       return (
         <TaskIconBase
           textColor="text-amber-500"
@@ -57,7 +54,7 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
           icon={HeartIcon}
         />
       );
-    case "measure":
+    case TaskType.WaistLog:
       return (
         <TaskIconBase
           textColor="text-lime-600"
@@ -65,7 +62,8 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
           icon={HeartIcon}
         />
       );
-    case "gastro":
+    case TaskType.Gsrs:
+    case TaskType.AdLibitum:
       return (
         <TaskIconBase
           textColor="text-red-700"
@@ -73,7 +71,7 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
           icon={HeartIcon}
         />
       );
-    case "food":
+    case TaskType.Tefq:
       return (
         <TaskIconBase
           textColor="text-orange-500"
@@ -81,7 +79,7 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
           icon={HeartIcon}
         />
       );
-    case "feeling":
+    case TaskType.MpFeeling:
       return (
         <TaskIconBase
           textColor="text-sky-700"
@@ -95,7 +93,7 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
         <TaskIconBase
           textColor="text-red-400"
           bgColor="bg-brand-peachy-tint-1"
-          icon={HeartIcon}
+          icon={DotsCircleHorizontalIcon}
         />
       );
   }
