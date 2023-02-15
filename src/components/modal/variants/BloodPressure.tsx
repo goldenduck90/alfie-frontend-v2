@@ -1,9 +1,21 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
+import { useForm } from "react-hook-form";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader } from "../Dialog";
 
 export function BloodPressure({ title }: { title: string }) {
+  const {register, handleSubmit} = useForm({
+    defaultValues:{ 
+      systolicBp: "",
+      diastolicBp: ""
+    }
+  })
+
+  async function onSubmit(data: any){
+    console.log("Submitted", data)
+  }
+
   return (
     <div className="w-full max-w-[560px] min-w-full">
       <DialogLongHeader title={title} step={1} total={1} />
@@ -21,11 +33,13 @@ export function BloodPressure({ title }: { title: string }) {
             <TextField
               rightIcon={<span className="pl-2 text-gray-400">mmHg</span>}
               placeholder="120"
+              {...register("systolicBp")}
             />
             <span>{`/`}</span>
             <TextField
               rightIcon={<span className="pl-2 text-gray-400">mmHg</span>}
               placeholder="80"
+              {...register("diastolicBp")}
             />
           </div>
         </div>
@@ -34,7 +48,7 @@ export function BloodPressure({ title }: { title: string }) {
         <RadixDialog.Close asChild>
           <Button buttonType="secondary">Cancel</Button>
         </RadixDialog.Close>
-        <Button>Complete</Button>
+        <Button onClick={handleSubmit(onSubmit)}>Complete</Button>
       </div>
     </div>
   );
