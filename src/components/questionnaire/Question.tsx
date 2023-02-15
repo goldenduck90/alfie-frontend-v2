@@ -22,6 +22,7 @@ import {
 import { useProgressContext } from "../layouts/QuestionaireLayout";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
+import { TaskType } from "@src/graphql/generated";
 
 
 interface QuestionComponentProps {
@@ -72,19 +73,6 @@ const conditions = [
 ];
 
 const medicalQuestions: QuestionProps<any>[] = [
-  // {
-  //   id: "temp1",
-  //   question:
-  //     "On a scale where 1 means no restraint in eating (eating whatever you want, whenever you want it) and 8 means total restraint (constantly limiting food intake and never giving in), what number would you give yourself?",
-  //   Component: (props: MultiCheckboxQuestionProps) => (
-  //     <RadioGroupNumberInput
-  //       {...props}
-  //       options={["1", "2", "3", "4", "5", "6", "7", "8"]}
-  //     />
-  //   ),
-  //   validation: z.string().min(1, "At least one option is required"),
-  //   helperText: "Select one answer",
-  // },
   {
     id: "q1",
     question: "How long have you been trying to lose weight?",
@@ -176,46 +164,78 @@ const medicalQuestions: QuestionProps<any>[] = [
   },
 ];
 
-// const metabolicQuestions: QuestionProps<any>[] = [
-//   {
-//     id: "q1",
-//     question: 'How often do you feel tense or "impatient"?',
-//     Component: (props: MultiCheckboxQuestionProps) => (
-//       <MultiCheckboxFormQuestion
-//         {...props}
-//         multiple={false}
-//         options={[
-//           "Most of the time",
-//           "A lot of the time",
-//           "From time to time",
-//           "Not at all",
-//         ]}
-//       />
-//     ),
-//     validation: z.string().array().nonempty("At least one option is required"),
-//   },
-// ];
+const threeFactorQuestion: QuestionProps<any>[] = [
+  {
+    id: "q1",
+      question: "When I smell a delicious food, I find it very difficult to keep from eating, even if I have just finished a meal.",
+      Component: (props: MultiCheckboxQuestionProps) => (
+        <RadioGroupInput
+          {...props}
+          options={[
+            "Mostly true",
+            "Definitely true",
+            "Mostly false",
+            "Definitely false",
+          ]}
+        />
+      ),
+        helperText: "Select one answer"
+    },
+  {
+    id: "scale10",
+    question:
+      "On a scale where 1 means no restraint in eating (eating whatever you want, whenever you want it) and 8 means total restraint (constantly limiting food intake and never giving in), what number would you give yourself?",
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <RadioGroupNumberInput
+        {...props}
+        options={["1", "2", "3", "4", "5", "6", "7", "8"]}
+      />
+    ),
+    validation: z.string().min(1, "At least one option is required"),
+    helperText: "Select one answer",
+  },
+]
 
-// const gastroQuestions: QuestionProps<any>[] = [
-//   {
-//     id: "q1",
-//     question:
-//       "Have you been bothered by pain or discomfort in your upper abdomen or the pit of your stomach during the past week?",
-//     Component: (props: MultiCheckboxQuestionProps) => (
-//       <MultiCheckboxFormQuestion
-//         {...props}
-//         multiple={false}
-//         options={[
-//           "Most of the time",
-//           "A lot of the time",
-//           "From time to time, ocassionally",
-//           "Not at all",
-//         ]}
-//       />
-//     ),
-//     validation: z.string().array().nonempty("At least one option is required"),
-//   },
-// ];
+const metabolicQuestions: QuestionProps<any>[] = [
+  {
+    id: "q1",
+    question: 'How often do you feel tense or "impatient"?',
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <RadioGroupInput
+        {...props}
+        options={[
+          "Most of the time",
+          "A lot of the time",
+          "From time to time, ocassionally",
+          "Not at all",
+        ]}
+      />
+    ),
+    validation: z.string().array().nonempty("At least one option is required"),
+    helperText: "Select one answer",
+  },
+];
+
+const gastroQuestions: QuestionProps<any>[] = [
+  {
+    id: "q1",
+    question:
+      "Have you been bothered by pain or discomfort in your upper abdomen or the pit of your stomach during the past week?",
+      Component: (props: MultiCheckboxQuestionProps) => (
+        <RadioGroupInput
+          {...props}
+          options={[
+            "Most of the time",
+            "A lot of the time",
+            "From time to time, ocassionally",
+            "Not at all",
+          ]}
+        />
+      ),
+    validation: z.string().array().nonempty("At least one option is required"),
+    helperText: "Select one answer"
+  },
+];
 
 function createPersistedFormState(formName: string) {
   return create<any>(
@@ -268,13 +288,43 @@ export function Question() {
     },
   });
 
-  console.log("Getting user Task",{data})
-
   if(loading) return <div>loading...</div>
+
+  if(data?.userTask?.task?.type === TaskType.NewPatientIntakeForm) {
+    return (
+      <div className="relative flex flex-col gap-y-3 items-center w-full">
+        <Questionnaire allQuestions={medicalQuestions} formName="medical" />
+      </div>
+    );
+  }
+
+  if(data?.userTask?.task?.type === TaskType.MpFeeling) {
+    return (
+      <div className="relative flex flex-col gap-y-3 items-center w-full">
+        <Questionnaire allQuestions={metabolicQuestions} formName="medical" />
+      </div>
+    );
+  }
+
+  if(data?.userTask?.task?.type === TaskType.Gsrs) {
+    return (
+      <div className="relative flex flex-col gap-y-3 items-center w-full">
+        <Questionnaire allQuestions={gastroQuestions} formName="medical" />
+      </div>
+    );
+  }
+
+  if(data?.userTask?.task?.type === TaskType.Tefq) {
+    return (
+      <div className="relative flex flex-col gap-y-3 items-center w-full">
+      <Questionnaire allQuestions={threeFactorQuestion} formName="threeFactor" />
+    </div>
+    );
+  }
 
   return (
     <div className="relative flex flex-col gap-y-3 items-center w-full">
-      <Questionnaire allQuestions={medicalQuestions} formName="medical" />
+      <p className="text-white">No Task of that Type</p>
     </div>
   );
 }

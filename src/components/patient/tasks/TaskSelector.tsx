@@ -42,7 +42,8 @@ export const TaskSelector = ({
           <DialogBody
             title="Medical Questionnaire"
             description="Complete a basic medical form so that we can tailor our services to your needs."
-          />{" "}
+            onClick={() => router.push(`/questionnaire/${userTaskId}`)}
+          />
         </DialogModal>
       );
     case TaskType.BpLog:
@@ -90,6 +91,7 @@ export const TaskSelector = ({
           <DialogBody
             title="Metabolic Profile (Feeling) Questionnaire"
             description="These questions, in combination with the Metabolic Profiling kit sent to you, help us determine your metabolic profile in order to understand which medications will be most effective for you. Once we get the results of your metabolic kit we’ll share a detailed report on your personal metabolic profile!"
+            onClick={() => router.push(`/questionnaire/${userTaskId}`)}
           />{" "}
         </DialogModal>
       );
@@ -154,6 +156,7 @@ export const TaskSelector = ({
           <DialogBody
             title="The Three-Factor Eating Questionnaire"
             description="We would like to know your habits and behaviours regarding eating and taking meals."
+            onClick={() => router.push(`/questionnaire/${userTaskId}`)}
           />
         </DialogModal>
       );
