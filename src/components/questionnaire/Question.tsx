@@ -749,9 +749,15 @@ const requiredDocNames = [
   "Comprehensive Metabolic Panel",
 ];
 
-function FinalSubmitMetabolic() {
+function FinalSubmitMetabolic({ control }: { control: Control<any> }) {
+  const { field } = useController({
+    name: "requiredLabs",
+    defaultValue: false,
+    control,
+  });
+
   return (
-    <div className="">
+    <div className="mx-auto max-w-[500px]">
       <p className="text font-bold text-center">
         In order to properly determine the right medication for you, we need the
         following labs:
@@ -784,7 +790,12 @@ function FinalSubmitMetabolic() {
         Routine labs should be covered by your insurance.
       </p>
       <div className="px-2 ">
-        <Checkbox label="I have already had the required labs done" />
+        <Checkbox
+          {...field}
+          ref={field.ref}
+          checked={field?.value}
+          label="I have already had the required labs done"
+        />
       </div>
     </div>
   );
