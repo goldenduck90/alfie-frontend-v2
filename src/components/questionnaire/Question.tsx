@@ -364,7 +364,7 @@ function Questionnaire({
 
   return (
     <QuestionContainer helper={question?.helperText}>
-      <div className="col-span-1 flex justify-center items-center">
+      <div className="flex items-center justify-center">
         {current > 0 && !endQuestion && (
           <button
             className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center"
@@ -374,7 +374,7 @@ function Questionnaire({
           </button>
         )}
       </div>
-      <div className="col-span-10">
+      <div className="flex-grow max-w-[500px] mx-auto w-full">
         <div className="flex flex-col items-center w-full gap-y-3">
           {!!Component && (
             <Component
@@ -427,7 +427,16 @@ function Questionnaire({
           </Button>
         </div>
       </div>
-      <div className="col-span-1" />
+      <div className="flex-1">
+        {current > 0 && !endQuestion && (
+          <button
+            className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center invisible"
+            onClick={() => setCurrent(current - 1)}
+          >
+            <ChevronLeftIcon className="stroke-gray-400 w-8 h-8" />
+          </button>
+        )}
+      </div>
     </QuestionContainer>
   );
 }
@@ -615,7 +624,7 @@ function MultipleTextInput({
             <input
               key={field.id}
               type="text"
-              className="w-full border border-[#CBD5E1] rounded-md py-2 px-4"
+              className="w-full border border-[#CBD5E1] rounded-md py-2 px-4 focus:outline-primary-400"
               {...register(`${name}.${index}.value`)}
             />
             {index > 0 && (
@@ -818,7 +827,7 @@ function TextAreaInput({
         <label className="text font-bold text-center">{question}</label>
         <textarea
           {...field}
-          className="p-2 border rounded-md border-gray-300 placeholder:text-gray-300 w-full"
+          className="p-2 border rounded-md border-gray-300 placeholder:text-gray-300 w-full focus:outline-primary-400"
           placeholder="Enter text here..."
           rows={6}
         />

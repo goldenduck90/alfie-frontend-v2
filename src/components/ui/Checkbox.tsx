@@ -20,8 +20,10 @@ export const Checkbox = React.forwardRef(
           onCheckedChange={props.onChange}
           {...props}
           ref={ref}
-          className={`border-primary-600 border rounded-md h-6 w-6 ring-2 ring-transparent transition-all focus:ring-blue-500 ${
-            props.checked ? "bg-primary-500" : ""
+          className={` border rounded-md h-6 w-6 ring-2 ring-transparent transition-all focus:ring-blue-500 ${
+            props.checked
+              ? "bg-primary-500 border-primary-600"
+              : "border-gray-400"
           }`}
         >
           <RadixCheckbox.Indicator className={`bg-primary-500`}>
