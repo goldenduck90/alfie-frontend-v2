@@ -1,19 +1,29 @@
 import { CalculatorIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import React, { useState, useRef } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState, useRef, useEffect } from "react";
+import { Control, useController, useForm, useWatch } from "react-hook-form";
 import { Button } from "../../ui/Button";
 import { DialogLongHeader } from "../Dialog";
 
 export function IDVerificationModal({ title }: { title: string }) {
   const [step, setStep] = useState(1);
-  const fileInput = useRef<HTMLInputElement>();
-  const {} = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       insurancePhoto: null,
       idPhoto: null,
     },
-  })
+  });
+
+  const fileInput = useWatch({
+    control,
+    name: "idPhoto",
+  });
+
+  useEffect(() => {
+    if (!!fileInput) {
+      setStep(2);
+    }
+  }, [fileInput]);
 
   return (
     <div className="w-full md:max-w-[560px]">
@@ -37,24 +47,9 @@ export function IDVerificationModal({ title }: { title: string }) {
           )}
         </div>
         <div className="relative w-full py-6 border rounded-md border-dashed border-blue-600 bg-primary-50 min-h-[276px] flex justify-center items-center">
-          <input
-            ref={fileInput as any}
-            type="file"
-
-            className="absolute inset-0 opacity-0"
-            onChange={(e) => {
-              const droppedFile = e.target?.files?.[0];
-              if (
-                droppedFile &&
-                ["image/png", "image/jpeg", "application/pdf"].includes(
-                  droppedFile.type
-                )
-              ) {
-                console.log("Valid File!");
-                console.log({ file: droppedFile });
-              }
-            }}
-            accept="image/png, image/jpeg, application/pdf"
+          <InputFileField
+            control={control}
+            name={step === 1 ? "idPhoto" : "insurancePhoto"}
           />
           <div className="flex flex-col gap-y-3 items-center justify-center h-full">
             <div className="p-2 rounded-full bg-blue-100 stroke-blue-500 max-w-fit">
@@ -83,10 +78,54 @@ export function IDVerificationModal({ title }: { title: string }) {
             <ChevronLeftIcon className="w-6 h-6" />
           </Button>
         )}
-        <Button onClick={() => setStep((s) => (s === 1 ? s + 1 : 1))}>
+        <Button
+          onClick={() => {
+            if (step === 1) {
+              setStep(2);
+            } else {
+              handleSubmit(console.log)();
+            }
+          }}
+        >
           {step === 1 ? "Next" : "Complete"}
         </Button>
       </div>
     </div>
+  );
+}
+
+function InputFileField({
+  name,
+  control,
+}: {
+  name: string;
+  control: Control<any>;
+}) {
+  const {
+    field: { onChange, value, ...inputProps },
+  } = useController({
+    name,
+    defaultValue: { name: "", file: null },
+    control,
+  });
+  return (
+    <input
+      {...inputProps}
+      value={value?.name || ""}
+      type="file"
+      className="absolute inset-0 opacity-0"
+      onChange={(e) => {
+        const droppedFile = e.target?.files?.[0];
+        if (
+          droppedFile &&
+          ["image/png", "image/jpeg", "application/pdf"].includes(
+            droppedFile.type
+          )
+        ) {
+          onChange({ value: droppedFile?.name, file: droppedFile });
+        }
+      }}
+      accept="image/png, image/jpeg, application/pdf"
+    />
   );
 }
