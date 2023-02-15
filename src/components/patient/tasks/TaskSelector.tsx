@@ -11,6 +11,7 @@ import { WeightEntry } from "@src/components/modal/variants/WeightEntry";
 import { Button } from "@src/components/ui/Button";
 import { TaskType } from "@src/graphql/generated";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 export const TaskSelector = ({
@@ -20,6 +21,8 @@ export const TaskSelector = ({
   type: string;
   userTaskId: string;
 }) => {
+  const router = useRouter();
+
   switch (type) {
     case TaskType.IdAndInsuranceUpload:
       return (
@@ -138,7 +141,8 @@ export const TaskSelector = ({
           <DialogBody
             title="Gastrointestinal Symptoms Rating Scale"
             description="This survey contains questions about how you have been feeling and what it has been like during the last week."
-          />{" "}
+            onClick={() => router.push("/questionnaire")}
+          />
         </DialogModal>
       );
     case TaskType.Tefq:

@@ -11,9 +11,11 @@ import { Button } from "../ui/Button";
 export function DialogBody({
   title,
   description,
+  onClick
 }: {
   title: string;
   description: string;
+  onClick?: () => void
 }) {
   return (
     <div className="w-full md:max-w-[420px]">
@@ -32,7 +34,7 @@ export function DialogBody({
         <DialogModal.Description>{description}</DialogModal.Description>
         <GrayBox />
         <div className="py-4 flex items-center justify-center">
-          <Button size="medium">Start the questionnaire</Button>
+          <Button onClick={onClick} size="medium">Start the questionnaire</Button>
         </div>
         <p className="text-center text-sm text-gray-700">
           By taking this survey you accept our Terms & Conditions.
