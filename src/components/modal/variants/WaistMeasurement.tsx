@@ -5,14 +5,14 @@ import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader } from "../Dialog";
 
 export function WaistMeasurement({ title }: { title: string }) {
-  const {register, handleSubmit} = useForm({
+  const { register, handleSubmit } = useForm({
     defaultValues: {
-      waist: ""
-    }
-  })
+      waist: "",
+    },
+  });
 
-  async function onSubmit(data: any){
-    console.log("Submitted", data)
+  async function onSubmit(data: any) {
+    console.log("Submitted", data);
   }
 
   return (
@@ -20,14 +20,18 @@ export function WaistMeasurement({ title }: { title: string }) {
       <DialogLongHeader title={title} step={1} total={1} />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mb-6">
             Measure your waist with a tape measure.
           </p>
-          <p className="font-bold text-sm">What is your waist measurement?</p>
+          <p className="font-bold text-sm mb-2">
+            What is your waist measurement?
+          </p>
           <div className="flex gap-x-3 justify-between items-center">
             <TextField
               rightIcon={<span className="pl-2 text-gray-400">inches</span>}
               placeholder=""
+              fullWidth
+              inputSize="medium"
               {...register("waist")}
             />
           </div>

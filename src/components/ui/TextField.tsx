@@ -9,6 +9,7 @@ export interface InputProps
   helper?: string;
   inputSize?: "small" | "medium" | "large";
   hasError?: boolean;
+  fullWidth?: boolean;
 }
 
 export const TextField = React.forwardRef(
@@ -30,6 +31,7 @@ export const TextField = React.forwardRef(
       helper,
       hasError,
       labelHtmlFor,
+      fullWidth,
       ...inputProps
     }: InputProps,
     ref: React.ForwardedRef<HTMLInputElement>
@@ -41,7 +43,7 @@ export const TextField = React.forwardRef(
     };
 
     return (
-      <div>
+      <div className={fullWidth ? `w-full` : ""}>
         {label && <label htmlFor={labelHtmlFor}>{label}</label>}
         <div
           className={`flex ring-2 ring-transparent focus-within:ring-primary-500 

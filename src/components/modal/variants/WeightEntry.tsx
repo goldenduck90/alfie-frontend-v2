@@ -29,6 +29,8 @@ export function WeightEntry({ title }: { title: string }) {
               placeholder="120"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              fullWidth
+              inputSize="medium"
             />
           </div>
         </div>

@@ -5,15 +5,15 @@ import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader } from "../Dialog";
 
 export function BloodPressure({ title }: { title: string }) {
-  const {register, handleSubmit} = useForm({
-    defaultValues:{ 
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
       systolicBp: "",
-      diastolicBp: ""
-    }
-  })
+      diastolicBp: "",
+    },
+  });
 
-  async function onSubmit(data: any){
-    console.log("Submitted", data)
+  async function onSubmit(data: any) {
+    console.log("Submitted", data);
   }
 
   return (
@@ -33,12 +33,16 @@ export function BloodPressure({ title }: { title: string }) {
             <TextField
               rightIcon={<span className="pl-2 text-gray-400">mmHg</span>}
               placeholder="120"
+              fullWidth
+              inputSize="medium"
               {...register("systolicBp")}
             />
             <span>{`/`}</span>
             <TextField
               rightIcon={<span className="pl-2 text-gray-400">mmHg</span>}
               placeholder="80"
+              fullWidth
+              inputSize="medium"
               {...register("diastolicBp")}
             />
           </div>
