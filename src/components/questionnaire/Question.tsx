@@ -20,6 +20,10 @@ import {
   TrashIcon,
 } from "@heroicons/react/outline";
 import { useProgressContext } from "../layouts/QuestionaireLayout";
+import { gql, useQuery } from "@apollo/client";
+import { useRouter } from "next/router";
+
+
 interface QuestionComponentProps {
   control: Control<any>;
   register: UseFormRegister<any>;
@@ -230,6 +234,26 @@ function createPersistedFormState(formName: string) {
     )
   );
 }
+
+/**
+ * There is task, User task and etc. None of it makes sense as to which this fetchs from.
+ * The other userTask will fail for me.
+ * This succeeds with null data. Idk what that means.
+ */
+const userTaskQuery = gql`
+  query UserTaskQuery($taskId: String!) {
+    userTask(id: $taskId) {
+      _id
+      task{
+      _id
+      name
+      type
+      }
+    }
+  }
+`;
+
+
 /**
  * Goal is to in the future only provide questions and type then the form works out of the box.
  * Will need individual custom final submits
@@ -237,6 +261,17 @@ function createPersistedFormState(formName: string) {
  *
  */
 export function Question() {
+  const { taskId } = useRouter().query as { taskId: string };
+  const {data, loading} = useQuery(userTaskQuery, {
+    variables: {
+      taskId,
+    },
+  });
+
+  console.log("Getting user Task",{data})
+
+  if(loading) return <div>loading...</div>
+
   return (
     <div className="relative flex flex-col gap-y-3 items-center w-full">
       <Questionnaire allQuestions={medicalQuestions} formName="medical" />

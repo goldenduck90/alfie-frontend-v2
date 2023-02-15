@@ -9,6 +9,7 @@ export default withIronSessionApiRoute(
     const headers: { [key: string]: string } = {};
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
+      console.log("Token Exists")
     }
     return httpProxyMiddleware(req, res, {
       target,

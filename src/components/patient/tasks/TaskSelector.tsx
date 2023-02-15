@@ -141,7 +141,7 @@ export const TaskSelector = ({
           <DialogBody
             title="Gastrointestinal Symptoms Rating Scale"
             description="This survey contains questions about how you have been feeling and what it has been like during the last week."
-            onClick={() => router.push("/questionnaire")}
+            onClick={() => router.push(`/questionnaire/${userTaskId}`)}
           />
         </DialogModal>
       );
