@@ -11,16 +11,16 @@ import { Button } from "../ui/Button";
 export function DialogBody({
   title,
   description,
-  onClick
+  onClick,
 }: {
   title: string;
   description: string;
-  onClick?: () => void
+  onClick?: () => void;
 }) {
   return (
     <div className="w-full md:max-w-[420px]">
       <div className="w-full flex relative px-6">
-        <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit mx-auto">
+        <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit mx-auto mb-4">
           <CalculatorIcon className="w-5 h-5 stroke-inherit" />
         </div>
         <RadixDialog.Close className="absolute right-6 inset-y " asChild>
@@ -34,10 +34,15 @@ export function DialogBody({
         <DialogModal.Description>{description}</DialogModal.Description>
         <GrayBox />
         <div className="py-4 flex items-center justify-center">
-          <Button onClick={onClick} size="medium">Start the questionnaire</Button>
+          <Button onClick={onClick} size="medium">
+            Start the questionnaire
+          </Button>
         </div>
         <p className="text-center text-sm text-gray-700">
-          By taking this survey you accept our Terms & Conditions.
+          By taking this survey you accept our{" "}
+          <span className="text-primary-500 cursor-pointer">
+            Terms & Conditions.
+          </span>
         </p>
       </div>
     </div>
@@ -85,7 +90,7 @@ DialogModal.Description = function Description({
   children: React.ReactNode;
 }) {
   return (
-    <RadixDialog.Description className="text-center text-[#475569] text-sm">
+    <RadixDialog.Description className="text-center text-[#475569] text-sm mb-6">
       {children}
     </RadixDialog.Description>
   );
