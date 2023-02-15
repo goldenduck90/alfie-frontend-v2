@@ -9,7 +9,17 @@ import { DialogLongBody, DialogLongHeader } from "../Dialog";
 
 export function MetabolicProfileHunger({ title }: { title: string }) {
   const [step, setStep] = useState(1);
-  const { control } = useForm({});
+  const { control, register, handleSubmit} = useForm({
+    defaultValues: {
+      foodEaten: "",
+      hungerLevel30Mins: [0],
+      hungerLevel1Hour: [0],
+    }
+  });
+
+  async function onSubmit(data: any){
+    console.log("Submitted", data)
+  }
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
@@ -26,7 +36,7 @@ export function MetabolicProfileHunger({ title }: { title: string }) {
             </p>
             <p className="font-bold text-sm">What food did you eat?</p>
             <div className="flex gap-x-3 justify-between items-center">
-              <TextField placeholder="" />
+              <TextField placeholder="" {...register("foodEaten")} />
             </div>
           </div>
         )}
@@ -39,7 +49,7 @@ export function MetabolicProfileHunger({ title }: { title: string }) {
               <p className="text-sm text-gray-500 pb-3">
                 Answer on a scale of 1-100
               </p>
-              <SliderDraggable name="rating1" control={control} />
+              <SliderDraggable name="hungerLevel30Mins" control={control} />
             </div>
             <div>
               <p className="font-bold text-sm">
@@ -48,7 +58,7 @@ export function MetabolicProfileHunger({ title }: { title: string }) {
               <p className="text-sm text-gray-500 pb-3">
                 Answer on a scale of 1-100
               </p>
-              <SliderDraggable name="rating2" control={control} />
+              <SliderDraggable name="hungerLevel1Hour" control={control} />
             </div>
           </div>
         )}
@@ -64,7 +74,13 @@ export function MetabolicProfileHunger({ title }: { title: string }) {
             <ChevronLeftIcon className="w-6 h-6" />
           </Button>
         )}
-        <Button onClick={() => setStep((s) => (s === 1 ? s + 1 : 1))}>
+        <Button onClick={() => {
+          if(step === 1){
+          setStep((s) => (s === 1 ? s + 1 : 1))
+          } else {
+            handleSubmit(onSubmit)()
+          }
+        }}>
           {step === 1 ? "Next" : "Complete"}
         </Button>
       </div>
@@ -104,6 +120,18 @@ export function MetabolicProfileActivity({ title }: { title: string }) {
 }
 
 export function MetabolicProfileMeals({ title }: { title: string }) {
+  const {register, handleSubmit} = useForm({
+    defaultValues: {
+      calories: 0
+    }
+  })
+
+
+  async function onSubmit(values:any){
+    console.log(values)
+  }
+
+
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
       <DialogLongHeader title={title} step={1} total={1} />
@@ -123,6 +151,7 @@ export function MetabolicProfileMeals({ title }: { title: string }) {
             <TextField
               placeholder=""
               rightIcon={<span className="pl-2 text-gray-400">kcal</span>}
+              {...register("calories")}
             />
           </div>
         </div>
@@ -131,7 +160,7 @@ export function MetabolicProfileMeals({ title }: { title: string }) {
         <RadixDialog.Close asChild>
           <Button buttonType="secondary">Cancel</Button>
         </RadixDialog.Close>
-        <Button>Complete</Button>
+        <Button onClick={handleSubmit(onSubmit)}>Complete</Button>
       </div>
     </div>
   );
