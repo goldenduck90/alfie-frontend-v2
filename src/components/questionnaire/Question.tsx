@@ -24,7 +24,6 @@ import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { TaskType } from "@src/graphql/generated";
 
-
 interface QuestionComponentProps {
   control: Control<any>;
   register: UseFormRegister<any>;
@@ -167,20 +166,21 @@ const medicalQuestions: QuestionProps<any>[] = [
 const threeFactorQuestion: QuestionProps<any>[] = [
   {
     id: "q1",
-      question: "When I smell a delicious food, I find it very difficult to keep from eating, even if I have just finished a meal.",
-      Component: (props: MultiCheckboxQuestionProps) => (
-        <RadioGroupInput
-          {...props}
-          options={[
-            "Mostly true",
-            "Definitely true",
-            "Mostly false",
-            "Definitely false",
-          ]}
-        />
-      ),
-        helperText: "Select one answer"
-    },
+    question:
+      "When I smell a delicious food, I find it very difficult to keep from eating, even if I have just finished a meal.",
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <RadioGroupInput
+        {...props}
+        options={[
+          "Mostly true",
+          "Definitely true",
+          "Mostly false",
+          "Definitely false",
+        ]}
+      />
+    ),
+    helperText: "Select one answer",
+  },
   {
     id: "scale10",
     question:
@@ -194,7 +194,7 @@ const threeFactorQuestion: QuestionProps<any>[] = [
     validation: z.string().min(1, "At least one option is required"),
     helperText: "Select one answer",
   },
-]
+];
 
 const metabolicQuestions: QuestionProps<any>[] = [
   {
@@ -221,19 +221,19 @@ const gastroQuestions: QuestionProps<any>[] = [
     id: "q1",
     question:
       "Have you been bothered by pain or discomfort in your upper abdomen or the pit of your stomach during the past week?",
-      Component: (props: MultiCheckboxQuestionProps) => (
-        <RadioGroupInput
-          {...props}
-          options={[
-            "Most of the time",
-            "A lot of the time",
-            "From time to time, ocassionally",
-            "Not at all",
-          ]}
-        />
-      ),
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <RadioGroupInput
+        {...props}
+        options={[
+          "Most of the time",
+          "A lot of the time",
+          "From time to time, ocassionally",
+          "Not at all",
+        ]}
+      />
+    ),
     validation: z.string().array().nonempty("At least one option is required"),
-    helperText: "Select one answer"
+    helperText: "Select one answer",
   },
 ];
 
@@ -264,15 +264,14 @@ const userTaskQuery = gql`
   query UserTaskQuery($taskId: String!) {
     userTask(id: $taskId) {
       _id
-      task{
-      _id
-      name
-      type
+      task {
+        _id
+        name
+        type
       }
     }
   }
 `;
-
 
 /**
  * Goal is to in the future only provide questions and type then the form works out of the box.
@@ -282,15 +281,15 @@ const userTaskQuery = gql`
  */
 export function Question() {
   const { taskId } = useRouter().query as { taskId: string };
-  const {data, loading} = useQuery(userTaskQuery, {
+  const { data, loading } = useQuery(userTaskQuery, {
     variables: {
       taskId,
     },
   });
 
-  if(loading) return <div>loading...</div>
+  if (loading) return <div>loading...</div>;
 
-  if(data?.userTask?.task?.type === TaskType.NewPatientIntakeForm) {
+  if (data?.userTask?.task?.type === TaskType.NewPatientIntakeForm) {
     return (
       <div className="relative flex flex-col gap-y-3 items-center w-full">
         <Questionnaire allQuestions={medicalQuestions} formName="medical" />
@@ -298,7 +297,7 @@ export function Question() {
     );
   }
 
-  if(data?.userTask?.task?.type === TaskType.MpFeeling) {
+  if (data?.userTask?.task?.type === TaskType.MpFeeling) {
     return (
       <div className="relative flex flex-col gap-y-3 items-center w-full">
         <Questionnaire allQuestions={metabolicQuestions} formName="medical" />
@@ -306,7 +305,7 @@ export function Question() {
     );
   }
 
-  if(data?.userTask?.task?.type === TaskType.Gsrs) {
+  if (data?.userTask?.task?.type === TaskType.Gsrs) {
     return (
       <div className="relative flex flex-col gap-y-3 items-center w-full">
         <Questionnaire allQuestions={gastroQuestions} formName="medical" />
@@ -314,11 +313,14 @@ export function Question() {
     );
   }
 
-  if(data?.userTask?.task?.type === TaskType.Tefq) {
+  if (data?.userTask?.task?.type === TaskType.Tefq) {
     return (
       <div className="relative flex flex-col gap-y-3 items-center w-full">
-      <Questionnaire allQuestions={threeFactorQuestion} formName="threeFactor" />
-    </div>
+        <Questionnaire
+          allQuestions={threeFactorQuestion}
+          formName="threeFactor"
+        />
+      </div>
     );
   }
 
@@ -915,3 +917,82 @@ function RadioGroupNumberInput({
     </React.Fragment>
   );
 }
+
+/**
+ *  !New Patient Intake Form
+ * 
+ *  localStorage.removeItem("weightManagementMethods")
+    localStorage.removeItem("conditions")
+    localStorage.removeItem("previousConditions")
+    localStorage.removeItem("medications")
+    localStorage.removeItem("hasSurgicalHistory")
+    localStorage.removeItem("allergies")
+    localStorage.removeItem("usePillPack")
+    localStorage.removeItem("pharmacy")
+    localStorage.removeItem("pharmacyLocation")
+ */
+
+/**
+   * !Metabolic Feeling
+   *  localStorage.removeItem("tenseLevel")
+      localStorage.removeItem("frightenedLevel")
+      localStorage.removeItem("easeFrequency")
+      localStorage.removeItem("worryAmount")
+      localStorage.removeItem("frightenedFrequency")
+      localStorage.removeItem("restlessAmount")
+      localStorage.removeItem("panicFrequency")
+   * 
+   */
+
+/**
+ * !Gastro
+ *  localStorage.removeItem("painOrDiscomfort")
+    localStorage.removeItem("heartburn")
+    localStorage.removeItem("acidReflux")
+    localStorage.removeItem("hungerPains")
+    localStorage.removeItem("nausea")
+    localStorage.removeItem("bloated")
+    localStorage.removeItem("burping")
+    localStorage.removeItem("constipation")
+    localStorage.removeItem("diarrhea")
+    localStorage.removeItem("looseStools")
+    localStorage.removeItem("gas")
+    localStorage.removeItem("hardStools")
+    localStorage.removeItem("urgentBowel")
+    localStorage.removeItem("completeBowels")
+ * 
+ */
+
+/**
+ *  !Ad Limitum
+ * 
+ *  localStorage.removeItem("systolic")
+    localStorage.removeItem("diastolic")
+ * 
+ * 
+ */
+
+/**
+ *  !Three Factor Questionnaire
+ * 
+ *  localStorage.removeItem("alwaysEating")
+    localStorage.removeItem("smallHelpings")
+    localStorage.removeItem("anxiousEating")
+    localStorage.removeItem("uncomfortableEating")
+    localStorage.removeItem("eatingWithOthers")
+    localStorage.removeItem("overeatingWhenBlue")
+    localStorage.removeItem("delicacyEating")
+    localStorage.removeItem("bottomlessPit")
+    localStorage.removeItem("alwaysHungry")
+    localStorage.removeItem("lonelyEating")
+    localStorage.removeItem("holdBack")
+    localStorage.removeItem("fatFoods")
+    localStorage.removeItem("alwaysHungry2")
+    localStorage.removeItem("howOftenHungry")
+    localStorage.removeItem("avoidStockingUp")
+    localStorage.removeItem("conciouslyEatLess")
+    localStorage.removeItem("eatingBinges")
+    localStorage.removeItem("restraint")
+ * 
+ * 
+ */
