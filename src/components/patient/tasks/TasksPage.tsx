@@ -74,9 +74,6 @@ export const TasksPage = () => {
     },
   ];
 
-  console.log({
-    tasks: data?.userTasks?.userTasks,
-  });
   return (
     <div>
       {error && <div>{error.message}</div>}

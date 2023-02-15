@@ -65,7 +65,7 @@ export function DialogModal({
       </RadixDialog.Trigger>
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-60 z-[99]" />
-        <RadixDialog.Content className="bg-white fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%] max-w-fit max-h-1/2 shadow-md py-6 rounded-md gap-y-3 z-[100] flex flex-col">
+        <RadixDialog.Content className="bg-white h-full md:h-fit fixed inset-0 md:inset-[unset] md:top-1/2 md:left-1/2  md:-translate-x-[50%] md:-translate-y-[50%] md:max-w-fit md:max-h-1/2 shadow-md py-4 md:py-6 rounded-md gap-y-3 z-[100] flex flex-col">
           {children}
         </RadixDialog.Content>
       </RadixDialog.Portal>
@@ -123,14 +123,17 @@ export function DialogLongHeader({
   return (
     <div className="w-full flex justify-between items-center relative pb-3 px-6 whitespace-nowrap">
       <div className="flex items-center gap-x-2">
-        <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit">
+        <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit hidden sm:block">
           <CalculatorIcon className="w-5 h-5 stroke-inherit" />
         </div>
-        <span className="text-sm font-bold">{title}</span>
+        <span className="text-sm font-bold truncate">{title}</span>
       </div>
       <div className="flex items-center gap-x-2">
-        <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm">
+        <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm hidden md:block">
           {`Step ${step} out of ${total}`}
+        </span>
+        <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm block md:hidden">
+          {`Step ${step}/${total}`}
         </span>
         <RadixDialog.Close className="" asChild>
           <button>

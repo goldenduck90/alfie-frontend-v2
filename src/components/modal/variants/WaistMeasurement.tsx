@@ -37,11 +37,15 @@ export function WaistMeasurement({ title }: { title: string }) {
           </div>
         </div>
       </DialogLongBody>
-      <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3">
+      <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3 flex-col md:flex-row gap-y-6">
         <RadixDialog.Close asChild>
-          <Button buttonType="secondary">Cancel</Button>
+          <Button size="medium" buttonType="secondary">
+            Cancel
+          </Button>
         </RadixDialog.Close>
-        <Button onClick={handleSubmit(onSubmit)}>Complete</Button>
+        <Button size="medium" onClick={handleSubmit(onSubmit)}>
+          Complete
+        </Button>
       </div>
     </div>
   );
