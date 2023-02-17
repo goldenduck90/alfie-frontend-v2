@@ -12,6 +12,7 @@ import {
   ChevronLeftIcon,
 } from "@heroicons/react/outline";
 import { Line } from "../ui/Line";
+import dayjs from "dayjs";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -32,6 +33,20 @@ const getAllProviderPatientsQuery = gql`
     }
   }
 `;
+export const appointmentsQuery = gql`
+  query AppointmentsQuery($limit: Float) {
+    appointments(limit: $limit) {
+      eaAppointmentId
+      startTimeInUtc
+      endTimeInUtc
+      location
+      eaProvider {
+        name
+        type
+      }
+    }
+  }
+`;
 
 interface IMeeting {
   eaAppointmentId: string;
@@ -45,13 +60,15 @@ interface IMeeting {
 }
 export const CalendarView = () => {
   const [value, onChange] = useState(new Date());
-  const userData = localStorage.getItem("user");
-  const [user, setUser] = useState<any>(userData && JSON.parse(userData));
-  const u = userData && JSON.parse(userData);
 
-  const { loading, error, data } = useQuery(getAllProviderPatientsQuery, {
-    variables: { eaProviderId: user?.eaProviderId },
+  const { loading, error, data } = useQuery(appointmentsQuery, {
+    variables: { limit: 2 },
   });
+
+  const { eaProvider, startTimeInUtc, eaAppointmentId } =
+    data?.appointments?.[1] || {};
+
+  console.log({ data });
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -218,16 +235,29 @@ export const CalendarView = () => {
             </ol>
           </section>
         </div>
-        <div className="p-6 rounded-xl md:border bg-white">
-          <Line color="medium" className="pb-7 md:hidden" />
-          <div className="flex justify-between pb-6">
-            <h3 className="font-bold">Next Visit</h3>{" "}
-            <Link href="/dashboard/appointments">
-              <p className="font-semibold">View all</p>
-            </Link>
+        {data?.appointments?.length > 0 && (
+          <div className="p-6 rounded-xl md:border bg-white">
+            <>
+              <Line color="medium" className="pb-7 md:hidden" />
+              <div className="flex justify-between pb-6">
+                <h3 className="font-bold">Next Visit</h3>{" "}
+                <Link href="/dashboard/appointments">
+                  <p className="font-semibold">View all</p>
+                </Link>
+              </div>
+              <AppointmentPreviewItem
+                isLoading={loading}
+                name={eaProvider?.name}
+                providerTitle={eaProvider?.type}
+                renderDate={{
+                  time: dayjs(startTimeInUtc).format("h:mm a"),
+                  date: dayjs(startTimeInUtc).format("MMM D, YYYY"),
+                }}
+                appointmentId={eaAppointmentId}
+              />
+            </>
           </div>
-          <AppointmentPreviewItem />
-        </div>
+        )}
       </div>
     </div>
   );

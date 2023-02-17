@@ -83,7 +83,7 @@ export const TaskItem = ({
             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
             aria-hidden="true"
           />
-          <p>{appointmentStartTime}</p>
+          <p>10 min</p>
         </div>
 
         <div className="hidden md:flex">
@@ -105,21 +105,10 @@ export const TaskItem = ({
             </div>
           ) : (
             <TaskSelector type={type} userTaskId={id} />
-            // <Link
-            //   passHref
-            //   legacyBehavior
-            //   href={
-            //     meetingLocation
-            //       ? `/appointments/call/${getQueryParamIdFromMeetingUrl}`
-            //       : `/dashboard/tasks/${id}`
-            //   }
-            // >
-            //   <Button buttonType="secondary">{actionText}</Button>
-            // </Link>
           )}
         </div>
       </div>
-      {false && (
+      {hasSubTasks && (
         <div className="pt-4">
           {[
             { children: "Metabolic Profile (Feeling)", isCompleted: true },
