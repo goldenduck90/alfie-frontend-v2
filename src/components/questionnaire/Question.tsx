@@ -19,7 +19,10 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/outline";
-import { useProgressContext } from "../layouts/QuestionaireLayout";
+import {
+  QuestionnaireLayout,
+  useProgressContext,
+} from "../layouts/QuestionaireLayout";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { TaskType } from "@src/graphql/generated";
@@ -291,42 +294,50 @@ export function Question() {
 
   if (data?.userTask?.task?.type === TaskType.NewPatientIntakeForm) {
     return (
-      <div className="relative flex flex-col gap-y-3 items-center w-full">
-        <Questionnaire allQuestions={medicalQuestions} formName="medical" />
-      </div>
+      <QuestionnaireLayout title="Medical Questionnaire">
+        <div className="relative flex flex-col gap-y-3 items-center w-full">
+          <Questionnaire allQuestions={medicalQuestions} formName="medical" />
+        </div>
+      </QuestionnaireLayout>
     );
   }
 
   if (data?.userTask?.task?.type === TaskType.MpFeeling) {
     return (
-      <div className="relative flex flex-col gap-y-3 items-center w-full">
-        <Questionnaire allQuestions={metabolicQuestions} formName="medical" />
-      </div>
+      <QuestionnaireLayout title="Metabolic Profile (Feeling) Questionnaire">
+        <div className="relative flex flex-col gap-y-3 items-center w-full">
+          <Questionnaire allQuestions={metabolicQuestions} formName="medical" />
+        </div>
+      </QuestionnaireLayout>
     );
   }
 
   if (data?.userTask?.task?.type === TaskType.Gsrs) {
     return (
-      <div className="relative flex flex-col gap-y-3 items-center w-full">
-        <Questionnaire allQuestions={gastroQuestions} formName="medical" />
-      </div>
+      <QuestionnaireLayout title="Gastrointestinal Symptoms Rating Scale">
+        <div className="relative flex flex-col gap-y-3 items-center w-full">
+          <Questionnaire allQuestions={gastroQuestions} formName="medical" />
+        </div>
+      </QuestionnaireLayout>
     );
   }
 
   if (data?.userTask?.task?.type === TaskType.Tefq) {
     return (
-      <div className="relative flex flex-col gap-y-3 items-center w-full">
-        <Questionnaire
-          allQuestions={threeFactorQuestion}
-          formName="threeFactor"
-        />
-      </div>
+      <QuestionnaireLayout title="The Three-Factor Eating Questionnaire">
+        <div className="relative flex flex-col gap-y-3 items-center w-full">
+          <Questionnaire
+            allQuestions={threeFactorQuestion}
+            formName="threeFactor"
+          />
+        </div>
+      </QuestionnaireLayout>
     );
   }
 
   return (
     <div className="relative flex flex-col gap-y-3 items-center w-full">
-      <p className="text-white">No Task of that Type</p>
+      <p className="text-white"></p>
     </div>
   );
 }

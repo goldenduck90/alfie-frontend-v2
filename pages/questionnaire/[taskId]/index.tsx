@@ -5,10 +5,10 @@ export default function Page() {
   return <Question />;
 }
 
-Page.getLayout = (page: React.ReactNode) => (
-  <QuestionnaireLayout title="Medical Questionnaire">
-    {page}
-  </QuestionnaireLayout>
-);
+// Page.getLayout = (page: React.ReactNode) => (
+//   <QuestionnaireLayout title="Medical Questionnaire">
+//     {page}
+//   </QuestionnaireLayout>
+// );
 
 Page.isAuthRequired = true;

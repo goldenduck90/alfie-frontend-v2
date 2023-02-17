@@ -150,18 +150,16 @@ export const TaskItem = ({
               <CheckCircleIcon className="h-5 w-5 mt-[2px] mr-1" /> 2/4
               completed
             </div>
-          ) : (
+          ) : meetingLocation ? (
             <Link
               passHref
               legacyBehavior
-              href={
-                meetingLocation
-                  ? `/appointments/call/${getQueryParamIdFromMeetingUrl}`
-                  : `/dashboard/tasks/${id}`
-              }
+              href={`/appointments/call/${getQueryParamIdFromMeetingUrl}`}
             >
               <Button buttonType="secondary">{actionText}</Button>
             </Link>
+          ) : (
+            <TaskSelector type={type} userTaskId={id} />
           )}
         </div>
       </div>
