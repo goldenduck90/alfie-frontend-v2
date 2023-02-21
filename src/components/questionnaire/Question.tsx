@@ -415,7 +415,6 @@ function Questionnaire({
       _id: taskId,
       answers,
     };
-    console.log({ input });
 
     // Clear Stored Form
     boundForm.persist.clearStorage();
