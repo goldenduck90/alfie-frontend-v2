@@ -10,33 +10,34 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import Link from "next/link";
 
-export function AllPatientsTabs() {
-  const [activeTab, setActiveTab] = useState("all");
+const TabList = [
+  "Information",
+  "Tasks",
+  "Medical Questionnaire",
+  "Chat",
+  "Alerts",
+];
+
+export function IndividualPatientTabs() {
+  const [activeTab, setActiveTab] = useState(TabList[0]);
   return (
     <div className="flex flex-col overflow-y-auto h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
         <div className="flex items-center justify-between">
           <Tabs.List className="flex gap-x-3">
-            <Tabs.Trigger value="all">
-              <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
-            </Tabs.Trigger>
-            <Tabs.Trigger value="active">
-              <TabTitle active={activeTab === "active"}>
-                Patients with Health Issues
-              </TabTitle>
-            </Tabs.Trigger>
+            {TabList.map((tab) => (
+              <Tabs.Trigger value={tab}>
+                <TabTitle active={activeTab === tab}>{tab}</TabTitle>
+              </Tabs.Trigger>
+            ))}
           </Tabs.List>
-          <div className="">
-            <p>Search</p>
-          </div>
         </div>
-        <Tabs.Content value="all">
-          <AllPatientsTable />
+        <Tabs.Content value={TabList[0]}>
+          <p>Information of User</p>
         </Tabs.Content>
-        <Tabs.Content value="active">
-          <AllPatientsIssuesTable />
+        <Tabs.Content value={TabList[1]}>
+          <p>Tasks</p>
         </Tabs.Content>
       </Tabs.Root>
     </div>
@@ -141,11 +142,9 @@ const columns = [
     header: undefined,
     cell: (info) => (
       <div className="px-2">
-        <Link href={`/dashboard/patients/${info.getValue()}`}>
-          <div className="p-1 border rounded-md border-gray-200 max-w-fit">
-            <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-          </div>
-        </Link>
+        <button className="p-1 border rounded-md border-gray-200 max-w-fit">
+          <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+        </button>
       </div>
     ),
   }),
