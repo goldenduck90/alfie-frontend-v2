@@ -13,6 +13,9 @@ import {
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
+import { TextField } from "@src/components/ui/TextField";
+import { SearchCircleIcon, SearchIcon } from "@heroicons/react/solid";
+import { Button } from "@src/components/ui/Button";
 
 export function AllPatientsTabs() {
   const [activeTab, setActiveTab] = useState("all");
@@ -32,8 +35,14 @@ export function AllPatientsTabs() {
               </TabTitle>
             </Tabs.Trigger>
           </Tabs.List>
-          <div className="">
-            <p>Search</p>
+          <div className="flex gap-x-3">
+            <TextField
+              leftIcon={<SearchIcon className="h-5 w-5 text-gray-400" />}
+              placeholder="Search Patients"
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+            />
+            <Button buttonType="accent">Add new</Button>
           </div>
         </div>
         <Tabs.Content value="all">
@@ -173,7 +182,7 @@ function NameCell({ info }: { info: CellContext<Patient, string> }) {
   return (
     <div className="px-2 flex gap-x-2 items-center">
       <InitialsCircleAvatar text={initials} index={info.row.index} />
-      <p>{info.getValue()}</p>
+      <p className="capitalize">{info.getValue()}</p>
     </div>
   );
 }
