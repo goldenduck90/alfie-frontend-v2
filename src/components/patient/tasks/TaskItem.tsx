@@ -104,7 +104,7 @@ export const TaskItem = ({
               completed
             </div>
           ) : (
-            <TaskSelector type={type} userTaskId={id} />
+            <TaskSelector type={type} userTaskId={id} createdAt={createdAt} />
           )}
         </div>
       </div>
@@ -148,7 +148,7 @@ export const TaskItem = ({
               <Button buttonType="secondary">{actionText}</Button>
             </Link>
           ) : (
-            <TaskSelector type={type} userTaskId={id} />
+            <TaskSelector type={type} userTaskId={id} createdAt={createdAt} />
           )}
         </div>
       </div>

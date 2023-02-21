@@ -13,18 +13,24 @@ import { Button } from "@src/components/ui/Button";
 import { TaskType } from "@src/graphql/generated";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 
 export const TaskSelector = ({
   type,
   userTaskId,
   trigger = <Button buttonType="secondary">Complete</Button>,
+  createdAt,
 }: {
   type: string;
   userTaskId: string;
   trigger?: React.ReactNode;
+  createdAt: Date;
 }) => {
   const router = useRouter();
+
+  useEffect(() => {
+    console.log({ createdAt });
+  }, [createdAt]);
 
   switch (type) {
     case TaskType.IdAndInsuranceUpload:
@@ -40,6 +46,7 @@ export const TaskSelector = ({
             title="Medical Questionnaire"
             description="Complete a basic medical form so that we can tailor our services to your needs."
             onClick={() => router.push(`/questionnaire/${userTaskId}`)}
+            createdAt={createdAt}
           />
         </DialogModal>
       );
@@ -80,7 +87,8 @@ export const TaskSelector = ({
             title="Metabolic Profile (Feeling) Questionnaire"
             description="These questions, in combination with the Metabolic Profiling kit sent to you, help us determine your metabolic profile in order to understand which medications will be most effective for you. Once we get the results of your metabolic kit we’ll share a detailed report on your personal metabolic profile!"
             onClick={() => router.push(`/questionnaire/${userTaskId}`)}
-          />{" "}
+            createdAt={createdAt}
+          />
         </DialogModal>
       );
     case TaskType.MpActivity:
@@ -123,6 +131,7 @@ export const TaskSelector = ({
         <DialogModal triggerAsChild trigger={trigger}>
           <DialogBody
             title="Gastrointestinal Symptoms Rating Scale"
+            createdAt={createdAt}
             description="This survey contains questions about how you have been feeling and what it has been like during the last week."
             onClick={() => router.push(`/questionnaire/${userTaskId}`)}
           />
@@ -133,6 +142,7 @@ export const TaskSelector = ({
         <DialogModal triggerAsChild trigger={trigger}>
           <DialogBody
             title="The Three-Factor Eating Questionnaire"
+            createdAt={createdAt}
             description="We would like to know your habits and behaviours regarding eating and taking meals."
             onClick={() => router.push(`/questionnaire/${userTaskId}`)}
           />

@@ -5,7 +5,9 @@ import {
   XIcon,
 } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import React, { useState } from "react";
+import { formatDistance } from "date-fns";
+import dayjs from "dayjs";
+import React, { useMemo, useState } from "react";
 import { create, createStore, useStore } from "zustand";
 import { Button } from "../ui/Button";
 
@@ -13,10 +15,12 @@ export function DialogBody({
   title,
   description,
   onClick,
+  createdAt,
 }: {
   title: string;
   description: string;
   onClick?: () => void;
+  createdAt: Date;
 }) {
   return (
     <div className="w-full md:max-w-[420px]">
@@ -33,7 +37,7 @@ export function DialogBody({
       <div className="w-full flex flex-col gap-y-3 px-6">
         <DialogModal.Title>{title}</DialogModal.Title>
         <DialogModal.Description>{description}</DialogModal.Description>
-        <GrayBox />
+        <GrayBox createdAt={createdAt} />
         <div className="py-4 flex items-center justify-center">
           <Button onClick={onClick} size="medium">
             Start the questionnaire
@@ -112,7 +116,16 @@ DialogModal.Description = function Description({
   );
 };
 
-function GrayBox() {
+function GrayBox({ createdAt }: { createdAt: Date }) {
+  const formmatedDate = useMemo(() => {
+    const value = `Assigned ${formatDistance(
+      new Date(createdAt),
+      new Date()
+    )} ago`;
+
+    return value;
+  }, [createdAt]);
+
   return (
     <div className="w-full py-4 px-2 rounded-md flex gap-x-4 items-center justify-center bg-gray-100 text-sm whitespace-nowrap">
       <div className="flex gap-x-1 items-center">
@@ -121,7 +134,7 @@ function GrayBox() {
       </div>
       <div className="flex gap-x-1 items-center">
         <CalendarIcon className="w-6 h-6" />
-        <p>Assigned 3 days ago</p>
+        <p>{formmatedDate || ""}</p>
       </div>
     </div>
   );
