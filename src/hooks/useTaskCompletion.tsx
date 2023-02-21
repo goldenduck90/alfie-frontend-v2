@@ -44,18 +44,29 @@ export function useTaskCompletion(onCompleted?: () => void) {
   });
 }
 
-export function createAnwersFromObject(obj: Record<string, string>) {
+export function createAnwersFromObject(obj: Record<string, string | number>) {
   const answers: any[] = [];
   for (const [key, value] of Object.entries(obj)) {
     answers.push(
       createAnswerInputs({
         key,
-        type: AnswerType.String,
+        type: valueToAnswerType(value),
         value: `${value}` as string,
       })
     );
   }
   return answers;
+}
+
+function valueToAnswerType(value: unknown) {
+  switch (typeof value) {
+    case "string":
+      return AnswerType.String;
+    case "number":
+      return AnswerType.Number;
+    default:
+      return AnswerType.String;
+  }
 }
 
 export function createAnswerInputs({

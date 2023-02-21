@@ -61,7 +61,7 @@ export const TaskSelector = ({
     case TaskType.WeightLog:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <WeightEntry title="Enter your weight" />
+          <WeightEntry taskId={userTaskId} title="Enter your weight" />
         </DialogModal>
       );
     case TaskType.MpHunger:
