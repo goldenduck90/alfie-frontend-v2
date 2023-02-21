@@ -59,7 +59,13 @@ export function createAnwersFromObject(obj: Record<string, string | number>) {
 }
 
 function valueToAnswerType(value: unknown) {
-  switch (typeof value) {
+  // Try convert value to number then check type
+  let val = value;
+  if (!Number.isNaN(Number(val))) {
+    val = Number(val);
+  }
+
+  switch (typeof val) {
     case "string":
       return AnswerType.String;
     case "number":

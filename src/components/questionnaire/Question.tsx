@@ -169,15 +169,15 @@ const medicalQuestions: QuestionProps<any>[] = [
 
 const threeFactorQuestion: QuestionProps<any>[] = [
   {
-    id: "q1",
+    id: "alwaysEating",
     question:
       "When I smell a delicious food, I find it very difficult to keep from eating, even if I have just finished a meal.",
     Component: (props: MultiCheckboxQuestionProps) => (
       <RadioGroupInput
         {...props}
         options={[
-          "Mostly true",
           "Definitely true",
+          "Mostly true",
           "Mostly false",
           "Definitely false",
         ]}
@@ -186,7 +186,7 @@ const threeFactorQuestion: QuestionProps<any>[] = [
     helperText: "Select one answer",
   },
   {
-    id: "scale10",
+    id: "restraint",
     question:
       "On a scale where 1 means no restraint in eating (eating whatever you want, whenever you want it) and 8 means total restraint (constantly limiting food intake and never giving in), what number would you give yourself?",
     Component: (props: MultiCheckboxQuestionProps) => (
