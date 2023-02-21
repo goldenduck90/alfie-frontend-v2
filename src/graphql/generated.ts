@@ -435,7 +435,7 @@ export type LoginResponse = {
   __typename?: 'LoginResponse';
   message?: Maybe<Scalars['String']>;
   token: Scalars['String'];
-  user: User;
+  user: PartialUser;
 };
 
 export type MessageResponse = {
@@ -603,6 +603,16 @@ export type MutationUpdateSubscriptionArgs = {
 export type MutationUpdateUserTaskArgs = {
   input: UpdateUserTaskInput;
   taskId: Scalars['String'];
+};
+
+export type PartialUser = {
+  __typename?: 'PartialUser';
+  _id: Scalars['String'];
+  eaHealthCoachId?: Maybe<Scalars['String']>;
+  eaProviderId?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  name: Scalars['String'];
+  role: Role;
 };
 
 export type PharmacyLocationInput = {

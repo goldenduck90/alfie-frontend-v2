@@ -103,8 +103,8 @@ export const TasksPage = () => {
             Array(6)
               .fill("")
               .map((_, i) => (
-                <div className="pt-6">
-                  <LoadingTaskItem key={i} />
+                <div className="pt-6" key={i}>
+                  <LoadingTaskItem />
                 </div>
               ))}
 

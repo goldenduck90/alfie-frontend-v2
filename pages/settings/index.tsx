@@ -7,6 +7,7 @@ import { Button } from "../../src/components/old/Button";
 import UnControlledDropDown from "../../src/components/inputs/UnControlledDropDown";
 import { UnControlledTextInput } from "../../src/components/inputs/UnControlledTextInput";
 import { Layout } from "../../src/components/layouts/Layout";
+import { randomId } from "@src/utils/randomId";
 // import { useNotificationDispatch } from "../../../context/NotificationContext";
 function generateUUID() {
   let d = new Date().getTime(); //Timestamp
@@ -233,8 +234,7 @@ function Settings() {
         type: "success",
         title: "Success",
         description: "You have successfully updated your working plan",
-        displayNotification: true,
-        id: "a",
+        id: randomId(),
       });
       console.log(response, "response");
     } catch (err) {

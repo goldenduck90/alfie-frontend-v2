@@ -1,5 +1,6 @@
 import { DialogBody, DialogModal } from "@src/components/modal/Dialog";
 import { BloodPressure } from "@src/components/modal/variants/BloodPressure";
+import { FoodLog } from "@src/components/modal/variants/FoodLog";
 import { IDVerificationModal } from "@src/components/modal/variants/IDVerification";
 import {
   MetabolicProfileActivity,
@@ -99,10 +100,9 @@ export const TaskSelector = ({
         </DialogModal>
       );
     case TaskType.FoodLog:
-      //TODO: Add food log
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          Nothing yet
+          <FoodLog />
         </DialogModal>
       );
 

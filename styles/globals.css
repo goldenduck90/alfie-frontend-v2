@@ -21,6 +21,19 @@ body {
   @apply bg-gray-100;
 }
 
+.notification-style {
+  @apply z-50 text-white p-4 w-80 max-w-sm my-1 rounded-md flex justify-between;
+}
+.notification-success {
+  @apply notification-style bg-green-500;
+}
+.notification-error {
+  @apply notification-style bg-red-500;
+}
+.notification-warning {
+  @apply notification-style bg-yellow-500;
+}
+
 .react-calendar__tile--active {
   background: rgb(209 213 219) !important;
 }
