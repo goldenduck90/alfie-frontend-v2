@@ -1,35 +1,59 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
-import { TaskType } from "@src/graphql/generated";
-import { useTaskCompletion } from "@src/hooks/useTaskCompletion";
+import { AnswerType, TaskType } from "@src/graphql/generated";
+import {
+  createAnswerInputs,
+  useTaskCompletion,
+} from "@src/hooks/useTaskCompletion";
 import { useForm } from "react-hook-form";
 import { Button } from "../../ui/Button";
-import { DialogLongBody, DialogLongHeader } from "../Dialog";
+import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
 
-export function FoodLog() {
+export function FoodLog({ taskId }: { taskId: string }) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
+      _id: taskId,
       breakfast: "",
       lunch: "",
       dinner: "",
     },
   });
 
-  const [mutate] = useTaskCompletion();
+  const setOpen = useDialogToggle();
+
+  const [mutate] = useTaskCompletion(() => setOpen(false));
 
   function onSubmit(data: any) {
-    mutate({
-      variables: {
-        input: {
-          taskName: TaskType.FoodLog,
-          data: {
-            breakfast: data.breakfast,
-            lunch: data.lunch,
-            dinner: data.dinner,
-          },
-        },
-      },
+    console.log("Submitted", data);
+    const { _id, ...rest } = data;
+    const answers: any[] = [];
+    for (const [key, value] of Object.entries(rest)) {
+      answers.push(
+        createAnswerInputs({
+          key,
+          type: AnswerType.String,
+          value: value as string,
+        })
+      );
+    }
+
+    console.log({
+      _id,
+      answers,
     });
+
+    // mutate({
+    //   variables: {
+    //     input: {
+    //       taskName: TaskType.FoodLog,
+    //       data: {
+    //         breakfast: data.breakfast,
+    //         lunch: data.lunch,
+    //         dinner: data.dinner,
+    //       },
+    //     },
+    //   },
+    // });
   }
 
   return (

@@ -5,7 +5,8 @@ import {
   XIcon,
 } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import React from "react";
+import React, { useState } from "react";
+import { create, createStore, useStore } from "zustand";
 import { Button } from "../ui/Button";
 
 export function DialogBody({
@@ -48,6 +49,17 @@ export function DialogBody({
     </div>
   );
 }
+const DialogContext = React.createContext<React.Dispatch<
+  React.SetStateAction<boolean>
+> | null>(null);
+
+export function useDialogToggle() {
+  const store = React.useContext(DialogContext);
+  if (!store) {
+    throw new Error("useDialogToggle must be used within a DialogModal");
+  }
+  return store;
+}
 
 export function DialogModal({
   trigger,
@@ -58,18 +70,22 @@ export function DialogModal({
   children: React.ReactNode;
   triggerAsChild?: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <RadixDialog.Root>
-      <RadixDialog.Trigger asChild={triggerAsChild}>
-        {trigger}
-      </RadixDialog.Trigger>
-      <RadixDialog.Portal>
-        <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-60 z-[99]" />
-        <RadixDialog.Content className="bg-white h-full md:h-fit fixed inset-0 md:inset-[unset] md:top-1/2 md:left-1/2  md:-translate-x-[50%] md:-translate-y-[50%] md:max-w-fit md:max-h-1/2 shadow-md py-4 md:py-6 rounded-md gap-y-3 z-[100] flex flex-col">
-          {children}
-        </RadixDialog.Content>
-      </RadixDialog.Portal>
-    </RadixDialog.Root>
+    <DialogContext.Provider value={setOpen}>
+      <RadixDialog.Root open={open} onOpenChange={setOpen}>
+        <RadixDialog.Trigger asChild={triggerAsChild}>
+          {trigger}
+        </RadixDialog.Trigger>
+        <RadixDialog.Portal>
+          <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-60 z-[99]" />
+          <RadixDialog.Content className="bg-white h-full md:h-fit fixed inset-0 md:inset-[unset] md:top-1/2 md:left-1/2  md:-translate-x-[50%] md:-translate-y-[50%] md:max-w-fit md:max-h-1/2 shadow-md py-4 md:py-6 rounded-md gap-y-3 z-[100] flex flex-col">
+            {children}
+          </RadixDialog.Content>
+        </RadixDialog.Portal>
+      </RadixDialog.Root>
+    </DialogContext.Provider>
   );
 }
 

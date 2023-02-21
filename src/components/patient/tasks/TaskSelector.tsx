@@ -96,13 +96,16 @@ export const TaskSelector = ({
     case TaskType.AdLibitum:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <MetabolicProfileMeals title="Metabolic Profile (Ad Libitum meals)" />
+          <MetabolicProfileMeals
+            taskId={userTaskId}
+            title="Metabolic Profile (Ad Libitum meals)"
+          />
         </DialogModal>
       );
     case TaskType.FoodLog:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <FoodLog />
+          <FoodLog taskId={userTaskId} />
         </DialogModal>
       );
 

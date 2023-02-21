@@ -2,6 +2,11 @@ import { ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { SliderDraggable } from "@src/components/ui/SliderRange";
 import { TextField } from "@src/components/ui/TextField";
+import { AnswerType } from "@src/graphql/generated";
+import {
+  createAnswerInputs,
+  useTaskCompletion,
+} from "@src/hooks/useTaskCompletion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../../ui/Button";
@@ -128,15 +133,36 @@ export function MetabolicProfileActivity({ title }: { title: string }) {
   );
 }
 
-export function MetabolicProfileMeals({ title }: { title: string }) {
+export function MetabolicProfileMeals({
+  title,
+  taskId,
+}: {
+  title: string;
+  taskId: string;
+}) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
+      _id: taskId,
       calories: 0,
     },
   });
 
+  const [mutate] = useTaskCompletion();
+
   async function onSubmit(values: any) {
-    console.log(values);
+    const answers = createAnswerInputs({
+      key: "calories",
+      value: values.calories,
+      type: AnswerType.Number,
+    });
+    mutate({
+      variables: {
+        input: {
+          _id: values._id,
+          answers: [answers],
+        },
+      },
+    });
   }
 
   return (

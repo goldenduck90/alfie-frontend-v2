@@ -41,8 +41,6 @@ export const TasksPage = () => {
     },
   });
 
-  console.log({ data });
-
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -90,7 +88,7 @@ export const TasksPage = () => {
               <TaskItem
                 key={userTask._id}
                 id={userTask._id}
-                type={userTask?.task?.type || ""}
+                type={(userTask?.task?.type || "") as any}
                 title={userTask?.task?.name || ""}
                 createdAt={userTask.createdAt}
                 dueAt={userTask.dueAt}
