@@ -36,12 +36,31 @@ export function IndividualPatientTabs({ user }: { user: any }) {
           </Tabs.List>
         </div>
         <Tabs.Content value={TabList[0]}>
-          <p>Full Name: {user?.name}</p>
+          <TableUserObject user={user} />
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
           <p>Tasks</p>
         </Tabs.Content>
       </Tabs.Root>
+    </div>
+  );
+}
+
+function TableUserObject({ user }: { user: any }) {
+  if (!user) return null;
+  return (
+    <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300">
+      {Object.keys(user).map((key) => {
+        if (typeof user[key] !== "string") {
+          return null;
+        }
+        return (
+          <div className="flex gap-x-4 px-2 py-2">
+            <p className="capitalize min-w-[225px]">{key}</p>
+            <p>{user[key]}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }
