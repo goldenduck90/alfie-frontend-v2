@@ -77,6 +77,7 @@ export const DashboardTaskList = () => {
         <DashboardPreviewItem
           renderDate={{ date: "", time: dayjs().calendar(dayjs(item.dueAt)) }}
           title={item?.task?.name || ""}
+          icon={item?.task?.type}
         />
       }
     />

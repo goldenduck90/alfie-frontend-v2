@@ -2,8 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { gql, useQuery } from "@apollo/client";
 
-import { ChipIcon } from "@heroicons/react/outline";
-import { CakeIcon, PencilIcon } from "@heroicons/react/solid";
+import { PencilIcon } from "@heroicons/react/solid";
 import { Button } from "@src/components/ui/Button";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { Line } from "@src/components/ui/Line";
@@ -12,6 +11,7 @@ import { SliderRange } from "@src/components/ui/SliderRange";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { DialogModal } from "@src/components/modal/Dialog";
 import { WeightEntry } from "@src/components/modal/variants/WeightEntry";
+import { ScaleTwoIcon, TargetIcon } from "@src/components/svg";
 
 export function YourWeight() {
   const { user } = useCurrentUserStore();
@@ -26,9 +26,9 @@ export function YourWeight() {
       cardHeader={
         <>
           <div className="flex flex-row">
-            <div>
-              <ChipIcon className="h-6 w-5 mr-2 mt-1" />
-            </div>
+            <span className="mr-2 mt-1">
+              <ScaleTwoIcon />
+            </span>
             <div className="flex flex-col w-full">
               <div className="flex flex-row justify-between items-center pb-2">
                 <h2 className="text-gray-900 ">Your Weight</h2>
@@ -52,9 +52,9 @@ export function YourWeight() {
         <>
           <Line color="light" marginY="large" />
           <div className="flex flex-row">
-            <div>
-              <CakeIcon className="h-5 w-5 mr-2 mt-[2px]" />
-            </div>
+            <span className="mr-2 mt-[2px]">
+              <TargetIcon />
+            </span>
             <div className="flex flex-col w-full">
               <div className="flex flex-row justify-between items-center pb-2">
                 <h2 className="text-gray-900 ">Your goal</h2>

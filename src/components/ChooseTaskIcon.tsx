@@ -6,6 +6,14 @@ import {
   DotsCircleHorizontalIcon,
 } from "@heroicons/react/solid";
 import { TaskType } from "@src/graphql/generated";
+import {
+  ForkAndKnifeIcon,
+  GastroIcon,
+  HeartBeatIcon,
+  RulerIcon,
+  ScaleIcon,
+  DropIcon,
+} from "./svg";
 
 interface ChooseTaskIconProps {
   value: TaskType;
@@ -14,13 +22,7 @@ interface ChooseTaskIconProps {
 export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
   switch (value) {
     case TaskType.NewPatientIntakeForm:
-      return (
-        <TaskIconBase
-          textColor="text-brand-heavenly-shade"
-          bgColor="bg-brand-heavenly-tint-1"
-          icon={HeartIcon}
-        />
-      );
+      return <ImportedIconWrap icon={<HeartBeatIcon />} />;
     case TaskType.MpHunger:
     case TaskType.MpActivity:
       return (
@@ -39,46 +41,17 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
         />
       );
     case TaskType.BpLog:
-      return (
-        <TaskIconBase
-          textColor="text-red-400"
-          bgColor="bg-red-50"
-          icon={HeartIcon}
-        />
-      );
+      return <ImportedIconWrap icon={<DropIcon />} />;
     case TaskType.WeightLog:
-      return (
-        <TaskIconBase
-          textColor="text-amber-500"
-          bgColor="bg-amber-100"
-          icon={HeartIcon}
-        />
-      );
+      return <ImportedIconWrap icon={<ScaleIcon />} />;
     case TaskType.WaistLog:
-      return (
-        <TaskIconBase
-          textColor="text-lime-600"
-          bgColor="bg-lime-100"
-          icon={HeartIcon}
-        />
-      );
+      return <ImportedIconWrap icon={<RulerIcon />} />;
     case TaskType.Gsrs:
     case TaskType.AdLibitum:
-      return (
-        <TaskIconBase
-          textColor="text-red-700"
-          bgColor="bg-red-50"
-          icon={HeartIcon}
-        />
-      );
+    case TaskType.FoodLog:
+      return <ImportedIconWrap icon={<GastroIcon />} />;
     case TaskType.Tefq:
-      return (
-        <TaskIconBase
-          textColor="text-orange-500"
-          bgColor="bg-orange-100"
-          icon={HeartIcon}
-        />
-      );
+      return <ImportedIconWrap icon={<ForkAndKnifeIcon />} />;
     case TaskType.MpFeeling:
       return (
         <TaskIconBase
@@ -102,7 +75,7 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
 function TaskIconBase(props: {
   textColor: string;
   bgColor: string;
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  icon: React.FC<React.SVGProps<SVGSVGElement>> | any;
 }) {
   return (
     <div
@@ -111,4 +84,8 @@ function TaskIconBase(props: {
       <props.icon className={`h-6 w-6 ${props.textColor}`} />
     </div>
   );
+}
+
+function ImportedIconWrap(props: { icon: JSX.Element }) {
+  return <span className="mr-4">{props.icon}</span>;
 }
