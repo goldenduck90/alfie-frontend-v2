@@ -122,9 +122,9 @@ export default withSessionRoute(async function loginRoute(req, res) {
           .json({ message: "Invalid credentials! Please try again." });
       }
 
-      (req.session as any).user = patientData.data.me;
+      (req.session as any).user = patientData?.data?.me;
       await req.session.save();
-      return res.json({ user: patientData.data.me });
+      return res.json({ user: patientData?.data?.me });
     }
 
     await req.session.save();
