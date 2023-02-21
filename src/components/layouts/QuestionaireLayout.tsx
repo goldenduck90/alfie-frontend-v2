@@ -44,8 +44,20 @@ export function QuestionnaireLayout({
   useEffect(() => {
     if (`${current}` !== step) {
       setCurrent(!!step ? Number(step) : 0);
+    } else if (Number(step) > max + 1) {
+      router.replace(
+        `/questionnaire/${router?.query?.taskId}?step=${max - 1}`,
+        undefined,
+        { shallow: true }
+      );
+    } else if (Number(step) < 0) {
+      router.replace(
+        `/questionnaire/${router?.query?.taskId}?step=${0}`,
+        undefined,
+        { shallow: true }
+      );
     }
-  }, [router, current, step]);
+  }, [router, current, step, max]);
 
   return (
     <QuestionProgressContext.Provider value={progressStore}>
