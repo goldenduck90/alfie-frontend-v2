@@ -4,12 +4,13 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { Patient } from "@src/components/practitioner/dashboard/Table";
 import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
 import {
+  CellContext,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 
 export function AllPatientsTabs() {
@@ -120,10 +121,51 @@ function Header({ children }: { children: React.ReactNode }) {
   return <div className="px-2 py-2 text-left font-[500]">{children}</div>;
 }
 
+function InitialsCircleAvatar({
+  text,
+  index,
+}: {
+  text: string;
+  index: number;
+}) {
+  const bgColors = [
+    "bg-blue-100 text-blue-600",
+    "bg-purple-100 text-purple-600",
+    "bg-yellow-100 text-yellow-600",
+    "bg-red-100 text-red-600",
+    "bg-green-100 text-green-600",
+  ];
+  const color = bgColors[index % bgColors.length];
+
+  return (
+    <div
+      className={`w-8 h-8 rounded-full flex justify-center items-center ${color}`}
+    >
+      <p className="text-sm">{text}</p>
+    </div>
+  );
+}
+
+function NameCell({ info }: { info: CellContext<Patient, string> }) {
+  const initials = useMemo(() => {
+    const splitName = info.getValue().split(" ");
+    const firstInitial = splitName[0].charAt(0);
+    const lastInitial = splitName[splitName.length - 1].charAt(0);
+    return `${firstInitial || ""}${lastInitial || ""}`;
+  }, [info]);
+
+  return (
+    <div className="px-2 flex gap-x-2 items-center">
+      <InitialsCircleAvatar text={initials} index={info.row.index} />
+      <p>{info.getValue()}</p>
+    </div>
+  );
+}
+
 const columns = [
   columnHelper.accessor("name", {
     header: () => <Header>Name</Header>,
-    cell: (info) => <div className="px-2">{info.getValue()}</div>,
+    cell: (info) => <NameCell info={info} />,
   }),
   columnHelper.accessor("dateOfBirth", {
     header: () => <Header>Date of birth</Header>,
