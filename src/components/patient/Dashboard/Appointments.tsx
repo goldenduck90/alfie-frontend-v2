@@ -6,6 +6,7 @@ import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { roleToText } from "@src/utils/roleToText";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
 
 export const appointmentsQuery = gql`
   query AppointmentsQuery($limit: Float) {
@@ -22,10 +23,11 @@ export const appointmentsQuery = gql`
   }
 `;
 
-export function DashboardAppointments({ isLoading }: any) {
+export function DashboardAppointments() {
+  const router = useRouter();
   const { data, loading, error } = useQuery(appointmentsQuery, {
     variables: {
-      limit: 20,
+      limit: 2,
     },
   });
   React.useEffect(() => {
@@ -43,7 +45,9 @@ export function DashboardAppointments({ isLoading }: any) {
   const renderItems = data?.appointments.map((item: any, i: number) => (
     <DashboardPreviewItem
       key={`items-${i}`}
-      href={`/dashboard/appointments/${item.eaAppointmentId}`}
+      onClick={() =>
+        router.push(`/dashboard/appointments/${item.eaAppointmentId}`)
+      }
       renderDate={{
         date: dayjs(item.startTimeInUtc).format("MMMM D, YYYY"),
         time: `${dayjs(item.startTimeInUtc).format("H:mma")} - ${dayjs(
@@ -67,23 +71,21 @@ export function DashboardAppointments({ isLoading }: any) {
   ));
 
   return (
-    <>
-      <DashboardCard
-        className="md:min-w-[49.3%]"
-        cardHeader={
-          <div className="flex justify-between pb-7">
-            <h3 className="font-bold">Upcoming Appointments</h3>{" "}
-            <Link href="/dashboard/appointments">
-              <p className="font-semibold hover:underline">View all</p>
-            </Link>
-          </div>
-        }
-      >
-        {(error || data?.appointments.length === 0) &&
-          "no appointments scheduled"}
-        {loading && loadItems}
-        {data && renderItems}
-      </DashboardCard>
-    </>
+    <DashboardCard
+      className="md:min-w-[49.3%]"
+      cardHeader={
+        <div className="flex justify-between pb-7">
+          <h3 className="font-bold">Upcoming Appointments</h3>{" "}
+          <Link href="/dashboard/appointments">
+            <p className="font-semibold hover:underline">View all</p>
+          </Link>
+        </div>
+      }
+    >
+      {(error || data?.appointments.length === 0) &&
+        "no appointments scheduled"}
+      {loading && loadItems}
+      {data && renderItems}
+    </DashboardCard>
   );
 }

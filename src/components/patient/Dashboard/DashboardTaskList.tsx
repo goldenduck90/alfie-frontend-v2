@@ -6,6 +6,11 @@ import { DashboardPreviewItem } from "@src/components/ui/DashboardPreviewItem";
 import Link from "next/link";
 import React from "react";
 import { TaskType, UserTask } from "../../../graphql/generated";
+import { TaskSelector } from "../tasks/TaskSelector";
+
+import dayjs from "dayjs";
+import calendar from "dayjs/plugin/calendar";
+dayjs.extend(calendar);
 
 const userTasksQuery = gql`
   query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
@@ -64,32 +69,34 @@ export const DashboardTaskList = () => {
   ));
 
   const resultItems = tasks?.map((item: UserTask, i: number) => (
-    <DashboardPreviewItem
+    <TaskSelector
+      type={item?.task?.type as TaskType}
+      userTaskId={item._id}
       key={`task-${i}`}
-      href={`/dashboard/tasks/${item._id}`}
-      renderDate={{ date: "", time: item.dueAt }}
-      title={item?.task?.name || ""}
+      trigger={
+        <DashboardPreviewItem
+          renderDate={{ date: "", time: dayjs().calendar(dayjs(item.dueAt)) }}
+          title={item?.task?.name || ""}
+        />
+      }
     />
   ));
 
   return (
-    <div className="w-full md:min-w-[49.2%]">
-      <div>
-        <DashboardCard
-          cardHeader={
-            <div className="flex justify-between pb-7">
-              <h3 className="font-bold">Tasks</h3>{" "}
-              <Link href="/dashboard/tasks">
-                <p className="font-semibold hover:underline">View all</p>
-              </Link>
-            </div>
-          }
-        >
-          {error && <div className="h-full">{error?.message}</div>}
-          {loading && loadItems}
-          {data?.userTasks && resultItems}
-        </DashboardCard>
-      </div>
-    </div>
+    <DashboardCard
+      className="w-full md:min-w-[49.2%]"
+      cardHeader={
+        <div className="flex justify-between pb-7">
+          <h3 className="font-bold">Tasks</h3>{" "}
+          <Link href="/dashboard/tasks">
+            <p className="font-semibold hover:underline">View all</p>
+          </Link>
+        </div>
+      }
+    >
+      {error && <div className="h-full">{error?.message}</div>}
+      {loading && loadItems}
+      {data?.userTasks && resultItems}
+    </DashboardCard>
   );
 };

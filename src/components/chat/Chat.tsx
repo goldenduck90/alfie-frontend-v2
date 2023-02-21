@@ -8,6 +8,7 @@ import { ChannelHeader } from "./ChannelHeader";
 import { ChannelListHeader } from "./ChannelListHeader";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import { randomId } from "@src/utils/randomId";
 
 export const Chat = () => {
   const { user } = useCurrentUserStore();
@@ -24,7 +25,7 @@ export const Chat = () => {
       addNotification({
         type: "error",
         description: "Error with chat please try again later",
-        id: "",
+        id: randomId(),
         title: "Chat Error",
       });
     }

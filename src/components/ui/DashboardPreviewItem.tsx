@@ -6,7 +6,7 @@ import { PlaceHolderLine } from "./PlaceHolderLine";
 export interface DashboardPreviewItemProps {
   title: string;
   subtitle?: string;
-  href: string;
+  onClick?: () => void;
   icon?: React.ReactNode;
   renderDate: { date?: string; time?: string };
   isLoading?: boolean;
@@ -15,7 +15,7 @@ export interface DashboardPreviewItemProps {
 
 export function DashboardPreviewItem({
   title,
-  href,
+  onClick,
   icon,
   subtitle,
   renderDate,
@@ -26,7 +26,7 @@ export function DashboardPreviewItem({
   return (
     <button
       disabled={isLoading}
-      onClick={() => router.push(href || "/dashboard")}
+      onClick={onClick}
       className="rounded-xl border p-4 w-full my-2 bg-white hover:bg-gray-50"
     >
       <div className="flex flex-row justify-between w-full h-12">
