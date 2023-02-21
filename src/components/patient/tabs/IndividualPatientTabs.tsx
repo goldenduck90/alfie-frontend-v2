@@ -2,6 +2,7 @@ import { Tab } from "@headlessui/react";
 import { ChevronRightIcon } from "@heroicons/react/outline";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Patient } from "@src/components/practitioner/dashboard/Table";
+import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
 import {
   createColumnHelper,
@@ -10,7 +11,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const TabList = [
   "Information",
@@ -47,20 +48,33 @@ export function IndividualPatientTabs({ user }: { user: any }) {
 }
 
 function TableUserObject({ user }: { user: any }) {
+  const initials = useMemo(() => {
+    const splitName = user?.name?.split(" ");
+    const firstInitial = splitName[0].charAt(0);
+    const lastInitial = splitName[splitName.length - 1].charAt(0);
+    return `${firstInitial || ""}${lastInitial || ""}`;
+  }, [user]);
+
   if (!user) return null;
   return (
-    <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300">
-      {Object.keys(user).map((key) => {
-        if (typeof user[key] !== "string") {
-          return null;
-        }
-        return (
-          <div className="flex gap-x-4 px-2 py-2">
-            <p className="capitalize min-w-[225px]">{key}</p>
-            <p>{user[key]}</p>
-          </div>
-        );
-      })}
+    <div className="mt-6">
+      <div className="flex gap-x-3 items-center">
+        <AvatarInitial index={0} text={initials} />
+        <p>{user?.name}</p>
+      </div>
+      <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300">
+        {Object.keys(user).map((key) => {
+          if (typeof user[key] !== "string") {
+            return null;
+          }
+          return (
+            <div className="flex gap-x-4 px-2 py-2">
+              <p className="capitalize min-w-[225px]">{key}</p>
+              <p>{user[key]}</p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
