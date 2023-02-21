@@ -59,6 +59,7 @@ module.exports = {
       },
       fontFamily: {
         mulish: ["Mulish", "sans-serif"],
+        eudoxus: ["Eudoxus", "sans-serif"],
       },
       spacing: {
         128: "32rem",

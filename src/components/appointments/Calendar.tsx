@@ -11,7 +11,9 @@ import {
 } from "@heroicons/react/outline";
 import { Line } from "../ui/Line";
 import dayjs from "dayjs";
-
+import { Button } from "@src/components/ui/Button";
+import { RescheduleAppointment } from "../modal/variants/RescheduleAppointment";
+import { DialogModal } from "@src/components/modal/Dialog";
 const getAllProviderPatientsQuery = gql`
   query getProviderAppointments($eaProviderId: String!) {
     providerAppointments(eaProviderId: $eaProviderId) {
@@ -96,6 +98,10 @@ export const CalendarView = () => {
         <div className="flex justify-between pb-6 items-center">
           <h2 className="font-semibold">Date</h2>
           <div className="">
+          <DialogModal trigger={<Button buttonType="secondary">Reschedule</Button>}>
+            <RescheduleAppointment  title="Reschedule appointment" taskId="0"/>
+          </DialogModal>
+            
             <button className="p-2 border mr-2 rounded-xl">
               <ChevronLeftIcon className="h-5 w-5" id="backLabel" />
             </button>

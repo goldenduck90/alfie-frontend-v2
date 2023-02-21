@@ -5,7 +5,7 @@ import { addDays, format, isToday } from "date-fns";
 import { useField } from "formik";
 import { useEffect } from "react";
 import { IconButton } from "../../../../IconButton";
-import { Spinner } from "../../../../Spinner";
+// import { Spinner } from "../../../../Spinner";
 import { Role, Timeslot } from "../../../../../graphql/generated";
 import { roleToText } from "../../../../../utils/roleToText";
 const allTimeslotsQuery = gql`

@@ -142,6 +142,7 @@ export function DialogLongHeader({
   title,
   step,
   total,
+  // icon = <CalculatorIcon className="w-5 h-5 stroke-inherit" />
 }: {
   title: string;
   step: number;
@@ -150,9 +151,9 @@ export function DialogLongHeader({
   return (
     <div className="w-full flex justify-between items-center relative pb-3 px-6 whitespace-nowrap">
       <div className="flex items-center gap-x-2">
-        <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit hidden sm:block">
+        {/* <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit hidden sm:block">
           <CalculatorIcon className="w-5 h-5 stroke-inherit" />
-        </div>
+        </div> */}
         <span className="text-sm font-bold truncate">{title}</span>
       </div>
       <div className="flex items-center gap-x-2">
