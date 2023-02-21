@@ -3,14 +3,11 @@ import { ChevronRightIcon } from "@heroicons/react/outline";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Patient } from "@src/components/practitioner/dashboard/Table";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
-import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 
 const TabList = [
@@ -49,8 +46,9 @@ export function IndividualPatientTabs({ user }: { user: any }) {
 
 function TableUserObject({ user }: { user: any }) {
   const initials = useMemo(() => {
+    if (!user?.name) return "";
     const splitName = user?.name?.split(" ");
-    const firstInitial = splitName[0].charAt(0);
+    const firstInitial = splitName?.[0].charAt(0);
     const lastInitial = splitName[splitName.length - 1].charAt(0);
     return `${firstInitial || ""}${lastInitial || ""}`;
   }, [user]);
@@ -58,9 +56,15 @@ function TableUserObject({ user }: { user: any }) {
   if (!user) return null;
   return (
     <div className="mt-6">
-      <div className="flex gap-x-3 items-center">
-        <AvatarInitial index={0} text={initials} />
-        <p>{user?.name}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex gap-x-3 items-center">
+          <AvatarInitial index={0} text={initials} />
+          <p>{user?.name}</p>
+        </div>
+        <div className="flex gap-x-3">
+          <p>Active Tasks 0</p>
+          <p>Appointments 0</p>
+        </div>
       </div>
       <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300">
         {Object.keys(user).map((key) => {
@@ -95,100 +99,4 @@ function TabTitle({
       {children}
     </div>
   );
-}
-
-function AllPatientsTable() {
-  const { data, error, loading } = useGetAllPatientsByProvider();
-  const table = usePatientTable({
-    data: data?.getAllPatientsByPractitioner || [],
-  });
-
-  if (loading) return <div>Loading...</div>;
-
-  return (
-    <div className="mt-6">
-      <p className="text-lg">{`${table.getRowModel().rows.length} Patients`}</p>
-      <div className="w-full mt-4 border rounded-md">
-        <table className="w-auto rounded-md overflow-hidden min-w-full">
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-gray-100">
-                {headerGroup.headers.map((header) => (
-                  <th>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="border-t border-b border-t-gray-200 border-b-gray-200"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td className="py-4">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-function AllPatientsIssuesTable() {
-  return <div>All Patients with issues</div>;
-}
-
-const columnHelper = createColumnHelper<Patient>();
-
-function Header({ children }: { children: React.ReactNode }) {
-  return <div className="px-2 py-2 text-left font-[500]">{children}</div>;
-}
-
-const columns = [
-  columnHelper.accessor("name", {
-    header: () => <Header>Name</Header>,
-    cell: (info) => <div className="px-2">{info.getValue()}</div>,
-  }),
-  columnHelper.accessor("dateOfBirth", {
-    header: () => <Header>Date of birth</Header>,
-    cell: (info) => <div className="px-2">{info.getValue()}</div>,
-  }),
-  columnHelper.accessor("email", {
-    header: () => <Header>Email address</Header>,
-    cell: (info) => <div className="px-2">{info.getValue()}</div>,
-  }),
-  columnHelper.accessor("phone", {
-    header: () => <Header>Phone number</Header>,
-    cell: (info) => <div className="px-2">{info.getValue()}</div>,
-  }),
-  columnHelper.accessor("_id", {
-    header: undefined,
-    cell: (info) => (
-      <div className="px-2">
-        <button className="p-1 border rounded-md border-gray-200 max-w-fit">
-          <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-        </button>
-      </div>
-    ),
-  }),
-];
-
-function usePatientTable({ data }: { data: Patient[] }) {
-  return useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
 }
