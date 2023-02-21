@@ -26,6 +26,7 @@ import {
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { TaskType } from "@src/graphql/generated";
+import { createAnwersFromObject } from "@src/hooks/useTaskCompletion";
 
 interface QuestionComponentProps {
   control: Control<any>;
@@ -221,7 +222,7 @@ const metabolicQuestions: QuestionProps<any>[] = [
 
 const gastroQuestions: QuestionProps<any>[] = [
   {
-    id: "q1",
+    id: "painOrDiscomfort",
     question:
       "Have you been bothered by pain or discomfort in your upper abdomen or the pit of your stomach during the past week?",
     Component: (props: MultiCheckboxQuestionProps) => (
@@ -235,13 +236,18 @@ const gastroQuestions: QuestionProps<any>[] = [
         ]}
       />
     ),
-    validation: z.string().array().nonempty("At least one option is required"),
+    validation: z.string().min(1, "At least one option is required"),
     helperText: "Select one answer",
   },
 ];
 
+interface FormState {
+  formState: Record<string, any>;
+  setFormState: (form: Record<string, any>) => void;
+}
+
 function createPersistedFormState(formName: string) {
-  return create<any>(
+  return create<FormState, [["zustand/persist", FormState]]>(
     persist(
       (set) => ({
         formState: {},
@@ -291,13 +297,22 @@ export function Question() {
   });
 
   //TODO: Specific loading pages or?
-  if (loading) return <div>loading...</div>;
+  if (loading)
+    return (
+      <QuestionnaireLayout title="Loading...">
+        <div />
+      </QuestionnaireLayout>
+    );
 
   if (data?.userTask?.task?.type === TaskType.NewPatientIntakeForm) {
     return (
       <QuestionnaireLayout title="Medical Questionnaire">
         <div className="relative flex flex-col gap-y-3 items-center w-full">
-          <Questionnaire allQuestions={medicalQuestions} formName="medical" />
+          <Questionnaire
+            taskId={taskId}
+            allQuestions={medicalQuestions}
+            formName="medical"
+          />
         </div>
       </QuestionnaireLayout>
     );
@@ -307,7 +322,11 @@ export function Question() {
     return (
       <QuestionnaireLayout title="Metabolic Profile (Feeling) Questionnaire">
         <div className="relative flex flex-col gap-y-3 items-center w-full">
-          <Questionnaire allQuestions={metabolicQuestions} formName="medical" />
+          <Questionnaire
+            taskId={taskId}
+            allQuestions={metabolicQuestions}
+            formName="medical"
+          />
         </div>
       </QuestionnaireLayout>
     );
@@ -317,7 +336,11 @@ export function Question() {
     return (
       <QuestionnaireLayout title="Gastrointestinal Symptoms Rating Scale">
         <div className="relative flex flex-col gap-y-3 items-center w-full">
-          <Questionnaire allQuestions={gastroQuestions} formName="medical" />
+          <Questionnaire
+            taskId={taskId}
+            allQuestions={gastroQuestions}
+            formName="medical"
+          />
         </div>
       </QuestionnaireLayout>
     );
@@ -328,6 +351,7 @@ export function Question() {
       <QuestionnaireLayout title="The Three-Factor Eating Questionnaire">
         <div className="relative flex flex-col gap-y-3 items-center w-full">
           <Questionnaire
+            taskId={taskId}
             allQuestions={threeFactorQuestion}
             formName="threeFactor"
           />
@@ -346,9 +370,11 @@ export function Question() {
 function Questionnaire({
   allQuestions,
   formName,
+  taskId,
 }: {
   allQuestions: QuestionProps<any>[];
   formName: string;
+  taskId: string;
 }) {
   const store = useProgressContext();
   const { setMax, current, setCurrent } = useStore(store, (state: any) => ({
@@ -361,7 +387,8 @@ function Questionnaire({
     setMax(allQuestions.length);
   }, [allQuestions, setMax, setCurrent]);
 
-  const onSubmit = createPersistedFormState(formName)((state: any) => ({
+  const boundForm = createPersistedFormState(formName);
+  const onSubmit = boundForm((state: any) => ({
     setFormState: state.setFormState,
   }));
 
@@ -373,6 +400,19 @@ function Questionnaire({
   const question = allQuestions?.[current];
   const Component = question?.Component;
   const endQuestion = current + 1 === allQuestions?.length;
+
+  function onSubmitForm(data: Record<string, any>) {
+    console.log({ data });
+    const answers = createAnwersFromObject(data);
+    const input = {
+      _id: taskId,
+      answers,
+    };
+    console.log({ input });
+
+    // Clear Stored Form
+    boundForm.persist.clearStorage();
+  }
 
   return (
     <QuestionContainer helper={question?.helperText}>
@@ -425,13 +465,7 @@ function Questionnaire({
                   console.log("Zod", { error });
                 }
               } else {
-                handleSubmit((value) => {
-                  console.log("Form Values", {
-                    form: value,
-                  });
-                  localStorage.removeItem(formName);
-                  setCurrent(0);
-                })();
+                handleSubmit(onSubmitForm)();
               }
             }}
           >
