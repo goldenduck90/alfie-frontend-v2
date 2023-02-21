@@ -51,7 +51,7 @@ export function createAnwersFromObject(obj: Record<string, string>) {
       createAnswerInputs({
         key,
         type: AnswerType.String,
-        value: value as string,
+        value: `${value}` as string,
       })
     );
   }

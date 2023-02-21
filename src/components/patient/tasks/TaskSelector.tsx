@@ -46,7 +46,7 @@ export const TaskSelector = ({
     case TaskType.BpLog:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <BloodPressure title="Log your Blood Pressure" />
+          <BloodPressure taskId={userTaskId} title="Log your Blood Pressure" />
         </DialogModal>
       );
     case TaskType.WaistLog:

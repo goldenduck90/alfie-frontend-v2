@@ -1,20 +1,58 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
+import {
+  useTaskCompletion,
+  createAnwersFromObject,
+} from "@src/hooks/useTaskCompletion";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Button } from "../../ui/Button";
-import { DialogLongBody, DialogLongHeader } from "../Dialog";
+import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
 
-export function BloodPressure({ title }: { title: string }) {
-  const { register, handleSubmit } = useForm({
+const bloodPressureValidation = z.object({
+  _id: z.string(),
+  systolicBp: z.number().min(80).max(200),
+  diastolicBp: z.number().min(40).max(150),
+});
+
+export function BloodPressure({
+  title,
+  taskId,
+}: {
+  title: string;
+  taskId: string;
+}) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
+      _id: taskId,
       systolicBp: "",
       diastolicBp: "",
     },
+    resolver: zodResolver(bloodPressureValidation),
   });
 
-  async function onSubmit(data: any) {
-    console.log("Submitted", data);
+  const setOpen = useDialogToggle();
+  const [mutate] = useTaskCompletion(() => setOpen(false));
+
+  async function onSubmit(values: any) {
+    const { _id, ...rest } = values;
+    const answers = createAnwersFromObject(rest);
+    mutate({
+      variables: {
+        input: {
+          _id,
+          answers: answers,
+        },
+      },
+    });
   }
+
+  console.log({ errors });
 
   return (
     <div className="w-full max-w-[560px] min-w-full">
@@ -35,7 +73,8 @@ export function BloodPressure({ title }: { title: string }) {
               placeholder="120"
               fullWidth
               inputSize="medium"
-              {...register("systolicBp")}
+              type="number"
+              {...register("systolicBp", { valueAsNumber: true })}
             />
             <span>{`/`}</span>
             <TextField
@@ -43,7 +82,8 @@ export function BloodPressure({ title }: { title: string }) {
               placeholder="80"
               fullWidth
               inputSize="medium"
-              {...register("diastolicBp")}
+              type="number"
+              {...register("diastolicBp", { valueAsNumber: true })}
             />
           </div>
         </div>
