@@ -1,18 +1,41 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
+import {
+  useTaskCompletion,
+  createAnwersFromObject,
+} from "@src/hooks/useTaskCompletion";
 import { useForm } from "react-hook-form";
 import { Button } from "../../ui/Button";
-import { DialogLongBody, DialogLongHeader } from "../Dialog";
+import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
 
-export function WaistMeasurement({ title }: { title: string }) {
+export function WaistMeasurement({
+  title,
+  taskId,
+}: {
+  title: string;
+  taskId: string;
+}) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
+      _id: taskId,
       waist: "",
     },
   });
+  const setOpen = useDialogToggle();
+  const [mutate] = useTaskCompletion(() => setOpen(false));
 
-  async function onSubmit(data: any) {
-    console.log("Submitted", data);
+  async function onSubmit(values: any) {
+    const { _id, ...rest } = values;
+    const answers = createAnwersFromObject(rest);
+
+    mutate({
+      variables: {
+        input: {
+          _id,
+          answers: answers,
+        },
+      },
+    });
   }
 
   return (

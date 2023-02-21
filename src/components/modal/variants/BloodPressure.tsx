@@ -52,8 +52,6 @@ export function BloodPressure({
     });
   }
 
-  console.log({ errors });
-
   return (
     <div className="w-full max-w-[560px] min-w-full">
       <DialogLongHeader title={title} step={1} total={1} />

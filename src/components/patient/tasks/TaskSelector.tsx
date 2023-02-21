@@ -52,7 +52,10 @@ export const TaskSelector = ({
     case TaskType.WaistLog:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <WaistMeasurement title="Enter your waist measurement" />
+          <WaistMeasurement
+            taskId={userTaskId}
+            title="Enter your waist measurement"
+          />
         </DialogModal>
       );
     case TaskType.WeightLog:
