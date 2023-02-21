@@ -7,7 +7,7 @@ import { BackButton } from "../ui/BackButton";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 interface LayoutProps {
   children: React.ReactNode;
-  title?: string;
+  title?: React.ReactNode;
   subtitle?: string;
   hasBackButton?: boolean;
 }

@@ -9,6 +9,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const TabList = [
@@ -19,8 +20,9 @@ const TabList = [
   "Alerts",
 ];
 
-export function IndividualPatientTabs() {
+export function IndividualPatientTabs({ user }: { user: any }) {
   const [activeTab, setActiveTab] = useState(TabList[0]);
+
   return (
     <div className="flex flex-col overflow-y-auto h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
@@ -34,7 +36,7 @@ export function IndividualPatientTabs() {
           </Tabs.List>
         </div>
         <Tabs.Content value={TabList[0]}>
-          <p>Information of User</p>
+          <p>Full Name: {user?.name}</p>
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
           <p>Tasks</p>
