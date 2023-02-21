@@ -47,13 +47,27 @@ export function useTaskCompletion(onCompleted?: () => void) {
 export function createAnwersFromObject(obj: Record<string, string | number>) {
   const answers: any[] = [];
   for (const [key, value] of Object.entries(obj)) {
-    answers.push(
-      createAnswerInputs({
-        key,
-        type: valueToAnswerType(value),
-        value: `${value}` as string,
-      })
-    );
+    if (Array.isArray(value)) {
+      const tempValues = value.map((v) => {
+        if (typeof v === "string") return v;
+        return `${v?.value}`;
+      });
+      answers.push(
+        createAnswerInputs({
+          key,
+          type: valueToAnswerType(value),
+          value: tempValues as any,
+        })
+      );
+    } else {
+      answers.push(
+        createAnswerInputs({
+          key,
+          type: valueToAnswerType(value),
+          value: `${value}` as string,
+        })
+      );
+    }
   }
   return answers;
 }
@@ -63,6 +77,9 @@ function valueToAnswerType(value: unknown) {
   let val = value;
   if (!Number.isNaN(Number(val))) {
     val = Number(val);
+  } else if (Array.isArray(val)) {
+    return AnswerType.Array;
+  } else if (typeof val === "object") {
   }
 
   switch (typeof val) {

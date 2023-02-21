@@ -94,7 +94,7 @@ const medicalQuestions: QuestionProps<any>[] = [
     helperText: "Select one answer",
   },
   {
-    id: "q2",
+    id: "weightManagementMethods",
     question:
       "Have you tried any of the following weight management methods in the past?",
     Component: (props: MultiCheckboxQuestionProps) => (
@@ -116,7 +116,7 @@ const medicalQuestions: QuestionProps<any>[] = [
     helperText: "Select all that apply",
   },
   {
-    id: "q3",
+    id: "conditions",
     question: "Do you have any of the following conditions?",
     Component: (props: MultiCheckboxQuestionProps) => (
       <MultiCheckboxFormQuestion
@@ -129,7 +129,7 @@ const medicalQuestions: QuestionProps<any>[] = [
     helperText: "Select all that apply",
   },
   {
-    id: "q4",
+    id: "previousConditions",
     question: "Do you have any of the following conditions?",
     Component: (props: RadioGroupInputProps) => {
       return (
@@ -154,7 +154,7 @@ const medicalQuestions: QuestionProps<any>[] = [
     helperText: "Select one answer",
   },
   {
-    id: "q6",
+    id: "allergies",
     question: "Please list any medication allergies you are aware of:",
     Component: MultipleTextInput,
     helperText: "Type your answer",
@@ -202,7 +202,7 @@ const threeFactorQuestion: QuestionProps<any>[] = [
 
 const metabolicQuestions: QuestionProps<any>[] = [
   {
-    id: "q1",
+    id: "easeFrequency",
     question: 'How often do you feel tense or "impatient"?',
     Component: (props: MultiCheckboxQuestionProps) => (
       <RadioGroupInput
@@ -215,7 +215,7 @@ const metabolicQuestions: QuestionProps<any>[] = [
         ]}
       />
     ),
-    validation: z.string().array().nonempty("At least one option is required"),
+    validation: z.string().min(1, "At least one option is required"),
     helperText: "Select one answer",
   },
 ];
@@ -401,8 +401,15 @@ function Questionnaire({
   const Component = question?.Component;
   const endQuestion = current + 1 === allQuestions?.length;
 
+  /**
+   * All Final Task should be submitted here.
+   * Keys based of passed array ID field
+   * Value is determined via field Input type
+   *
+   * @param data
+   *
+   */
   function onSubmitForm(data: Record<string, any>) {
-    console.log({ data });
     const answers = createAnwersFromObject(data);
     const input = {
       _id: taskId,
