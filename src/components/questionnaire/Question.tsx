@@ -325,7 +325,7 @@ export function Question() {
           <Questionnaire
             taskId={taskId}
             allQuestions={metabolicQuestions}
-            formName="medical"
+            formName="metabolic"
           />
         </div>
       </QuestionnaireLayout>
@@ -339,7 +339,7 @@ export function Question() {
           <Questionnaire
             taskId={taskId}
             allQuestions={gastroQuestions}
-            formName="medical"
+            formName="gsrs"
           />
         </div>
       </QuestionnaireLayout>
@@ -353,7 +353,7 @@ export function Question() {
           <Questionnaire
             taskId={taskId}
             allQuestions={threeFactorQuestion}
-            formName="threeFactor"
+            formName="tefq"
           />
         </div>
       </QuestionnaireLayout>
@@ -393,10 +393,14 @@ function Questionnaire({
     setFormState: state.setFormState,
   }));
 
-  const { handleSubmit, control, trigger, register } = useForm({
+  const { handleSubmit, control, trigger, register, reset } = useForm({
     defaultValues: getStoredForm(formName),
     reValidateMode: "onBlur",
   });
+
+  useEffect(() => {
+    reset(getStoredForm(formName));
+  }, [taskId]);
 
   const question = allQuestions?.[current];
   const Component = question?.Component;
