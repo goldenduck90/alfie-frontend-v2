@@ -2,6 +2,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 
 import { useMemo, useState } from "react";
+import { BasicChart } from "./BasicChart";
 import { MetabolicChart } from "./MetabolicChart";
 
 const TabList = [
@@ -15,7 +16,7 @@ const TabList = [
 export function IndividualPatientTabs({ user }: { user: any }) {
   const [activeTab, setActiveTab] = useState(TabList[0]);
   return (
-    <div className="flex flex-col overflow-y-auto h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
+    <div className="flex flex-col overflow-y-auto w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
         <div className="flex items-center justify-between">
           <Tabs.List className="flex gap-x-3">
@@ -33,6 +34,21 @@ export function IndividualPatientTabs({ user }: { user: any }) {
             <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
             <MetabolicChart />
           </div>
+          <div className="w-full mt-6 grid grid-cols-2 gap-x-4">
+            <p className="mb-6 text-xl font-bold col-span-2">Other Details</p>
+            <div className="col-span-1">
+              <BasicChart title="Weight" />
+            </div>
+            <div className="col-span-1">
+              <BasicChart title="Waist" />
+            </div>
+            <div className="col-span-1">
+              <BasicChart title="Steps" />
+            </div>
+            <div className="col-span-1">
+              <BasicChart title="Blood Pressure" />
+            </div>
+          </div>
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
           <p>Tasks</p>
@@ -43,6 +59,12 @@ export function IndividualPatientTabs({ user }: { user: any }) {
               WeightLossAttempt: "Several Years",
               WeightManagement: "Diet",
               Conditions: "Diabetes",
+              PreviousConditions: "None",
+              Medications: "None",
+              SurgicalHistory: "None",
+              Allergies: "None",
+              UseAmazonPharmacy: "No",
+              Pharmacy: "None",
             }}
           />
         </Tabs.Content>
