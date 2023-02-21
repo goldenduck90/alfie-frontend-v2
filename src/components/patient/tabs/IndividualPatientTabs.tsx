@@ -16,7 +16,7 @@ const TabList = [
 export function IndividualPatientTabs({ user }: { user: any }) {
   const [activeTab, setActiveTab] = useState(TabList[0]);
   return (
-    <div className="flex flex-col overflow-y-auto w-full bg-white shadow-md rounded-md px-4 py-4">
+    <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
         <div className="flex items-center justify-between">
           <Tabs.List className="flex gap-x-3">

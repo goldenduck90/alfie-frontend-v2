@@ -25,7 +25,7 @@ export function AllPatientsTabs() {
   const [globalFilter, setGlobalFilter] = useState("");
 
   return (
-    <div className="flex flex-col overflow-y-auto h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
+    <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
         <div className="flex items-center justify-between flex-wrap gap-y-4">
           <Tabs.List className="flex gap-x-3">
