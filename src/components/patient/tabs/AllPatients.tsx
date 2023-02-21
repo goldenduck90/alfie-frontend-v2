@@ -12,6 +12,7 @@ import {
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import dayjs from "dayjs";
 
 export function AllPatientsTabs() {
   const [activeTab, setActiveTab] = useState("all");
@@ -141,7 +142,7 @@ function InitialsCircleAvatar({
     <div
       className={`w-8 h-8 rounded-full flex justify-center items-center ${color}`}
     >
-      <p className="text-sm">{text}</p>
+      <p className="text-sm uppercase">{text}</p>
     </div>
   );
 }
@@ -162,6 +163,15 @@ function NameCell({ info }: { info: CellContext<Patient, string> }) {
   );
 }
 
+function DateOfBirthCell({ info }: { info: CellContext<Patient, string> }) {
+  const dob = useMemo(() => {
+    const date = new Date(info.getValue());
+    return dayjs(date).format("MM.DD.YYYY");
+  }, [info]);
+
+  return <div className="px-2">{dob || ""}</div>;
+}
+
 const columns = [
   columnHelper.accessor("name", {
     header: () => <Header>Name</Header>,
@@ -169,7 +179,7 @@ const columns = [
   }),
   columnHelper.accessor("dateOfBirth", {
     header: () => <Header>Date of birth</Header>,
-    cell: (info) => <div className="px-2">{info.getValue()}</div>,
+    cell: (info) => <DateOfBirthCell info={info} />,
   }),
   columnHelper.accessor("email", {
     header: () => <Header>Email address</Header>,
