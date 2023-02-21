@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Image from "next/image";
 import { Role } from "@src/graphql/generated";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
@@ -34,11 +34,18 @@ export function QuestionnaireLayout({
   const { user } = useCurrentUserStore();
   const isAdmin = user?.role === Role.Admin;
   const router = useRouter();
-
-  const { max, current } = useStore(progressStore, (state) => ({
+  const { step } = router?.query;
+  const { max, current, setCurrent } = useStore(progressStore, (state) => ({
     max: state.max,
     current: state.current,
+    setCurrent: state.setCurrent,
   }));
+
+  useEffect(() => {
+    if (`${current}` !== step) {
+      setCurrent(!!step ? Number(step) : 0);
+    }
+  }, [router, current, step]);
 
   return (
     <QuestionProgressContext.Provider value={progressStore}>

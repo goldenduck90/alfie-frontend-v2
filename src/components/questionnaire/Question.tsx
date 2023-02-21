@@ -376,6 +376,7 @@ function Questionnaire({
   formName: string;
   taskId: string;
 }) {
+  const router = useRouter();
   const store = useProgressContext();
   const { setMax, current, setCurrent } = useStore(store, (state: any) => ({
     setMax: state.setMax,
@@ -416,6 +417,8 @@ function Questionnaire({
       answers,
     };
 
+    console.log("Presubmission", input);
+
     // Clear Stored Form
     boundForm.persist.clearStorage();
   }
@@ -426,7 +429,11 @@ function Questionnaire({
         {current > 0 && !endQuestion && (
           <button
             className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center"
-            onClick={() => setCurrent(current - 1)}
+            onClick={() =>
+              router.push(
+                `/questionnaire/${router?.query?.taskId}?step=${current - 1}`
+              )
+            }
           >
             <ChevronLeftIcon className="stroke-gray-400 w-8 h-8" />
           </button>
@@ -459,8 +466,10 @@ function Questionnaire({
                   if (!!valid) {
                     handleSubmit((value) => {
                       onSubmit.setFormState(value);
-                      setCurrent(
-                        current >= allQuestions.length - 1 ? 0 : current + 1
+                      router.push(
+                        `/questionnaire/${router?.query?.taskId}?step=${
+                          current + 1
+                        }`
                       );
                     })();
                   }
