@@ -2,7 +2,7 @@ import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
 import { AnswerType, TaskType } from "@src/graphql/generated";
 import {
-  createAnswerInputs,
+  createAnwersFromObject,
   useTaskCompletion,
 } from "@src/hooks/useTaskCompletion";
 import { useForm } from "react-hook-form";
@@ -24,36 +24,16 @@ export function FoodLog({ taskId }: { taskId: string }) {
   const [mutate] = useTaskCompletion(() => setOpen(false));
 
   function onSubmit(data: any) {
-    console.log("Submitted", data);
     const { _id, ...rest } = data;
-    const answers: any[] = [];
-    for (const [key, value] of Object.entries(rest)) {
-      answers.push(
-        createAnswerInputs({
-          key,
-          type: AnswerType.String,
-          value: value as string,
-        })
-      );
-    }
-
-    console.log({
-      _id,
-      answers,
+    const answers = createAnwersFromObject(rest);
+    mutate({
+      variables: {
+        input: {
+          _id,
+          answers,
+        },
+      },
     });
-
-    // mutate({
-    //   variables: {
-    //     input: {
-    //       taskName: TaskType.FoodLog,
-    //       data: {
-    //         breakfast: data.breakfast,
-    //         lunch: data.lunch,
-    //         dinner: data.dinner,
-    //       },
-    //     },
-    //   },
-    // });
   }
 
   return (

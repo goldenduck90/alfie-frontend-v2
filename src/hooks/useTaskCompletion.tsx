@@ -1,3 +1,4 @@
+import { client } from "@src/graphql";
 import { gql, useMutation } from "@apollo/client";
 import { AnswerType } from "@src/graphql/generated";
 import { randomId } from "@src/utils/randomId";
@@ -23,16 +24,38 @@ export function useTaskCompletion(onCompleted?: () => void) {
         id: randomId(),
       });
     },
-    onCompleted: () => {
+    onCompleted: async () => {
+      try {
+        await client.refetchQueries({
+          include: "active",
+        });
+      } catch (error) {
+        console.log("Failed to refresh", { error });
+      }
       addNotification({
         title: "Success",
         description: "Task Completed",
         type: "success",
         id: randomId(),
       });
+
       onCompleted?.();
     },
   });
+}
+
+export function createAnwersFromObject(obj: Record<string, string>) {
+  const answers: any[] = [];
+  for (const [key, value] of Object.entries(obj)) {
+    answers.push(
+      createAnswerInputs({
+        key,
+        type: AnswerType.String,
+        value: value as string,
+      })
+    );
+  }
+  return answers;
 }
 
 export function createAnswerInputs({

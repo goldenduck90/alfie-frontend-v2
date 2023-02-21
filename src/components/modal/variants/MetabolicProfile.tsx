@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../../ui/Button";
-import { DialogLongBody, DialogLongHeader } from "../Dialog";
+import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
 
 export function MetabolicProfileHunger({ title }: { title: string }) {
   const [step, setStep] = useState(1);
@@ -147,7 +147,8 @@ export function MetabolicProfileMeals({
     },
   });
 
-  const [mutate] = useTaskCompletion();
+  const setOpen = useDialogToggle();
+  const [mutate] = useTaskCompletion(() => setOpen(false));
 
   async function onSubmit(values: any) {
     const answers = createAnswerInputs({
