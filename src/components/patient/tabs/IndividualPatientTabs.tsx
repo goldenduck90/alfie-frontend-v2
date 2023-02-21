@@ -64,11 +64,21 @@ function TableInformationHeader({ user }: { user: any }) {
     <div className="flex items-center justify-between">
       <div className="flex gap-x-3 items-center">
         <AvatarInitial index={0} text={initials} />
-        <p>{user?.name}</p>
+        <p className="font-bold text-xl">{user?.name}</p>
       </div>
-      <div className="flex gap-x-3">
-        <p>Active Tasks 0</p>
-        <p>Appointments 0</p>
+      <div className="flex gap-x-3 items-center">
+        <p className="flex gap-x-2 items-center">
+          Active Tasks
+          <span className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-700 text-center flex items-center justify-center">
+            0
+          </span>
+        </p>
+        <p className="flex gap-x-2 items-center">
+          Appointments
+          <span className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-700 text-center flex items-center justify-center">
+            0
+          </span>
+        </p>
       </div>
     </div>
   );
@@ -84,8 +94,8 @@ function TableUserObject({ user }: { user: any }) {
             return null;
           }
           return (
-            <div key={key} className="flex gap-x-4 px-2 py-2">
-              <p className="capitalize min-w-[225px]">{key}</p>
+            <div key={key} className="flex gap-x-4 px-6 py-4">
+              <p className="capitalize min-w-[275px] font-bold">{key}</p>
               <p className="text-gray-600">{user[key]}</p>
             </div>
           );
