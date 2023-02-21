@@ -48,10 +48,22 @@ export function createAnwersFromObject(obj: Record<string, string | number>) {
   const answers: any[] = [];
   for (const [key, value] of Object.entries(obj)) {
     if (Array.isArray(value)) {
-      const tempValues = value.map((v) => {
-        if (typeof v === "string") return v;
-        return `${v?.value}`;
-      });
+      const tempValues = value
+        ?.filter((v) => {
+          if (typeof v === "string" && v?.length > 0) return true;
+          if (
+            typeof v === "object" &&
+            Object.hasOwn(v, "value") &&
+            v?.value?.length > 0
+          )
+            return true;
+          return false;
+        })
+        .map((v) => {
+          if (typeof v === "string") return v;
+          return `${v?.value}`;
+        });
+      if (tempValues?.length === 0) continue;
       answers.push(
         createAnswerInputs({
           key,
@@ -60,6 +72,7 @@ export function createAnwersFromObject(obj: Record<string, string | number>) {
         })
       );
     } else {
+      if (!value) continue;
       answers.push(
         createAnswerInputs({
           key,
