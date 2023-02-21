@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { TextField } from "@src/components/ui/TextField";
-import { SearchCircleIcon, SearchIcon } from "@heroicons/react/solid";
+import { SearchIcon } from "@heroicons/react/solid";
 import { Button } from "@src/components/ui/Button";
 
 export function AllPatientsTabs() {
@@ -24,7 +24,7 @@ export function AllPatientsTabs() {
   return (
     <div className="flex flex-col overflow-y-auto h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-y-4">
           <Tabs.List className="flex gap-x-3">
             <Tabs.Trigger value="all">
               <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
@@ -68,7 +68,7 @@ function TabTitle({
 }) {
   return (
     <div
-      className={`p-3 rounded-md ${
+      className={`p-3 rounded-md whitespace-nowrap ${
         active ? "text-brand-berry bg-blue-100" : ""
       }`}
     >
@@ -98,8 +98,8 @@ function AllPatientsTable({
       <p className="text-lg">{`${
         table.getCoreRowModel().rows.length
       } Patients`}</p>
-      <div className="w-full mt-4 border rounded-md">
-        <table className="w-auto rounded-md overflow-hidden min-w-full">
+      <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+        <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="bg-gray-50">
@@ -116,12 +116,9 @@ function AllPatientsTable({
               </tr>
             ))}
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-300 ">
             {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="border-t border-b border-t-gray-200 border-b-gray-200"
-              >
+              <tr key={row.id} className="">
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="py-4">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
