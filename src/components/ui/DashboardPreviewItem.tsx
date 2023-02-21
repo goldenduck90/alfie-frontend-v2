@@ -1,13 +1,15 @@
 import { ClockIcon } from "@heroicons/react/outline";
 import { HeartIcon, ChevronRightIcon, UserIcon } from "@heroicons/react/solid";
+import { TaskType } from "@src/graphql/generated";
 import { useRouter } from "next/router";
+import { ChooseTaskIcon } from "../ChooseTaskIcon";
 import { PlaceHolderLine } from "./PlaceHolderLine";
 
 export interface DashboardPreviewItemProps {
   title: string;
   subtitle?: string;
   onClick?: () => void;
-  icon?: React.ReactNode;
+  icon?: TaskType;
   renderDate: { date?: string; time?: string };
   isLoading?: boolean;
   placeHolderIcon?: "user" | "heart";
@@ -31,19 +33,27 @@ export function DashboardPreviewItem({
     >
       <div className="flex flex-row justify-between w-full h-12">
         <div className="flex">
-          <div
-            className={`flex mr-4 rounded-full ${
-              placeHolderIcon === "user" ? "bg-lime-100" : "bg-brand-peachy"
-            } w-10 h-10 items-center justify-center min-w-[40px] ${
-              isLoading ? "animate-pulse" : ""
-            }`}
-          >
-            {placeHolderIcon === "user" ? (
-              <UserIcon className="h-6 w-6 text-lime-700" />
-            ) : (
-              <HeartIcon className="h-6 w-6 text-brand-peachy-shade" />
-            )}
-          </div>
+          {!icon && (
+            <div
+              className={`flex mr-4 rounded-full ${
+                placeHolderIcon === "user" ? "bg-lime-100" : "bg-brand-peachy"
+              } w-10 h-10 items-center justify-center min-w-[40px] ${
+                isLoading ? "animate-pulse" : ""
+              }`}
+            >
+              {placeHolderIcon === "user" ? (
+                <UserIcon className="h-6 w-6 text-lime-700" />
+              ) : (
+                <HeartIcon className="h-6 w-6 text-brand-peachy-shade" />
+              )}
+            </div>
+          )}
+
+          {icon && !isLoading && (
+            <span className="mr-4 mt-1">
+              <ChooseTaskIcon value={icon} />
+            </span>
+          )}
           {subtitle ? (
             <div className="flex flex-col">
               {isLoading ? (
