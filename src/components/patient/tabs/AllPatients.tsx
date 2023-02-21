@@ -1,4 +1,3 @@
-import { Tab } from "@headlessui/react";
 import { ChevronRightIcon } from "@heroicons/react/outline";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Patient } from "@src/components/practitioner/dashboard/Table";
@@ -8,6 +7,7 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
@@ -16,6 +16,8 @@ import dayjs from "dayjs";
 
 export function AllPatientsTabs() {
   const [activeTab, setActiveTab] = useState("all");
+  const [globalFilter, setGlobalFilter] = useState("");
+
   return (
     <div className="flex flex-col overflow-y-auto h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
@@ -35,7 +37,10 @@ export function AllPatientsTabs() {
           </div>
         </div>
         <Tabs.Content value="all">
-          <AllPatientsTable />
+          <AllPatientsTable
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
         </Tabs.Content>
         <Tabs.Content value="active">
           <AllPatientsIssuesTable />
@@ -63,22 +68,32 @@ function TabTitle({
   );
 }
 
-function AllPatientsTable() {
+function AllPatientsTable({
+  globalFilter,
+  setGlobalFilter,
+}: {
+  globalFilter: string;
+  setGlobalFilter: (value: string) => void;
+}) {
   const { data, error, loading } = useGetAllPatientsByProvider();
   const table = usePatientTable({
     data: data?.getAllPatientsByPractitioner || [],
+    globalFilter,
+    setGlobalFilter,
   });
 
   if (loading) return <div>Loading...</div>;
 
   return (
     <div className="mt-6">
-      <p className="text-lg">{`${table.getRowModel().rows.length} Patients`}</p>
+      <p className="text-lg">{`${
+        table.getCoreRowModel().rows.length
+      } Patients`}</p>
       <div className="w-full mt-4 border rounded-md">
         <table className="w-auto rounded-md overflow-hidden min-w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-gray-100">
+              <tr key={headerGroup.id} className="bg-gray-50">
                 {headerGroup.headers.map((header) => (
                   <th>
                     {header.isPlaceholder
@@ -203,10 +218,23 @@ const columns = [
   }),
 ];
 
-function usePatientTable({ data }: { data: Patient[] }) {
+function usePatientTable({
+  data,
+  globalFilter,
+  setGlobalFilter,
+}: {
+  data: Patient[];
+  globalFilter?: string;
+  setGlobalFilter?: (value: string) => void;
+}) {
   return useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      globalFilter,
+    },
+    onGlobalFilterChange: setGlobalFilter,
   });
 }
