@@ -64,7 +64,10 @@ export const TaskSelector = ({
     case TaskType.MpHunger:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <MetabolicProfileHunger title="Metabolic Profile (Hunger)" />
+          <MetabolicProfileHunger
+            taskId={userTaskId}
+            title="Metabolic Profile (Hunger)"
+          />
         </DialogModal>
       );
     case TaskType.MpFeeling:
@@ -80,7 +83,10 @@ export const TaskSelector = ({
     case TaskType.MpActivity:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <MetabolicProfileActivity title="Metabolic Profile (Activity)" />
+          <MetabolicProfileActivity
+            taskId={userTaskId}
+            title="Metabolic Profile (Activity)"
+          />
         </DialogModal>
       );
     // case TaskType.MpBlueCapsule:

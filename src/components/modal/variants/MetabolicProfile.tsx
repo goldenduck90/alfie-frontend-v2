@@ -5,6 +5,7 @@ import { TextField } from "@src/components/ui/TextField";
 import { AnswerType } from "@src/graphql/generated";
 import {
   createAnswerInputs,
+  createAnwersFromObject,
   useTaskCompletion,
 } from "@src/hooks/useTaskCompletion";
 import { useState } from "react";
@@ -12,18 +13,51 @@ import { useForm } from "react-hook-form";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
 
-export function MetabolicProfileHunger({ title }: { title: string }) {
+export function MetabolicProfileHunger({
+  title,
+  taskId,
+}: {
+  title: string;
+  taskId: string;
+}) {
   const [step, setStep] = useState(1);
   const { control, register, handleSubmit } = useForm({
     defaultValues: {
+      _id: taskId,
       foodEaten: "",
       hungerLevel30Mins: [0],
       hungerLevel1Hour: [0],
     },
   });
 
-  async function onSubmit(data: any) {
-    console.log("Submitted", data);
+  const setOpen = useDialogToggle();
+  const [mutate] = useTaskCompletion(() => setOpen(false));
+
+  async function onSubmit(values: any) {
+    const { _id, hungerLevel30Mins, hungerLevel1Hour, ...rest } = values;
+    const answers = createAnwersFromObject(rest);
+    answers.push(
+      createAnswerInputs({
+        key: "hungerLevel30Mins",
+        value: `${hungerLevel30Mins[0]}`,
+        type: AnswerType.Number,
+      })
+    );
+    answers.push(
+      createAnswerInputs({
+        key: "hungerLevel1Hour",
+        value: `${hungerLevel1Hour[0]}`,
+        type: AnswerType.Number,
+      })
+    );
+    mutate({
+      variables: {
+        input: {
+          _id,
+          answers: answers,
+        },
+      },
+    });
   }
 
   return (
@@ -100,7 +134,36 @@ export function MetabolicProfileHunger({ title }: { title: string }) {
   );
 }
 
-export function MetabolicProfileActivity({ title }: { title: string }) {
+export function MetabolicProfileActivity({
+  title,
+  taskId,
+}: {
+  title: string;
+  taskId: string;
+}) {
+  const { control, register, handleSubmit } = useForm({
+    defaultValues: {
+      _id: taskId,
+      stepsPerDay: "",
+    },
+  });
+
+  const setOpen = useDialogToggle();
+  const [mutate] = useTaskCompletion(() => setOpen(false));
+
+  async function onSubmit(values: any) {
+    const { _id, ...rest } = values;
+    const answers = createAnwersFromObject(rest);
+    mutate({
+      variables: {
+        input: {
+          _id,
+          answers: answers,
+        },
+      },
+    });
+  }
+
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
       <DialogLongHeader title={title} step={1} total={1} />
@@ -119,6 +182,7 @@ export function MetabolicProfileActivity({ title }: { title: string }) {
               rightIcon={<span className="pl-2 text-gray-400">steps</span>}
               fullWidth
               inputSize="medium"
+              {...register("stepsPerDay")}
             />
           </div>
         </div>
@@ -127,7 +191,7 @@ export function MetabolicProfileActivity({ title }: { title: string }) {
         <RadixDialog.Close asChild>
           <Button buttonType="secondary">Cancel</Button>
         </RadixDialog.Close>
-        <Button>Complete</Button>
+        <Button onClick={handleSubmit(onSubmit)}>Complete</Button>
       </div>
     </div>
   );
