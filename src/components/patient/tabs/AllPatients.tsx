@@ -91,7 +91,7 @@ function AllPatientsTable({
     setGlobalFilter,
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div></div>;
 
   return (
     <div className="mt-6">
@@ -104,7 +104,7 @@ function AllPatientsTable({
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="bg-gray-50">
                 {headerGroup.headers.map((header) => (
-                  <th>
+                  <th key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -123,7 +123,7 @@ function AllPatientsTable({
                 className="border-t border-b border-t-gray-200 border-b-gray-200"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td className="py-4">
+                  <td key={cell.id} className="py-4">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
