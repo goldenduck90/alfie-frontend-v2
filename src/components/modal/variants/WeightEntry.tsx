@@ -29,16 +29,14 @@ export function WeightEntry({
   async function onSubmit(values: any) {
     const { _id, ...rest } = values;
     const answers = createAnwersFromObject(rest);
-
-    console.log({ _id, answers });
-    // mutate({
-    //   variables: {
-    //     input: {
-    //       _id,
-    //       answers: answers,
-    //     },
-    //   },
-    // });
+    mutate({
+      variables: {
+        input: {
+          _id,
+          answers: answers,
+        },
+      },
+    });
   }
 
   return (
