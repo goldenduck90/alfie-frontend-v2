@@ -1,25 +1,13 @@
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
 import { useEffect } from "react";
 import { QuickViewCard } from "./QuickViewCard";
 import { Patient, Table } from "./Table";
 
 const PractitionerDashboard = () => {
-  const getAllProviderPatientsQuery = gql`
-    query getAllPatientsByProvider {
-      getAllPatientsByPractitioner {
-        _id
-        name
-        gender
-        email
-        dateOfBirth
-        heightInInches
-        meetingUrl
-      }
-    }
-  `;
-  const patients = useQuery(getAllProviderPatientsQuery);
+  const patients = useGetAllPatientsByProvider();
   const user = useCurrentUserStore();
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry

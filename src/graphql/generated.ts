@@ -94,9 +94,6 @@ export type CheckoutResponse = {
 
 export type Classification = {
   __typename?: 'Classification';
-  calculated1hourPercent?: Maybe<Scalars['Float']>;
-  calculated30minsPercent?: Maybe<Scalars['Float']>;
-  calculatedPercentile?: Maybe<Scalars['Float']>;
   classification: Scalars['String'];
   date: Scalars['DateTime'];
   displayPercentile?: Maybe<Scalars['String']>;
@@ -789,9 +786,6 @@ export enum Role {
 
 export type Score = {
   __typename?: 'Score';
-  calculated1hourPercent?: Maybe<Scalars['Float']>;
-  calculated30minsPercent?: Maybe<Scalars['Float']>;
-  calculatedPercentile?: Maybe<Scalars['Float']>;
   date?: Maybe<Scalars['DateTime']>;
   increased?: Maybe<Scalars['Boolean']>;
   increased1hour?: Maybe<Scalars['Boolean']>;
@@ -940,6 +934,7 @@ export type User = {
   stripeSubscriptionId: Scalars['String'];
   subscriptionExpiresAt: Scalars['DateTime'];
   textOptIn?: Maybe<Scalars['Boolean']>;
+  weightGoal?: Maybe<Scalars['Float']>;
   weights: Array<Weight>;
 };
 
