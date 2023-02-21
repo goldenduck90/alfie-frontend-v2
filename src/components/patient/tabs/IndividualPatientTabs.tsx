@@ -2,6 +2,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 
 import { useMemo, useState } from "react";
+import { MetabolicChart } from "./MetabolicChart";
 
 const TabList = [
   "Information",
@@ -28,6 +29,10 @@ export function IndividualPatientTabs({ user }: { user: any }) {
         <Tabs.Content value={TabList[0]} className="mt-6">
           <TableInformationHeader user={user} />
           <TableUserObject user={user} />
+          <div className="w-full mt-6">
+            <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
+            <MetabolicChart />
+          </div>
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
           <p>Tasks</p>
@@ -79,7 +84,7 @@ function TableUserObject({ user }: { user: any }) {
             return null;
           }
           return (
-            <div className="flex gap-x-4 px-2 py-2">
+            <div key={key} className="flex gap-x-4 px-2 py-2">
               <p className="capitalize min-w-[225px]">{key}</p>
               <p className="text-gray-600">{user[key]}</p>
             </div>
