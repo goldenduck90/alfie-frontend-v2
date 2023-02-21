@@ -13,7 +13,6 @@ const TabList = [
 
 export function IndividualPatientTabs({ user }: { user: any }) {
   const [activeTab, setActiveTab] = useState(TabList[0]);
-  console.log({ user });
   return (
     <div className="flex flex-col overflow-y-auto h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>

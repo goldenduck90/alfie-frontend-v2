@@ -5,7 +5,13 @@ import { Control, useController, useForm, useWatch } from "react-hook-form";
 import { Button } from "../../ui/Button";
 import { DialogLongHeader } from "../Dialog";
 
-export function IDVerificationModal({ title }: { title: string }) {
+export function IDVerificationModal({
+  title,
+  taskId,
+}: {
+  title: string;
+  taskId: string;
+}) {
   const [step, setStep] = useState(1);
   const { control, handleSubmit } = useForm({
     defaultValues: {
