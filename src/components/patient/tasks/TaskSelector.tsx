@@ -24,7 +24,7 @@ export const TaskSelector = ({
   type: string;
   userTaskId: string;
   trigger?: React.ReactNode;
-  createdAt: Date;
+  createdAt?: Date;
 }) => {
   const router = useRouter();
 

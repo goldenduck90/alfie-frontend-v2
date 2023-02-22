@@ -1,6 +1,6 @@
 import { useQuery, gql } from "@apollo/client";
 import { Layout } from "@src/components/layouts/Layout";
-import { IndividualPatientTabs } from "@src/components/patient/tabs";
+import { IndividualPatientTabs } from "@src/components/practitioner/patients/tabs";
 import { useRouter } from "next/router";
 const getPatientInfo = gql`
   query getPatientById($userId: String!) {

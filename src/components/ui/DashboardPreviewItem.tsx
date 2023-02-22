@@ -14,6 +14,7 @@ export interface DashboardPreviewItemProps {
   renderDate: { date?: string; time?: string };
   isLoading?: boolean;
   placeHolderIcon?: "user" | "heart";
+  renderIcon?: React.ReactNode;
 }
 
 export const DashboardPreviewItem = React.forwardRef(
@@ -26,10 +27,10 @@ export const DashboardPreviewItem = React.forwardRef(
       renderDate,
       isLoading,
       placeHolderIcon = "heart",
+      renderIcon,
     }: DashboardPreviewItemProps,
     ref: React.ForwardedRef<HTMLButtonElement>
   ) => {
-    const router = useRouter();
     return (
       <button
         ref={ref}
@@ -39,7 +40,7 @@ export const DashboardPreviewItem = React.forwardRef(
       >
         <div className="flex flex-row justify-between w-full h-12">
           <div className="flex">
-            {!icon && (
+            {!icon && !renderIcon && (
               <div
                 className={`flex mr-4 rounded-full ${
                   placeHolderIcon === "user" ? "bg-lime-100" : "bg-brand-peachy"
@@ -60,6 +61,7 @@ export const DashboardPreviewItem = React.forwardRef(
                 <ChooseTaskIcon value={icon} />
               </span>
             )}
+            {renderIcon && !isLoading && renderIcon}
             {subtitle ? (
               <div className="flex flex-col">
                 {isLoading ? (

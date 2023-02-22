@@ -9,7 +9,7 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { TextField } from "@src/components/ui/TextField";
 import { SearchIcon } from "@heroicons/react/solid";
@@ -19,6 +19,8 @@ import {
   DefaultCell,
   NameCell,
 } from "@src/components/ui/table";
+import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
+import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 
 export function AllPatientsTabs() {
   const [activeTab, setActiveTab] = useState("all");
@@ -48,7 +50,7 @@ export function AllPatientsTabs() {
             <Button buttonType="accent">Add new</Button>
           </div>
         </div>
-        <Tabs.Content value="all">
+        <Tabs.Content value="all" className="mt-6">
           <AllPatientsTable
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
@@ -80,7 +82,7 @@ function TabTitle({
   );
 }
 
-function AllPatientsTable({
+export function AllPatientsTable({
   globalFilter,
   setGlobalFilter,
 }: {
@@ -94,10 +96,8 @@ function AllPatientsTable({
     setGlobalFilter,
   });
 
-  if (loading) return <div></div>;
-
   return (
-    <div className="mt-6">
+    <div>
       <p className="text-lg">{`${
         table.getCoreRowModel().rows.length
       } Patients`}</p>
@@ -120,15 +120,59 @@ function AllPatientsTable({
             ))}
           </thead>
           <tbody className="divide-y divide-gray-300 ">
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="py-4">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {loading && (
+              <>
+                {table.getHeaderGroups().map((headerGroup, i) => {
+                  return Array(9)
+                    .fill("")
+                    .map((_, j) => (
+                      <tr
+                        key={j}
+                        className={`border-0 border-b-[1px]
+                  ${i == 0 ? "border-t-[1px]" : ""}
+                `}
+                      >
+                        {headerGroup?.headers.map((_, j) => (
+                          <td key={j} className="py-4 px-2 ">
+                            {j === headerGroup.headers.length - 1 ? (
+                              <button
+                                disabled
+                                className="p-1 border rounded-md border-gray-200 max-w-fit"
+                              >
+                                <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+                              </button>
+                            ) : (
+                              <div className="flex">
+                                {j === 0 && (
+                                  <div className="pr-2">
+                                    <AvatarInitial text={""} index={j} />
+                                  </div>
+                                )}
+                                <div className="w-[60%] mt-3">
+                                  <PlaceHolderLine />
+                                </div>
+                              </div>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ));
+                })}
+              </>
+            )}
+            {!!data &&
+              table.getRowModel().rows.map((row) => (
+                <tr key={row.id} className="">
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="py-4">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

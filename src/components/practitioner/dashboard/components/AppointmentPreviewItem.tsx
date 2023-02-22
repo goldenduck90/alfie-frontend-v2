@@ -1,8 +1,8 @@
 import { ClockIcon } from "@heroicons/react/outline";
-import { UserIcon } from "@heroicons/react/solid";
+import { UserIcon, ExclamationCircleIcon } from "@heroicons/react/solid";
+import { Button } from "@src/components/ui/Button";
+import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import Link from "next/link";
-import { Button } from "./Button";
-import { PlaceHolderLine } from "./PlaceHolderLine";
 
 export interface AppointmentPreviewItemProps {
   name?: string;
@@ -46,32 +46,25 @@ export function AppointmentPreviewItem({
           </div>
         )}
       </div>
-      {abnormality && <div className="bg-red-200"> oh snap you abnormal</div>}
 
-      <div className="flex w-full pt-6">
-        <ClockIcon
-          className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-          aria-hidden="true"
-        />
-        {isLoading ? (
-          <div className="w-1/2">
-            <PlaceHolderLine hasTopMargin />
-          </div>
-        ) : (
-          <div className="flex w-full justify-between">
-            <div>{renderDate?.date}</div>
-            <div className="text-gray-400">{renderDate?.time}</div>
-          </div>
-        )}
-      </div>
-      <div className="flex justify-end border-t-[1px] rounded-b-xl -m-6 mt-4 py-4 px-4 bg-gray-50">
+      {isLoading ? (
+        <PlaceHolderLine />
+      ) : (
+        <div className="bg-red-100 my-2 p-2 rounded-xl border border-red-500 font-light text-red-500 flex items-center">
+          <ExclamationCircleIcon className="h-5 w-5 mr-2" />
+          Abnormal {abnormality}
+        </div>
+      )}
+
+      <div className="flex gap-x-2 justify-end border-t-[1px] rounded-b-xl -m-6 mt-4 py-4 px-4 bg-gray-50">
         <Link
           href={`/dashboard/appointments/${appointmentId}`}
           passHref
           legacyBehavior
         >
-          <Button disabled={isLoading}>See details</Button>
+          <Button buttonType="secondary">See Details</Button>
         </Link>
+        <Button disabled={isLoading}>Contact</Button>
       </div>
     </div>
   );
