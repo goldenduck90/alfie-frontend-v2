@@ -1,53 +1,44 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import { TextField } from "@src/components/ui/TextField";
-import {
-  useTaskCompletion,
-  createAnwersFromObject,
-} from "@src/hooks/useTaskCompletion";
 import { Calendar } from "react-calendar";
-import { useForm } from "react-hook-form";
+import { FormikProvider, useFormik } from "formik";
 import { useState } from "react";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 import { EaProvider, Role } from "@src/graphql/generated";
-import TimeslotButton from "@src/components/ui/TimeSlotButton";
-import { SelectInput } from "@src/components/inputs/SelectInput";
+import { TimeslotButton } from "../../ui/TimeslotButton";
+import { OptionInput, SelectInput } from "../../inputs/SelectInput";
 import { rawTimeZones } from "@vvo/tzdb";
+import { parseError } from "../../../utils/parseError";
+import { ToggleSwitch } from './../../ui/ToggleSwitch';
+
 export function RescheduleAppointment({
   title,
 }: {
   title: string;
-  taskId: string;
 }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      // _id: taskId,
-      // systolicBp: "",
-      // diastolicBp: "",
+  const form = useFormik({
+    initialValues: {
+      _id: "",
+      timezone: ""
     },
+    onSubmit: async (values, { resetForm, setStatus }) => {
+      console.log(values);
+      try {
+      resetForm();
+    } catch (err) {
+      const msg = parseError(err);
+      setStatus({ error: msg });
+    }
+    }
   });
   const [step, setStep] = useState(1);
   const setOpen = useDialogToggle();
-  const [mutate] = useTaskCompletion(() => setOpen(false));
+  const { submitForm, isSubmitting } = form;
+  const [timezone, setTimezone] = useState('ET')
+  const [twentyFourHrChecked, set24HrChecked] = useState(false)
 
-  async function onSubmit(values: any) {
-    const { _id, ...rest } = values;
-    console.log(rest);
-    mutate({
-      variables: {
-        input: {
-          _id,
-          // reschedule data
-        },
-      },
-    });
-  }
+
   const eaProvider: EaProvider = {
     email: "ea@provider.com",
     id: "1",
@@ -56,7 +47,7 @@ export function RescheduleAppointment({
     timezone: "MT",
     type: Role.Practitioner,
   };
-  const tz = "EST";
+
   const timeslot = {
     eaProvider,
     startTimeInUtc: "2023-02-21T20:25:15.656Z",
@@ -84,12 +75,13 @@ export function RescheduleAppointment({
   };
   const timeslots = [timeslot, timeslot2, timeslot3, timeslot4, timeslot5];
 
-  // const timeZones = rawTimeZones.map((timezone) => {
-  //   return { label: timezone.rawFormat, value: timezone.abbreviation };
-  // });
+  const timeZones: OptionInput[] = rawTimeZones.map((timezone: { rawFormat: any; abbreviation: any; }) => {
+    return { label: timezone.rawFormat, value: timezone.abbreviation };
+  });
 
   return (
     <div className="w-full max-w-[560px] min-w-full">
+      <FormikProvider value={form}>
       <DialogLongHeader title={title} step={step} total={2} icon={undefined} />
       <DialogLongBody>
         {step === 1 && (
@@ -104,21 +96,23 @@ export function RescheduleAppointment({
         )}
         {step === 2 && (
           <div className="flex flex-col gap-y-2">
-            <p className="font-bold text-sm text-gray-600">Choose time</p>
+            <div className="flex justify-between"><p className="font-bold text-sm text-gray-600">Choose time</p><ToggleSwitch label={'AM/PM'} labelRight={'24hr'} checked={twentyFourHrChecked} onCheckedChange={()=> set24HrChecked(!twentyFourHrChecked)}/></div>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {timeslots.map((timeslot) => (
                 <TimeslotButton
                   key={timeslot.startTimeInUtc}
                   timeslot={timeslot}
-                  tz={tz}
+                  tz={timezone}
+                  is24HrFormat={twentyFourHrChecked}
                 />
               ))}
             </div>
-            {/* <SelectInput
+            <SelectInput
               name="timezone"
               placeholder="Select a timezone..."
               options={timeZones}
-            /> */}
+              onChange={(tz)=> setTimezone(tz)}
+            />
           </div>
         )}
         {step === 3 && (
@@ -145,13 +139,14 @@ export function RescheduleAppointment({
             if (step === 1 || step === 2) {
               setStep((s) => (s === 1 || step === 2 ? s + 1 : 1));
             } else {
-              handleSubmit(onSubmit)();
+              submitForm();
             }
           }}
         >
-          {step === 1 ? "Next" : "Complete"}
+          {step === 1 || step === 2 ? "Next" : "Confirm"}
         </Button>
       </div>
+      </FormikProvider>
     </div>
   );
 }
