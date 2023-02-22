@@ -8,7 +8,6 @@ import * as RadixDialog from "@radix-ui/react-dialog";
 import { formatDistance } from "date-fns";
 import React, { useMemo, useState } from "react";
 import { Button } from "../ui/Button";
-import { useEffect } from "react";
 
 export function DialogBody({
   title,
@@ -150,9 +149,6 @@ export function DialogLongHeader({
   total: number;
   icon: JSX.Element | undefined;
 }) {
-  useEffect(() => {
-    console.log(`step: ${step} of total: ${total}`);
-  }, [step, total]);
 
   return (
     <div className="w-full flex justify-between items-center relative pb-3 px-6 whitespace-nowrap">

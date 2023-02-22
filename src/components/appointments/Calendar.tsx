@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import { Button } from "@src/components/ui/Button";
 import { RescheduleAppointment } from "../modal/variants/RescheduleAppointment";
 import { DialogModal } from "@src/components/modal/Dialog";
+import { ConfirmModal } from "../modal/variants/ConfirmModal";
 const getAllProviderPatientsQuery = gql`
   query getProviderAppointments($eaProviderId: String!) {
     providerAppointments(eaProviderId: $eaProviderId) {
@@ -98,10 +99,10 @@ export const CalendarView = () => {
         <div className="flex justify-between pb-6 items-center">
           <h2 className="font-semibold">Date</h2>
           <div className="">
-          <DialogModal trigger={<Button buttonType="secondary">Reschedule</Button>}>
-            <RescheduleAppointment  title="Reschedule appointment" taskId="0"/>
-          </DialogModal>
-            
+            <DialogModal trigger={<Button buttonType="secondary">Reschedule</Button>}>
+              {/* <RescheduleAppointment  title="Reschedule appointment"/> */}
+              <ConfirmModal cancellation={false} />
+            </DialogModal>
             <button className="p-2 border mr-2 rounded-xl">
               <ChevronLeftIcon className="h-5 w-5" id="backLabel" />
             </button>
@@ -118,11 +119,11 @@ export const CalendarView = () => {
           tileContent={({ activeStartDate, date, view }) =>
             // If a date in the month view has meetings, show a dot the meetings are found in the meetings array
             view === "month" &&
-            meetings.filter(
-              (meeting) =>
-                new Date(meeting.startTimeInUtc).toDateString() ===
-                new Date(date).toDateString()
-            ).length > 0 ? (
+              meetings.filter(
+                (meeting) =>
+                  new Date(meeting.startTimeInUtc).toDateString() ===
+                  new Date(date).toDateString()
+              ).length > 0 ? (
               <div className="flex justify-center">
                 <div className="w-2 h-2 bg-red-400 absolute md:mt-2 rounded-full" />
               </div>

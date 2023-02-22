@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 export const TimeslotButton = ({
   timeslot,
   tz,
-  is24HrFormat = true
+  is24HrFormat = true,
 }: {
   timeslot: Timeslot;
   tz: string;
