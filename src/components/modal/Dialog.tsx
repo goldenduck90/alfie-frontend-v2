@@ -8,6 +8,7 @@ import * as RadixDialog from "@radix-ui/react-dialog";
 import { formatDistance } from "date-fns";
 import React, { useMemo, useState } from "react";
 import { Button } from "../ui/Button";
+import { useEffect } from "react";
 
 export function DialogBody({
   title,
@@ -142,27 +143,42 @@ export function DialogLongHeader({
   title,
   step,
   total,
-  // icon = <CalculatorIcon className="w-5 h-5 stroke-inherit" />
+  icon,
 }: {
   title: string;
   step: number;
   total: number;
+  icon: JSX.Element | undefined;
 }) {
+  useEffect(() => {
+    console.log(`step: ${step} of total: ${total}`);
+  }, [step, total]);
+
   return (
     <div className="w-full flex justify-between items-center relative pb-3 px-6 whitespace-nowrap">
       <div className="flex items-center gap-x-2">
-        {/* <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit hidden sm:block">
-          <CalculatorIcon className="w-5 h-5 stroke-inherit" />
-        </div> */}
+        {icon && (
+          <div className="p-2 rounded-md bg-orange-100 stroke-orange-500 max-w-fit hidden sm:block">
+            <CalculatorIcon className="w-5 h-5 stroke-inherit" />
+          </div>
+        )}
         <span className="text-sm font-bold truncate">{title}</span>
       </div>
       <div className="flex items-center gap-x-2">
-        <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm hidden md:block">
-          {`Step ${step} out of ${total}`}
-        </span>
-        <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm block md:hidden">
-          {`Step ${step}/${total}`}
-        </span>
+        {step > total ? (
+          <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm block">
+            Summary
+          </span>
+        ) : (
+          <>
+            <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm hidden md:block">
+              {`Step ${step} out of ${total}`}
+            </span>
+            <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm block md:hidden">
+              {`Step ${step}/${total}`}
+            </span>
+          </>
+        )}
         <RadixDialog.Close className="" asChild>
           <button>
             <XIcon className="w-5 h-5" />
