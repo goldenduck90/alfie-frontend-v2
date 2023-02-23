@@ -150,14 +150,13 @@ export function RescheduleAppointment({
   const timeslots = [timeslot, timeslot2, timeslot3, timeslot4, timeslot5];
 
   const timeZones: OptionInput[] = rawTimeZones.map(
-    (timezone: { rawFormat: any; abbreviation: any }) => {
+    (timezone: { rawFormat: string; abbreviation: string }) => {
       return { label: timezone.rawFormat, value: timezone.abbreviation };
     }
   );
 
   useEffect(() => {
     const { eaProvider, selectedDate } = rescheduleForm.values;
-    console.log(eaProvider)
     if (eaProvider) {
       setEaProvider(eaProvider)
     }
