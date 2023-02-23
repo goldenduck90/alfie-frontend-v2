@@ -5,7 +5,7 @@ import { addDays, format, isToday } from "date-fns";
 import { useField } from "formik";
 import { useEffect } from "react";
 import { IconButton } from "../../../../IconButton";
-// import { Spinner } from "../../../../Spinner";
+import { Spinner } from "../../../../Spinner";
 import { Role, Timeslot } from "../../../../../graphql/generated";
 import { roleToText } from "../../../../../utils/roleToText";
 const allTimeslotsQuery = gql`
@@ -146,9 +146,8 @@ const Scheduler = ({
           disabled={isToday(selectedDate)}
         >
           <ArrowLeftIcon
-            className={`w-5 h-5 md:w-6 md:h-6 ${
-              isToday(selectedDate) ? "text-gray-300" : "text-indigo-800"
-            }`}
+            className={`w-5 h-5 md:w-6 md:h-6 ${isToday(selectedDate) ? "text-gray-300" : "text-indigo-800"
+              }`}
           />
         </IconButton>
 
