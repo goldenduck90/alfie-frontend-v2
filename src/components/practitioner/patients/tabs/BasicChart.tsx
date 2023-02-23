@@ -13,15 +13,34 @@ import {
 } from "recharts";
 import dayjs from "dayjs";
 
+const tempData = [
+  {
+    date: Date.now(),
+    value: 55,
+  },
+  {
+    date: Date.now(),
+    value: 45,
+  },
+  {
+    date: Date.now(),
+    value: 65,
+  },
+  {
+    date: Date.now(),
+    value: 80,
+  },
+];
+
 export function BasicChart({ title }: { title: string }) {
   return (
     <DashboardCard
-      className="w-full md:max-w-[100%] md:min-w-max py-4"
+      className="w-full md:max-w-full md:min-w-max py-4"
       cardHeader={<h2 className="font-semibold">{title}</h2>}
     >
       <div className="flex content-center w-full pt-8">
         <ResponsiveContainer width="100%" height={312}>
-          <LineChart data={[]}>
+          <LineChart data={tempData}>
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"

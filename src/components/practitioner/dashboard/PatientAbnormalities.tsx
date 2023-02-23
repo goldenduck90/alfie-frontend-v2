@@ -37,7 +37,7 @@ export function PatientAbnormalities() {
       cardHeader={
         <div className="flex justify-between pb-7">
           <h3 className="font-bold">Patients with Abnormalities</h3>{" "}
-          <Link href="/dashboard/appointments">
+          <Link href="/dashboard/patients">
             <p className="font-semibold hover:underline">View all</p>
           </Link>
         </div>

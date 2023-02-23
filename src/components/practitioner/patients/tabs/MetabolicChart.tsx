@@ -57,24 +57,26 @@ export function MetabolicChart() {
 
   return (
     <DashboardCard className="w-full md:max-w-[100%] md:min-w-max py-4">
-      <div className="flex gap-x-4">
+      <div className="flex flex-col md:flex-row gap-2">
         {Object.keys(legendItemKeys).map((key: any) => {
           const lastItem = tempData?.[tempData?.length - 1];
           return (
             <div
               key={key}
-              className="flex gap-x-2 items-center capitalize bg-gray-50 py-1 px-2 rounded-md"
+              className="flex justify-between items-center capitalize bg-gray-50 py-1 px-2 rounded-md"
             >
-              <span>
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{
-                    backgroundColor: (legendItemKeys as any)?.[key] || "",
-                  }}
-                />
-              </span>
-              {key}
-              <span className="bg-white p-1 rounded-md font-[700] text-center">{`${
+              <div className="flex items-center">
+                <span>
+                  <div
+                    className="w-4 h-4 rounded-full mr-2"
+                    style={{
+                      backgroundColor: (legendItemKeys as any)?.[key] || "",
+                    }}
+                  />
+                </span>
+                {key}
+              </div>
+              <span className="bg-white p-1 px-2 rounded-lg font-[700] text-center">{`${
                 (lastItem as any)?.[key]
               } %`}</span>
             </div>

@@ -4,6 +4,7 @@ import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 import { useMemo, useState } from "react";
 import { BasicChart } from "./BasicChart";
 import { MetabolicChart } from "./MetabolicChart";
+import { PatientTasks } from "./components/PatientTasks";
 
 const TabList = [
   "Information",
@@ -16,12 +17,12 @@ const TabList = [
 export function IndividualPatientTabs({ user }: { user: any }) {
   const [activeTab, setActiveTab] = useState(TabList[0]);
   return (
-    <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
+    <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white md:bg-gray-50 shadow-md rounded-md px-4 md:px-8 py-4">
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between overflow-x-auto">
           <Tabs.List className="flex gap-x-3">
-            {TabList.map((tab) => (
-              <Tabs.Trigger value={tab}>
+            {TabList.map((tab, i) => (
+              <Tabs.Trigger value={tab} key={i}>
                 <TabTitle active={activeTab === tab}>{tab}</TabTitle>
               </Tabs.Trigger>
             ))}
@@ -34,24 +35,16 @@ export function IndividualPatientTabs({ user }: { user: any }) {
             <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
             <MetabolicChart />
           </div>
-          <div className="w-full mt-6 grid grid-cols-2 gap-x-4">
-            <p className="mb-6 text-xl font-bold col-span-2">Other Details</p>
-            <div className="col-span-1">
-              <BasicChart title="Weight" />
-            </div>
-            <div className="col-span-1">
-              <BasicChart title="Waist" />
-            </div>
-            <div className="col-span-1">
-              <BasicChart title="Steps" />
-            </div>
-            <div className="col-span-1">
-              <BasicChart title="Blood Pressure" />
-            </div>
+          <p className="my-6 text-xl font-bold">Other Details</p>
+          <div className="w-full grid md:grid-cols-2 gap-4">
+            <BasicChart title="Weight" />
+            <BasicChart title="Waist" />
+            <BasicChart title="Steps" />
+            <BasicChart title="Blood Pressure" />
           </div>
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
-          <p>Tasks</p>
+          <PatientTasks />
         </Tabs.Content>
         <Tabs.Content value={TabList[2]}>
           <TableUserObject
@@ -136,8 +129,8 @@ function TabTitle({
 }) {
   return (
     <div
-      className={`p-3 rounded-md ${
-        active ? "text-brand-berry bg-blue-100" : ""
+      className={`p-3 rounded-md hover:bg-gray-50 ${
+        active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
       }`}
     >
       {children}
