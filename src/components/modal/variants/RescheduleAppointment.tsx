@@ -1,5 +1,9 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
-import { Calendar, OnChangeDateCallback, OnChangeDateRangeCallback } from "react-calendar";
+import {
+  Calendar,
+  OnChangeDateCallback,
+  OnChangeDateRangeCallback,
+} from "react-calendar";
 import { FormikProvider, useField, useFormik } from "formik";
 import { useState } from "react";
 import { Button } from "../../ui/Button";
@@ -10,14 +14,14 @@ import { TimeslotButton } from "../../ui/TimeslotButton";
 import { OptionInput, SelectInput } from "../../inputs/SelectInput";
 import { rawTimeZones } from "@vvo/tzdb";
 import { parseError } from "../../../utils/parseError";
-import { ToggleSwitch } from './../../ui/ToggleSwitch';
+import { ToggleSwitch } from "./../../ui/ToggleSwitch";
 import { CalendarIcon, ClockIcon, UserIcon } from "@heroicons/react/outline";
 import { TextArea } from "../../inputs/TextArea";
 import { ConfirmModal } from "./ConfirmModal";
 
 export function RescheduleAppointment({
   title,
-  onAppointmentConfirmed
+  onAppointmentConfirmed,
 }: {
   title: string;
   onAppointmentConfirmed: () => void;
@@ -40,20 +44,20 @@ export function RescheduleAppointment({
     onSubmit: async (values, { resetForm, setStatus }) => {
       console.log(values);
       try {
-        onAppointmentConfirmed()
+        onAppointmentConfirmed();
         resetForm();
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
       }
-    }
+    },
   });
   const [step, setStep] = useState(1);
   const setOpen = useDialogToggle();
   const { submitForm, isSubmitting } = form;
-  const [timezone, setTimezone] = useState('ET')
-  const [twentyFourHrChecked, set24HrChecked] = useState(false)
-  const [daySelected, setDaySelected] = useState()
+  const [timezone, setTimezone] = useState("ET");
+  const [twentyFourHrChecked, set24HrChecked] = useState(false);
+  const [daySelected, setDaySelected] = useState();
 
   const eaProvider: EaProvider = {
     email: "npierre@provider.com",
@@ -64,12 +68,11 @@ export function RescheduleAppointment({
     type: Role.Doctor,
   };
 
-
   // TODO: remove; test data
-  const providerName = "Dr. Noah Pierre"
-  const providerTitle = "Gastroenterology"
-  const appointmentDate = 'Thursday, 13 January 2023'
-  const appointmentTime = '9:30 - 10:00AM'
+  const providerName = "Dr. Noah Pierre";
+  const providerTitle = "Gastroenterology";
+  const appointmentDate = "Thursday, 13 January 2023";
+  const appointmentTime = "9:30 - 10:00AM";
   const timeslot = {
     eaProvider,
     startTimeInUtc: "2023-02-21T20:25:15.656Z",
@@ -97,14 +100,21 @@ export function RescheduleAppointment({
   };
   const timeslots = [timeslot, timeslot2, timeslot3, timeslot4, timeslot5];
 
-  const timeZones: OptionInput[] = rawTimeZones.map((timezone: { rawFormat: any; abbreviation: any; }) => {
-    return { label: timezone.rawFormat, value: timezone.abbreviation };
-  });
+  const timeZones: OptionInput[] = rawTimeZones.map(
+    (timezone: { rawFormat: any; abbreviation: any }) => {
+      return { label: timezone.rawFormat, value: timezone.abbreviation };
+    }
+  );
 
   return (
     <div className="w-full max-w-[480px] min-w-full">
       <FormikProvider value={form}>
-        <DialogLongHeader title={title} step={step} total={2} icon={undefined} />
+        <DialogLongHeader
+          title={title}
+          step={step}
+          total={2}
+          icon={undefined}
+        />
         <DialogLongBody>
           {step === 1 && (
             <div className="flex flex-col gap-y-2 w-full">
@@ -118,7 +128,15 @@ export function RescheduleAppointment({
           )}
           {step === 2 && (
             <div className="flex flex-col gap-y-2">
-              <div className="flex justify-between"><p className="font-bold text-sm text-gray-600">Choose time</p><ToggleSwitch label={'AM/PM'} labelRight={'24hr'} checked={twentyFourHrChecked} onCheckedChange={() => set24HrChecked(!twentyFourHrChecked)} /></div>
+              <div className="flex justify-between">
+                <p className="font-bold text-sm text-gray-600">Choose time</p>
+                <ToggleSwitch
+                  label={"AM/PM"}
+                  labelRight={"24hr"}
+                  checked={twentyFourHrChecked}
+                  onCheckedChange={() => set24HrChecked(!twentyFourHrChecked)}
+                />
+              </div>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {timeslots.map((timeslot) => (
                   <TimeslotButton
@@ -155,17 +173,30 @@ export function RescheduleAppointment({
               <div className="w-full py-4 px-2 rounded-md flex gap-x-4 bg-gray-100 text-sm whitespace-nowrap">
                 <div className="flex gap-x-4 items-start">
                   <CalendarIcon className="w-6 h-6 text-gray-500" />
-                  <div className="flex flex-col"><p className="font-bold">{appointmentTime || ""}</p><p className="text-gray-500 font-medium">{appointmentDate || ""}</p></div>
+                  <div className="flex flex-col">
+                    <p className="font-bold">{appointmentTime || ""}</p>
+                    <p className="text-gray-500 font-medium">
+                      {appointmentDate || ""}
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="w-full py-4 px-2 rounded-md flex gap-x-4 bg-gray-100 text-sm whitespace-nowrap">
                 <div className="flex gap-x-4 items-start">
                   <ClockIcon className="w-6 h-6 text-gray-500" />
-                  <div className="flex flex-col"><p className="font-bold">{"30 min"}</p><p className="text-gray-500 font-medium">{"Online video meeting duration"}</p></div>
+                  <div className="flex flex-col">
+                    <p className="font-bold">{"30 min"}</p>
+                    <p className="text-gray-500 font-medium">
+                      {"Online video meeting duration"}
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="flex-flex-col mb-5">
-                <div className="text-eudoxus font-bold text-gray-900 text-sm mb-3 mt-4">Please share anything that will help the doctor prepare for the meeting</div>
+                <div className="font-eudoxus font-bold text-gray-900 text-sm mb-3 mt-4">
+                  Please share anything that will help the doctor prepare for
+                  the meeting
+                </div>
                 <div className="pb-2">
                   <TextArea cache name="notes" />
                 </div>
@@ -180,7 +211,10 @@ export function RescheduleAppointment({
             </RadixDialog.Close>
           )}
           {step === 2 && (
-            <Button buttonType="secondary" onClick={() => setStep((s) => s - 1)}>
+            <Button
+              buttonType="secondary"
+              onClick={() => setStep((s) => s - 1)}
+            >
               <ChevronLeftIcon className="w-6 h-6" />
             </Button>
           )}
