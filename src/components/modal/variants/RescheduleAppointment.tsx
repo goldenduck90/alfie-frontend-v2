@@ -121,10 +121,6 @@ export function RescheduleAppointment({
     timezone: "MT",
     type: Role.Doctor,
   };
-  // const providerName = "Dr. Noah Pierre";
-  // const providerTitle = "Gastroenterology";
-  // const appointmentDate = "Thursday, 13 January 2023";
-  // const appointmentTime = "9:30 - 10:00AM";
   const timeslot = {
     eaProvider: testEaProvider,
     startTimeInUtc: "2023-02-21T20:25:15.656Z",
