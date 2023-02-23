@@ -1,15 +1,12 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import {
   Calendar,
-  OnChangeDateCallback,
-  OnChangeDateRangeCallback,
 } from "react-calendar";
 import { FormikProvider, useField, useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
-import { EaProvider, Role } from "@src/graphql/generated";
 import { TimeslotButton } from "../../ui/TimeslotButton";
 import { OptionInput, SelectInput } from "../../inputs/SelectInput";
 import { rawTimeZones } from "@vvo/tzdb";
@@ -17,7 +14,23 @@ import { parseError } from "../../../utils/parseError";
 import { ToggleSwitch } from "./../../ui/ToggleSwitch";
 import { CalendarIcon, ClockIcon, UserIcon } from "@heroicons/react/outline";
 import { TextArea } from "../../inputs/TextArea";
-import { ConfirmModal } from "./ConfirmModal";
+import { useTaskCompletion } from "../../../hooks/useTaskCompletion";
+import { format } from "date-fns";
+import { EaProvider, Role } from "@src/graphql/generated";
+import * as Yup from "yup";
+
+export const FormCalendar = () => {
+  const [
+    , ,
+    { setValue: setSelectedDate, setError: setSelectedDateError },
+  ] = useField("selectedDate");
+
+
+  const onDateSelected = (date: any) => {
+    setSelectedDate(date);
+  };
+  return (<Calendar onChange={(date: any) => onDateSelected(date)} />)
+}
 
 export function RescheduleAppointment({
   title,
@@ -26,9 +39,7 @@ export function RescheduleAppointment({
   title: string;
   onAppointmentConfirmed: () => void;
 }) {
-  // const [, { error: startTimeError }] = useField("startTimeInUtc");
-  // const [, { error: endTimeError }] = useField("endTimeInUtc");
-  const form = useFormik({
+  const rescheduleForm = useFormik({
     initialValues: {
       reschedule: true,
       // eaAppointmentId: id,
@@ -42,24 +53,67 @@ export function RescheduleAppointment({
       notes: "",
     },
     onSubmit: async (values, { resetForm, setStatus }) => {
-      console.log(values);
       try {
-        onAppointmentConfirmed();
+        // TODO: uncomment once serverside is ready
+        // mutate({
+        //   variables: {
+        //     input: {
+        //       reschedule: true,
+        //       eaAppointmentId: id,
+        //       providerType: "",
+        //       userEaProviderId: null,
+        //       eaProvider: null,
+        //       selectedDate: new Date(),
+        //       startTimeInUtc: null,
+        //       endTimeInUtc: null,
+        //       eaServiceId: "1",
+        //       notes: "",
+        //     },
+        //   },
+        // });
+        if (onAppointmentConfirmed) {
+          setOpen(false)
+          onAppointmentConfirmed()
+        }
         resetForm();
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
       }
     },
+    validationSchema: Yup.object().shape({
+      eaProvider: Yup.object().required("Please select a provider."),
+      selectedDate: Yup.string()
+        .nullable()
+        .required("Please select a date to continue."),
+      startTimeInUtc: Yup.string()
+        .nullable()
+        .required("Please select a timeslot to continue."),
+      endTimeInUtc: Yup.string()
+        .nullable()
+        .required("Please select a timeslot to continue."),
+      notes: Yup.string().nullable(),
+    }),
   });
+
   const [step, setStep] = useState(1);
   const setOpen = useDialogToggle();
-  const { submitForm, isSubmitting } = form;
-  const [timezone, setTimezone] = useState("ET");
+  // const [mutate] = useTaskCompletion(() => setOpen(false));
+  const { submitForm, isSubmitting } = rescheduleForm;
+  const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [twentyFourHrChecked, set24HrChecked] = useState(false);
-  const [daySelected, setDaySelected] = useState();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [eaProvider, setEaProvider] = useState({
+    email: "",
+    id: "",
+    name: "",
+    numberOfPatients: 0,
+    timezone: "",
+    type: "",
+  } as unknown as EaProvider);
 
-  const eaProvider: EaProvider = {
+  // TODO: remove; test data
+  const testEaProvider: EaProvider = {
     email: "npierre@provider.com",
     id: "1",
     name: "Noah Pierre",
@@ -67,37 +121,36 @@ export function RescheduleAppointment({
     timezone: "MT",
     type: Role.Doctor,
   };
-
-  // TODO: remove; test data
-  const providerName = "Dr. Noah Pierre";
-  const providerTitle = "Gastroenterology";
-  const appointmentDate = "Thursday, 13 January 2023";
-  const appointmentTime = "9:30 - 10:00AM";
+  // const providerName = "Dr. Noah Pierre";
+  // const providerTitle = "Gastroenterology";
+  // const appointmentDate = "Thursday, 13 January 2023";
+  // const appointmentTime = "9:30 - 10:00AM";
   const timeslot = {
-    eaProvider,
+    eaProvider: testEaProvider,
     startTimeInUtc: "2023-02-21T20:25:15.656Z",
     endTimeInUtc: "2023-02-21T23:25:15.656Z",
   };
   const timeslot2 = {
-    eaProvider,
+    eaProvider: testEaProvider,
     startTimeInUtc: "2023-02-22T20:25:15.656Z",
     endTimeInUtc: "2023-02-21T23:25:15.656Z",
   };
   const timeslot3 = {
-    eaProvider,
+    eaProvider: testEaProvider,
     startTimeInUtc: "2023-02-23T20:25:15.656Z",
     endTimeInUtc: "2023-02-21T23:25:15.656Z",
   };
   const timeslot4 = {
-    eaProvider,
+    eaProvider: testEaProvider,
     startTimeInUtc: "2023-02-24T20:25:15.656Z",
     endTimeInUtc: "2023-02-21T23:25:15.656Z",
   };
   const timeslot5 = {
-    eaProvider,
+    eaProvider: testEaProvider,
     startTimeInUtc: "2023-02-25T20:25:15.656Z",
     endTimeInUtc: "2023-02-21T23:25:15.656Z",
   };
+
   const timeslots = [timeslot, timeslot2, timeslot3, timeslot4, timeslot5];
 
   const timeZones: OptionInput[] = rawTimeZones.map(
@@ -106,9 +159,20 @@ export function RescheduleAppointment({
     }
   );
 
+  useEffect(() => {
+    const { eaProvider, selectedDate } = rescheduleForm.values;
+    console.log(eaProvider)
+    if (eaProvider) {
+      setEaProvider(eaProvider)
+    }
+    if (selectedDate) {
+      setSelectedDate(selectedDate)
+    }
+  }, [rescheduleForm]);
+
   return (
     <div className="w-full max-w-[480px] min-w-full">
-      <FormikProvider value={form}>
+      <FormikProvider value={rescheduleForm}>
         <DialogLongHeader
           title={title}
           step={step}
@@ -120,9 +184,7 @@ export function RescheduleAppointment({
             <div className="flex flex-col gap-y-2 w-full">
               <div className="flex flex-col gap-y-2">
                 <p className="font-bold text-sm text-gray-600">Choose date</p>
-                <div className="">
-                  <Calendar onChange={(date: any) => setDaySelected(date)} />
-                </div>
+                <FormCalendar />
               </div>
             </div>
           )}
@@ -166,17 +228,18 @@ export function RescheduleAppointment({
                   <UserIcon className="h-6 w-6 text-lime-700" />
                 </div>
                 <div>
-                  <h2 className="text-gray-900 font-medium">{providerName}</h2>
-                  <p className="text-gray-600 font-normal">{providerTitle}</p>
+                  <h2 className="text-gray-900 font-medium">{eaProvider.name}</h2>
+                  <p className="text-gray-600 font-normal">{String(eaProvider.type)}</p>
                 </div>
               </div>
               <div className="w-full py-4 px-2 rounded-md flex gap-x-4 bg-gray-100 text-sm whitespace-nowrap">
                 <div className="flex gap-x-4 items-start">
                   <CalendarIcon className="w-6 h-6 text-gray-500" />
                   <div className="flex flex-col">
-                    <p className="font-bold">{appointmentTime || ""}</p>
+                    <p className="font-bold">{twentyFourHrChecked ? format(new Date(timeslot.startTimeInUtc), "HH:mm") : format(new Date(timeslot.startTimeInUtc), "h:mm aa")} -{" "}
+                      {twentyFourHrChecked ? format(new Date(timeslot.endTimeInUtc), "HH:mm") : format(new Date(timeslot.endTimeInUtc), "h:mm aa")}</p>
                     <p className="text-gray-500 font-medium">
-                      {appointmentDate || ""}
+                      {selectedDate.toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) || ""}
                     </p>
                   </div>
                 </div>
@@ -185,6 +248,7 @@ export function RescheduleAppointment({
                 <div className="flex gap-x-4 items-start">
                   <ClockIcon className="w-6 h-6 text-gray-500" />
                   <div className="flex flex-col">
+                    {/* TODO: Add duration */}
                     <p className="font-bold">{"30 min"}</p>
                     <p className="text-gray-500 font-medium">
                       {"Online video meeting duration"}

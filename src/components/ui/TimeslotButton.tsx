@@ -1,7 +1,7 @@
 import { useField } from "formik";
 import { format } from "date-fns";
 import { Timeslot } from "@src/graphql/generated";
-import React, { useEffect } from 'react';
+import React from 'react';
 
 export const TimeslotButton = ({
   timeslot,
@@ -30,12 +30,11 @@ export const TimeslotButton = ({
     setEndTimeError(undefined);
     setEaProviderError(undefined);
   };
-
   return (
     <button
       onClick={onClick}
       disabled={timeslot.startTimeInUtc === startTimeInUtc}
-      className="bg-gray-100 disabled:text-white text-gray-600 font-eudoxus font-base py-1 md:py-2 px-4 rounded w-full mb-3 ease-in-out duration-300 text-sm md:text-md"
+      className="bg-gray-100 hover:bg-primary-400 focus:border-primary-700 hover:text-white disabled:bg-primary-400 disabled:text-white text-gray-600 font-eudoxus font-base py-1 md:py-2 px-4 rounded w-full mb-3 ease-in-out duration-300 text-sm md:text-md"
     >
       {is24HrFormat ? format(new Date(timeslot.startTimeInUtc), "HH:mm") : format(new Date(timeslot.startTimeInUtc), "h:mm aa")} -{" "}
       {is24HrFormat ? format(new Date(timeslot.endTimeInUtc), "HH:mm") : format(new Date(timeslot.endTimeInUtc), "h:mm aa")} ({tz})
