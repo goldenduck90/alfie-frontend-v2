@@ -57,7 +57,6 @@ interface IMeeting {
 }
 export const CalendarView = () => {
   const [value, onChange] = useState(new Date());
-  const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false)
   const { loading, error, data } = useQuery(appointmentsQuery, {
     variables: { limit: 2 },
   });
