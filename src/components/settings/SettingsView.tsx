@@ -44,7 +44,7 @@ export function SettingsView() {
           <AccountDetails />
         </Tabs.Content>
         <Tabs.Content value="plan-&-billing" className="mt-6">
-          <div>Plan & Billing</div>
+          <div>Plan & Billing Coming soon</div>
         </Tabs.Content>
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />

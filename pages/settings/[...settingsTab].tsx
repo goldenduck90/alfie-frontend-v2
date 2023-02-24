@@ -3,13 +3,13 @@ import { Layout } from "@src/components/layouts/Layout";
 import { useRouter } from "next/router";
 import { SettingsView } from "@src/components/settings/SettingsView";
 
-function PlanAndBilling() {
+function Page() {
   return <SettingsView />;
 }
 
-PlanAndBilling.isAuthorized = true;
-PlanAndBilling.getLayout = (page: React.ReactNode) => (
+Page.isAuthorized = true;
+Page.getLayout = (page: React.ReactNode) => (
   <Layout title="Settings">{page}</Layout>
 );
 
-export default PlanAndBilling;
+export default Page;
