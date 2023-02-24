@@ -12,13 +12,17 @@ export function SettingsView() {
     (router.query.settingsTab?.[0] as string) || "account-details";
   const [tab, setActiveTab] = React.useState(activeTab ?? "account-details");
 
+  useEffect(() => {
+    router.replace(`/settings/${activeTab}`, undefined, { shallow: false });
+    if (activeTab) setActiveTab(activeTab);
+  }, [activeTab, router]);
+
   return (
     <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root
         value={tab}
         onValueChange={(value) => {
           router.replace(`/settings/${value}`, undefined, { shallow: false });
-          setActiveTab(value);
         }}
       >
         <div className="flex items-center justify-between flex-wrap gap-y-4">
