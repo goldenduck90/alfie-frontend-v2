@@ -5,8 +5,10 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { TabTitle } from "@src/components/ui/tabs/TabTitle";
 export function SettingsView() {
   const router = useRouter();
-  const activeTab = (router.query.settingsTab as string) || "account-details";
-  const [tab, setActiveTab] = React.useState(activeTab);
+  const activeTab =
+    (router.query.settingsTab?.[0] as string) || "account-details";
+  const [tab, setActiveTab] = React.useState(activeTab ?? "account-details");
+
   return (
     <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root
