@@ -5,6 +5,8 @@ import { TabTitle } from "@src/components/ui/tabs/TabTitle";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { Button } from "../ui/Button";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
+import { DialogModal } from "../modal/Dialog";
+import { ChangeNameModal } from "../modal/settings/ChangeNameModal";
 
 export function SettingsView() {
   const router = useRouter();
@@ -68,9 +70,12 @@ function AccountDetails() {
                 />
               ),
               right: (
-                <div>
-                  <Button buttonType="secondary">Change</Button>
-                </div>
+                <DialogModal
+                  triggerAsChild
+                  trigger={<Button buttonType="secondary">Change</Button>}
+                >
+                  <ChangeNameModal title="Fullname" />
+                </DialogModal>
               ),
             },
             {
