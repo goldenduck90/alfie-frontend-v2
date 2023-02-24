@@ -113,7 +113,7 @@ function TableUserObject({ user }: { user: any }) {
   if (!user) return null;
   return (
     <div className="">
-      <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300">
+      <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300 bg-white">
         {Object.keys(user).map((key) => {
           if (typeof user[key] !== "string") {
             return null;
