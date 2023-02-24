@@ -4,14 +4,18 @@ import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { ChatPage } from "../../src/components/chat";
 import "@sendbird/uikit-react/dist/index.css";
 
+const SendBirdId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID;
+
 function Chat() {
   const { user } = useCurrentUserStore();
-  const SendBirdId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID;
 
-  const sendBirdParams =
-    user && SendBirdId
-      ? { appId: SendBirdId, userId: user._id }
-      : { appId: "", userId: "" };
+  const hasAllParams = user && SendBirdId;
+
+  const sendBirdParams = hasAllParams
+    ? { appId: SendBirdId, userId: user._id }
+    : { appId: "", userId: "" };
+
+  if (!hasAllParams) return <div />;
 
   return <ChatPage {...sendBirdParams} />;
 }

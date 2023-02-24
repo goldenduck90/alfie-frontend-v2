@@ -61,6 +61,12 @@ export function IndividualPatientTabs({ user }: { user: any }) {
             }}
           />
         </Tabs.Content>
+        <Tabs.Content value={TabList[3]}>
+          <div className="flex flex-col items-center justify-center h-full">
+            <p className="text-2xl font-bold">Chat</p>
+            <p className="text-gray-500">Coming Soon</p>
+          </div>
+        </Tabs.Content>
       </Tabs.Root>
     </div>
   );
