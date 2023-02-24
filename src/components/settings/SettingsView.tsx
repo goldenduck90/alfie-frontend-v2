@@ -7,6 +7,7 @@ import { useUserSession } from "@src/hooks/useUserSession";
 import { useUserStateContext } from "@src/context/SessionContext";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { Button } from "../ui/Button";
+import { ToggleSwitch } from "../ui/ToggleSwitch";
 export function SettingsView() {
   const router = useRouter();
   const activeTab =
@@ -124,34 +125,19 @@ function AccountDetails() {
                 />
               ),
               right: (
-                <div>
-                  <Button buttonType="secondary">GMT +01:00</Button>
+                <div className="flex items-center gap-x-3">
+                  <span className="text-sm text-gray-600">GMT +01:00</span>
+                  <ToggleSwitch
+                    label=""
+                    checked={true}
+                    onCheckedChange={() => {}}
+                    name="Automatic time zone"
+                  />
                 </div>
               ),
             },
           ]}
         />
-      </div>
-    </div>
-  );
-}
-
-function TableView({ obj }: { obj: Record<string, string> }) {
-  if (!obj) return null;
-  return (
-    <div className="">
-      <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300">
-        {Object.keys(obj).map((key) => {
-          if (typeof obj[key] !== "string") {
-            return null;
-          }
-          return (
-            <div key={key} className="flex gap-x-4 px-6 py-4">
-              <p className="capitalize min-w-[275px] font-bold">{key}</p>
-              <p className="text-gray-600">{obj[key]}</p>
-            </div>
-          );
-        })}
       </div>
     </div>
   );
