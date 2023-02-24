@@ -6,6 +6,7 @@ import { BasicChart } from "./BasicChart";
 import { MetabolicChart } from "./MetabolicChart";
 import { PatientTasks } from "./components/PatientTasks";
 import { CalendarIcon } from "@heroicons/react/outline";
+import dayjs from "dayjs";
 
 const TabList = [
   "Information",
@@ -36,7 +37,18 @@ export function IndividualPatientTabs({ user }: { user: any }) {
             <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
             <MetabolicChart />
           </div>
-          <p className="my-6 text-xl font-bold">Other Details</p>
+          <div className="flex items-center justify-between">
+            <p className="my-6 text-xl font-bold">Other Details</p>
+            <div className="flex justify-end items-center gap-x-2 text-sm border rounded-md py-2 px-4 border-gray-300 text-gray-600 bg-white">
+              <span>
+                <CalendarIcon className="w-4 h-4 stroke-gray-600" />
+              </span>
+              <p>{`${dayjs().format("MM/DD/YYYY")}-${dayjs()
+                .add(3, "months")
+                .format("MM/DD/YYYY")}`}</p>
+            </div>
+          </div>
+
           <div className="w-full grid md:grid-cols-2 gap-4">
             <BasicChart title="Weight" lineColor="#0C52E8" />
             <BasicChart title="Waist" lineColor="#8B5CF6" />
