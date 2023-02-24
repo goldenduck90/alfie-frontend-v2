@@ -103,9 +103,7 @@ export const Chat = () => {
           disableUserProfile={true}
           renderChannelHeader={() => (
             <>
-              <ChannelProvider channelUrl={currentChannelUrl}>
-                <ChannelHeader handleDrawerToggle={handleDrawerToggle} />
-              </ChannelProvider>
+              <ChannelHeader handleDrawerToggle={handleDrawerToggle} />
             </>
           )}
         />
