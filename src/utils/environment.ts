@@ -4,4 +4,6 @@ const environmentSchema = z.object({
   NEXT_PUBLIC_SENDBIRD_APP_ID: z.string().min(1, "Sendbird App ID is required"),
 });
 
-export const environment = environmentSchema.parse(process.env);
+export const environment = environmentSchema.parse({
+  NEXT_PUBLIC_SENDBIRD_APP_ID: process.env.NEXT_PUBLIC_SENDBIRD_APP_ID,
+});

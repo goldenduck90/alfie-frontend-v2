@@ -9,7 +9,6 @@ const SendBirdId = environment.NEXT_PUBLIC_SENDBIRD_APP_ID;
 
 function Chat() {
   const { user } = useCurrentUserStore();
-
   const hasAllParams = user && SendBirdId;
 
   const sendBirdParams = hasAllParams
