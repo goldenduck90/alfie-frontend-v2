@@ -55,7 +55,7 @@ export function SettingsView() {
           <AccountDetails />
         </Tabs.Content>
         <Tabs.Content value="plan-&-billing" className="mt-6">
-          <PlanAndBillingView />
+          {/* <PlanAndBillingView /> */}
         </Tabs.Content>
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />
