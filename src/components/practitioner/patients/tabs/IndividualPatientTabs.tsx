@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { BasicChart } from "./BasicChart";
 import { MetabolicChart } from "./MetabolicChart";
 import { PatientTasks } from "./components/PatientTasks";
+import { CalendarIcon } from "@heroicons/react/outline";
 
 const TabList = [
   "Information",
@@ -66,6 +67,9 @@ export function IndividualPatientTabs({ user }: { user: any }) {
             <p className="text-2xl font-bold">Chat</p>
             <p className="text-gray-500">Coming Soon</p>
           </div>
+        </Tabs.Content>
+        <Tabs.Content value={TabList[4]}>
+          <AlertsPlaceholder />
         </Tabs.Content>
       </Tabs.Root>
     </div>
@@ -140,6 +144,30 @@ function TabTitle({
       }`}
     >
       {children}
+    </div>
+  );
+}
+
+function AlertsPlaceholder() {
+  return (
+    <div className="mt-6">
+      <AlertItem />
+    </div>
+  );
+}
+
+function AlertItem() {
+  return (
+    <div className="flex items-center justify-between border rounded-md border-gray-300 p-6 shadow">
+      <div className="flex items-center gap-x-2">
+        <div className="flex items-center">
+          <CalendarIcon className="w-12 h-12" />
+        </div>
+        <div className="flex flex-col justify-center">
+          <p className="font-bold text">Patients note</p>
+          <p>The patient experienced a drastic drop in blood pressure.</p>
+        </div>
+      </div>
     </div>
   );
 }
