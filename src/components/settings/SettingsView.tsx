@@ -74,7 +74,7 @@ function AccountDetails() {
                   triggerAsChild
                   trigger={<Button buttonType="secondary">Change</Button>}
                 >
-                  <ChangeNameModal title="Fullname" />
+                  <ChangeNameModal title="Full name" />
                 </DialogModal>
               ),
             },
