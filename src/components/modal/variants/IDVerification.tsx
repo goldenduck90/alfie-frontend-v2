@@ -228,7 +228,7 @@ export function IDVerificationModal({
 
   return (
     <div className="w-full md:max-w-[560px]">
-      <DialogLongHeader title={title} step={step} total={2} />
+      <DialogLongHeader title={title} step={step} total={2} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
       <div className="w-full py-6 bg-gray-50 border-t border-b border-gray-400 px-6 flex flex-col gap-y-2 ">
         <p className="text-sm">
           Please upload a picture of your ID card & Insurance card. Make sure

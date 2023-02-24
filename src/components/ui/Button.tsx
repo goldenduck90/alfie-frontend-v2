@@ -6,7 +6,8 @@ type ButtonStyleType =
   | "secondary"
   | "accent"
   | "tertiary"
-  | "urgent";
+  | "urgent"
+  | "alert";
 type ButtonSizeType = "small" | "medium" | "large";
 
 type ButtonClassName = {
@@ -62,6 +63,7 @@ export const Button = React.forwardRef(
       tertiary:
         "bg-white text-prim-700 border-white hover:bg-prim-200 hover:border-prim-200",
       urgent: "bg-white text-red-500 border-red-500 hover:bg-red-100",
+      alert: "bg-red-500 text-white border-red-500 hover:bg-red-300",
     };
 
     const disabledStyle: ButtonClassName = {
@@ -75,6 +77,8 @@ export const Button = React.forwardRef(
         "disabled:border-primary-300 disabled:bg-primary-300 text-white cursor-not-allowed",
       urgent:
         "disabled:border-red-300 disabled:bg-red-100 text-red-400 cursor-not-allowed",
+      alert:
+        "disabled:border-red-100 disabled:bg-red-100 text-red-400 cursor-not-allowed",
     };
 
     //* if there is an icon without a side picked it will default to right side

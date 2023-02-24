@@ -54,11 +54,14 @@ module.exports = {
           "pistachio-shade": "#96E494",
           "pistachio-tint-1": "#EBFFEB",
         },
+        alertRed: "#EF4444",
         royalBlue: "#0C52E8",
+        successGreen: "#22C55E",
         turquoiseBlue: "#5EC6E8",
       },
       fontFamily: {
         mulish: ["Mulish", "sans-serif"],
+        eudoxus: ["Eudoxus", "sans-serif"],
       },
       spacing: {
         128: "32rem",

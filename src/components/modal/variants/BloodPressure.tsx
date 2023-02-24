@@ -1,3 +1,4 @@
+import { CalculatorIcon } from "@heroicons/react/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
@@ -54,7 +55,7 @@ export function BloodPressure({
 
   return (
     <div className="w-full max-w-[560px] min-w-full">
-      <DialogLongHeader title={title} step={1} total={1} />
+      <DialogLongHeader title={title} step={1} total={1} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
       <DialogLongBody>
         <p className="text-sm text-gray-600 mb-6">
           If you haven&apos;t taken a recent blood pressure reading, please

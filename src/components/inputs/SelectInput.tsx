@@ -37,7 +37,7 @@ export const SelectInput: FC<ISelectInput> = ({
   return (
     <>
       <div
-        className={`flex flex-row w-full rounded-sm border ${
+        className={`flex flex-row w-full rounded-lg border ${
           error ? "border-red-500" : "border-gray-300"
         }`}
       >
@@ -47,7 +47,7 @@ export const SelectInput: FC<ISelectInput> = ({
           defaultValue={value}
           onFocus={() => setError(undefined)}
           onChange={handleChange}
-          className="appearance-none w-full py-2 rounded-sm pl-3 focus:outline-none placeholder-gray-400 bg-white"
+          className="appearance-none w-full py-2 rounded-lg pl-3 focus:outline-none placeholder-gray-400 bg-white"
         >
           <option value="">{placeholder}</option>
           {options.map((option) => (

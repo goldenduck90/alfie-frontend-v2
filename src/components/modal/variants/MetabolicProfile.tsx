@@ -1,4 +1,4 @@
-import { ChevronLeftIcon } from "@heroicons/react/outline";
+import { CalculatorIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { SliderDraggable } from "@src/components/ui/SliderRange";
 import { TextField } from "@src/components/ui/TextField";
@@ -62,7 +62,7 @@ export function MetabolicProfileHunger({
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
-      <DialogLongHeader title={title} step={step} total={2} />
+      <DialogLongHeader title={title} step={step} total={2} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
       <DialogLongBody>
         {step === 1 && (
           <div className="flex flex-col gap-y-2 w-full">
@@ -166,7 +166,7 @@ export function MetabolicProfileActivity({
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
-      <DialogLongHeader title={title} step={1} total={1} />
+      <DialogLongHeader title={title} step={1} total={1} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
           <p className="text-sm text-gray-500 mb-6">
@@ -232,7 +232,7 @@ export function MetabolicProfileMeals({
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
-      <DialogLongHeader title={title} step={1} total={1} />
+      <DialogLongHeader title={title} step={1} total={1} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
           <p className="text-sm text-gray-500 mb-6">

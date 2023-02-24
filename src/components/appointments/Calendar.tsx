@@ -11,7 +11,10 @@ import {
 } from "@heroicons/react/outline";
 import { Line } from "../ui/Line";
 import dayjs from "dayjs";
-
+import { Button } from "@src/components/ui/Button";
+import { RescheduleAppointment } from "../modal/variants/RescheduleAppointment";
+import { DialogModal } from "@src/components/modal/Dialog";
+import { ConfirmModal } from "../modal/variants/ConfirmModal";
 const getAllProviderPatientsQuery = gql`
   query getProviderAppointments($eaProviderId: String!) {
     providerAppointments(eaProviderId: $eaProviderId) {
@@ -54,7 +57,6 @@ interface IMeeting {
 }
 export const CalendarView = () => {
   const [value, onChange] = useState(new Date());
-
   const { loading, error, data } = useQuery(appointmentsQuery, {
     variables: { limit: 2 },
   });
@@ -112,11 +114,11 @@ export const CalendarView = () => {
           tileContent={({ activeStartDate, date, view }) =>
             // If a date in the month view has meetings, show a dot the meetings are found in the meetings array
             view === "month" &&
-            meetings.filter(
-              (meeting) =>
-                new Date(meeting.startTimeInUtc).toDateString() ===
-                new Date(date).toDateString()
-            ).length > 0 ? (
+              meetings.filter(
+                (meeting) =>
+                  new Date(meeting.startTimeInUtc).toDateString() ===
+                  new Date(date).toDateString()
+              ).length > 0 ? (
               <div className="flex justify-center">
                 <div className="w-2 h-2 bg-red-400 absolute md:mt-2 rounded-full" />
               </div>
