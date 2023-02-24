@@ -21,9 +21,12 @@ import {
 } from "@src/components/ui/table";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
+import { useRouter } from "next/router";
 
 export function AllPatientsTabs() {
-  const [activeTab, setActiveTab] = useState("all");
+  const router = useRouter();
+  const tab = (router?.query?.tab as string) || "all";
+  const [activeTab, setActiveTab] = useState(tab || "all");
   const [globalFilter, setGlobalFilter] = useState("");
 
   return (
@@ -34,8 +37,8 @@ export function AllPatientsTabs() {
             <Tabs.Trigger value="all">
               <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
             </Tabs.Trigger>
-            <Tabs.Trigger value="active">
-              <TabTitle active={activeTab === "active"}>
+            <Tabs.Trigger value="issues">
+              <TabTitle active={activeTab === "issues"}>
                 Patients with Health Issues
               </TabTitle>
             </Tabs.Trigger>
@@ -56,7 +59,7 @@ export function AllPatientsTabs() {
             setGlobalFilter={setGlobalFilter}
           />
         </Tabs.Content>
-        <Tabs.Content value="active">
+        <Tabs.Content value="issues">
           <AllPatientsIssuesTable />
         </Tabs.Content>
       </Tabs.Root>

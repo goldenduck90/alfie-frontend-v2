@@ -1,5 +1,4 @@
 import { Layout } from "@src/components/layouts/Layout";
-import { PatientTasks } from "@src/components/practitioner/patients/PatientTasks";
 import { AllPatientsTabs } from "@src/components/practitioner/patients/tabs";
 
 function Patients() {
