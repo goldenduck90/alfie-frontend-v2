@@ -10,35 +10,29 @@ export function SettingsView() {
   const router = useRouter();
   const activeTab =
     (router.query.settingsTab?.[0] as string) || "account-details";
-  const [tab, setActiveTab] = React.useState(activeTab ?? "account-details");
-
-  useEffect(() => {
-    router.replace(`/settings/${activeTab}`, undefined, { shallow: false });
-    if (activeTab) setActiveTab(activeTab);
-  }, [activeTab, router]);
 
   return (
     <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-md px-4 py-4">
       <Tabs.Root
-        value={tab}
+        value={activeTab}
         onValueChange={(value) => {
-          router.replace(`/settings/${value}`, undefined, { shallow: false });
+          router.replace(`/settings/${value}`, undefined, { shallow: true });
         }}
       >
         <div className="flex items-center justify-between flex-wrap gap-y-4">
           <Tabs.List className="flex gap-x-3">
             <Tabs.Trigger value="account-details">
-              <TabTitle active={tab === "account-details"}>
+              <TabTitle active={activeTab === "account-details"}>
                 Account Details
               </TabTitle>
             </Tabs.Trigger>
             <Tabs.Trigger value="plan-&-billing">
-              <TabTitle active={tab === "plan-&-billing"}>
+              <TabTitle active={activeTab === "plan-&-billing"}>
                 Plan & Billing
               </TabTitle>
             </Tabs.Trigger>
             <Tabs.Trigger value="notifications">
-              <TabTitle active={tab === "notifications"}>
+              <TabTitle active={activeTab === "notifications"}>
                 Notifications
               </TabTitle>
             </Tabs.Trigger>
