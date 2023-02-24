@@ -7,6 +7,7 @@ import { Button } from "../ui/Button";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
 import { DialogModal } from "../modal/Dialog";
 import { ChangeNameModal } from "../modal/settings/ChangeNameModal";
+import { ChangeEmailModal } from "../modal/settings/ChangeEmailModal";
 
 export function SettingsView() {
   const router = useRouter();
@@ -86,9 +87,12 @@ function AccountDetails() {
                 />
               ),
               right: (
-                <div>
-                  <Button buttonType="secondary">Change</Button>
-                </div>
+                <DialogModal
+                  triggerAsChild
+                  trigger={<Button buttonType="secondary">Change</Button>}
+                >
+                  <ChangeEmailModal title="Email address" />
+                </DialogModal>
               ),
             },
           ]}
