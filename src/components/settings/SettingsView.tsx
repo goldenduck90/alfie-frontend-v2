@@ -9,6 +9,7 @@ import { DialogModal } from "../modal/Dialog";
 import { ChangeNameModal } from "../modal/settings/ChangeNameModal";
 import { ChangeEmailModal } from "../modal/settings/ChangeEmailModal";
 import { ChangePasswordModal } from "../modal/settings/ChangePasswordModal";
+import dayjs from "dayjs";
 
 export function SettingsView() {
   const router = useRouter();
@@ -137,7 +138,9 @@ function AccountDetails() {
               ),
               right: (
                 <div className="flex items-center gap-x-3">
-                  <span className="text-sm text-gray-600">GMT +01:00</span>
+                  <span className="text-sm text-gray-600">
+                    GMT {dayjs().format("Z")}
+                  </span>
                   <ToggleSwitch
                     label=""
                     checked={true}
