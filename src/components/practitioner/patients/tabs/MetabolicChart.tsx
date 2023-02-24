@@ -53,8 +53,6 @@ const tempData = [
 ];
 
 export function MetabolicChart() {
-  const { user } = useCurrentUserStore();
-
   return (
     <DashboardCard className="w-full md:max-w-[100%] md:min-w-max py-4">
       <div className="flex flex-col md:flex-row gap-2">

@@ -32,7 +32,13 @@ const tempData = [
   },
 ];
 
-export function BasicChart({ title }: { title: string }) {
+export function BasicChart({
+  title,
+  lineColor = "#0C52E8",
+}: {
+  title: string;
+  lineColor?: string;
+}) {
   return (
     <DashboardCard
       className="w-full md:max-w-full md:min-w-max py-4"
@@ -61,7 +67,7 @@ export function BasicChart({ title }: { title: string }) {
             <Line
               type="linear"
               dataKey="value"
-              stroke="#0C52E8"
+              stroke={lineColor}
               strokeWidth={3}
               dot={false}
               activeDot={{ r: 8 }}

@@ -38,10 +38,10 @@ export function IndividualPatientTabs({ user }: { user: any }) {
           </div>
           <p className="my-6 text-xl font-bold">Other Details</p>
           <div className="w-full grid md:grid-cols-2 gap-4">
-            <BasicChart title="Weight" />
-            <BasicChart title="Waist" />
-            <BasicChart title="Steps" />
-            <BasicChart title="Blood Pressure" />
+            <BasicChart title="Weight" lineColor="#0C52E8" />
+            <BasicChart title="Waist" lineColor="#8B5CF6" />
+            <BasicChart title="Steps" lineColor="#22C55E" />
+            <BasicChart title="Blood Pressure" lineColor="#F43F5E" />
           </div>
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
