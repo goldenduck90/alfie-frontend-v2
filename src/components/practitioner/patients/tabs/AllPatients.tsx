@@ -22,6 +22,7 @@ import {
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 import { useRouter } from "next/router";
+import { TabTitle } from "@src/components/ui/tabs/TabTitle";
 
 export function AllPatientsTabs() {
   const router = useRouter();
@@ -63,24 +64,6 @@ export function AllPatientsTabs() {
           <AllPatientsIssuesTable />
         </Tabs.Content>
       </Tabs.Root>
-    </div>
-  );
-}
-
-function TabTitle({
-  children,
-  active,
-}: {
-  children: React.ReactNode;
-  active: boolean;
-}) {
-  return (
-    <div
-      className={`p-3 rounded-md whitespace-nowrap ${
-        active ? "text-brand-berry bg-blue-100" : ""
-      }`}
-    >
-      {children}
     </div>
   );
 }
