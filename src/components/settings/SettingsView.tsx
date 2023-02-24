@@ -61,11 +61,35 @@ function AccountDetails() {
     <div>
       <div>
         <h1 className="text-xl font-[600]">Account Details</h1>
-        <TableView
-          obj={{
-            ["Fullname"]: user?.name || "",
-            ["Email address"]: user?.email || "",
-          }}
+        <TableViewRow
+          inputs={[
+            {
+              left: (
+                <TableEntryInline
+                  leftText="Fullname"
+                  rightText={user?.name || ""}
+                />
+              ),
+              right: (
+                <div>
+                  <Button buttonType="secondary">Change</Button>
+                </div>
+              ),
+            },
+            {
+              left: (
+                <TableEntryInline
+                  leftText="Email address"
+                  rightText={user?.email || ""}
+                />
+              ),
+              right: (
+                <div>
+                  <Button buttonType="secondary">Change</Button>
+                </div>
+              ),
+            },
+          ]}
         />
       </div>
       <div className="mt-6">
@@ -74,10 +98,10 @@ function AccountDetails() {
           inputs={[
             {
               left: (
-                <div className="flex flex-col gap-y-2">
-                  <p className="text-lg font-bold">Password</p>
-                  <p>{`You haven't change your password recently`}</p>
-                </div>
+                <TableEntryStacked
+                  title="Password"
+                  subtext="You haven't changed your password recently"
+                />
               ),
               right: (
                 <div>
@@ -90,10 +114,22 @@ function AccountDetails() {
       </div>
       <div className="mt-6">
         <h1 className="text-xl font-[600]">Language and region</h1>
-        <TableView
-          obj={{
-            ["Automatic time zone"]: "",
-          }}
+        <TableViewRow
+          inputs={[
+            {
+              left: (
+                <TableEntryStacked
+                  title="Automatic time zone"
+                  subtext="Lumix uses your time zone to send summary and notification emails, for times in your activity feeds, and for reminders."
+                />
+              ),
+              right: (
+                <div>
+                  <Button buttonType="secondary">GMT +01:00</Button>
+                </div>
+              ),
+            },
+          ]}
         />
       </div>
     </div>
@@ -132,13 +168,46 @@ function TableViewRow({
       <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300">
         {inputs.map(({ left, right }, index) => {
           return (
-            <div className="flex justify-between items-center px-6 py-4">
+            <div
+              key={index}
+              className="flex justify-between items-center px-6 py-4"
+            >
               {left && left}
               {right && right}
             </div>
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function TableEntryInline({
+  leftText,
+  rightText,
+}: {
+  leftText: string;
+  rightText: string;
+}) {
+  return (
+    <div className="flex gap-x-4">
+      <p className="capitalize min-w-[275px] font-bold">{leftText}</p>
+      <p className="text-gray-600">{rightText}</p>
+    </div>
+  );
+}
+
+function TableEntryStacked({
+  title,
+  subtext,
+}: {
+  title: string;
+  subtext: string;
+}) {
+  return (
+    <div className="flex flex-col">
+      <p className="text font-bold">{title}</p>
+      <p className="text-sm text-gray-600">{subtext}</p>
     </div>
   );
 }
