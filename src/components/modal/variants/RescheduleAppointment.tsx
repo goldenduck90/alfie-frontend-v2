@@ -297,7 +297,7 @@ export function RescheduleAppointment({
               <Button buttonType="secondary">Cancel</Button>
             </RadixDialog.Close>
           )}
-          {step === 2 && (
+          {step === 2 || step === 3 && (
             <Button
               buttonType="secondary"
               onClick={() => setStep((s) => s - 1)}
