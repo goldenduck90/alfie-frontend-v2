@@ -10,6 +10,14 @@ import { ChangeNameModal } from "../modal/settings/ChangeNameModal";
 import { ChangeEmailModal } from "../modal/settings/ChangeEmailModal";
 import { ChangePasswordModal } from "../modal/settings/ChangePasswordModal";
 import dayjs from "dayjs";
+import { CheckCircleIcon } from "@heroicons/react/outline";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 export function SettingsView() {
   const router = useRouter();
@@ -47,7 +55,7 @@ export function SettingsView() {
           <AccountDetails />
         </Tabs.Content>
         <Tabs.Content value="plan-&-billing" className="mt-6">
-          <div>Plan & Billing Coming soon</div>
+          <PlanAndBillingView />
         </Tabs.Content>
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />
@@ -328,6 +336,293 @@ function TableEntryStacked({
     <div className="flex flex-col">
       <p className="text font-bold">{title}</p>
       <p className="text-sm text-gray-600">{subtext}</p>
+    </div>
+  );
+}
+
+function PlanAndBillingView() {
+  const { user } = useCurrentUserStore();
+
+  return (
+    <div>
+      <p>Plan & Billing</p>
+      <div className="flex gap-x-5">
+        <PlanCard />
+        <NextPaymentCard />
+      </div>
+      <div className="mt-6">
+        <p>Billing Information</p>
+        <TableViewRow
+          inputs={[
+            {
+              left: (
+                <TableEntryInline
+                  leftText="Fullname"
+                  rightText={user?.name || ""}
+                />
+              ),
+              right: (
+                <DialogModal
+                  triggerAsChild
+                  trigger={<Button buttonType="secondary">Change</Button>}
+                >
+                  {/* <ChangeNameModal title="Full name" /> */}
+                </DialogModal>
+              ),
+            },
+            {
+              left: (
+                <TableEntryInline
+                  leftText="Email address"
+                  rightText={user?.email || ""}
+                />
+              ),
+              right: (
+                <DialogModal
+                  triggerAsChild
+                  trigger={<Button buttonType="secondary">Change</Button>}
+                >
+                  {/* <ChangeNameModal title="Full name" /> */}
+                </DialogModal>
+              ),
+            },
+            {
+              left: (
+                <TableEntryInline
+                  leftText="Billing address"
+                  rightText={user?.address?.state || ""}
+                />
+              ),
+              right: (
+                <DialogModal
+                  triggerAsChild
+                  trigger={<Button buttonType="secondary">Change</Button>}
+                >
+                  <div />
+                </DialogModal>
+              ),
+            },
+            {
+              left: (
+                <TableEntryInline
+                  leftText="Phone number"
+                  rightText={user?.phone || ""}
+                />
+              ),
+              right: (
+                <DialogModal
+                  triggerAsChild
+                  trigger={<Button buttonType="secondary">Change</Button>}
+                >
+                  <div />
+                </DialogModal>
+              ),
+            },
+          ]}
+        />
+      </div>
+      <div className="mt-6">
+        <p>Invoice history</p>
+        <InvoiceHistoryTable />
+      </div>
+    </div>
+  );
+}
+
+const planPoints = [
+  "4 free appointments with our specialist per monthaccess to ",
+  "access to medical data history",
+  "chat with our experts",
+  "individual program",
+  "personal dashboard",
+];
+function PlanCard() {
+  return (
+    <div className="border border-gray-300 rounded-md flex-grow shadow">
+      <div className="px-4 py-4">
+        <div className="flex items-center justify-between">
+          <p>Basic Plan</p>
+          <div>
+            <p>US $120.00</p>
+          </div>
+        </div>
+        <p className="py-2 whitespace-pre">
+          {`If you want to upgrade your plan, please click the button below.\nYour current plan includes:`}
+        </p>
+        <div className="flex flex-col gap-y-2 mb-6">
+          {planPoints.map((point, index) => {
+            return (
+              <p
+                className="text-sm flex items-center gap-x-2 text-gray-600"
+                key={point}
+              >
+                <CheckCircleIcon className="h-5 w-5 text-green-500" />
+                {point}
+              </p>
+            );
+          })}
+        </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <p>Enable auto renew</p>
+            <p>
+              After your subscription ends on 5 February 2024, this plan will
+              continue automatically.
+            </p>
+          </div>
+          <div>
+            <ToggleSwitch
+              label=""
+              checked={true}
+              onCheckedChange={() => {}}
+              name="phone"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="w-full border-t border-gray-200 px-4 flex items-center justify-end py-4 gap-x-3">
+        <Button buttonType="urgent">Cancel plan</Button>
+        <Button>Change plan</Button>
+      </div>
+    </div>
+  );
+}
+
+function NextPaymentCard() {
+  return (
+    <div>
+      <div className="p-4 border border-gray-300 rounded-md flex-shrink-0 max-h-fit min-w-[270px] shadow">
+        <p>Next payment</p>
+        <p>on 25 Feb 2023</p>
+        <div className="flex items-center justify-end mt-10">
+          <Button buttonType="secondary">Manage payments</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface InvoiceHistory {
+  date: string;
+  name: string;
+  status: string;
+  amount: string;
+  file: string;
+}
+
+const columnHelper = createColumnHelper<InvoiceHistory>();
+
+const columns = [
+  columnHelper.accessor("date", {
+    header: () => (
+      <p className="py-2 text-gray-600 font-[500] capitalize text-left pl-3">
+        date
+      </p>
+    ),
+    cell: (info) => <p className="py-2 pl-3">{info.getValue()}</p>,
+  }),
+  columnHelper.accessor("name", {
+    header: () => (
+      <p className="py-2 text-gray-600 font-[500] capitaliz text-left">Name</p>
+    ),
+    cell: (info) => <p>{info.getValue()}</p>,
+  }),
+  columnHelper.accessor("status", {
+    header: () => (
+      <p className="py-2 text-gray-600 font-[500] capitalize text-left">
+        status
+      </p>
+    ),
+    cell: (info) => <p>{info.getValue()}</p>,
+  }),
+  columnHelper.accessor("amount", {
+    header: () => (
+      <p className="py-2 text-gray-600 font-[500] capitalize text-left">
+        amount
+      </p>
+    ),
+    cell: (info) => <p>{info.getValue()}</p>,
+  }),
+  columnHelper.accessor("file", {
+    header: () => (
+      <p className="py-2 text-gray-600 font-[500] capitalize text-left pr-3">
+        file
+      </p>
+    ),
+    cell: (info) => <p>{info.getValue()}</p>,
+  }),
+];
+
+const tempData = [
+  {
+    date: "10.04.1992",
+    name: "Alfie Basic Subscription",
+    status: "Paid",
+    amount: "$120.00",
+    file: "Download",
+  },
+  {
+    date: "10.04.1992",
+    name: "Alfie Basic Subscription",
+    status: "Paid",
+    amount: "$120.00",
+    file: "Download",
+  },
+  {
+    date: "10.04.1992",
+    name: "Alfie Basic Subscription",
+    status: "Paid",
+    amount: "$120.00",
+    file: "Download",
+  },
+  {
+    date: "10.04.1992",
+    name: "Alfie Basic Subscription",
+    status: "Paid",
+    amount: "$120.00",
+    file: "Download",
+  },
+];
+
+function InvoiceHistoryTable() {
+  const { getHeaderGroups, getRowModel } = useReactTable({
+    data: tempData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
+
+  return (
+    <div>
+      <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+        <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
+          <thead>
+            {getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="bg-gray-50">
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          {getRowModel().rows.map((row) => (
+            <tr key={row.id} className="">
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id} className="text-left">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </table>
+      </div>
     </div>
   );
 }
