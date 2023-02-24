@@ -1,13 +1,11 @@
 import React, { ReactNode, useEffect } from "react";
-import { Layout } from "@src/components/layouts/Layout";
 import { useRouter } from "next/router";
 import * as Tabs from "@radix-ui/react-tabs";
 import { TabTitle } from "@src/components/ui/tabs/TabTitle";
-import { useUserSession } from "@src/hooks/useUserSession";
-import { useUserStateContext } from "@src/context/SessionContext";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { Button } from "../ui/Button";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
+
 export function SettingsView() {
   const router = useRouter();
   const activeTab =
@@ -49,7 +47,7 @@ export function SettingsView() {
           <div>Plan & Billing</div>
         </Tabs.Content>
         <Tabs.Content value="notifications" className="mt-6">
-          <div>notifications</div>
+          <NotificationsView />
         </Tabs.Content>
       </Tabs.Root>
     </div>
@@ -137,6 +135,126 @@ function AccountDetails() {
               ),
             },
           ]}
+        />
+      </div>
+    </div>
+  );
+}
+
+type NotificationViewItem = {
+  title: string;
+  subtext: string;
+  rightNode?: React.ReactNode;
+};
+
+const topItems: NotificationViewItem[] = [
+  {
+    title: "Someone messages me",
+    subtext:
+      "When someone sends you a message in chat, we will send you a notification.",
+    rightNode: <ToggleSwitchRow />,
+  },
+  {
+    title: "My subscription is about to expire",
+    subtext:
+      "We will send you a notification one week before your subscription expires.",
+    rightNode: <ToggleSwitchRow />,
+  },
+  {
+    title: "I have a new task assigned",
+    subtext:
+      "When someone from the Alfie team adds a task for you to complete, we will notify you.",
+    rightNode: <ToggleSwitchRow />,
+  },
+  {
+    title: "I have an overdue task",
+    subtext: "If one of your tasks will be overdue we will let you know.",
+    rightNode: <ToggleSwitchRow />,
+  },
+  {
+    title: "I receive a new invoice",
+    subtext: "We will notify you when a new invoice is issued.",
+    rightNode: <ToggleSwitchRow />,
+  },
+  {
+    title: "My scheduled appointments change",
+    subtext:
+      "If any changes related to your appointment would appear, we'll let you know via notification.",
+    rightNode: <ToggleSwitchRow />,
+  },
+];
+
+const weeklyNewsLetter: NotificationViewItem[] = [
+  {
+    title: "Education",
+    subtext:
+      "Increase your knowledge about a healthy lifestyle and implement new habits on a daily basis.",
+    rightNode: (
+      <ToggleSwitch
+        label=""
+        checked={true}
+        onCheckedChange={() => {}}
+        name="phone"
+      />
+    ),
+  },
+  {
+    title: "Alfie Insider",
+    subtext:
+      "Stay up to date with all news, changes and new services from Alfie.",
+    rightNode: (
+      <ToggleSwitch
+        label=""
+        checked={true}
+        onCheckedChange={() => {}}
+        name="phone"
+      />
+    ),
+  },
+];
+
+function ToggleSwitchRow() {
+  return (
+    <div className="flex gap-x-2">
+      <ToggleSwitch
+        label=""
+        checked={true}
+        onCheckedChange={() => {}}
+        name="phone"
+      />
+      <ToggleSwitch
+        label=""
+        checked={true}
+        onCheckedChange={() => {}}
+        name="email"
+      />
+    </div>
+  );
+}
+
+function NotificationsView() {
+  return (
+    <div>
+      <div>
+        <h1 className="text-xl font-[600]">Notifications</h1>
+        <TableViewRow
+          inputs={topItems.map((item) => ({
+            left: (
+              <TableEntryStacked title={item.title} subtext={item.subtext} />
+            ),
+            right: item.rightNode,
+          }))}
+        />
+      </div>
+      <div className="mt-6">
+        <h1 className="text-lg font-[600]">Weekly newsletter</h1>
+        <TableViewRow
+          inputs={weeklyNewsLetter.map((item) => ({
+            left: (
+              <TableEntryStacked title={item.title} subtext={item.subtext} />
+            ),
+            right: item.rightNode,
+          }))}
         />
       </div>
     </div>
