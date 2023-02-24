@@ -146,9 +146,8 @@ const Scheduler = ({
           disabled={isToday(selectedDate)}
         >
           <ArrowLeftIcon
-            className={`w-5 h-5 md:w-6 md:h-6 ${
-              isToday(selectedDate) ? "text-gray-300" : "text-indigo-800"
-            }`}
+            className={`w-5 h-5 md:w-6 md:h-6 ${isToday(selectedDate) ? "text-gray-300" : "text-indigo-800"
+              }`}
           />
         </IconButton>
 

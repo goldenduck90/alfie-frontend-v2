@@ -1,3 +1,4 @@
+import { CalculatorIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
 import { AnswerType, TaskType } from "@src/graphql/generated";
@@ -38,7 +39,7 @@ export function FoodLog({ taskId }: { taskId: string }) {
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
-      <DialogLongHeader title={"Food Log"} step={1} total={1} />
+      <DialogLongHeader title={"Food Log"} step={1} total={1} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
           <p className="font-bold text-sm mb-2">What did you eat today?</p>

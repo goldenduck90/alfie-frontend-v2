@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Layout } from "@src/components/layouts/Layout";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
@@ -13,6 +14,7 @@ import { Button } from "@src/components/ui/Button";
 import Image from "next/image";
 import dayjs from "dayjs";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
+import { ConfirmModal } from '@src/components/modal/variants/ConfirmModal';
 
 export const appointmentDetailQuery = gql`
   query AppointmentsQuery($eaAppointmentId: String!) {
@@ -40,7 +42,8 @@ const cancelAppointmentMutation = gql`
 function AppointmentDetails() {
   const { appointmentId } = useRouter().query as { appointmentId: string };
   const router = useRouter();
-
+  const [cancelModalOpen, setCancelModalOpen] = useState(false)
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(true)
   const { data, loading, error } = useQuery(appointmentDetailQuery, {
     variables: {
       eaAppointmentId: appointmentId,
@@ -189,10 +192,10 @@ function AppointmentDetails() {
             </div>
           </div>
           <div className="bg-gray-50 md:-m-6 p-4 md:mt-2 flex justify-end gap-2 border-t rounded-b-xl">
-            <Button disabled={loading} buttonType="urgent">
+            <Button disabled={loading} buttonType="urgent" onClick={() => { setCancelModalOpen(true) }}>
               Cancel this visit
             </Button>
-            <Button disabled={loading}>Reschedule</Button>
+            <Button disabled={loading} onClick={() => { setRescheduleModalOpen(true) }}>Reschedule</Button>
           </div>
         </div>
         <div>

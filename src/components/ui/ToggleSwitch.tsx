@@ -7,6 +7,7 @@ interface ToggleSwitchProps {
   onCheckedChange: () => void;
   defaultChecked?: boolean;
   disabled?: boolean;
+  labelRight?: string | JSX.Element;
   required?: boolean;
   name?: string;
   value?: string;
@@ -14,12 +15,13 @@ interface ToggleSwitchProps {
 
 export const ToggleSwitch = ({
   label,
+  labelRight,
   checked,
   ...props
 }: ToggleSwitchProps) => {
   return (
     <div className="flex items-center">
-      <label className="pr-4">{label}</label>
+      <label className="pr-2 text-xs md:text-sm font-eudoxus">{label}</label>
       <RadixSwitch.Root
         {...props}
         className={`unset relative h-7 w-12 focus:shadow-prim-900 ring-transparent ring-2 focus:ring-blue-500 ${
@@ -34,6 +36,11 @@ export const ToggleSwitch = ({
           }`}
         />
       </RadixSwitch.Root>
+      {labelRight && (
+        <label className="pl-2 text-xs md:text-sm font-eudoxus">
+          {labelRight}
+        </label>
+      )}
     </div>
   );
 };
