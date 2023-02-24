@@ -1,9 +1,49 @@
 import { CalculatorIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Control, useController, useForm, useWatch } from "react-hook-form";
 import { Button } from "../../ui/Button";
-import { DialogLongHeader } from "../Dialog";
+import { DialogLongHeader, useDialogToggle } from "../Dialog";
+import { gql, useMutation } from "@apollo/client";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { FileType } from "@src/graphql/generated";
+import { useTaskCompletion } from "@src/hooks/useTaskCompletion";
+
+function createS3key({
+  fileName,
+  fileType,
+  folder,
+  timestamp = false,
+}: {
+  fileName: string;
+  fileType: string;
+  folder: string;
+  timestamp?: boolean;
+}) {
+  let key = `${folder.replace(" ", "_")}/${fileName}`;
+  if (timestamp) {
+    key = `${key}-${Date.now()}`;
+  }
+
+  return `${key}.${fileType}`;
+}
+
+const requestSignedUrlsMutation = gql`
+  mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
+    requestSignedUrls(requests: $requests) {
+      url
+      key
+    }
+  }
+`;
+
+const completeUploadUserTaskMutation = gql`
+  mutation completeUploadFiles($files: [FileInput!]!) {
+    completeUpload(files: $files) {
+      _id
+    }
+  }
+`;
 
 export function IDVerificationModal({
   title,
@@ -13,12 +53,19 @@ export function IDVerificationModal({
   taskId: string;
 }) {
   const [step, setStep] = useState(1);
+  const { user } = useCurrentUserStore();
   const { control, handleSubmit } = useForm({
     defaultValues: {
+      _id: taskId,
       insurancePhoto: null,
       idPhoto: null,
     },
   });
+
+  const [requestSignedUrls] = useMutation(requestSignedUrlsMutation);
+  const [completeUploadFiles] = useMutation(completeUploadUserTaskMutation);
+  const setOpen = useDialogToggle();
+  const [mutate] = useTaskCompletion(() => setOpen(false));
 
   const fileInput = useWatch({
     control,
@@ -30,6 +77,154 @@ export function IDVerificationModal({
       setStep(2);
     }
   }, [fileInput]);
+
+  const onSubmitFiles = useCallback(
+    async ({ insurancePhoto, idPhoto, _id }: any) => {
+      try {
+        // Get S3 Signed URLs
+        const idPhotoKey = createS3key({
+          fileName: "ID_PHOTO",
+          fileType: `${idPhoto?.value?.split(".").pop()}`,
+          folder: `${user?.name}`,
+        });
+
+        const insurancePhotoKey = createS3key({
+          fileName: "INSURANCE_CARD",
+          fileType: `${insurancePhoto?.value?.split(".").pop()}`,
+          folder: `${user?.name}`,
+        });
+
+        const uploadRequest = [
+          {
+            key: idPhotoKey,
+            metadata: [
+              {
+                key: "DOCUMENT_TYPE",
+                value: "PHOTO_ID",
+              },
+              {
+                key: "USER_ID",
+                value: user?._id,
+              },
+              {
+                key: "USER_TASK_ID",
+                value: _id,
+              },
+              {
+                key: "TASK_TYPE",
+                value: "ID_AND_INSURANCE",
+              },
+              {
+                key: "USER_EMAIL",
+                value: user?.email,
+              },
+            ],
+            contentType: idPhoto?.file?.type || "",
+          },
+        ];
+
+        uploadRequest.push({
+          key: insurancePhotoKey,
+          metadata: [
+            {
+              key: "DOCUMENT_TYPE",
+              value: "INSURANCE_CARD",
+            },
+            {
+              key: "USER_ID",
+              value: user?._id,
+            },
+            {
+              key: "USER_TASK_ID",
+              value: _id,
+            },
+            {
+              key: "TASK_TYPE",
+              value: "ID_AND_INSURANCE",
+            },
+          ],
+          contentType: insurancePhoto?.file?.type || "",
+        });
+
+        const { data } = await requestSignedUrls({
+          variables: {
+            requests: uploadRequest,
+          },
+        });
+
+        const uploadedFiles = await Promise.all(
+          data?.requestSignedUrls?.map(
+            async ({ key, url }: { key: string; url: string }) => {
+              let file: File | null = null;
+              let type: FileType | null = null;
+              if (key.includes("ID_PHOTO")) {
+                file = idPhoto?.file;
+                type = FileType.PhotoId;
+              } else {
+                file = insurancePhoto?.file;
+                type = FileType.InsuranceCard;
+              }
+
+              const uploadResponse = await fetch(url, {
+                method: "PUT",
+                headers: {
+                  ["Content-Type"]: file?.type || "",
+                },
+                body: file,
+              });
+
+              if (uploadResponse.status === 200) {
+                console.log("Upload Request Response", { uploadResponse });
+                return {
+                  key,
+                  metadata: uploadRequest?.[0]?.metadata,
+                  type: type,
+                  contentType: file?.type,
+                  ETag: uploadResponse.headers.get("etag") || "",
+                  url: `${
+                    url.split("?")[0]
+                  }?versionId=${uploadResponse.headers.get(
+                    "x-amz-version-id"
+                  )}`,
+                  versionId: uploadResponse.headers.get("x-amz-version-id"),
+                  createdAt: uploadResponse.headers.get("date"),
+                };
+              }
+            }
+          )
+        );
+
+        await completeUploadFiles({
+          variables: {
+            files: uploadedFiles,
+          },
+        });
+
+        const finalInput = {
+          _id,
+          answers: uploadedFiles.map((file) => {
+            return {
+              key: file.key,
+              value: file.url,
+              type: "FILE",
+            };
+          }),
+        };
+
+        mutate({
+          variables: {
+            input: finalInput,
+          },
+        });
+        // Complete upload file?
+      } catch (error) {
+        console.log("Failed to get Signed URLS", { error });
+      }
+
+      // End
+    },
+    []
+  );
 
   return (
     <div className="w-full md:max-w-[560px]">
@@ -89,7 +284,7 @@ export function IDVerificationModal({
             if (step === 1) {
               setStep(2);
             } else {
-              handleSubmit(console.log)();
+              handleSubmit(onSubmitFiles)();
             }
           }}
         >
