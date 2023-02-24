@@ -4,7 +4,12 @@ import { useState } from "react";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, useDialogToggle } from "../Dialog";
 import { parseError } from "../../../utils/parseError";
-import { CalendarIcon, ClockIcon, UserIcon } from "@heroicons/react/outline";
+import {
+  CalendarIcon,
+  ClockIcon,
+  UserIcon,
+  XIcon,
+} from "@heroicons/react/outline";
 import Image from "next/image";
 
 export function ConfirmModal({
@@ -36,7 +41,14 @@ export function ConfirmModal({
   return (
     <div className="w-full max-w-[480px] min-w-full">
       <FormikProvider value={form}>
-        <DialogLongBody>
+        <div className="w-full flex justify-end pr-6">
+          <RadixDialog.Close className="" asChild>
+            <button>
+              <XIcon className="w-5 h-5" />
+            </button>
+          </RadixDialog.Close>
+        </div>
+        <div className="w-full min-w-full px-6 flex flex-col gap-y-2">
           <div className="flex flex-col gap-y-2 w-full">
             <div className="flex flex-col">
               {cancellation ? (
@@ -112,7 +124,7 @@ export function ConfirmModal({
               </div>
             </div>
           </div>
-        </DialogLongBody>
+        </div>
         <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3">
           {cancellation && (
             <RadixDialog.Close asChild>

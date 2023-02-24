@@ -1,36 +1,55 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
-import {
-  Calendar,
-} from "react-calendar";
+import { Calendar } from "react-calendar";
 import { FormikProvider, useField, useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
-import { ChevronLeftIcon } from "@heroicons/react/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import { TimeslotButton } from "../../ui/TimeslotButton";
 import { OptionInput, SelectInput } from "../../inputs/SelectInput";
 import { rawTimeZones } from "@vvo/tzdb";
 import { parseError } from "../../../utils/parseError";
-import { ToggleSwitch } from "./../../ui/ToggleSwitch";
 import { CalendarIcon, ClockIcon, UserIcon } from "@heroicons/react/outline";
 import { TextArea } from "../../inputs/TextArea";
 import { useTaskCompletion } from "../../../hooks/useTaskCompletion";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { EaProvider, Role } from "@src/graphql/generated";
 import * as Yup from "yup";
 
 export const FormCalendar = () => {
+  const [, , { setValue: setSelectedDate, setError: setSelectedDateError }] =
+    useField("selectedDate");
+
+  return <Calendar onChange={(date: any) => setSelectedDate(date)} />;
+};
+
+export const DateSelector = () => {
   const [
-    , ,
+    ,
+    { value: selectedDate },
     { setValue: setSelectedDate, setError: setSelectedDateError },
   ] = useField("selectedDate");
 
-
-  const onDateSelected = (date: any) => {
-    setSelectedDate(date);
-  };
-  return (<Calendar onChange={(date: any) => onDateSelected(date)} />)
-}
+  return (
+    <div className="flex justify-center">
+      <button
+        className="mr-8 p-2 border rounded-xl"
+        onClick={() => setSelectedDate(addDays(selectedDate, -1))}
+      >
+        <ChevronLeftIcon className="h-5 w-5" id="backLabel" />
+      </button>
+      <p className="font-bold text-sm text-gray-600 self-center">
+        {format(selectedDate, "E, MMMM do")}
+      </p>
+      <button
+        className="ml-8 p-2 border rounded-xl"
+        onClick={() => setSelectedDate(addDays(selectedDate, 1))}
+      >
+        <ChevronRightIcon className="h-5 w-5 md:w-6 md:h-6" id="nextLabel" />
+      </button>
+    </div>
+  );
+};
 
 export function RescheduleAppointment({
   title,
@@ -72,8 +91,8 @@ export function RescheduleAppointment({
         //   },
         // });
         if (onAppointmentConfirmed) {
-          setOpen(false)
-          onAppointmentConfirmed()
+          setOpen(false);
+          onAppointmentConfirmed();
         }
         resetForm();
       } catch (err) {
@@ -81,6 +100,7 @@ export function RescheduleAppointment({
         setStatus({ error: msg });
       }
     },
+    validateOnChange: true,
     validationSchema: Yup.object().shape({
       eaProvider: Yup.object().required("Please select a provider."),
       selectedDate: Yup.string()
@@ -100,7 +120,9 @@ export function RescheduleAppointment({
   const setOpen = useDialogToggle();
   // const [mutate] = useTaskCompletion(() => setOpen(false));
   const { submitForm, isSubmitting } = rescheduleForm;
-  const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const [timezone, setTimezone] = useState(
+    Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
   const [twentyFourHrChecked, set24HrChecked] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [eaProvider, setEaProvider] = useState({
@@ -158,10 +180,10 @@ export function RescheduleAppointment({
   useEffect(() => {
     const { eaProvider, selectedDate } = rescheduleForm.values;
     if (eaProvider) {
-      setEaProvider(eaProvider)
+      setEaProvider(eaProvider);
     }
     if (selectedDate) {
-      setSelectedDate(selectedDate)
+      setSelectedDate(selectedDate);
     }
   }, [rescheduleForm]);
 
@@ -185,14 +207,9 @@ export function RescheduleAppointment({
           )}
           {step === 2 && (
             <div className="flex flex-col gap-y-2">
+              <DateSelector />
               <div className="flex justify-between">
                 <p className="font-bold text-sm text-gray-600">Choose time</p>
-                <ToggleSwitch
-                  label={"AM/PM"}
-                  labelRight={"24hr"}
-                  checked={twentyFourHrChecked}
-                  onCheckedChange={() => set24HrChecked(!twentyFourHrChecked)}
-                />
               </div>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {timeslots.map((timeslot) => (
@@ -223,18 +240,29 @@ export function RescheduleAppointment({
                   <UserIcon className="h-6 w-6 text-lime-700" />
                 </div>
                 <div>
-                  <h2 className="text-gray-900 font-medium">{eaProvider.name}</h2>
-                  <p className="text-gray-600 font-normal">{String(eaProvider.type)}</p>
+                  <h2 className="text-gray-900 font-medium">
+                    {eaProvider.name}
+                  </h2>
+                  <p className="text-gray-600 font-normal">
+                    {String(eaProvider.type)}
+                  </p>
                 </div>
               </div>
               <div className="w-full py-4 px-2 rounded-md flex gap-x-4 bg-gray-100 text-sm whitespace-nowrap">
                 <div className="flex gap-x-4 items-start">
                   <CalendarIcon className="w-6 h-6 text-gray-500" />
                   <div className="flex flex-col">
-                    <p className="font-bold">{twentyFourHrChecked ? format(new Date(timeslot.startTimeInUtc), "HH:mm") : format(new Date(timeslot.startTimeInUtc), "h:mm aa")} -{" "}
-                      {twentyFourHrChecked ? format(new Date(timeslot.endTimeInUtc), "HH:mm") : format(new Date(timeslot.endTimeInUtc), "h:mm aa")}</p>
+                    <p className="font-bold">
+                      {format(new Date(timeslot.startTimeInUtc), "h:mm aa")} -{" "}
+                      {format(new Date(timeslot.endTimeInUtc), "h:mm aa")}
+                    </p>
                     <p className="text-gray-500 font-medium">
-                      {selectedDate.toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) || ""}
+                      {selectedDate.toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }) || ""}
                     </p>
                   </div>
                 </div>
