@@ -23,10 +23,14 @@ export function UpcomingAppointments() {
       subtitle={appointment.email}
       renderIcon={
         <div className="pr-4">
-          <AvatarInitial index={i} text={appointment.name[0]} />
+          <AvatarInitial size="lg" index={i} text={appointment.name[0]} />
         </div>
       }
-      onClick={() => router.push(appointment.meetingUrl || "/dashboard")}
+      onClick={() =>
+        router.push(
+          `/dashboard/appointments/${appointment._id}` || "/dashboard"
+        )
+      }
     />
   ));
 
@@ -47,6 +51,7 @@ export function UpcomingAppointments() {
       }
     >
       <div className="w-full max-h-96 overflow-auto">
+        {renderAppointments}
         {renderAppointments}
         {patients.loading && renderLoadItems}
       </div>

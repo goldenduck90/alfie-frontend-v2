@@ -1,30 +1,26 @@
-import { ClockIcon } from "@heroicons/react/outline";
 import { UserIcon, ExclamationCircleIcon } from "@heroicons/react/solid";
 import { Button } from "@src/components/ui/Button";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import Link from "next/link";
 
-export interface AppointmentPreviewItemProps {
+export interface AbnormalPatientPreviewItemProps {
   name?: string;
   providerTitle?: string;
   img?: string;
   icon?: React.ReactNode;
-  renderDate?: { date: string; time: string };
   isLoading?: boolean;
-  appointmentId?: string;
   abnormality?: string;
+  patientId?: string;
 }
 
-export function AppointmentPreviewItem({
+export function AbnormalPatientPreviewItem({
   name,
   providerTitle,
-  img,
-  renderDate,
   isLoading,
-  appointmentId,
   icon,
   abnormality,
-}: AppointmentPreviewItemProps) {
+  patientId,
+}: AbnormalPatientPreviewItemProps) {
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 md:p-6">
       <div className="flex flex-row justify-between gap-2 w-full">
@@ -57,11 +53,7 @@ export function AppointmentPreviewItem({
       )}
 
       <div className="flex gap-x-2 justify-end border-t-[1px] rounded-b-xl -m-6 mt-4 py-4 px-4 bg-gray-50">
-        <Link
-          href={`/dashboard/appointments/${appointmentId}`}
-          passHref
-          legacyBehavior
-        >
+        <Link href={`/dashboard/patients/${patientId}`} passHref legacyBehavior>
           <Button buttonType="secondary">See Details</Button>
         </Link>
         <Button disabled={isLoading}>Contact</Button>

@@ -10,6 +10,7 @@ interface LayoutProps {
   title?: React.ReactNode;
   subtitle?: string;
   hasBackButton?: boolean;
+  backRef?: string;
 }
 
 export const Layout = ({
@@ -17,6 +18,7 @@ export const Layout = ({
   title,
   subtitle,
   hasBackButton,
+  backRef,
 }: LayoutProps) => {
   const { user } = useCurrentUserStore();
   const isAdmin = user?.role === Role.Admin;
@@ -88,7 +90,7 @@ export const Layout = ({
           <div className="flex">
             {hasBackButton && (
               <div className="pr-6 pt-1">
-                <BackButton />
+                <BackButton href={backRef} />
               </div>
             )}
             {title && (

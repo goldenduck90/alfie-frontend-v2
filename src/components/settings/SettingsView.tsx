@@ -18,9 +18,19 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useCheckRole } from "@src/hooks/useCheckRole";
+import { Role } from "@src/graphql/generated";
 
 export function SettingsView() {
   const router = useRouter();
+  const isPatient = useCheckRole([Role.Patient]);
+  const isPractitioner = useCheckRole([
+    Role.Practitioner,
+    Role.Admin,
+    Role.CareCoordinator,
+    Role.HealthCoach,
+    Role.Doctor,
+  ]);
   const activeTab =
     (router.query.settingsTab?.[0] as string) || "account-details";
 
@@ -33,17 +43,26 @@ export function SettingsView() {
         }}
       >
         <div className="flex items-center justify-between flex-wrap gap-y-4">
-          <Tabs.List className="flex gap-x-3">
+          <Tabs.List className="flex gap-x-3 overflow-x-auto">
             <Tabs.Trigger value="account-details">
               <TabTitle active={activeTab === "account-details"}>
                 Account Details
               </TabTitle>
             </Tabs.Trigger>
-            <Tabs.Trigger value="plan-&-billing">
-              <TabTitle active={activeTab === "plan-&-billing"}>
-                Plan & Billing
-              </TabTitle>
-            </Tabs.Trigger>
+            {isPatient && (
+              <Tabs.Trigger value="plan-&-billing">
+                <TabTitle active={activeTab === "plan-&-billing"}>
+                  Plan & Billing
+                </TabTitle>
+              </Tabs.Trigger>
+            )}
+            {isPractitioner && (
+              <Tabs.Trigger value="availability">
+                <TabTitle active={activeTab === "availability"}>
+                  Availability
+                </TabTitle>
+              </Tabs.Trigger>
+            )}
             <Tabs.Trigger value="notifications">
               <TabTitle active={activeTab === "notifications"}>
                 Notifications
@@ -54,9 +73,16 @@ export function SettingsView() {
         <Tabs.Content value="account-details" className="mt-6">
           <AccountDetails />
         </Tabs.Content>
-        <Tabs.Content value="plan-&-billing" className="mt-6">
-          {/* <PlanAndBillingView /> */}
-        </Tabs.Content>
+        {isPatient && (
+          <Tabs.Content value="plan-&-billing" className="mt-6">
+            <PlanAndBillingView />
+          </Tabs.Content>
+        )}
+        {isPractitioner && (
+          <Tabs.Content value="availability" className="mt-6">
+            Cal integration?
+          </Tabs.Content>
+        )}
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />
         </Tabs.Content>
