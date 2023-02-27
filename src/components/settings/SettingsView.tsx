@@ -429,7 +429,7 @@ function PlanAndBillingView() {
                   triggerAsChild
                   trigger={<Button buttonType="secondary">Change</Button>}
                 >
-                  {/* <ChangeNameModal title="Full name" /> */}
+                  <ChangeNameModal title="Full name" />
                 </DialogModal>
               ),
             },
@@ -445,7 +445,7 @@ function PlanAndBillingView() {
                   triggerAsChild
                   trigger={<Button buttonType="secondary">Change</Button>}
                 >
-                  {/* <ChangeNameModal title="Full name" /> */}
+                  <ChangeNameModal title="Full name" />
                 </DialogModal>
               ),
             },
@@ -579,41 +579,37 @@ const columnHelper = createColumnHelper<InvoiceHistory>();
 const columns = [
   columnHelper.accessor("date", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitalize text-left pl-3">
-        date
-      </p>
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">date</p>
     ),
-    cell: (info) => <p className="py-2 pl-3">{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
   columnHelper.accessor("name", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitaliz text-left">Name</p>
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">Name</p>
     ),
-    cell: (info) => <p>{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
   columnHelper.accessor("status", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitalize text-left">
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">
         status
       </p>
     ),
-    cell: (info) => <p>{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
   columnHelper.accessor("amount", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitalize text-left">
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">
         amount
       </p>
     ),
-    cell: (info) => <p>{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
   columnHelper.accessor("file", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitalize text-left pr-3">
-        file
-      </p>
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">file</p>
     ),
-    cell: (info) => <p>{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
 ];
 
@@ -657,40 +653,38 @@ function InvoiceHistoryTable() {
   });
 
   return (
-    <div>
-      <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-        <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
-          <thead>
-            {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-gray-50">
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    <div className="min-w-max p-x-1">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          {getRowModel().rows.map((row) => (
-            <tr key={row.id} className="">
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="text-left">
-                  <div className="min-w-max p-x-1">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+    <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+      <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
+        <thead>
+          {getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id} className="bg-gray-50 py-2">
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  <div className="min-w-max whitespace-nowrap">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </div>
-                </td>
+                </th>
               ))}
             </tr>
           ))}
-        </table>
-      </div>
+        </thead>
+        {getRowModel().rows.map((row) => (
+          <tr key={row.id} className="">
+            {row.getVisibleCells().map((cell) => (
+              <td key={cell.id} className="text-left py-2">
+                <div className="min-w-max whitespace-nowrap">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </table>
     </div>
   );
 }

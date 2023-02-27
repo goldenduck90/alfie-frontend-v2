@@ -160,7 +160,7 @@ export function AllPatientsTable({
                 <tr key={row.id} className="">
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="py-4 ">
-                      <div className="min-w-max">
+                      <div className="min-w-max whitespace-nowrap">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
