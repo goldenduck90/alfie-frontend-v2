@@ -127,7 +127,7 @@ function TableInformationHeader({ user }: { user: User }) {
   }, [user]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
+    <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
       <div className="flex gap-3 items-center">
         <AvatarInitial size="xl" index={0} text={initials} />
         <p className="font-bold text-xl">{user?.name}</p>
