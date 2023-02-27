@@ -52,7 +52,6 @@ export function UpcomingAppointments() {
     >
       <div className="w-full max-h-96 overflow-auto">
         {renderAppointments}
-        {renderAppointments}
         {patients.loading && renderLoadItems}
       </div>
     </DashboardCard>
