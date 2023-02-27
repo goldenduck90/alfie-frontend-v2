@@ -11,10 +11,7 @@ import {
 } from "@heroicons/react/outline";
 import { Line } from "../ui/Line";
 import dayjs from "dayjs";
-import { Button } from "@src/components/ui/Button";
-import { RescheduleAppointment } from "../modal/variants/RescheduleAppointment";
-import { DialogModal } from "@src/components/modal/Dialog";
-import { ConfirmModal } from "../modal/variants/ConfirmModal";
+
 const getAllProviderPatientsQuery = gql`
   query getProviderAppointments($eaProviderId: String!) {
     providerAppointments(eaProviderId: $eaProviderId) {
@@ -180,7 +177,7 @@ export const CalendarView = () => {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
