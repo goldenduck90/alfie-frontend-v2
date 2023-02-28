@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
 import { TaskType, User } from "@src/graphql/generated";
 import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
+import { Button } from "@src/components/ui/Button";
+import { CheckCircleIcon } from "@heroicons/react/solid";
 
 const TabList = [
   "Information",
@@ -225,13 +227,16 @@ function AlertItem({ isAcknowledged }: { isAcknowledged?: boolean }) {
         <CalendarIcon className="w-5 h-5" />
         <p className="text-sm text-gray-500">3 hours ago</p>
       </div>
-      <div className="flex items-center gap-x-3 min-w-[200px] justify-end">
+      <div className="flex items-center gap-x-2 min-w-[230px] justify-end">
         {isAcknowledged ? (
-          <p>Acknowledged</p>
+          <div className="flex gap-x-2">
+            <CheckCircleIcon className="w-5 h-5 text-green-600" />
+            <p className="text-sm text-green-600">Acknowledged</p>
+          </div>
         ) : (
           <React.Fragment>
-            <p>Acknowledge</p>
-            <p>Contact</p>
+            <Button buttonType="secondary">Acknowledge</Button>
+            <Button>Contact</Button>
           </React.Fragment>
         )}
       </div>
