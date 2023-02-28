@@ -149,7 +149,6 @@ export function DialogLongHeader({
   total: number;
   icon: JSX.Element | undefined;
 }) {
-
   return (
     <div className="w-full flex justify-between items-center relative pb-3 px-6 whitespace-nowrap">
       <div className="flex items-center gap-x-2">
