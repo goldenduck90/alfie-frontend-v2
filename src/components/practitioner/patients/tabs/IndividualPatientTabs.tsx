@@ -1,12 +1,15 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { BasicChart } from "./BasicChart";
 import { MetabolicChart } from "./MetabolicChart";
 import { PatientTasks } from "./components/PatientTasks";
 import { CalendarIcon } from "@heroicons/react/outline";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
+import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
+import { User } from "@src/graphql/generated";
 
 const TabList = [
   "Information",
@@ -17,22 +20,48 @@ const TabList = [
 ];
 
 export function IndividualPatientTabs({ user }: { user: any }) {
-  const [activeTab, setActiveTab] = useState(TabList[0]);
+  const router = useRouter();
+  const activeTab = (router?.query?.tab as string) || TabList[0];
+
+  const { data } = useGetAllPatientsByProvider();
+  //TODO: Need to change this to accurate information
+  const patientOne = data?.getAllPatientsByPractitioner?.[0];
+  console.log({ patientOne });
+  const patientNumeroUno = {
+    "Full Name": patientOne?.name,
+    "Date of Birth": dayjs(patientOne?.dateOfBirth).format("MM/DD/YYYY"),
+    "Email Address": patientOne?.email,
+    "Phone Number": patientOne?.phone,
+    Address: "1234 Main St, New York, NY 10001",
+    "Height In Inches": "70",
+    Weight: "190",
+    Attachments: "No attachments",
+  };
+
   return (
     <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white md:bg-gray-50 shadow-md rounded-md px-4 md:px-8 py-4">
-      <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
+      <Tabs.Root
+        value={activeTab}
+        onValueChange={(value) => {
+          router.replace(
+            `/dashboard/patients/${router.query.patientId}?tab=${value}`,
+            undefined,
+            { shallow: true }
+          );
+        }}
+      >
         <div className="flex items-center justify-between overflow-x-auto">
-          <Tabs.List className="flex gap-x-3">
+          <Tabs.List className="flex  gap-x-3">
             {TabList.map((tab, i) => (
-              <Tabs.Trigger value={tab} key={i}>
-                <TabTitle active={activeTab === tab}>{tab}</TabTitle>
-              </Tabs.Trigger>
+              <TabTitle value={tab} key={i} active={activeTab === tab}>
+                {tab}
+              </TabTitle>
             ))}
           </Tabs.List>
         </div>
         <Tabs.Content value={TabList[0]} className="mt-6">
-          <TableInformationHeader user={user} />
-          <TableUserObject user={user} />
+          <TableInformationHeader user={patientOne} />
+          <TableUserObject user={patientNumeroUno} />
           <div className="w-full mt-6">
             <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
             <MetabolicChart />
@@ -88,7 +117,7 @@ export function IndividualPatientTabs({ user }: { user: any }) {
   );
 }
 
-function TableInformationHeader({ user }: { user: any }) {
+function TableInformationHeader({ user }: { user: User }) {
   const initials = useMemo(() => {
     if (!user?.name) return "";
     const splitName = user?.name?.split(" ");
@@ -98,9 +127,9 @@ function TableInformationHeader({ user }: { user: any }) {
   }, [user]);
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex gap-x-3 items-center">
-        <AvatarInitial index={0} text={initials} />
+    <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
+      <div className="flex gap-3 items-center">
+        <AvatarInitial size="xl" index={0} text={initials} />
         <p className="font-bold text-xl">{user?.name}</p>
       </div>
       <div className="flex gap-x-3 items-center">
@@ -131,7 +160,10 @@ function TableUserObject({ user }: { user: any }) {
             return null;
           }
           return (
-            <div key={key} className="flex gap-x-4 px-6 py-4">
+            <div
+              key={key}
+              className="flex flex-col md:flex-row gap-x-4 px-6 py-4"
+            >
               <p className="capitalize min-w-[275px] font-bold">{key}</p>
               <p className="text-gray-600">{user[key]}</p>
             </div>
@@ -143,20 +175,23 @@ function TableUserObject({ user }: { user: any }) {
 }
 
 function TabTitle({
+  value,
   children,
   active,
 }: {
   children: React.ReactNode;
   active: boolean;
+  value: string;
 }) {
   return (
-    <div
-      className={`p-3 rounded-md hover:bg-gray-50 ${
+    <Tabs.Trigger
+      value={value}
+      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${
         active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
       }`}
     >
       {children}
-    </div>
+    </Tabs.Trigger>
   );
 }
 

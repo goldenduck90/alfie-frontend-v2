@@ -32,6 +32,7 @@ const Login = () => {
     useForm<LoginForm>({
       defaultValues: {
         // email: "jordanaman117@gmail.com",
+        // email: "dpgozza@gmail.com",
         // password: "Password1!",
         email: "robert@joinalfie.com",
         password: "Letmein1!",

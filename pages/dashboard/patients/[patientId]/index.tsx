@@ -54,7 +54,11 @@ function Patients() {
     },
   });
   return (
-    <Layout hasBackButton title={data?.getPatientById?.name || "Patient"}>
+    <Layout
+      hasBackButton
+      backRef="/dashboard/patients"
+      title={data?.getPatientById?.name || "Patient"}
+    >
       <IndividualPatientTabs user={data?.getPatientById || null} />
     </Layout>
   );

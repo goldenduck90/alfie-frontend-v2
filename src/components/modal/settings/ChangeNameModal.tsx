@@ -39,7 +39,7 @@ export function ChangeNameModal({ title }: { title: string }) {
     <div className="w-full max-w-[560px] min-w-full">
       <DialogLongHeader title={title} step={1} total={1} />
       <DialogLongBody>
-        <div className="flex flex-col gap-y-2 w-[400px]">
+        <div className="flex flex-col gap-y-2 md:w-[400px]">
           <p>Full name</p>
           <div className="flex gap-x-3 justify-between items-center">
             <TextField

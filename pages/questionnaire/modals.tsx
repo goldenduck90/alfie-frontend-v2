@@ -34,7 +34,7 @@ export default function Page() {
       <DialogModal trigger="The Three-Factor Eating Questionnaire">
         <DialogBody
           title="The Three-Factor Eating Questionnaire"
-          description="We would like to know your habits and behaviours regarding eating and taking meals."
+          description="We would like to know your habits and behaviors regarding eating and taking meals."
         />
       </DialogModal>
       <DialogModal trigger="ID & Insurance verification">

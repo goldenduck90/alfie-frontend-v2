@@ -60,8 +60,11 @@ export function AllPatientsTabs() {
             setGlobalFilter={setGlobalFilter}
           />
         </Tabs.Content>
-        <Tabs.Content value="issues">
-          <AllPatientsIssuesTable />
+        <Tabs.Content value="issues" className="mt-6">
+          <AllPatientsTable
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
         </Tabs.Content>
       </Tabs.Root>
     </div>
@@ -93,13 +96,15 @@ export function AllPatientsTable({
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="bg-gray-50">
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                  <th key={header.id} className="">
+                    <div className="min-w-max">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </div>
                   </th>
                 ))}
               </tr>
@@ -134,7 +139,11 @@ export function AllPatientsTable({
                                     <AvatarInitial text={""} index={j} />
                                   </div>
                                 )}
-                                <div className="w-[60%] mt-3">
+                                <div
+                                  className={`${
+                                    j === 0 ? "w-24" : "w-[60%]"
+                                  } mt-3 `}
+                                >
                                   <PlaceHolderLine />
                                 </div>
                               </div>
@@ -150,11 +159,13 @@ export function AllPatientsTable({
               table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="">
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="py-4">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                    <td key={cell.id} className="py-4 ">
+                      <div className="min-w-max whitespace-nowrap">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </div>
                     </td>
                   ))}
                 </tr>

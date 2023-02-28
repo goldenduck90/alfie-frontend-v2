@@ -56,8 +56,8 @@ const tempData = [
 export function MetabolicChart() {
   return (
     <DashboardCard className="w-full md:max-w-[100%] md:min-w-max py-4">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col md:flex-row gap-2">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="flex w-full flex-col md:flex-row gap-2">
           {Object.keys(legendItemKeys).map((key: any) => {
             const lastItem = tempData?.[tempData?.length - 1];
             return (
@@ -83,7 +83,7 @@ export function MetabolicChart() {
             );
           })}
         </div>
-        <div className="flex justify-end items-center gap-x-2 text-sm border rounded-md py-2 px-4 border-gray-300 text-gray-600">
+        <div className="flex min-w-max justify-end items-center gap-x-2 text-sm border rounded-md py-2 px-4 border-gray-300 text-gray-600">
           <span>
             <CalendarIcon className="w-4 h-4 stroke-gray-600" />
           </span>

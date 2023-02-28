@@ -18,9 +18,20 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useCheckRole } from "@src/hooks/useCheckRole";
+import { Role } from "@src/graphql/generated";
+import { BellIcon, MailIcon } from "@heroicons/react/solid";
 
 export function SettingsView() {
   const router = useRouter();
+  const isPatient = useCheckRole([Role.Patient]);
+  const isPractitioner = useCheckRole([
+    Role.Practitioner,
+    Role.Admin,
+    Role.CareCoordinator,
+    Role.HealthCoach,
+    Role.Doctor,
+  ]);
   const activeTab =
     (router.query.settingsTab?.[0] as string) || "account-details";
 
@@ -33,17 +44,26 @@ export function SettingsView() {
         }}
       >
         <div className="flex items-center justify-between flex-wrap gap-y-4">
-          <Tabs.List className="flex gap-x-3">
+          <Tabs.List className="flex gap-x-3 overflow-x-auto">
             <Tabs.Trigger value="account-details">
               <TabTitle active={activeTab === "account-details"}>
                 Account Details
               </TabTitle>
             </Tabs.Trigger>
-            <Tabs.Trigger value="plan-&-billing">
-              <TabTitle active={activeTab === "plan-&-billing"}>
-                Plan & Billing
-              </TabTitle>
-            </Tabs.Trigger>
+            {isPatient && (
+              <Tabs.Trigger value="plan-&-billing">
+                <TabTitle active={activeTab === "plan-&-billing"}>
+                  Plan & Billing
+                </TabTitle>
+              </Tabs.Trigger>
+            )}
+            {isPractitioner && (
+              <Tabs.Trigger value="availability">
+                <TabTitle active={activeTab === "availability"}>
+                  Availability
+                </TabTitle>
+              </Tabs.Trigger>
+            )}
             <Tabs.Trigger value="notifications">
               <TabTitle active={activeTab === "notifications"}>
                 Notifications
@@ -54,9 +74,16 @@ export function SettingsView() {
         <Tabs.Content value="account-details" className="mt-6">
           <AccountDetails />
         </Tabs.Content>
-        <Tabs.Content value="plan-&-billing" className="mt-6">
-          {/* <PlanAndBillingView /> */}
-        </Tabs.Content>
+        {isPatient && (
+          <Tabs.Content value="plan-&-billing" className="mt-6">
+            <PlanAndBillingView />
+          </Tabs.Content>
+        )}
+        {isPractitioner && (
+          <Tabs.Content value="availability" className="mt-6">
+            Cal integration?
+          </Tabs.Content>
+        )}
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />
         </Tabs.Content>
@@ -145,10 +172,10 @@ function AccountDetails() {
                 />
               ),
               right: (
-                <div className="flex items-center gap-x-3">
-                  <span className="text-sm text-gray-600">
+                <div className="flex justify-between md:justify-start items-center gap-x-3">
+                  <div className="text-sm text-gray-600">
                     GMT {dayjs().format("Z")}
-                  </span>
+                  </div>
                   <ToggleSwitch
                     label=""
                     checked={true}
@@ -214,12 +241,18 @@ const weeklyNewsLetter: NotificationViewItem[] = [
     subtext:
       "Increase your knowledge about a healthy lifestyle and implement new habits on a daily basis.",
     rightNode: (
-      <ToggleSwitch
-        label=""
-        checked={true}
-        onCheckedChange={() => {}}
-        name="phone"
-      />
+      <div className="flex flex-row justify-between">
+        <div className="flex text-gray-500 items-center md:hidden gap-1">
+          <MailIcon className="w-5 h-5 mr-3" />
+          <p>Email</p>
+        </div>
+        <ToggleSwitch
+          label=""
+          checked={true}
+          onCheckedChange={() => {}}
+          name="phone"
+        />
+      </div>
     ),
   },
   {
@@ -227,31 +260,49 @@ const weeklyNewsLetter: NotificationViewItem[] = [
     subtext:
       "Stay up to date with all news, changes and new services from Alfie.",
     rightNode: (
-      <ToggleSwitch
-        label=""
-        checked={true}
-        onCheckedChange={() => {}}
-        name="phone"
-      />
+      <div className="flex flex-row justify-between">
+        <div className="flex md:hidden text-gray-500 items-center gap-1">
+          <MailIcon className="w-5 h-5 mr-3" />
+          <p>Email</p>
+        </div>
+        <ToggleSwitch
+          label=""
+          checked={true}
+          onCheckedChange={() => {}}
+          name="phone"
+        />
+      </div>
     ),
   },
 ];
 
 function ToggleSwitchRow() {
   return (
-    <div className="flex gap-x-2">
-      <ToggleSwitch
-        label=""
-        checked={true}
-        onCheckedChange={() => {}}
-        name="phone"
-      />
-      <ToggleSwitch
-        label=""
-        checked={true}
-        onCheckedChange={() => {}}
-        name="email"
-      />
+    <div className="flex justify-between">
+      <div className="flex md:hidden flex-col text-gray-500 gap-4">
+        <div className="flex items-center gap-4">
+          <BellIcon className="w-5 h-5" />
+          <p>Push</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <MailIcon className="w-5 h-5" />
+          <p>Email</p>
+        </div>
+      </div>
+      <div className="flex md:flex-row flex-col gap-4">
+        <ToggleSwitch
+          label=""
+          checked={true}
+          onCheckedChange={() => {}}
+          name="phone"
+        />
+        <ToggleSwitch
+          label=""
+          checked={true}
+          onCheckedChange={() => {}}
+          name="email"
+        />
+      </div>
     </div>
   );
 }
@@ -260,7 +311,19 @@ function NotificationsView() {
   return (
     <div>
       <div>
-        <h1 className="text-xl font-[600]">Notifications</h1>
+        <div className="flex justify-between">
+          <h1 className="text-xl font-[600]">Notifications</h1>
+          <div className="hidden md:flex text-gray-500 px-6 gap-4">
+            <div className="flex items-center gap-1">
+              <BellIcon className="w-5 h-5" />
+              <p>Push</p>
+            </div>
+            <div className="flex items-center gap-1">
+              <MailIcon className="w-5 h-5" />
+              <p>Email</p>
+            </div>
+          </div>
+        </div>
         <TableViewRow
           inputs={topItems.map((item) => ({
             left: (
@@ -298,7 +361,7 @@ function TableViewRow({
           return (
             <div
               key={index}
-              className="flex justify-between items-center px-6 py-4"
+              className="flex md:flex-row flex-col justify-between md:items-center px-6 py-4 gap-4"
             >
               {left && left}
               {right && right}
@@ -318,8 +381,8 @@ function TableEntryInline({
   rightText: string;
 }) {
   return (
-    <div className="flex gap-x-4">
-      <p className="capitalize min-w-[275px] font-bold">{leftText}</p>
+    <div className="flex md:flex-row flex-col gap-2">
+      <p className="capitalize md:min-w-[275px] font-bold">{leftText}</p>
       <p className="text-gray-600">{rightText}</p>
     </div>
   );
@@ -346,7 +409,7 @@ function PlanAndBillingView() {
   return (
     <div>
       <p>Plan & Billing</p>
-      <div className="flex gap-x-5">
+      <div className="flex flex-col md:flex-row gap-5">
         <PlanCard />
         <NextPaymentCard />
       </div>
@@ -366,7 +429,7 @@ function PlanAndBillingView() {
                   triggerAsChild
                   trigger={<Button buttonType="secondary">Change</Button>}
                 >
-                  {/* <ChangeNameModal title="Full name" /> */}
+                  <ChangeNameModal title="Full name" />
                 </DialogModal>
               ),
             },
@@ -382,7 +445,7 @@ function PlanAndBillingView() {
                   triggerAsChild
                   trigger={<Button buttonType="secondary">Change</Button>}
                 >
-                  {/* <ChangeNameModal title="Full name" /> */}
+                  <ChangeNameModal title="Full name" />
                 </DialogModal>
               ),
             },
@@ -430,7 +493,7 @@ function PlanAndBillingView() {
 }
 
 const planPoints = [
-  "4 free appointments with our specialist per monthaccess to ",
+  "4 free appointments with our specialist per month access to ",
   "access to medical data history",
   "chat with our experts",
   "individual program",
@@ -446,9 +509,10 @@ function PlanCard() {
             <p>US $120.00</p>
           </div>
         </div>
-        <p className="py-2 whitespace-pre">
-          {`If you want to upgrade your plan, please click the button below.\nYour current plan includes:`}
+        <p className="py-2 md:whitespace-pre">
+          If you want to upgrade your plan, please click the button below.
         </p>
+        <p className="">Your current plan includes:</p>
         <div className="flex flex-col gap-y-2 mb-6">
           {planPoints.map((point, index) => {
             return (
@@ -491,7 +555,7 @@ function PlanCard() {
 function NextPaymentCard() {
   return (
     <div>
-      <div className="p-4 border border-gray-300 rounded-md flex-shrink-0 max-h-fit min-w-[270px] shadow">
+      <div className="p-4 border border-gray-300 rounded-md flex-shrink-0 max-h-fit md:min-w-[270px] shadow">
         <p>Next payment</p>
         <p>on 25 Feb 2023</p>
         <div className="flex items-center justify-end mt-10">
@@ -515,41 +579,37 @@ const columnHelper = createColumnHelper<InvoiceHistory>();
 const columns = [
   columnHelper.accessor("date", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitalize text-left pl-3">
-        date
-      </p>
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">date</p>
     ),
-    cell: (info) => <p className="py-2 pl-3">{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
   columnHelper.accessor("name", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitaliz text-left">Name</p>
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">Name</p>
     ),
-    cell: (info) => <p>{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
   columnHelper.accessor("status", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitalize text-left">
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">
         status
       </p>
     ),
-    cell: (info) => <p>{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
   columnHelper.accessor("amount", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitalize text-left">
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">
         amount
       </p>
     ),
-    cell: (info) => <p>{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
   columnHelper.accessor("file", {
     header: () => (
-      <p className="py-2 text-gray-600 font-[500] capitalize text-left pr-3">
-        file
-      </p>
+      <p className="p-2 text-gray-600 font-[500] capitalize text-left">file</p>
     ),
-    cell: (info) => <p>{info.getValue()}</p>,
+    cell: (info) => <p className="px-2">{info.getValue()}</p>,
   }),
 ];
 
@@ -593,36 +653,38 @@ function InvoiceHistoryTable() {
   });
 
   return (
-    <div>
-      <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-        <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
-          <thead>
-            {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-gray-50">
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
+    <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+      <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
+        <thead>
+          {getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id} className="bg-gray-50 py-2">
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  <div className="min-w-max whitespace-nowrap">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          {getRowModel().rows.map((row) => (
-            <tr key={row.id} className="">
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="text-left">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                  </div>
+                </th>
               ))}
             </tr>
           ))}
-        </table>
-      </div>
+        </thead>
+        {getRowModel().rows.map((row) => (
+          <tr key={row.id} className="">
+            {row.getVisibleCells().map((cell) => (
+              <td key={cell.id} className="text-left py-2">
+                <div className="min-w-max whitespace-nowrap">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </table>
     </div>
   );
 }

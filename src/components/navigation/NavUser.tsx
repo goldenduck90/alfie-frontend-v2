@@ -8,6 +8,7 @@ import { Item } from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
 import { useLogoutMutation } from "@src/hooks/useLogoutMutation";
 import Link from "next/link";
+import { Role } from "@src/graphql/generated";
 
 export default function NavUser() {
   const { user } = useCurrentUserStore();
@@ -15,24 +16,54 @@ export default function NavUser() {
   const firstNameInitial = user?.name?.charAt(0).toUpperCase();
   const router = useRouter();
 
-  const userItems = [
+  let routeItems: {
+    label: string;
+    onClick: () => Promise<boolean>;
+  }[] = [];
+
+  const routeTo = (path: string) => () => router.push(path);
+  const patientItems = [
     {
       label: "Account details",
-      onClick: () => router.push("/settings/account-details"),
+      onClick: routeTo("/settings/account-details"),
     },
     {
       label: "Plan & billing",
-      onClick: () => router.push("/settings/plan-&-billing"),
+      onClick: routeTo("/settings/plan-&-billing"),
     },
     {
       label: "Notifications",
-      onClick: () => router.push("/settings/notifications"),
+      onClick: routeTo("/settings/notifications"),
     },
   ];
 
-  const renderUserItems = userItems.map((item, i) => (
+  const providerItems = [
+    {
+      label: "Account details",
+      onClick: routeTo("/settings/account-details"),
+    },
+    {
+      label: "Availability",
+      onClick: routeTo("/settings/availability"),
+    },
+    {
+      label: "Notifications",
+      onClick: routeTo("/settings/notifications"),
+    },
+  ];
+
+  if (user?.role === Role.Patient) {
+    routeItems = patientItems;
+  } else if (user?.role === Role.Practitioner) {
+    routeItems = providerItems;
+  } else if (user?.role === Role.Admin) {
+    routeItems = providerItems;
+  }
+
+  const renderUserItems = routeItems?.map((item, i) => (
     <DropdownItem {...item} key={i} />
   ));
+
   return (
     <>
       <div className="flex items-center">
