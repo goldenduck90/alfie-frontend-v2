@@ -1,7 +1,7 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { BasicChart } from "./BasicChart";
 import { MetabolicChart } from "./MetabolicChart";
 import { PatientTasks } from "./components/PatientTasks";
@@ -9,7 +9,8 @@ import { CalendarIcon } from "@heroicons/react/outline";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
-import { User } from "@src/graphql/generated";
+import { TaskType, User } from "@src/graphql/generated";
+import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
 
 const TabList = [
   "Information",
@@ -197,23 +198,41 @@ function TabTitle({
 
 function AlertsPlaceholder() {
   return (
-    <div className="mt-6">
+    <div className="mt-6 flex flex-col gap-y-3">
+      <AlertItem />
+      <AlertItem isAcknowledged />
+      <AlertItem />
       <AlertItem />
     </div>
   );
 }
 
-function AlertItem() {
+function AlertItem({ isAcknowledged }: { isAcknowledged?: boolean }) {
   return (
     <div className="flex items-center justify-between border rounded-md border-gray-300 p-6 shadow">
       <div className="flex items-center gap-x-2">
         <div className="flex items-center">
-          <CalendarIcon className="w-12 h-12" />
+          <ChooseTaskIcon value={TaskType.BpLog} />
         </div>
         <div className="flex flex-col justify-center">
           <p className="font-bold text">Patients note</p>
-          <p>The patient experienced a drastic drop in blood pressure.</p>
+          <p className="text-gray-500 text-sm">
+            The patient experienced a drastic drop in blood pressure.
+          </p>
         </div>
+      </div>
+      <div className="flex items-start">
+        <p>3 hours ago</p>
+      </div>
+      <div className="flex items-center gap-x-3 min-w-[200px] justify-end">
+        {isAcknowledged ? (
+          <p>Acknowledged</p>
+        ) : (
+          <React.Fragment>
+            <p>Acknowledge</p>
+            <p>Contact</p>
+          </React.Fragment>
+        )}
       </div>
     </div>
   );
