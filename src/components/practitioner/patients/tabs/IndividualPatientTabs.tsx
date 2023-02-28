@@ -198,36 +198,67 @@ function TabTitle({
   );
 }
 
+const alertsList = [
+  {
+    alertType: TaskType.BpLog,
+    title: "Patients note",
+    subtitle: "The patient experienced a drastic drop in blood pressure.",
+  },
+  {
+    alertType: TaskType.NewPatientIntakeForm,
+    title: "Abnormal pulse",
+    subtitle: "The patient experienced a drastic increase in heart rate.",
+    isAcknowledged: true,
+  },
+  {
+    alertType: TaskType.WeightLog,
+    title: "Abnormal weight loss",
+    subtitle: "The patient experienced a drastic weight loss.",
+  },
+  {
+    alertType: TaskType.IdAndInsuranceUpload,
+    title: "Reported symptoms",
+    subtitle: "The patient reported dizziness",
+  },
+];
+
 function AlertsPlaceholder() {
   return (
-    <div className="mt-6 flex flex-col gap-y-3">
-      <AlertItem />
-      <AlertItem isAcknowledged />
-      <AlertItem />
-      <AlertItem />
+    <div className="mt-6 flex flex-col gap-y-3 w-full">
+      {alertsList.map((alert) => (
+        <AlertItem key={alert.alertType} {...alert} />
+      ))}
     </div>
   );
 }
 
-function AlertItem({ isAcknowledged }: { isAcknowledged?: boolean }) {
+function AlertItem({
+  isAcknowledged,
+  alertType,
+  title,
+  subtitle,
+}: {
+  isAcknowledged?: boolean;
+  alertType: TaskType;
+  title: string;
+  subtitle: string;
+}) {
   return (
-    <div className="flex items-center justify-between border rounded-md border-gray-300 p-6 shadow bg-white">
-      <div className="flex items-center gap-x-2">
+    <div className="items-center justify-between border rounded-md border-gray-300 p-6 shadow bg-white grid grid-cols-6 md:grid-cols-12 w-full gap-y-3">
+      <div className="col-span-6 flex items-center gap-x-2">
         <div className="flex items-center">
-          <ChooseTaskIcon value={TaskType.BpLog} />
+          <ChooseTaskIcon value={alertType} />
         </div>
-        <div className="flex flex-col justify-center">
-          <p className="font-bold text">Patients note</p>
-          <p className="text-gray-500 text-sm">
-            The patient experienced a drastic drop in blood pressure.
-          </p>
+        <div className="col-span-5 justify-center">
+          <p className="font-bold text">{title}</p>
+          <p className="text-gray-500 text-sm">{subtitle}</p>
         </div>
       </div>
-      <div className="flex items-start justify-start gap-x-2">
+      <div className="col-span-6 md:col-span-3 flex items-start justify-start gap-x-2">
         <CalendarIcon className="w-5 h-5" />
         <p className="text-sm text-gray-500">3 hours ago</p>
       </div>
-      <div className="flex items-center gap-x-2 min-w-[230px] justify-end">
+      <div className="col-span-6 md:col-span-3 flex  md:items-center gap-x-2 min-w-[230px] justify-start md:justify-end">
         {isAcknowledged ? (
           <div className="flex gap-x-2">
             <CheckCircleIcon className="w-5 h-5 text-green-600" />
