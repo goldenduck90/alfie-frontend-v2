@@ -211,7 +211,7 @@ function AlertsPlaceholder() {
 
 function AlertItem({ isAcknowledged }: { isAcknowledged?: boolean }) {
   return (
-    <div className="flex items-center justify-between border rounded-md border-gray-300 p-6 shadow">
+    <div className="flex items-center justify-between border rounded-md border-gray-300 p-6 shadow bg-white">
       <div className="flex items-center gap-x-2">
         <div className="flex items-center">
           <ChooseTaskIcon value={TaskType.BpLog} />
