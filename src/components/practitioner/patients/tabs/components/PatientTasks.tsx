@@ -1,40 +1,9 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
-import { useRouter } from "next/router";
 import { TaskItem } from "./TaskItem";
 import { LoadingTaskItem } from "./LoadingTaskItem";
 
-const getTasksQuery = gql`
-  query GetAllUserTasksByUser($userId: String!) {
-    getAllUserTasksByUser(userId: $userId) {
-      _id
-      task {
-        _id
-        name
-        type
-        daysTillDue
-        interval
-      }
-      archived
-      completed
-      dueAt
-      pastDue
-      completedAt
-      createdAt
-      updatedAt
-      providerEmail
-    }
-  }
-`;
-
-export function PatientTasks() {
-  const router = useRouter();
-
-  const { data, loading, error } = useQuery(getTasksQuery, {
-    variables: {
-      userId: router.query?.patientId,
-    },
-  });
+export function PatientTasks({ taskData }: any) {
+  const { data, loading, error } = taskData;
 
   const renderTasks = data?.getAllUserTasksByUser.map(
     (task: any, i: number) => <TaskItem {...task} key={i} />
@@ -59,7 +28,7 @@ export function PatientTasks() {
   );
 }
 
-function GrayBox({ content }: { content?: string }) {
+export function GrayBox({ content }: { content?: string }) {
   return (
     <div className="bg-gray-100 rounded-xl border flex justify-center items-center h-80">
       <h2 className="text-lg">{content}</h2>

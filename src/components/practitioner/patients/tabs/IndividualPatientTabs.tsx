@@ -8,11 +8,95 @@ import { PatientTasks } from "./components/PatientTasks";
 import { CalendarIcon } from "@heroicons/react/outline";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
-import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
 import { TaskType, User } from "@src/graphql/generated";
 import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
 import { Button } from "@src/components/ui/Button";
 import { CheckCircleIcon } from "@heroicons/react/solid";
+import { gql, useQuery } from "@apollo/client";
+import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
+import { MedicalQuestionnaire } from "./components/MedicalQuestionnarie";
+import { WeightChart } from "./components/WeightChart";
+import { WaistChart } from "./components/WaistChart";
+import { StepsChart } from "./components/StepsChart";
+import { BloodPressureChart } from "./components/BloodPressureChart";
+
+const GetUserById = gql`
+  query getUser($userId: String!) {
+    getUserById(userId: $userId) {
+      _id
+      textOptIn
+      meetingRoomUrl
+      name
+      email
+      phone
+      role
+      dateOfBirth
+      address {
+        line1
+        line2
+        city
+        state
+        postalCode
+        country
+      }
+      weightGoal
+      weights {
+        value
+        date
+      }
+      gender
+      heightInInches
+      akutePatientId
+      stripeCustomerId
+      stripeSubscriptionId
+      eaCustomerId
+      eaHealthCoachId
+      subscriptionExpiresAt
+      pharmacyLocation
+      meetingUrl
+      labOrderSent
+      bmi
+      classifications {
+        classification
+        percentile
+        displayPercentile
+        date
+      }
+    }
+  }
+`;
+// Todo: put on classifications
+// calculatedPercentile
+// calculated30minsPercent
+// calculated1hourPercent
+
+const getTasksQuery = gql`
+  query GetAllUserTasksByUser($userId: String!) {
+    getAllUserTasksByUser(userId: $userId) {
+      _id
+      task {
+        _id
+        name
+        type
+        daysTillDue
+        interval
+      }
+      archived
+      completed
+      dueAt
+      pastDue
+      completedAt
+      createdAt
+      updatedAt
+      providerEmail
+      answers {
+        key
+        value
+        type
+      }
+    }
+  }
+`;
 
 const TabList = [
   "Information",
@@ -24,20 +108,34 @@ const TabList = [
 
 export function IndividualPatientTabs({ user }: { user: any }) {
   const router = useRouter();
+  const patientId = router.query.patientId as string;
   const activeTab = (router?.query?.tab as string) || TabList[0];
 
-  const { data } = useGetAllPatientsByProvider();
-  //TODO: Need to change this to accurate information
-  const patientOne = data?.getAllPatientsByPractitioner?.[0];
-  console.log({ patientOne });
-  const patientNumeroUno = {
-    "Full Name": patientOne?.name,
-    "Date of Birth": dayjs(patientOne?.dateOfBirth).format("MM/DD/YYYY"),
-    "Email Address": patientOne?.email,
-    "Phone Number": patientOne?.phone,
-    Address: "1234 Main St, New York, NY 10001",
-    "Height In Inches": "70",
-    Weight: "190",
+  const { data, loading, error } = useQuery(GetUserById, {
+    variables: {
+      userId: patientId,
+    },
+  });
+  const taskData = useQuery(getTasksQuery, {
+    variables: {
+      userId: patientId,
+    },
+  });
+
+  const patient = data?.getUserById;
+
+  const patientTable = {
+    "Full Name": patient?.name,
+    "Date of Birth": dayjs(patient?.dateOfBirth).format("MM/DD/YYYY"),
+    "Email Address": patient?.email,
+    "Phone Number": patient?.phone,
+    Address: `${patient?.address?.line1 || ""}, ${
+      (patient?.address?.line2 && ",") || ""
+    } ${patient?.address?.city}, ${patient?.address?.state}, ${
+      patient?.address?.postalCode
+    }`,
+    "Height In Inches": patient?.heightInInches,
+    Weight: patient?.weights?.[patient.weights.length - 1]?.value,
     Attachments: "No attachments",
   };
 
@@ -63,11 +161,11 @@ export function IndividualPatientTabs({ user }: { user: any }) {
           </Tabs.List>
         </div>
         <Tabs.Content value={TabList[0]} className="mt-6">
-          <TableInformationHeader user={patientOne} />
-          <TableUserObject user={patientNumeroUno} />
+          <TableInformationHeader user={patient} />
+          <TableUserObject user={patientTable} loading={loading} />
           <div className="w-full mt-6">
             <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
-            <MetabolicChart />
+            <MetabolicChart chartData={patient?.classifications} />
           </div>
           <div className="flex items-center justify-between">
             <p className="my-6 text-xl font-bold">Other Details</p>
@@ -82,29 +180,26 @@ export function IndividualPatientTabs({ user }: { user: any }) {
           </div>
 
           <div className="w-full grid md:grid-cols-2 gap-4">
-            <BasicChart title="Weight" lineColor="#0C52E8" />
-            <BasicChart title="Waist" lineColor="#8B5CF6" />
-            <BasicChart title="Steps" lineColor="#22C55E" />
-            <BasicChart title="Blood Pressure" lineColor="#F43F5E" />
+            <WeightChart
+              title="Weight"
+              lineColor="#0C52E8"
+              weightData={patient}
+            />
+            <WaistChart title="Waist" lineColor="#8B5CF6" taskData={taskData} />
+
+            <StepsChart title="Steps" lineColor="#22C55E" taskData={taskData} />
+            <BloodPressureChart
+              title="Blood Pressure"
+              lineColor="#F43F5E"
+              taskData={taskData}
+            />
           </div>
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
-          <PatientTasks />
+          <PatientTasks taskData={taskData} />
         </Tabs.Content>
         <Tabs.Content value={TabList[2]}>
-          <TableUserObject
-            user={{
-              WeightLossAttempt: "Several Years",
-              WeightManagement: "Diet",
-              Conditions: "Diabetes",
-              PreviousConditions: "None",
-              Medications: "None",
-              SurgicalHistory: "None",
-              Allergies: "None",
-              UseAmazonPharmacy: "No",
-              Pharmacy: "None",
-            }}
-          />
+          <MedicalQuestionnaire taskData={taskData} />
         </Tabs.Content>
         <Tabs.Content value={TabList[3]}>
           <div className="flex flex-col items-center justify-center h-full">
@@ -153,13 +248,19 @@ function TableInformationHeader({ user }: { user: User }) {
   );
 }
 
-function TableUserObject({ user }: { user: any }) {
+export function TableUserObject({
+  user,
+  loading,
+}: {
+  user: any;
+  loading?: boolean;
+}) {
   if (!user) return null;
   return (
     <div className="">
       <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300 bg-white">
         {Object.keys(user).map((key) => {
-          if (typeof user[key] !== "string") {
+          if (typeof user[key] !== "string" && !loading) {
             return null;
           }
           return (
@@ -168,7 +269,13 @@ function TableUserObject({ user }: { user: any }) {
               className="flex flex-col md:flex-row gap-x-4 px-6 py-4"
             >
               <p className="capitalize min-w-[275px] font-bold">{key}</p>
-              <p className="text-gray-600">{user[key]}</p>
+              {loading ? (
+                <div className="w-1/4 flex items-center mt-2">
+                  <PlaceHolderLine hasTopMargin />
+                </div>
+              ) : (
+                <p className="text-gray-600">{user[key]}</p>
+              )}
             </div>
           );
         })}

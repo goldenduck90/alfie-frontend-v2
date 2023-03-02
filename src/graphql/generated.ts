@@ -683,7 +683,8 @@ export type Query = {
   getAllPatientsByPractitioner: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
-  getPatientById: Array<User>;
+  getUserById: User;
+  getUserTasksByUserId?: Maybe<Array<UserTask>>;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
@@ -733,7 +734,12 @@ export type QueryGetAllUserTasksByUserArgs = {
 };
 
 
-export type QueryGetPatientByIdArgs = {
+export type QueryGetUserByIdArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type QueryGetUserTasksByUserIdArgs = {
   userId: Scalars['String'];
 };
 

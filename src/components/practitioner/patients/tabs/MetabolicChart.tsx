@@ -6,13 +6,10 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   Line,
   ResponsiveContainer,
-  ReferenceLine,
 } from "recharts";
 import dayjs from "dayjs";
-import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { CalendarIcon } from "@heroicons/react/outline";
 
 const legendItemKeys = {
@@ -53,7 +50,7 @@ const tempData = [
   },
 ];
 
-export function MetabolicChart() {
+export function MetabolicChart({ chartData }: { chartData: any }) {
   return (
     <DashboardCard className="w-full md:max-w-[100%] md:min-w-max py-4">
       <div className="flex flex-col md:flex-row items-center justify-between gap-8">
@@ -131,8 +128,6 @@ export function MetabolicChart() {
                 if (!active) return null;
                 const value = payload?.[0]?.value;
                 if (!value) return null;
-
-                console.log({ payload });
                 return (
                   <div className="py-2 px-2 text-center bg-[#0F172A] text-white rounded-lg min-w-[120px] w-full flex flex-col gap-y-2">
                     {payload?.map((pay) => {
