@@ -14,7 +14,6 @@ import { Button } from "@src/components/ui/Button";
 import Image from "next/image";
 import dayjs from "dayjs";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
-import { ConfirmModal } from '@src/components/modal/variants/ConfirmModal';
 
 export const appointmentDetailQuery = gql`
   query AppointmentsQuery($eaAppointmentId: String!) {

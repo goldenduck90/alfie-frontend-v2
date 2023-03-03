@@ -6,11 +6,9 @@ import React from 'react';
 export const TimeslotButton = ({
   timeslot,
   tz,
-  is24HrFormat = true,
 }: {
   timeslot: Timeslot;
-  tz: string;
-  is24HrFormat: boolean;
+  tz: any;
 }) => {
   const [
     ,
@@ -36,8 +34,8 @@ export const TimeslotButton = ({
       disabled={timeslot.startTimeInUtc === startTimeInUtc}
       className="bg-gray-100 hover:bg-primary-400 focus:border-primary-700 hover:text-white disabled:bg-primary-400 disabled:text-white text-gray-600 font-eudoxus font-base py-1 md:py-2 px-4 rounded w-full mb-3 ease-in-out duration-300 text-sm md:text-md"
     >
-      {is24HrFormat ? format(new Date(timeslot.startTimeInUtc), "HH:mm") : format(new Date(timeslot.startTimeInUtc), "h:mm aa")} -{" "}
-      {is24HrFormat ? format(new Date(timeslot.endTimeInUtc), "HH:mm") : format(new Date(timeslot.endTimeInUtc), "h:mm aa")} ({tz})
+      {format(new Date(timeslot.startTimeInUtc), "h:mm aa")} -{" "}
+      {format(new Date(timeslot.endTimeInUtc), "h:mm aa")} ({tz.abbreviation})
     </button>
   );
 };

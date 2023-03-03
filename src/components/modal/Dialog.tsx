@@ -143,11 +143,13 @@ export function DialogLongHeader({
   step,
   total,
   icon,
+  confirm = false
 }: {
   title: string;
   step: number;
   total: number;
   icon: JSX.Element | undefined;
+  confirm: boolean;
 }) {
 
   return (
@@ -158,10 +160,10 @@ export function DialogLongHeader({
             <CalculatorIcon className="w-5 h-5 stroke-inherit" />
           </div>
         )}
-        <span className="text-sm font-bold truncate">{title}</span>
+        {confirm ? null : <span className="text-sm font-bold truncate">{title}</span>}
       </div>
       <div className="flex items-center gap-x-2">
-        {step > total ? (
+        {confirm ? null : step > total ? (
           <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-2xl text-sm block">
             Summary
           </span>

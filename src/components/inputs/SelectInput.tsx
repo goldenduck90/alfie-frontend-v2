@@ -1,4 +1,4 @@
-import { ChangeEventHandler, FC, useRef } from "react";
+import { ChangeEventHandler, FC, useEffect, useRef } from "react";
 import { useField } from "formik";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import { useCachedState } from "../../hooks/useCachedState";
@@ -6,6 +6,7 @@ import { useCachedState } from "../../hooks/useCachedState";
 export type OptionInput = {
   label?: string;
   value: string;
+  selected?: boolean;
 };
 export interface ISelectInput {
   name: string;
@@ -37,9 +38,8 @@ export const SelectInput: FC<ISelectInput> = ({
   return (
     <>
       <div
-        className={`flex flex-row w-full rounded-lg border ${
-          error ? "border-red-500" : "border-gray-300"
-        }`}
+        className={`flex flex-row w-full rounded-lg border ${error ? "border-red-500" : "border-gray-300"
+          }`}
       >
         <select
           ref={selectRef}
@@ -51,7 +51,7 @@ export const SelectInput: FC<ISelectInput> = ({
         >
           <option value="">{placeholder}</option>
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.value} value={option.value} selected={option?.selected ? true : false}>
               {option.label || option.value}
             </option>
           ))}
