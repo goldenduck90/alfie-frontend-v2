@@ -61,7 +61,6 @@ export function RescheduleAppointment({
   onAppointmentConfirmed: (values: any) => void;
 }) {
   const [confirmed, setConfirmed] = useState(false)
-  const [errorText, setErrorText] = useState('')
   const rescheduleForm = useFormikWizard({
     initialValues: {
       reschedule: true,
@@ -223,19 +222,6 @@ export function RescheduleAppointment({
             {getErrors()}
           </DialogLongBody>
           <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3">
-            {/* {errors && Object.keys(errors)?.length > 0 ? (
-              Object.keys(errors).map(key => {
-                let errorMessage = ''
-                if ((key === 'startTimeInUtc' || key === 'endTimeInUtc')) {
-                  return (<div className="text-red-500 text-sm text-center">
-                    {'Please select a timeslot to continue.'}
-                  </div>)
-                }
-                return (<div className="text-red-500 text-sm text-center">
-                  {errorMessage}
-                </div>)
-              })
-            ) : null} */}
             {currentStepIndex === 0 && (
               <RadixDialog.Close asChild>
                 <Button buttonType="secondary">Cancel</Button>
