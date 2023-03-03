@@ -16,14 +16,12 @@ import dayjs from "dayjs";
 export function WeightChart({
   title,
   lineColor = "#0C52E8",
-  weightData,
+  chartData,
 }: {
   title: string;
   lineColor?: string;
-  weightData: any;
+  chartData: { value: string; date: string }[];
 }) {
-  const weights = weightData?.weights;
-
   return (
     <DashboardCard
       className="w-full md:max-w-full md:min-w-max py-4"
@@ -31,7 +29,7 @@ export function WeightChart({
     >
       <div className="flex content-center w-full pt-8">
         <ResponsiveContainer width="100%" height={312}>
-          <LineChart data={weights}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"

@@ -139,6 +139,34 @@ export function IndividualPatientTabs({ user }: { user: any }) {
     Attachments: "No attachments",
   };
 
+  const chartInformation: {
+    [key in TaskType]: {
+      value: any;
+      date: string;
+      systolic?: any;
+      diastolic?: any;
+    }[];
+  } = {} as any;
+
+  taskData?.data?.getAllUserTasksByUser?.forEach((item) => {
+    if (!chartInformation[item.task.type as TaskType]) {
+      chartInformation[item.task.type as TaskType] = [];
+    }
+    if (item.task.type === TaskType.BpLog) {
+      chartInformation[item.task.type as TaskType].push({
+        date: new Date(item.completedAt).toLocaleDateString(),
+        systolic: item?.answers[0]?.value,
+        diastolic: item?.answers[1]?.value,
+        value: item?.answers[0]?.value,
+      });
+    } else {
+      chartInformation[item.task.type as TaskType].push({
+        date: new Date(item.completedAt).toLocaleDateString(),
+        value: item?.answers[0]?.value,
+      });
+    }
+  });
+
   return (
     <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white md:bg-gray-50 shadow-md rounded-md px-4 md:px-8 py-4">
       <Tabs.Root
@@ -183,15 +211,22 @@ export function IndividualPatientTabs({ user }: { user: any }) {
             <WeightChart
               title="Weight"
               lineColor="#0C52E8"
-              weightData={patient}
+              chartData={chartInformation[TaskType.WeightLog]}
             />
-            <WaistChart title="Waist" lineColor="#8B5CF6" taskData={taskData} />
+            <WaistChart
+              title="Waist"
+              lineColor="#8B5CF6"
+              chartData={chartInformation[TaskType.WaistLog]}
+            />
 
-            <StepsChart title="Steps" lineColor="#22C55E" taskData={taskData} />
+            <StepsChart
+              title="Steps"
+              lineColor="#22C55E"
+              chartData={chartInformation[TaskType.MpActivity]}
+            />
             <BloodPressureChart
               title="Blood Pressure"
-              lineColor="#F43F5E"
-              taskData={taskData}
+              chartData={chartInformation[TaskType.BpLog]}
             />
           </div>
         </Tabs.Content>

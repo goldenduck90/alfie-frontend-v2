@@ -17,27 +17,12 @@ import { Task, TaskType } from "@src/graphql/generated";
 export function WaistChart({
   title,
   lineColor = "#0C52E8",
-  taskData,
+  chartData,
 }: {
   title: string;
   lineColor?: string;
-  taskData: any;
+  chartData: { value: string; date: string }[];
 }) {
-  const { data, loading, error } = taskData;
-  //! i know this is bad this is the only way
-  console.log(data);
-  const waistTasks = data?.getAllUserTasksByUser
-    ?.filter(
-      (task: any) =>
-        task.task.type === TaskType.WaistLog && task.completed === true
-    )
-    .map((task: any) => {
-      return {
-        date: new Date(task.completedAt).toLocaleDateString(),
-        value: task?.answers[0]?.value,
-      };
-    });
-
   return (
     <DashboardCard
       className="w-full md:max-w-full md:min-w-max py-4"
@@ -45,7 +30,7 @@ export function WaistChart({
     >
       <div className="flex content-center w-full pt-8">
         <ResponsiveContainer width="100%" height={312}>
-          <LineChart data={waistTasks}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"

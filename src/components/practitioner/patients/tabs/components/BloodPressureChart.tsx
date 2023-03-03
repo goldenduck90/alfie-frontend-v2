@@ -6,39 +6,23 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   Line,
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
 import dayjs from "dayjs";
-import { Task, TaskType } from "@src/graphql/generated";
 
 export function BloodPressureChart({
   title,
-  lineColor = "#0C52E8",
-  taskData,
+  systolicColor = "#0C52E8",
+  diastolicColor = "#eb0e0e",
+  chartData,
 }: {
   title: string;
-  lineColor?: string;
-  taskData: any;
+  systolicColor?: string;
+  diastolicColor?: string;
+  chartData: any;
 }) {
-  const { data, loading, error } = taskData;
-  //! i know this is bad this is the only way
-
-  const bloodPressureTasks = data?.getAllUserTasksByUser
-    ?.filter(
-      (task: any) =>
-        task.task.type === TaskType.BpLog && task.completed === true
-    )
-    .map((task: any) => {
-      return {
-        date: new Date(task.completedAt).toLocaleDateString(),
-        systolic: task?.answers[0]?.value,
-        diastolic: task?.answers[1]?.value,
-      };
-    });
-
   return (
     <DashboardCard
       className="w-full md:max-w-full md:min-w-max py-4"
@@ -46,7 +30,7 @@ export function BloodPressureChart({
     >
       <div className="flex content-center w-full pt-8">
         <ResponsiveContainer width="100%" height={312}>
-          <LineChart data={bloodPressureTasks}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
@@ -67,7 +51,7 @@ export function BloodPressureChart({
             <Line
               type="monotone"
               dataKey="systolic"
-              stroke={lineColor}
+              stroke={systolicColor}
               strokeWidth={3}
               dot={false}
               activeDot={{ r: 8 }}
@@ -75,7 +59,7 @@ export function BloodPressureChart({
             <Line
               type="monotone"
               dataKey="diastolic"
-              stroke={lineColor}
+              stroke={diastolicColor}
               strokeWidth={3}
               dot={false}
               activeDot={{ r: 8 }}
@@ -83,12 +67,27 @@ export function BloodPressureChart({
             <Tooltip
               offset={0}
               content={({ payload, active }) => {
+                console.log({ payload });
                 if (!active) return null;
-                const value = payload?.[0]?.value;
-                if (!value) return null;
+                const systolic = payload?.[0]?.payload?.systolic;
+                const diastolic = payload?.[0]?.payload?.diastolic;
+                if (!systolic || !diastolic) return null;
                 return (
-                  <div className="py-1 px-2 text-center bg-black text-white rounded-full">
-                    {`${value}`}
+                  <div className="py-1 px-2 text-center bg-black text-white rounded-lg text-sm ">
+                    <div className="flex items-center space-x-2 pb-1">
+                      <div
+                        className="h-4 w-4 rounded-full border-white border-2"
+                        style={{ backgroundColor: systolicColor }}
+                      />
+                      <p>systolic: {`${systolic}`}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div
+                        className="h-4 w-4 rounded-full border-white border-2"
+                        style={{ backgroundColor: diastolicColor }}
+                      />
+                      <p>diastolic: {`${diastolic}`}</p>
+                    </div>
                   </div>
                 );
               }}

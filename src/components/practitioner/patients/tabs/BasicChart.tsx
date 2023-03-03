@@ -13,31 +13,14 @@ import {
 } from "recharts";
 import dayjs from "dayjs";
 
-const tempData = [
-  {
-    date: Date.now(),
-    value: 80,
-  },
-  {
-    date: Date.now(),
-    value: 65,
-  },
-  {
-    date: Date.now(),
-    value: 55,
-  },
-  {
-    date: Date.now(),
-    value: 45,
-  },
-];
-
 export function BasicChart({
   title,
   lineColor = "#0C52E8",
+  chartData,
 }: {
   title: string;
   lineColor?: string;
+  chartData: { value: string; date: string }[];
 }) {
   return (
     <DashboardCard
@@ -46,7 +29,7 @@ export function BasicChart({
     >
       <div className="flex content-center w-full pt-8">
         <ResponsiveContainer width="100%" height={312}>
-          <LineChart data={tempData}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
