@@ -2,7 +2,6 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 
 import React, { useMemo } from "react";
-import { BasicChart } from "./BasicChart";
 import { MetabolicChart } from "./MetabolicChart";
 import { PatientTasks } from "./components/PatientTasks";
 import { CalendarIcon } from "@heroicons/react/outline";
@@ -102,7 +101,7 @@ const TabList = [
   "Information",
   "Tasks",
   "Medical Questionnaire",
-  "Chat",
+  // "Chat",
   "Alerts",
 ];
 
@@ -148,22 +147,26 @@ export function IndividualPatientTabs({ user }: { user: any }) {
     }[];
   } = {} as any;
 
+  console.log({ taskData });
+
   taskData?.data?.getAllUserTasksByUser?.forEach((item) => {
     if (!chartInformation[item.task.type as TaskType]) {
       chartInformation[item.task.type as TaskType] = [];
     }
     if (item.task.type === TaskType.BpLog) {
       chartInformation[item.task.type as TaskType].push({
-        date: new Date(item.completedAt).toLocaleDateString(),
+        date: item.completedAt,
         systolic: item?.answers[0]?.value,
         diastolic: item?.answers[1]?.value,
         value: item?.answers[0]?.value,
       });
     } else {
-      chartInformation[item.task.type as TaskType].push({
-        date: new Date(item.completedAt).toLocaleDateString(),
-        value: item?.answers[0]?.value,
-      });
+      if (item?.answers[0]?.value) {
+        chartInformation[item.task.type as TaskType].push({
+          date: item.completedAt,
+          value: item?.answers[0]?.value,
+        });
+      }
     }
   });
 
@@ -236,13 +239,13 @@ export function IndividualPatientTabs({ user }: { user: any }) {
         <Tabs.Content value={TabList[2]}>
           <MedicalQuestionnaire taskData={taskData} />
         </Tabs.Content>
-        <Tabs.Content value={TabList[3]}>
+        {/* <Tabs.Content value={TabList[3]}>
           <div className="flex flex-col items-center justify-center h-full">
             <p className="text-2xl font-bold">Chat</p>
             <p className="text-gray-500">Coming Soon</p>
           </div>
-        </Tabs.Content>
-        <Tabs.Content value={TabList[4]}>
+        </Tabs.Content> */}
+        <Tabs.Content value={TabList[3]}>
           <AlertsPlaceholder />
         </Tabs.Content>
       </Tabs.Root>

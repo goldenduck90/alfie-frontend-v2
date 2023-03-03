@@ -67,7 +67,6 @@ export function BloodPressureChart({
             <Tooltip
               offset={0}
               content={({ payload, active }) => {
-                console.log({ payload });
                 if (!active) return null;
                 const systolic = payload?.[0]?.payload?.systolic;
                 const diastolic = payload?.[0]?.payload?.diastolic;

@@ -5,9 +5,9 @@ import { LoadingTaskItem } from "./LoadingTaskItem";
 export function PatientTasks({ taskData }: any) {
   const { data, loading, error } = taskData;
 
-  const renderTasks = data?.getAllUserTasksByUser.map(
-    (task: any, i: number) => <TaskItem {...task} key={i} />
-  );
+  const renderTasks = data?.getAllUserTasksByUser
+    .map((task: any, i: number) => <TaskItem {...task} key={i} />)
+    .sort((a: { completed: boolean }) => (a.completed ? 1 : -1));
 
   const renderLoadTasks = Array(8)
     .fill("")

@@ -9,54 +9,63 @@ import {
   Line,
   ResponsiveContainer,
 } from "recharts";
-import dayjs from "dayjs";
 import { CalendarIcon } from "@heroicons/react/outline";
+import { Classification } from "@src/graphql/generated";
+import dayjs from "dayjs";
 
 const legendItemKeys = {
-  rover: "#22C55E",
-  growler: "#0C52E8",
-  ember: "#8B5CF6",
-  empath: "#F43F5E",
+  Rover: "#22C55E",
+  Growler: "#0C52E8",
+  Ember: "#8B5CF6",
+  Empath: "#F43F5E",
 };
 
-const tempData = [
-  {
-    date: Date.now(),
-    rover: 55,
-    growler: 10,
-    ember: 20,
-    empath: 30,
-  },
-  {
-    date: Date.now(),
-    rover: 45,
-    growler: 35,
-    ember: 60,
-    empath: 35,
-  },
-  {
-    date: Date.now(),
-    rover: 65,
-    growler: 40,
-    ember: 30,
-    empath: 12,
-  },
-  {
-    date: Date.now(),
-    rover: 80,
-    growler: 10,
-    ember: 89,
-    empath: 60,
-  },
-];
+export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
+  interface ClassificationData {
+    date: string;
+    Rover: string;
+    Growler: string;
+    Ember: string;
+    Empath: string;
+  }
 
-export function MetabolicChart({ chartData }: { chartData: any }) {
+  const organizedClassifications: { [key: string]: ClassificationData } = {};
+
+  chartData?.forEach((classification) => {
+    const date = dayjs(classification.date).format("YYYY-MM-DD");
+
+    const initialClassification = {
+      Rover: "0",
+      Growler: "0",
+      Ember: "0",
+      Empath: "0",
+    };
+
+    const percentile = !!classification?.displayPercentile
+      ? classification?.displayPercentile
+      : classification?.calculatedPercentile || classification?.percentile;
+
+    if (!organizedClassifications[date]) {
+      organizedClassifications[date] = {
+        ...initialClassification,
+        date: date,
+      } as ClassificationData;
+    }
+
+    (organizedClassifications as any)[date][classification?.classification] =
+      percentile;
+  });
+
+  const data = Object.values(organizedClassifications).sort((a, b) =>
+    dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1
+  );
+
   return (
     <DashboardCard className="w-full md:max-w-[100%] md:min-w-max py-4">
       <div className="flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="flex w-full flex-col md:flex-row gap-2">
           {Object.keys(legendItemKeys).map((key: any) => {
-            const lastItem = tempData?.[tempData?.length - 1];
+            const lastItem = data[data?.length - 1];
             return (
               <div
                 key={key}
@@ -91,7 +100,7 @@ export function MetabolicChart({ chartData }: { chartData: any }) {
       </div>
       <div className="flex content-center w-full pt-8">
         <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={tempData}>
+          <LineChart data={data}>
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
@@ -102,7 +111,7 @@ export function MetabolicChart({ chartData }: { chartData: any }) {
             <YAxis
               domain={[0, 100]}
               type="number"
-              dataKey={"rover"}
+              dataKey="Rover"
               axisLine={false}
               tickLine={false}
               tickCount={5}
