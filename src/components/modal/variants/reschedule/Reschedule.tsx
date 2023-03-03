@@ -1,7 +1,7 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { Calendar } from "react-calendar";
 import { useFormikWizard } from "formik-wizard-form";
-import { FormikProvider, useField } from "formik";
+import { ErrorMessage, Field, Form, FormikProvider, useField } from "formik";
 import { useEffect, useState } from "react";
 import { Button } from "../../../ui/Button";
 import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../../Dialog";
@@ -13,27 +13,6 @@ import { DateSelection } from "./steps/DateSelection";
 import { TimeslotSelection } from "./steps/TimeslotSelection";
 import { AppointmentSummary } from "./steps/AppointmentSummary";
 import { AppointmentConfirmation } from "./steps/AppointmentConfirmation";
-
-export const FormCalendar = () => {
-  const [, , { setValue: setSelectedDate, setError: setSelectedDateError }] =
-    useField("selectedDate");
-  const appointments: any[] = []
-  const tileDisabled = ({ date }: { date: Date }) => {
-    return date < new Date()
-  }
-  return <Calendar onChange={(date: any) => setSelectedDate(date)} tileContent={({ activeStartDate, date, view }) => {
-    return view === "month" && appointments?.filter(
-      (appointment) =>
-        new Date(appointment?.startTimeInUtc).toDateString() ===
-        new Date(date).toDateString()
-    ).length > 0 ? (
-      <div className="flex justify-center">
-        <div className="w-2 h-2 bg-red-400 absolute md:mt-2 rounded-full" />
-      </div>
-    ) : null
-  }
-  } tileDisabled={tileDisabled} />;
-};
 
 export const DateSelector = () => {
   const [
@@ -82,6 +61,7 @@ export function RescheduleAppointment({
   onAppointmentConfirmed: (values: any) => void;
 }) {
   const [confirmed, setConfirmed] = useState(false)
+  const [errorText, setErrorText] = useState('')
   const rescheduleForm = useFormikWizard({
     initialValues: {
       reschedule: true,
@@ -141,13 +121,13 @@ export function RescheduleAppointment({
       {
         component: TimeslotSelection,
         validationSchema: Yup.object().shape({
-          eaProvider: Yup.object().required("Please select a provider."),
+          eaProvider: Yup.object().required("Please select a provider"),
           startTimeInUtc: Yup.string()
             .nullable()
-            .required("Please select a timeslot to continue."),
+            .required("Please select a timeslot to continue"),
           endTimeInUtc: Yup.string()
             .nullable()
-            .required("Please select a timeslot to continue."),
+            .required("Please select a timeslot to continue"),
         }),
         beforeNext: async ({ eaProvider, startTimeInUtc, endTimeInUtc }, { setFieldValue }) => {
           setFieldValue("eaProvider", eaProvider);
@@ -180,18 +160,32 @@ export function RescheduleAppointment({
     ],
   });
   const setOpen = useDialogToggle();
-  const { handleSubmit, errors } = rescheduleForm;
 
   const {
     renderComponent,
     handleNext,
     handlePrev,
+    handleSubmit,
+    errors,
     isPrevDisabled,
     isNextDisabled,
     isSubmitting,
     currentStepIndex,
     isLastStep,
+    status
   } = rescheduleForm;
+
+  const getErrors = () => {
+    if (errors?.startTimeInUtc || errors.endTimeInUtc || errors?.selectedDate || errors?.eaProvider) {
+      return (
+        <span className="text-red-500 text-sm">
+          <div>{(errors as any).startTimeInUtc || (errors as any).endTimeInUtc || (errors as any).selectedDate || (errors as any).eaProvider}</div>
+        </span>
+      )
+    }
+  }
+
+
 
   useEffect(() => {
     // TODO: uncomment once adding in fetch
@@ -212,50 +206,62 @@ export function RescheduleAppointment({
     //   setFieldValue("notes", appointment.notes);
   }, [rescheduleForm]);
 
-  useEffect(() => {
-    console.log('form errors: ', errors)
-  }, [errors])
-
   return (
     <div className="w-full max-w-[480px] min-w-full">
       <FormikProvider value={rescheduleForm}>
-        <DialogLongHeader
-          title={title}
-          step={currentStepIndex + 1}
-          total={2}
-          icon={undefined}
-          confirm={confirmed}
-        />
-        <DialogLongBody>
-          {/* Reschedule steps */}
-          {renderComponent()}
-        </DialogLongBody>
-        <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3">
-          {currentStepIndex === 0 && (
-            <RadixDialog.Close asChild>
-              <Button buttonType="secondary">Cancel</Button>
-            </RadixDialog.Close>
-          )}
-          {currentStepIndex > 0 && (
+        <>
+          <DialogLongHeader
+            title={title}
+            step={currentStepIndex + 1}
+            total={2}
+            icon={undefined}
+            confirm={confirmed}
+          />
+          <DialogLongBody>
+            {/* Reschedule steps */}
+            {renderComponent()}
+            {getErrors()}
+          </DialogLongBody>
+          <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3">
+            {/* {errors && Object.keys(errors)?.length > 0 ? (
+              Object.keys(errors).map(key => {
+                let errorMessage = ''
+                if ((key === 'startTimeInUtc' || key === 'endTimeInUtc')) {
+                  return (<div className="text-red-500 text-sm text-center">
+                    {'Please select a timeslot to continue.'}
+                  </div>)
+                }
+                return (<div className="text-red-500 text-sm text-center">
+                  {errorMessage}
+                </div>)
+              })
+            ) : null} */}
+            {currentStepIndex === 0 && (
+              <RadixDialog.Close asChild>
+                <Button buttonType="secondary">Cancel</Button>
+              </RadixDialog.Close>
+            )}
+            {currentStepIndex > 0 && currentStepIndex < 3 && (
+              <Button
+                buttonType="secondary"
+                onClick={() => handlePrev()}
+              >
+                <ChevronLeftIcon className="w-6 h-6" />
+              </Button>
+            )}
             <Button
-              buttonType="secondary"
-              onClick={() => handlePrev()}
+              onClick={() => {
+                if (currentStepIndex === 3) {
+                  handleSubmit();
+                }
+                handleNext();
+              }}
             >
-              <ChevronLeftIcon className="w-6 h-6" />
+              {currentStepIndex < 2 ? "Next" : currentStepIndex === 2 ? "Confirm" : "Done"}
             </Button>
-          )}
-          <Button
-            onClick={() => {
-              if (currentStepIndex === 3) {
-                handleSubmit();
-              }
-              handleNext();
-            }}
-          >
-            {currentStepIndex < 2 ? "Next" : currentStepIndex === 2 ? "Confirm" : "Done"}
-          </Button>
-        </div>
-      </FormikProvider>
+          </div>
+        </>
+      </FormikProvider >
     </div >
   );
 }

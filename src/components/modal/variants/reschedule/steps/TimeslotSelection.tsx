@@ -2,8 +2,8 @@ import { OptionInput, SelectInput } from "@src/components/inputs/SelectInput";
 import { TimeslotButton } from "@src/components/ui/TimeslotButton";
 import { EaProvider, Role } from "@src/graphql/generated";
 import { rawTimeZones } from "@vvo/tzdb";
-import { useEffect, useState } from "react";
-import { DateSelector, FormCalendar } from "../Reschedule";
+import { useState } from "react";
+import { DateSelector } from "../Reschedule";
 
 const getTimezoneAbbrv = (timeZone: string): any => {
     return new Intl.DateTimeFormat('en-US', {
