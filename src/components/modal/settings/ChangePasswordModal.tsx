@@ -23,8 +23,6 @@ export function ChangePasswordModal({ title }: { title: string }) {
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
 
-  console.log({ user });
-
   const {
     register,
     handleSubmit,

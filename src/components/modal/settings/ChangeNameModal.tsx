@@ -18,8 +18,6 @@ const changeNameSchema = z.object({
 export function ChangeNameModal({ title }: { title: string }) {
   const { user } = useCurrentUserStore();
 
-  console.log({ user });
-
   const {
     register,
     handleSubmit,

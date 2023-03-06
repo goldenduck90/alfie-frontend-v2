@@ -119,7 +119,6 @@ export const Table = ({
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: filterFunction,
   });
-  console.log(table.getFilteredRowModel());
   React.useEffect(() => {
     if (patientData) {
       setData(patientData || []);
