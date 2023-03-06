@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 import {
   createColumnHelper,
@@ -7,45 +7,45 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import Link from 'next/link'
+} from "@tanstack/react-table";
+import Link from "next/link";
 export type PatientAddress = {
-  line1: string
-  line2: string
-  city: string
-  state: string
-  postalCode: string
-}
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  postalCode: string;
+};
 export type PatientWeights = {
-  value: number
-  date: string
-}
+  value: number;
+  date: string;
+};
 export type Patient = {
-  _id: string
-  name: string
-  phone: string
-  gender: string
-  email: string
-  dateOfBirth: string
-  heightInInches: number
-  meetingUrl: string | null
-  view: string
-  status: string
-  address: PatientAddress
-  weights: PatientWeights[]
-}
+  _id: string;
+  name: string;
+  phone: string;
+  gender: string;
+  email: string;
+  dateOfBirth: string;
+  heightInInches: number;
+  meetingUrl: string | null;
+  view: string;
+  status: string;
+  address: PatientAddress;
+  weights: PatientWeights[];
+};
 
-const columnHelper = createColumnHelper<Patient>()
+const columnHelper = createColumnHelper<Patient>();
 
 export const Table = ({
   patientData,
   loading,
 }: {
-  patientData: Patient[]
-  loading: boolean
+  patientData: Patient[];
+  loading: boolean;
 }) => {
-  const [data, setData] = React.useState(patientData || [])
-  const [currentPage, setCurrentPage] = React.useState(1)
+  const [data, setData] = React.useState(patientData || []);
+  const [currentPage, setCurrentPage] = React.useState(1);
   const columns = [
     columnHelper.accessor("name", {
       cell: (info) => info.getValue(),
@@ -104,13 +104,13 @@ export const Table = ({
         </Link>
       ),
     }),
-  ]
+  ];
   // Paginate the table
   const filterFunction: any = (row: any, columnId: any, value: any) => {
     if (columnId === "name") {
-      return row.name.toLowerCase().includes(value.toLowerCase())
+      return row.name.toLowerCase().includes(value.toLowerCase());
     }
-  }
+  };
   const table = useReactTable({
     data,
     columns,
@@ -118,13 +118,12 @@ export const Table = ({
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: filterFunction,
-  })
-  console.log(table.getFilteredRowModel())
+  });
   React.useEffect(() => {
     if (patientData) {
-      setData(patientData || [])
+      setData(patientData || []);
     }
-  }, [data, patientData])
+  }, [data, patientData]);
 
   return (
     <div className="pt-10">
@@ -209,8 +208,8 @@ export const Table = ({
             type="button"
             className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-red hover:bg-gray-50"
             onClick={() => {
-              table.previousPage()
-              setCurrentPage(currentPage - 1)
+              table.previousPage();
+              setCurrentPage(currentPage - 1);
             }}
             disabled={!table.getCanPreviousPage()}
           >
@@ -228,8 +227,8 @@ export const Table = ({
             type="button"
             className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-red hover:bg-gray-50"
             onClick={() => {
-              table.nextPage()
-              setCurrentPage(currentPage + 1)
+              table.nextPage();
+              setCurrentPage(currentPage + 1);
             }}
             disabled={!table.getCanNextPage()}
           >
@@ -238,5 +237,5 @@ export const Table = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

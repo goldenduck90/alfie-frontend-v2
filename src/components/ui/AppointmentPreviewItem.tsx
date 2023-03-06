@@ -12,6 +12,7 @@ export interface AppointmentPreviewItemProps {
   renderDate?: { date: string; time: string };
   isLoading?: boolean;
   appointmentId?: string;
+  abnormality?: string;
 }
 
 export function AppointmentPreviewItem({
@@ -21,6 +22,8 @@ export function AppointmentPreviewItem({
   renderDate,
   isLoading,
   appointmentId,
+  icon,
+  abnormality,
 }: AppointmentPreviewItemProps) {
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 md:p-6">
@@ -35,10 +38,15 @@ export function AppointmentPreviewItem({
             <p className="text-gray-600 font-normal">{providerTitle}</p>
           </div>
         )}
-        <div className="flex rounded-full bg-lime-100 w-10 h-10 items-center justify-center min-w-[40px]">
-          <UserIcon className="h-6 w-6 text-lime-700" />
-        </div>
+        {icon ? (
+          icon
+        ) : (
+          <div className="flex rounded-full bg-lime-100 w-10 h-10 items-center justify-center min-w-[40px]">
+            <UserIcon className="h-6 w-6 text-lime-700" />
+          </div>
+        )}
       </div>
+      {abnormality && <div className="bg-red-200"> oh snap you abnormal</div>}
 
       <div className="flex w-full pt-6">
         <ClockIcon

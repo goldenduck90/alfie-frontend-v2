@@ -24,19 +24,18 @@ export const TaskSelector = ({
   type: string;
   userTaskId: string;
   trigger?: React.ReactNode;
-  createdAt: Date;
+  createdAt?: Date;
 }) => {
   const router = useRouter();
-
-  useEffect(() => {
-    console.log({ createdAt });
-  }, [createdAt]);
 
   switch (type) {
     case TaskType.IdAndInsuranceUpload:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <IDVerificationModal title="ID & Insurance verification" />
+          <IDVerificationModal
+            taskId={userTaskId}
+            title="ID & Insurance verification"
+          />
         </DialogModal>
       );
     case TaskType.NewPatientIntakeForm:

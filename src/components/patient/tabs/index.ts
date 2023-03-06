@@ -1,1 +1,0 @@
-export { AllPatientsTabs } from "./AllPatients";

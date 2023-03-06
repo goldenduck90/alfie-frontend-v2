@@ -45,7 +45,7 @@ export const Chat = () => {
     }
   }, [query]);
 
-  function showDrawer() {
+  const showDrawer = useMemo(() => {
     if (user?.role === Role.Patient) {
       return "hidden";
     } else if (toggleChannelDrawer) {
@@ -53,11 +53,11 @@ export const Chat = () => {
     } else {
       return "hidden lg:block";
     }
-  }
+  }, [user?.role, toggleChannelDrawer]);
 
   return (
     <div className="flex relative h-[75vh] rounded-lg">
-      <div className={`h-[75vh] relative z-10 bg-white ${showDrawer()}`}>
+      <div className={`h-[75vh] relative z-10 bg-white ${showDrawer}`}>
         <ChannelListUI
           queries={queries}
           allowProfileEdit={false}
@@ -103,9 +103,7 @@ export const Chat = () => {
           disableUserProfile={true}
           renderChannelHeader={() => (
             <>
-              <ChannelProvider channelUrl={currentChannelUrl}>
-                <ChannelHeader handleDrawerToggle={handleDrawerToggle} />
-              </ChannelProvider>
+              <ChannelHeader handleDrawerToggle={handleDrawerToggle} />
             </>
           )}
         />

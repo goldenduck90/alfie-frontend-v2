@@ -36,7 +36,7 @@ export function YourWeight() {
                   triggerAsChild
                   trigger={<Button>Update Weight</Button>}
                 >
-                  <WeightEntry title="Enter your weight" />
+                  <WeightEntry title="Enter your weight" taskId="" />
                 </DialogModal>
               </div>
               <p className="text-gray-900 text-5xl">
