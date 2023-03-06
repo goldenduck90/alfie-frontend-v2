@@ -6,13 +6,11 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   Line,
   ResponsiveContainer,
-  ReferenceLine,
 } from "recharts";
 import dayjs from "dayjs";
-import { Task, TaskType } from "@src/graphql/generated";
+import { makeArrayWithRange } from "@src/utils/range";
 
 export function WaistChart({
   title,
@@ -21,8 +19,12 @@ export function WaistChart({
 }: {
   title: string;
   lineColor?: string;
-  chartData: { value: string; date: string }[];
+  chartData: { value: string; date: number }[];
 }) {
+  const start = chartData?.[0]?.date;
+  const end = chartData?.[chartData.length - 1]?.date;
+
+  const ticks = makeArrayWithRange(start, end, 3);
   return (
     <DashboardCard
       className="w-full md:max-w-full md:min-w-max py-4"
@@ -34,9 +36,12 @@ export function WaistChart({
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
+              domain={[start, end]}
               strokeWidth={0}
-              tickFormatter={(unixTime) => dayjs(unixTime).format("MMM")}
+              tickFormatter={(unixTime) => dayjs(unixTime).format("MM/DD/YY")}
               tickMargin={15}
+              type="number"
+              ticks={ticks}
             />
             <YAxis
               domain={[0, "auto"]}
@@ -61,10 +66,13 @@ export function WaistChart({
               content={({ payload, active }) => {
                 if (!active) return null;
                 const value = payload?.[0]?.value;
+                const date = payload?.[0]?.payload.date;
+
                 if (!value) return null;
                 return (
-                  <div className="py-1 px-2 text-center bg-black text-white rounded-full">
-                    {`${value} in`}
+                  <div className="py-1 px-2 text-center bg-black text-white rounded-md">
+                    <div>{dayjs(date).format("MM/DD/YYYY")}</div>
+                    <div>{`${value} in`}</div>
                   </div>
                 );
               }}

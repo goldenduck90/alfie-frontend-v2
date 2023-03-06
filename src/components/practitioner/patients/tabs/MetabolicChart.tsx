@@ -12,6 +12,7 @@ import {
 import { CalendarIcon } from "@heroicons/react/outline";
 import { Classification } from "@src/graphql/generated";
 import dayjs from "dayjs";
+import { makeArrayWithRange } from "@src/utils/range";
 
 const legendItemKeys = {
   Rover: "#22C55E",
@@ -22,7 +23,7 @@ const legendItemKeys = {
 
 export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
   interface ClassificationData {
-    date: string;
+    date: number;
     Rover: string;
     Growler: string;
     Ember: string;
@@ -30,6 +31,11 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
   }
 
   const organizedClassifications: { [key: string]: ClassificationData } = {};
+
+  const start = new Date(chartData?.[0]?.date).getTime();
+  const end = new Date(chartData?.[chartData.length - 1]?.date).getTime();
+
+  const ticks = makeArrayWithRange(start, end, 4);
 
   chartData?.forEach((classification) => {
     const date = dayjs(classification.date).format("YYYY-MM-DD");
@@ -48,7 +54,7 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
     if (!organizedClassifications[date]) {
       organizedClassifications[date] = {
         ...initialClassification,
-        date: date,
+        date: new Date(classification.date).getTime(),
       } as ClassificationData;
     }
 
@@ -93,9 +99,9 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
           <span>
             <CalendarIcon className="w-4 h-4 stroke-gray-600" />
           </span>
-          <p>{`${dayjs().format("MM/DD/YYYY")}-${dayjs()
-            .add(3, "months")
-            .format("MM/DD/YYYY")}`}</p>
+          <p>{`${dayjs(start).format("MM/DD/YYYY")}-${dayjs(end).format(
+            "MM/DD/YYYY"
+          )}`}</p>
         </div>
       </div>
       <div className="flex content-center w-full pt-8">
@@ -104,9 +110,12 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
+              domain={[start, end]}
               strokeWidth={0}
-              tickFormatter={(unixTime) => dayjs(unixTime).format("MMM")}
+              tickFormatter={(unixTime) => dayjs(unixTime).format("MM/DD/YY")}
               tickMargin={15}
+              type="number"
+              ticks={ticks}
             />
             <YAxis
               domain={[0, 100]}
@@ -136,9 +145,13 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
               content={({ payload, active }) => {
                 if (!active) return null;
                 const value = payload?.[0]?.value;
+                const date = payload?.[0]?.payload?.date;
                 if (!value) return null;
                 return (
                   <div className="py-2 px-2 text-center bg-[#0F172A] text-white rounded-lg min-w-[120px] w-full flex flex-col gap-y-2">
+                    <div className="text-sm">
+                      {dayjs(date).format("MM/DD/YYYY")}
+                    </div>
                     {payload?.map((pay) => {
                       return (
                         <div className="flex items-center justify-between text-xs">

@@ -8,9 +8,13 @@ import {
   Tooltip,
   Line,
   ResponsiveContainer,
-  ReferenceLine,
 } from "recharts";
 import dayjs from "dayjs";
+import {
+  range,
+  rangeByIndexAmount,
+  makeArrayWithRange,
+} from "@src/utils/range";
 
 export function BloodPressureChart({
   title,
@@ -23,6 +27,11 @@ export function BloodPressureChart({
   diastolicColor?: string;
   chartData: any;
 }) {
+  const start = chartData?.[0]?.date;
+  const end = chartData?.[chartData.length - 1]?.date;
+
+  const ticks = makeArrayWithRange(start, end, 3);
+
   return (
     <DashboardCard
       className="w-full md:max-w-full md:min-w-max py-4"
@@ -34,9 +43,12 @@ export function BloodPressureChart({
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
+              domain={[start, end]}
               strokeWidth={0}
-              tickFormatter={(unixTime) => dayjs(unixTime).format("MMM")}
+              tickFormatter={(unixTime) => dayjs(unixTime).format("MM/DD/YY")}
               tickMargin={15}
+              type="number"
+              ticks={ticks}
             />
             <YAxis
               domain={[0, "auto"]}
@@ -70,9 +82,12 @@ export function BloodPressureChart({
                 if (!active) return null;
                 const systolic = payload?.[0]?.payload?.systolic;
                 const diastolic = payload?.[0]?.payload?.diastolic;
+                const date = payload?.[0]?.payload.date;
+
                 if (!systolic || !diastolic) return null;
                 return (
                   <div className="py-1 px-2 text-center bg-black text-white rounded-lg text-sm ">
+                    <div>{dayjs(date).format("MM/DD/YYYY")}</div>
                     <div className="flex items-center space-x-2 pb-1">
                       <div
                         className="h-4 w-4 rounded-full border-white border-2"

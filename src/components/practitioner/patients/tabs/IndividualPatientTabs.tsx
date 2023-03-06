@@ -105,7 +105,7 @@ const TabList = [
   "Alerts",
 ];
 
-export function IndividualPatientTabs({ user }: { user: any }) {
+export function IndividualPatientTabs() {
   const router = useRouter();
   const patientId = router.query.patientId as string;
   const activeTab = (router?.query?.tab as string) || TabList[0];
@@ -141,19 +141,19 @@ export function IndividualPatientTabs({ user }: { user: any }) {
   const chartInformation: {
     [key in TaskType]: {
       value: any;
-      date: string;
+      date: number;
       systolic?: any;
       diastolic?: any;
     }[];
   } = {} as any;
 
-  taskData?.data?.getAllUserTasksByUser?.forEach((item) => {
+  taskData?.data?.getAllUserTasksByUser?.forEach((item: any) => {
     if (!chartInformation[item.task.type as TaskType]) {
       chartInformation[item.task.type as TaskType] = [];
     }
     if (item.task.type === TaskType.BpLog) {
       chartInformation[item.task.type as TaskType].push({
-        date: item.completedAt,
+        date: new Date(item.completedAt).getTime(),
         systolic: item?.answers[0]?.value,
         diastolic: item?.answers[1]?.value,
         value: item?.answers[0]?.value,
@@ -161,12 +161,13 @@ export function IndividualPatientTabs({ user }: { user: any }) {
     } else {
       if (item?.answers[0]?.value) {
         chartInformation[item.task.type as TaskType].push({
-          date: item.completedAt,
+          date: new Date(item.completedAt).getTime(),
           value: item?.answers[0]?.value,
         });
       }
     }
   });
+  const weightChartInfo = chartInformation[TaskType.WeightLog];
 
   return (
     <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white md:bg-gray-50 shadow-md rounded-md px-4 md:px-8 py-4">
@@ -202,9 +203,11 @@ export function IndividualPatientTabs({ user }: { user: any }) {
               <span>
                 <CalendarIcon className="w-4 h-4 stroke-gray-600" />
               </span>
-              <p>{`${dayjs().format("MM/DD/YYYY")}-${dayjs()
-                .add(3, "months")
-                .format("MM/DD/YYYY")}`}</p>
+              <p>{`${dayjs(weightChartInfo?.[0]?.date).format(
+                "MM/DD/YYYY"
+              )}-${dayjs(
+                weightChartInfo?.[weightChartInfo?.length - 1]?.date
+              ).format("MM/DD/YYYY")}`}</p>
             </div>
           </div>
 
@@ -212,7 +215,7 @@ export function IndividualPatientTabs({ user }: { user: any }) {
             <WeightChart
               title="Weight"
               lineColor="#0C52E8"
-              chartData={chartInformation[TaskType.WeightLog]}
+              chartData={weightChartInfo}
             />
             <WaistChart
               title="Waist"

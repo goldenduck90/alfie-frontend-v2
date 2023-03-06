@@ -15,15 +15,15 @@ export function MedicalQuestionnaire({ taskData }: any) {
   return (
     <TableUserObject
       user={{
-        "Weight Loss Attempt": taskAnswers?.[0].value,
-        "Weight Management": taskAnswers?.[1].value,
-        Conditions: taskAnswers?.[2].value,
-        "Previous Conditions": taskAnswers?.[3].value,
-        Medications: taskAnswers?.[4].value,
-        "Surgical History": taskAnswers?.[5].value,
-        "Use Pill Pack": taskAnswers?.[6].value,
-        "Has Required Labs": taskAnswers?.[7].value === "true" ? "Yes" : "No",
-        Pharmacy: taskAnswers?.[8].value,
+        "Weight Loss Attempt": taskAnswers?.[0]?.value,
+        "Weight Management": taskAnswers?.[1]?.value,
+        Conditions: taskAnswers?.[2]?.value,
+        "Previous Conditions": taskAnswers?.[3]?.value,
+        Medications: taskAnswers?.[4]?.value,
+        "Surgical History": taskAnswers?.[5]?.value,
+        "Use Pill Pack": taskAnswers?.[6]?.value,
+        "Has Required Labs": taskAnswers?.[7]?.value === "true" ? "Yes" : "No",
+        Pharmacy: taskAnswers?.[8]?.value,
       }}
     />
   );
