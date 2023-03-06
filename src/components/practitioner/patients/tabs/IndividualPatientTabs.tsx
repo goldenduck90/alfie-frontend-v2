@@ -101,7 +101,7 @@ const TabList = [
   "Information",
   "Tasks",
   "Medical Questionnaire",
-  // "Chat",
+  "Chat",
   "Alerts",
 ];
 
@@ -147,8 +147,6 @@ export function IndividualPatientTabs({ user }: { user: any }) {
     }[];
   } = {} as any;
 
-  console.log({ taskData });
-
   taskData?.data?.getAllUserTasksByUser?.forEach((item) => {
     if (!chartInformation[item.task.type as TaskType]) {
       chartInformation[item.task.type as TaskType] = [];
@@ -192,7 +190,7 @@ export function IndividualPatientTabs({ user }: { user: any }) {
           </Tabs.List>
         </div>
         <Tabs.Content value={TabList[0]} className="mt-6">
-          <TableInformationHeader user={patient} />
+          <TableInformationHeader user={patient} loading={loading} />
           <TableUserObject user={patientTable} loading={loading} />
           <div className="w-full mt-6">
             <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
@@ -221,7 +219,6 @@ export function IndividualPatientTabs({ user }: { user: any }) {
               lineColor="#8B5CF6"
               chartData={chartInformation[TaskType.WaistLog]}
             />
-
             <StepsChart
               title="Steps"
               lineColor="#22C55E"
@@ -239,13 +236,13 @@ export function IndividualPatientTabs({ user }: { user: any }) {
         <Tabs.Content value={TabList[2]}>
           <MedicalQuestionnaire taskData={taskData} />
         </Tabs.Content>
-        {/* <Tabs.Content value={TabList[3]}>
+        <Tabs.Content value={TabList[3]}>
           <div className="flex flex-col items-center justify-center h-full">
             <p className="text-2xl font-bold">Chat</p>
             <p className="text-gray-500">Coming Soon</p>
           </div>
-        </Tabs.Content> */}
-        <Tabs.Content value={TabList[3]}>
+        </Tabs.Content>
+        <Tabs.Content value={TabList[4]}>
           <AlertsPlaceholder />
         </Tabs.Content>
       </Tabs.Root>
@@ -253,7 +250,13 @@ export function IndividualPatientTabs({ user }: { user: any }) {
   );
 }
 
-function TableInformationHeader({ user }: { user: User }) {
+function TableInformationHeader({
+  user,
+  loading,
+}: {
+  user: User;
+  loading?: boolean;
+}) {
   const initials = useMemo(() => {
     if (!user?.name) return "";
     const splitName = user?.name?.split(" ");
@@ -266,7 +269,13 @@ function TableInformationHeader({ user }: { user: User }) {
     <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
       <div className="flex gap-3 items-center">
         <AvatarInitial size="xl" index={0} text={initials} />
-        <p className="font-bold text-xl">{user?.name}</p>
+        {loading ? (
+          <div className="h-7 w-56 mt-2">
+            <PlaceHolderLine hasTopMargin />
+          </div>
+        ) : (
+          <p className="font-bold text-xl">{user?.name}</p>
+        )}
       </div>
       <div className="flex gap-x-3 items-center">
         <p className="flex gap-x-2 items-center">
@@ -308,7 +317,7 @@ export function TableUserObject({
             >
               <p className="capitalize min-w-[275px] font-bold">{key}</p>
               {loading ? (
-                <div className="w-1/4 flex items-center mt-2">
+                <div className="w-1/4 h-6 flex items-center">
                   <PlaceHolderLine hasTopMargin />
                 </div>
               ) : (
