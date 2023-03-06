@@ -143,13 +143,13 @@ export function DialogLongHeader({
   step,
   total,
   icon,
-  confirm = false
+  confirm = false,
 }: {
   title: string;
   step: number;
   total: number;
-  icon: JSX.Element | undefined;
-  confirm: boolean;
+  icon?: JSX.Element | undefined;
+  confirm?: boolean;
 }) {
   return (
     <div className="w-full flex justify-between items-center relative pb-3 px-6 whitespace-nowrap">
@@ -159,7 +159,9 @@ export function DialogLongHeader({
             <CalculatorIcon className="w-5 h-5 stroke-inherit" />
           </div>
         )}
-        {confirm ? null : <span className="text-sm font-bold truncate">{title}</span>}
+        {confirm ? null : (
+          <span className="text-sm font-bold truncate">{title}</span>
+        )}
       </div>
       <div className="flex items-center gap-x-2">
         {confirm ? null : step > total ? (

@@ -61,8 +61,6 @@ export const CalendarView = () => {
   const { eaProvider, startTimeInUtc, eaAppointmentId } =
     data?.appointments?.[1] || {};
 
-  console.log({ data });
-
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -87,8 +85,6 @@ export const CalendarView = () => {
     return dayjs(appointment.startTimeInUtc).isSame(dayjs(value), "day");
   });
 
-  console.log({ meetingToShow });
-
   return (
     <div className="flex flex-col md:flex-row gap-6 bg-white md:bg-transparent border md:border-none p-4 md:p-0 rounded-xl">
       <div className="bg-white p-2 md:border rounded-xl md:p-7">
@@ -111,11 +107,11 @@ export const CalendarView = () => {
           tileContent={({ activeStartDate, date, view }) =>
             // If a date in the month view has meetings, show a dot the meetings are found in the meetings array
             view === "month" &&
-              meetings.filter(
-                (meeting) =>
-                  new Date(meeting.startTimeInUtc).toDateString() ===
-                  new Date(date).toDateString()
-              ).length > 0 ? (
+            meetings.filter(
+              (meeting) =>
+                new Date(meeting.startTimeInUtc).toDateString() ===
+                new Date(date).toDateString()
+            ).length > 0 ? (
               <div className="flex justify-center">
                 <div className="w-2 h-2 bg-red-400 absolute md:mt-2 rounded-full" />
               </div>
@@ -153,16 +149,16 @@ export const CalendarView = () => {
             )}
           </div>
         </div>
-        {data?.appointments?.length > 0 && (
-          <div className="p-6 rounded-xl md:border bg-white">
-            <>
-              <Line color="medium" className="pb-7 md:hidden" />
-              <div className="flex justify-between pb-6">
-                <h3 className="font-bold">Next Visit</h3>{" "}
-                <Link href="/dashboard/appointments">
-                  <p className="font-semibold">View all</p>
-                </Link>
-              </div>
+        <div className="p-6 rounded-xl md:border bg-white">
+          <>
+            <Line color="medium" className="pb-7 md:hidden" />
+            <div className="flex justify-between pb-6">
+              <h3 className="font-bold">Next Visit</h3>{" "}
+              <Link href="/dashboard/appointments">
+                <p className="font-semibold">View all</p>
+              </Link>
+            </div>
+            {data?.appointments?.length > 0 ? (
               <AppointmentPreviewItem
                 isLoading={loading}
                 name={eaProvider?.name}
@@ -173,12 +169,17 @@ export const CalendarView = () => {
                 }}
                 appointmentId={eaAppointmentId}
               />
-            </>
-          </div>
-        )}
+            ) : (
+              <div className="flex flex-col items-center bg-gray-100 py-10">
+                <CalendarIcon className="h-8 w-8" />
+                <p className="text-gray-600 pt-5 max-w-[200px] text-center">
+                  You have no future appointments scheduled
+                </p>
+              </div>
+            )}
+          </>
+        </div>
       </div>
-    </div >
+    </div>
   );
 };
-
-export default CalendarView;
