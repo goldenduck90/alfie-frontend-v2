@@ -23,6 +23,8 @@ import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 import { useRouter } from "next/router";
 import { TabTitle } from "@src/components/ui/tabs/TabTitle";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { useGetAllPatientsByAdmins } from "@src/hooks/useGetAllPatientsByAdmin";
 
 export function AllPatientsTabs() {
   const router = useRouter();
@@ -78,22 +80,32 @@ export function AllPatientsTable({
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
 }) {
+  const { user } = useCurrentUserStore();
   const { data, error, loading } = useGetAllPatientsByProvider();
-  const table = usePatientTable({
+  const adminUsers = useGetAllPatientsByAdmins();
+
+  const providerTable = usePatientTable({
     data: data?.getAllPatientsByPractitioner || [],
     globalFilter,
     setGlobalFilter,
   });
+  const adminTable = usePatientTable({
+    data: adminUsers.data?.users || [],
+    globalFilter,
+    setGlobalFilter,
+  });
+
+  const table = user?.role === "Admin" ? adminTable : providerTable;
 
   return (
     <div>
       <p className="text-lg">{`${
-        table.getCoreRowModel().rows.length
+        table?.getCoreRowModel().rows.length
       } Patients`}</p>
       <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
         <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
           <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {table?.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="bg-gray-50">
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className="">
@@ -111,52 +123,53 @@ export function AllPatientsTable({
             ))}
           </thead>
           <tbody className="divide-y divide-gray-300 ">
-            {loading && (
-              <>
-                {table.getHeaderGroups().map((headerGroup, i) => {
-                  return Array(9)
-                    .fill("")
-                    .map((_, j) => (
-                      <tr
-                        key={j}
-                        className={`border-0 border-b-[1px]
+            {loading ||
+              (adminUsers.loading && (
+                <>
+                  {table?.getHeaderGroups().map((headerGroup, i) => {
+                    return Array(9)
+                      .fill("")
+                      .map((_, j) => (
+                        <tr
+                          key={j}
+                          className={`border-0 border-b-[1px]
                   ${i == 0 ? "border-t-[1px]" : ""}
                 `}
-                      >
-                        {headerGroup?.headers.map((_, j) => (
-                          <td key={j} className="py-4 px-2 ">
-                            {j === headerGroup.headers.length - 1 ? (
-                              <button
-                                disabled
-                                className="p-1 border rounded-md border-gray-200 max-w-fit"
-                              >
-                                <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-                              </button>
-                            ) : (
-                              <div className="flex">
-                                {j === 0 && (
-                                  <div className="pr-2">
-                                    <AvatarInitial text={""} index={j} />
-                                  </div>
-                                )}
-                                <div
-                                  className={`${
-                                    j === 0 ? "w-24" : "w-[60%]"
-                                  } mt-3 `}
+                        >
+                          {headerGroup?.headers.map((_, j) => (
+                            <td key={j} className="py-4 px-2 ">
+                              {j === headerGroup.headers.length - 1 ? (
+                                <button
+                                  disabled
+                                  className="p-1 border rounded-md border-gray-200 max-w-fit"
                                 >
-                                  <PlaceHolderLine />
+                                  <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+                                </button>
+                              ) : (
+                                <div className="flex">
+                                  {j === 0 && (
+                                    <div className="pr-2">
+                                      <AvatarInitial text={""} index={j} />
+                                    </div>
+                                  )}
+                                  <div
+                                    className={`${
+                                      j === 0 ? "w-24" : "w-[60%]"
+                                    } mt-3 `}
+                                  >
+                                    <PlaceHolderLine />
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                          </td>
-                        ))}
-                      </tr>
-                    ));
-                })}
-              </>
-            )}
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ));
+                  })}
+                </>
+              ))}
             {!!data &&
-              table.getRowModel().rows.map((row) => (
+              table?.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="">
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="py-4 ">

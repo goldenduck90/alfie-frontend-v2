@@ -4,6 +4,7 @@ import {
   EmojiHappyIcon,
   UserIcon,
   DotsCircleHorizontalIcon,
+  CalendarIcon,
 } from "@heroicons/react/solid";
 import { TaskType } from "@src/graphql/generated";
 import {
@@ -60,7 +61,15 @@ export function ChooseTaskIcon({ value }: ChooseTaskIconProps) {
           icon={EmojiHappyIcon}
         />
       );
-
+    case TaskType.ScheduleAppointment:
+    case TaskType.ScheduleHealthCoachAppointment:
+      return (
+        <TaskIconBase
+          textColor="text-brand-purple-shade"
+          bgColor="bg-brand-purple-tint-2"
+          icon={CalendarIcon}
+        />
+      );
     default:
       return (
         <TaskIconBase

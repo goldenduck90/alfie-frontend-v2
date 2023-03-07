@@ -151,7 +151,7 @@ export function IndividualPatientTabs() {
     if (!chartInformation[item.task.type as TaskType]) {
       chartInformation[item.task.type as TaskType] = [];
     }
-    if (item.task.type === TaskType.BpLog) {
+    if (item.task.type === TaskType.BpLog && item.completed > 0) {
       chartInformation[item.task.type as TaskType].push({
         date: new Date(item.completedAt).getTime(),
         systolic: item?.answers[0]?.value,
@@ -159,7 +159,7 @@ export function IndividualPatientTabs() {
         value: item?.answers[0]?.value,
       });
     } else {
-      if (item?.answers[0]?.value) {
+      if (item?.answers?.[0]?.value && item.completed > 0) {
         chartInformation[item.task.type as TaskType].push({
           date: new Date(item.completedAt).getTime(),
           value: item?.answers[0]?.value,

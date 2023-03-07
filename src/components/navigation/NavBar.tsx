@@ -31,11 +31,11 @@ export function Navbar({ navItems }: NavbarProps) {
       <div className="fixed top-0 flex flex-row w-full z-[98]">
         <div className="flex flex-col items-center bg-brand-berry w-full border-b-[1px] border-brand-berry-tint-1">
           {/* //TODO: Create Role Changing for admin  */}
-          {isAdmin && (
+          {/* {isAdmin && (
             <div className="w-full top-0 z-[98] bg-brand-berry p-2">
               Role Changing component
             </div>
-          )}
+          )} */}
           <nav className="flex flex-row justify-between p-4 md:px-8 max-w-7xl w-full">
             <div className="flex items-center">
               <MobileNav navItems={navItems} />

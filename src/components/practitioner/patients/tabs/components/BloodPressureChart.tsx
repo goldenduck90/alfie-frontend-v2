@@ -29,7 +29,6 @@ export function BloodPressureChart({
 }) {
   const start = chartData?.[0]?.date;
   const end = chartData?.[chartData.length - 1]?.date;
-
   const ticks = makeArrayWithRange(start, end, 3);
 
   return (
@@ -51,7 +50,7 @@ export function BloodPressureChart({
               ticks={ticks}
             />
             <YAxis
-              domain={[0, "auto"]}
+              domain={[0, 200]}
               type="number"
               dataKey={"systolic"}
               axisLine={false}

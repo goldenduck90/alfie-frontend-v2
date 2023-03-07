@@ -44,7 +44,7 @@ export function StepsChart({
               ticks={ticks}
             />
             <YAxis
-              domain={[0, "auto"]}
+              domain={[0, 30000]}
               type="number"
               dataKey={"value"}
               axisLine={false}

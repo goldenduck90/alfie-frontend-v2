@@ -152,9 +152,12 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
                     <div className="text-sm">
                       {dayjs(date).format("MM/DD/YYYY")}
                     </div>
-                    {payload?.map((pay) => {
+                    {payload?.map((pay, i) => {
                       return (
-                        <div className="flex items-center justify-between text-xs">
+                        <div
+                          className="flex items-center justify-between text-xs"
+                          key={i}
+                        >
                           <div
                             key={pay.name}
                             className="flex gap-x-2 items-center capitalize mr-4"
