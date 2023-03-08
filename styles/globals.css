@@ -182,3 +182,24 @@ body {
 .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: #e6e6e6;
 }
+
+/* Sendbird CSS */
+.sendbird-badge .sendbird-badge__text {
+  margin: -4px 7px !important;
+}
+.sendbird-conversation {
+  @apply rounded-xl lg:rounded-l-none;
+}
+.sendbird-channel-preview {
+  @apply py-4 px-6  !important;
+}
+.sendbird-avatar {
+  @apply max-h-12 max-w-[48px] !important;
+}
+.chat-container .sendbird-conversation {
+  @apply rounded-xl;
+}
+.sendbird-place-holder {
+  @apply rounded-xl !important;
+}
+/* Sendbird CSS */

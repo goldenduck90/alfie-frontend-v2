@@ -21,7 +21,7 @@ export const ChannelListHeader = ({
   }, [value]);
 
   return (
-    <div className="bg-white z-[1] border absolute shadow-sm w-full text-left px-5 py-4 font-bold flex justify-between">
+    <div className="bg-white z-[1] absolute rounded-tl-xl shadow-sm w-full text-left px-5 py-4 font-bold flex justify-between border-r">
       <input
         className="font-mulish w-full px-3 py-1 focus:outline-none appearance-none rounded-sm border"
         onChange={(e) => {
