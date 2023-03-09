@@ -56,7 +56,13 @@ export function AbnormalPatientPreviewItem({
         <Link href={`/dashboard/patients/${patientId}`} passHref legacyBehavior>
           <Button buttonType="secondary">See Details</Button>
         </Link>
-        <Button disabled={isLoading}>Contact</Button>
+        <Link
+          href={`/dashboard/patients/${patientId}?tab=Chat`}
+          passHref
+          legacyBehavior
+        >
+          <Button disabled={isLoading}>Contact</Button>
+        </Link>
       </div>
     </div>
   );
