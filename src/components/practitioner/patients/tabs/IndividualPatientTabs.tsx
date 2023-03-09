@@ -110,7 +110,7 @@ const TabList = [
   "Tasks",
   "Medical Questionnaire",
   "Chat",
-  "Alerts",
+  // "Alerts",
 ];
 
 export function IndividualPatientTabs() {
@@ -264,9 +264,9 @@ export function IndividualPatientTabs() {
             </div>
           </SendBirdProvider>
         </Tabs.Content>
-        <Tabs.Content value={TabList[4]}>
+        {/* <Tabs.Content value={TabList[4]}>
           <AlertsPlaceholder />
-        </Tabs.Content>
+        </Tabs.Content> */}
       </Tabs.Root>
     </div>
   );

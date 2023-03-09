@@ -67,7 +67,7 @@ export const Chat = () => {
         <ChannelListUI
           queries={queries}
           allowProfileEdit={false}
-          className={`overflow-y-auto border rounded-l-xl`}
+          className={`overflow-y-auto border rounded-l-xl border-r-0`}
           onChannelSelect={(channel) => {
             if (channel && channel.url) {
               setCurrentChannelUrl(channel.url);
