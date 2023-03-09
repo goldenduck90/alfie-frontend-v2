@@ -1,4 +1,4 @@
-import { TableUserObject } from "../IndividualPatientTabs";
+import { TableUserObject } from "../tabs/IndividualPatientTabs";
 import { GrayBox } from "./PatientTasks";
 
 export function MedicalQuestionnaire({ taskData }: any) {

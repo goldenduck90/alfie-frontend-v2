@@ -3,7 +3,7 @@ import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 
 import React, { useMemo } from "react";
 import { MetabolicChart } from "./MetabolicChart";
-import { PatientTasks } from "./components/PatientTasks";
+import { PatientTasks } from "../components/PatientTasks";
 import { CalendarIcon } from "@heroicons/react/outline";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
@@ -13,11 +13,11 @@ import { Button } from "@src/components/ui/Button";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import { gql, useQuery } from "@apollo/client";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
-import { MedicalQuestionnaire } from "./components/MedicalQuestionnaire";
-import { WeightChart } from "./components/WeightChart";
-import { WaistChart } from "./components/WaistChart";
-import { StepsChart } from "./components/StepsChart";
-import { BloodPressureChart } from "./components/BloodPressureChart";
+import { MedicalQuestionnaire } from "../components/MedicalQuestionnaire";
+import { WeightChart } from "../components/WeightChart";
+import { WaistChart } from "../components/WaistChart";
+import { StepsChart } from "../components/StepsChart";
+import { BloodPressureChart } from "../components/BloodPressureChart";
 import { environment } from "@src/utils/environment";
 
 import { Channel, SendBirdProvider } from "@sendbird/uikit-react";
