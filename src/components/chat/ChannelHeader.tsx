@@ -20,7 +20,6 @@ export const ChannelHeader = ({
 
   if (!currentGroupChannel) return null;
 
-  console.log(currentGroupChannel);
   const members = currentGroupChannel.members
     .map((item) => item.nickname)
     // remove undefined

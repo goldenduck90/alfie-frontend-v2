@@ -2,11 +2,11 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
 import React, { useEffect, useState } from "react";
-import { WorkingPlan } from "../../@types/easyAppointmentTypes";
-import { Button } from "../../src/components/old/Button";
-import UnControlledDropDown from "../../src/components/inputs/UnControlledDropDown";
-import { UnControlledTextInput } from "../../src/components/inputs/UnControlledTextInput";
-import { Layout } from "../../src/components/layouts/Layout";
+import { WorkingPlan } from "../../../@types/easyAppointmentTypes";
+import { Button } from "./Button";
+import UnControlledDropDown from "../inputs/UnControlledDropDown";
+import { UnControlledTextInput } from "../inputs/UnControlledTextInput";
+import { Layout } from "../layouts/Layout";
 import { randomId } from "@src/utils/randomId";
 // import { useNotificationDispatch } from "../../../context/NotificationContext";
 function generateUUID() {
