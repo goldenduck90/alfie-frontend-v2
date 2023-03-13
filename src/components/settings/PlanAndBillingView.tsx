@@ -8,13 +8,14 @@ import { TableViewRow, TableEntryInline } from "./components/TableComponents";
 import { InvoiceHistoryTable } from "./components/InvoiceHistoryTable";
 import { ChangePhoneModal } from "../modal/settings/ChangePhoneNumber";
 import { ChangeAddressModal } from "../modal/settings/ChangeAddressModal";
+import { ChangeEmailModal } from "../modal/settings/ChangeEmailModal";
 
 export function PlanAndBillingView() {
   const { user } = useCurrentUserStore();
 
   return (
     <div>
-      <p>Plan & Billing</p>
+      <p className="text-xl font-semibold mb-6">Plan & Billing</p>
       <div className="flex flex-col md:flex-row gap-5">
         <PlanCard />
         <NextPaymentCard />
@@ -51,7 +52,7 @@ export function PlanAndBillingView() {
                   triggerAsChild
                   trigger={<Button buttonType="secondary">Change</Button>}
                 >
-                  <ChangeNameModal title="Full name" />
+                  <ChangeEmailModal title="Email" />
                 </DialogModal>
               ),
             },

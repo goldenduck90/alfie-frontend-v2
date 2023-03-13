@@ -43,11 +43,12 @@ export function AllPatientsTabs() {
           <Tabs.Trigger value="all">
             <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
           </Tabs.Trigger>
-          <Tabs.Trigger value="issues">
+          {/*// TODO: Add back when ready 
+           <Tabs.Trigger value="issues">
             <TabTitle active={activeTab === "issues"}>
               Patients with Health Issues
             </TabTitle>
-          </Tabs.Trigger>
+          </Tabs.Trigger> */}
         </Tabs.List>
 
         <TextField
@@ -64,12 +65,13 @@ export function AllPatientsTabs() {
           setGlobalFilter={setGlobalFilter}
         />
       </Tabs.Content>
-      <Tabs.Content value="issues" className="mt-2">
+      {/*// TODO: Add back when ready 
+       <Tabs.Content value="issues" className="mt-2">
         <AllPatientsTable
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
-      </Tabs.Content>
+      </Tabs.Content> */}
     </Tabs.Root>
   );
 }

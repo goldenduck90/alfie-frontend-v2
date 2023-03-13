@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import axios from "axios";
 import qs from "qs";
 import React, { useEffect } from "react";
-import { ApplicationLayout } from "../../../src/components/layouts/ApplicationLayout";
+import { Button } from "@src/components/ui/Button";
+
 interface StripeSession {
   id: string;
   object: string;
@@ -81,14 +81,5 @@ export const Billing = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  return (
-    <ApplicationLayout title="Billing">
-      <button
-        className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        onClick={() => navigateToStripe()}
-      >
-        Manage Billing
-      </button>
-    </ApplicationLayout>
-  );
+  return <Button onClick={() => navigateToStripe()}>Manage Billing</Button>;
 };

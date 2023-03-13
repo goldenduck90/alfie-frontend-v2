@@ -5,14 +5,15 @@ import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvi
 import { Patient } from "./Table";
 import { AbnormalPatientPreviewItem } from "./components/AbnormalPatientPreviewItem";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
+import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 
 export function PatientAbnormalities() {
   const { data, loading } = useGetAllPatientsByProvider();
-  const patients: Patient[] = data?.getAllPatientsByPractitioner?.filter(
-    (patient: Patient) => patient.meetingUrl !== null
-  );
+  // const patients: Patient[] = data?.getAllPatientsByPractitioner?.filter(
+  //   (patient: Patient) => patient.meetingUrl !== null
+  // );
 
-  const renderPatient = patients?.map((patient, i) => (
+  const renderPatient = []?.map((patient: any, i) => (
     <AbnormalPatientPreviewItem
       key={i}
       abnormality="Blood Pressure"
@@ -46,6 +47,7 @@ export function PatientAbnormalities() {
       <div className="flex flex-col w-full gap-y-4">
         {renderPatient}
         {loading && renderLoadItems}
+        <GrayPlaceHolderBox content="No patients with abnormalities" />
       </div>
     </DashboardCard>
   );

@@ -8,6 +8,7 @@ import { AccountDetails } from "./AccountDetails";
 import { NotificationsView } from "./NotificationView";
 import { PlanAndBillingView } from "./PlanAndBillingView";
 import { AvailabilityView } from "./AvailablityView";
+import { EmbeddedStripeView } from "./EmbeddedStripeView";
 
 export function SettingsView() {
   const router = useRouter();
@@ -44,7 +45,8 @@ export function SettingsView() {
                 </TabTitle>
               </Tabs.Trigger>
             )}
-            {isPractitioner && (
+            {/* //TODO: Add back when ready */}
+            {/* {isPractitioner && (
               <Tabs.Trigger value="availability">
                 <TabTitle active={activeTab === "availability"}>
                   Availability
@@ -55,7 +57,7 @@ export function SettingsView() {
               <TabTitle active={activeTab === "notifications"}>
                 Notifications
               </TabTitle>
-            </Tabs.Trigger>
+            </Tabs.Trigger> */}
           </Tabs.List>
         </div>
         <Tabs.Content value="account-details" className="mt-6">
@@ -63,9 +65,13 @@ export function SettingsView() {
         </Tabs.Content>
         {isPatient && (
           <Tabs.Content value="plan-&-billing" className="mt-6">
-            <PlanAndBillingView />
+            {/* //TODO: Add back when ready
+             <PlanAndBillingView /> */}
+            <EmbeddedStripeView />
           </Tabs.Content>
         )}
+        {/* 
+        //TODO: Add back when ready
         {isPractitioner && (
           <Tabs.Content value="availability" className="mt-6">
             <AvailabilityView />
@@ -73,7 +79,7 @@ export function SettingsView() {
         )}
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />
-        </Tabs.Content>
+        </Tabs.Content> */}
       </Tabs.Root>
     </div>
   );

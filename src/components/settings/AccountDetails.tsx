@@ -14,10 +14,11 @@ import {
 
 export function AccountDetails() {
   const { user } = useCurrentUserStore();
+  // TODO: remove disable from change buttons
   return (
     <div>
       <div>
-        <h1 className="text-xl font-[600]">Account Details</h1>
+        <h1 className="text-xl font-semibold">Account Details</h1>
         <TableViewRow
           inputs={[
             {
@@ -30,7 +31,11 @@ export function AccountDetails() {
               right: (
                 <DialogModal
                   triggerAsChild
-                  trigger={<Button buttonType="secondary">Change</Button>}
+                  trigger={
+                    <Button disabled buttonType="secondary">
+                      Change
+                    </Button>
+                  }
                 >
                   <ChangeNameModal title="Full name" />
                 </DialogModal>
@@ -46,7 +51,11 @@ export function AccountDetails() {
               right: (
                 <DialogModal
                   triggerAsChild
-                  trigger={<Button buttonType="secondary">Change</Button>}
+                  trigger={
+                    <Button disabled buttonType="secondary">
+                      Change
+                    </Button>
+                  }
                 >
                   <ChangeEmailModal title="Email address" />
                 </DialogModal>
@@ -70,7 +79,9 @@ export function AccountDetails() {
                 <DialogModal
                   triggerAsChild
                   trigger={
-                    <Button buttonType="secondary">Change password</Button>
+                    <Button disabled buttonType="secondary">
+                      Change password
+                    </Button>
                   }
                 >
                   <ChangePasswordModal title="Change password" />
@@ -96,12 +107,13 @@ export function AccountDetails() {
                   <div className="text-sm text-gray-600">
                     GMT {dayjs().format("Z")}
                   </div>
-                  <ToggleSwitch
+                  {/* <ToggleSwitch
                     label=""
                     checked={true}
                     onCheckedChange={() => {}}
                     name="Automatic time zone"
-                  />
+                    // disabled
+                  /> */}
                 </div>
               ),
             },

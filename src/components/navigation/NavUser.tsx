@@ -22,6 +22,7 @@ export default function NavUser() {
   }[] = [];
 
   const routeTo = (path: string) => () => router.push(path);
+  // TODO: Add back when ready
   const patientItems = [
     {
       label: "Account details",
@@ -31,10 +32,10 @@ export default function NavUser() {
       label: "Plan & billing",
       onClick: routeTo("/settings/plan-&-billing"),
     },
-    {
-      label: "Notifications",
-      onClick: routeTo("/settings/notifications"),
-    },
+    // {
+    //   label: "Notifications",
+    //   onClick: routeTo("/settings/notifications"),
+    // },
   ];
 
   const providerItems = [
@@ -42,14 +43,14 @@ export default function NavUser() {
       label: "Account details",
       onClick: routeTo("/settings/account-details"),
     },
-    {
-      label: "Availability",
-      onClick: routeTo("/settings/availability"),
-    },
-    {
-      label: "Notifications",
-      onClick: routeTo("/settings/notifications"),
-    },
+    // {
+    //   label: "Availability",
+    //   onClick: routeTo("/settings/availability"),
+    // },
+    // {
+    //   label: "Notifications",
+    //   onClick: routeTo("/settings/notifications"),
+    // },
   ];
 
   if (user?.role === Role.Patient) {
@@ -67,15 +68,17 @@ export default function NavUser() {
   return (
     <>
       <div className="flex items-center">
+        {/*
         <Link href="/settings/notifications" passHref legacyBehavior>
           <button className="relative p-1 hover:bg-brand-berry-shade rounded-xl mr-2 lg:mr-6">
-            {/* //TODO: this needs to check if there are any new notifications? */}
+             //TODO: this needs to check if there are any new notifications?
             {true && (
               <div className="absolute h-[15px] w-[15px] bg-red-500 border-[3px] border-brand-berry rounded-full top-1 right-1" />
             )}
             <BellIcon className="h-6 w-6 text-brand-heavenly-tint-1 m-1" />
           </button>
         </Link>
+            */}
         <DropdownMenu
           trigger={
             <div className="flex rounded-xl hover:bg-brand-berry-shade p-1">
