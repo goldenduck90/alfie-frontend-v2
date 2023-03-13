@@ -4,7 +4,7 @@ import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
 import {
   useTaskCompletion,
-  createAnwersFromObject,
+  createAnswersFromObject,
 } from "@src/hooks/useTaskCompletion";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -42,7 +42,7 @@ export function BloodPressure({
 
   async function onSubmit(values: any) {
     const { _id, ...rest } = values;
-    const answers = createAnwersFromObject(rest);
+    const answers = createAnswersFromObject(rest);
     mutate({
       variables: {
         input: {
@@ -55,7 +55,12 @@ export function BloodPressure({
 
   return (
     <div className="w-full max-w-[560px] min-w-full">
-      <DialogLongHeader title={title} step={1} total={1} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
+      <DialogLongHeader
+        title={title}
+        step={1}
+        total={1}
+        icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />}
+      />
       <DialogLongBody>
         <p className="text-sm text-gray-600 mb-6">
           If you haven&apos;t taken a recent blood pressure reading, please

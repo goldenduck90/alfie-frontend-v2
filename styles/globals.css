@@ -199,6 +199,9 @@ body {
 .chat-container .sendbird-conversation {
   @apply rounded-xl;
 }
+.chat-container .sendbird-chat-header {
+  @apply rounded-t-xl;
+}
 .sendbird-place-holder {
   @apply rounded-xl !important;
 }

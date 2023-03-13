@@ -1,5 +1,4 @@
 import React from "react";
-import { useForm } from "react-hook-form";
 import { gql, useQuery } from "@apollo/client";
 
 import { PencilIcon } from "@heroicons/react/solid";
@@ -12,13 +11,48 @@ import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { DialogModal } from "@src/components/modal/Dialog";
 import { WeightEntry } from "@src/components/modal/variants/WeightEntry";
 import { ScaleTwoIcon, TargetIcon } from "@src/components/svg";
+import { TaskType } from "@src/graphql/generated";
+
+const userTasksQuery = gql`
+  query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
+    userTasks(
+      input: { limit: $limit, offset: $offset, completed: $completed }
+    ) {
+      total
+      userTasks {
+        _id
+        task {
+          _id
+          name
+          type
+          highPriority
+        }
+        dueAt
+        pastDue
+        createdAt
+      }
+    }
+  }
+`;
 
 export function YourWeight() {
   const { user } = useCurrentUserStore();
-  const { control } = useForm({});
 
   const currentWeight = user?.weights[user?.weights.length - 1]?.value;
   const firstWeight = user?.weights[0]?.value;
+
+  const { data, loading, error } = useQuery(userTasksQuery, {
+    variables: {
+      completed: false,
+    },
+  });
+
+  const getWeightTaskId = () => {
+    const weightTask = data?.userTasks?.userTasks?.find((task: any) => {
+      return task.task.type === TaskType.WeightLog;
+    });
+    return weightTask?._id;
+  };
 
   return (
     <DashboardCard
@@ -32,12 +66,18 @@ export function YourWeight() {
             <div className="flex flex-col w-full">
               <div className="flex flex-row justify-between items-center pb-2">
                 <h2 className="text-gray-900 ">Your Weight</h2>
-                <DialogModal
-                  triggerAsChild
-                  trigger={<Button>Update Weight</Button>}
-                >
-                  <WeightEntry title="Enter your weight" taskId="" />
-                </DialogModal>
+                {data && !error && (
+                  <DialogModal
+                    triggerAsChild
+                    trigger={<Button>Update Weight</Button>}
+                  >
+                    <WeightEntry
+                      title="Enter your weight"
+                      taskId={getWeightTaskId()}
+                    />
+                  </DialogModal>
+                )}
+                {loading && <Button disabled>Update Weight</Button>}
               </div>
               <p className="text-gray-900 text-5xl">
                 {currentWeight}

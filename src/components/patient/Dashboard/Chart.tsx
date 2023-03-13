@@ -13,10 +13,20 @@ import {
 } from "recharts";
 import dayjs from "dayjs";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { makeArrayWithRange } from "@src/utils/range";
 
 export function Chart() {
   const { user } = useCurrentUserStore();
-  const dateSortedWeights = user?.weights.sort((a, b) => a.date - b.date);
+  const dateSortedWeights = user?.weights
+    .sort((a, b) => a.date - b.date)
+    .map((item) => ({
+      date: new Date(item.date).getTime(),
+      value: item.value,
+    }));
+
+  const start = dateSortedWeights?.[0]?.date;
+  const end = dateSortedWeights?.[dateSortedWeights.length - 1]?.date;
+  const ticks = makeArrayWithRange(start, end, 3);
 
   return (
     <DashboardCard
@@ -29,9 +39,12 @@ export function Chart() {
             <CartesianGrid strokeDasharray="0 0" vertical={false} />
             <XAxis
               dataKey="date"
+              domain={start && end ? [start, end] : ["auto", "auto"]}
               strokeWidth={0}
-              tickFormatter={(unixTime) => dayjs(unixTime).format("MMM")}
+              tickFormatter={(unixTime) => dayjs(unixTime).format("MM/DD/YY")}
               tickMargin={15}
+              type="number"
+              ticks={ticks}
             />
             <YAxis
               domain={[(user?.weightGoal as number) - 10, "auto"]}
@@ -44,7 +57,7 @@ export function Chart() {
               tickMargin={10}
             />
             <Line
-              type="linear"
+              type="monotone"
               dataKey="value"
               stroke="#0C52E8"
               strokeWidth={3}
@@ -64,37 +77,40 @@ export function Chart() {
                 );
               }}
             />
-            <ReferenceLine
-              y={user?.weightGoal as number}
-              stroke="#E99298"
-              label={(props) => {
-                // console.log({ props });
-                return (
-                  <svg
-                    {...props}
-                    className="p-1 rounded-full bg-brand-peachy-shade"
-                  >
-                    <rect
-                      x={10}
-                      y={props?.viewBox?.y - 13}
-                      rx="8"
-                      ry="6"
-                      width={60}
-                      height={25}
-                      fill={"#E99298"}
-                    />
-                    <text
-                      x={25}
-                      y={props?.viewBox?.y + 4}
-                      className="text-sm text-white p-1 rounded-full bg-brand-peachy-shade"
-                      fill="white"
+
+            {user?.weightGoal && (
+              <ReferenceLine
+                y={user?.weightGoal as number}
+                stroke="#E99298"
+                label={(props) => {
+                  // console.log({ props });
+                  return (
+                    <svg
+                      {...props}
+                      className="p-1 rounded-full bg-brand-peachy-shade"
                     >
-                      Goal
-                    </text>
-                  </svg>
-                );
-              }}
-            />
+                      <rect
+                        x={10}
+                        y={props?.viewBox?.y - 13}
+                        rx="8"
+                        ry="6"
+                        width={60}
+                        height={25}
+                        fill={"#E99298"}
+                      />
+                      <text
+                        x={25}
+                        y={props?.viewBox?.y + 4}
+                        className="text-sm text-white p-1 rounded-full bg-brand-peachy-shade"
+                        fill="white"
+                      >
+                        Goal
+                      </text>
+                    </svg>
+                  );
+                }}
+              />
+            )}
           </LineChart>
         </ResponsiveContainer>
       </div>

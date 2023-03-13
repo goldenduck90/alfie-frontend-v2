@@ -6,6 +6,8 @@ import { NextPaymentCard } from "./components/NextPaymentCard";
 import { PlanCard } from "./components/PlanCard";
 import { TableViewRow, TableEntryInline } from "./components/TableComponents";
 import { InvoiceHistoryTable } from "./components/InvoiceHistoryTable";
+import { ChangePhoneModal } from "../modal/settings/ChangePhoneNumber";
+import { ChangeAddressModal } from "../modal/settings/ChangeAddressModal";
 
 export function PlanAndBillingView() {
   const { user } = useCurrentUserStore();
@@ -65,7 +67,7 @@ export function PlanAndBillingView() {
                   triggerAsChild
                   trigger={<Button buttonType="secondary">Change</Button>}
                 >
-                  <div />
+                  <ChangeAddressModal title="Billing address" />
                 </DialogModal>
               ),
             },
@@ -81,7 +83,7 @@ export function PlanAndBillingView() {
                   triggerAsChild
                   trigger={<Button buttonType="secondary">Change</Button>}
                 >
-                  <div />
+                  <ChangePhoneModal title="Phone Number" />
                 </DialogModal>
               ),
             },

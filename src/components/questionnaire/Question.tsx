@@ -14,17 +14,8 @@ import {
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { TaskType } from "@src/graphql/generated";
-import { createAnwersFromObject } from "@src/hooks/useTaskCompletion";
-import {
-  QuestionProps,
-  MultiCheckboxQuestionProps,
-  RadioGroupInputProps,
-  MultiCheckboxFormQuestion,
-  MultipleTextInput,
-  RadioGroupInput,
-  RadioGroupNumberInput,
-  TextAreaInput,
-} from "./common";
+import { createAnswersFromObject } from "@src/hooks/useTaskCompletion";
+import { QuestionProps } from "./common";
 import { medicalQuestions } from "./medicalQuestions";
 import { threeFactorQuestions } from "./threeFactorQuestions";
 import { metabolicQuestions } from "./metabolicQuestions";
@@ -204,7 +195,7 @@ function Questionnaire({
    *
    */
   function onSubmitForm(data: Record<string, any>) {
-    const answers = createAnwersFromObject(data);
+    const answers = createAnswersFromObject(data);
     const input = {
       _id: taskId,
       answers,

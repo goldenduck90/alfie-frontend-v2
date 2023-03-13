@@ -6,6 +6,14 @@ const getPatientInfo = `
 query Me {
   me {
     _id
+    address {
+      line1
+      line2
+      city
+      state
+      postalCode
+      country
+    }
     textOptIn
     meetingRoomUrl
     name

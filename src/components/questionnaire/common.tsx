@@ -26,7 +26,7 @@ import {
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { TaskType } from "@src/graphql/generated";
-import { createAnwersFromObject } from "@src/hooks/useTaskCompletion";
+import { createAnswersFromObject } from "@src/hooks/useTaskCompletion";
 
 export interface QuestionComponentProps {
   control: Control<any>;

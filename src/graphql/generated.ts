@@ -94,6 +94,9 @@ export type CheckoutResponse = {
 
 export type Classification = {
   __typename?: 'Classification';
+  calculated1hourPercent?: Maybe<Scalars['Float']>;
+  calculated30minsPercent?: Maybe<Scalars['Float']>;
+  calculatedPercentile?: Maybe<Scalars['Float']>;
   classification: Scalars['String'];
   date: Scalars['DateTime'];
   displayPercentile?: Maybe<Scalars['String']>;
@@ -692,6 +695,7 @@ export type Query = {
   reverseGeoCode: Array<GoogleReverseGeoCodeResult>;
   task?: Maybe<Task>;
   user: User;
+  userSendbirdChannel: Array<UserSendbirdChannel>;
   userTask: UserTask;
   userTasks: UserTaskList;
   users: Array<User>;
@@ -763,6 +767,11 @@ export type QueryTaskArgs = {
 };
 
 
+export type QueryUserSendbirdChannelArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type QueryUserTaskArgs = {
   id: Scalars['String'];
 };
@@ -792,6 +801,9 @@ export enum Role {
 
 export type Score = {
   __typename?: 'Score';
+  calculated1hourPercent?: Maybe<Scalars['Float']>;
+  calculated30minsPercent?: Maybe<Scalars['Float']>;
+  calculatedPercentile?: Maybe<Scalars['Float']>;
   date?: Maybe<Scalars['DateTime']>;
   increased?: Maybe<Scalars['Boolean']>;
   increased1hour?: Maybe<Scalars['Boolean']>;
@@ -936,10 +948,12 @@ export type User = {
   provider?: Maybe<Provider>;
   role: Role;
   score: Array<Score>;
+  sendbirdChannelUrl?: Maybe<Scalars['String']>;
   stripeCustomerId: Scalars['String'];
   stripeSubscriptionId: Scalars['String'];
   subscriptionExpiresAt: Scalars['DateTime'];
   textOptIn?: Maybe<Scalars['Boolean']>;
+  timezone?: Maybe<Scalars['String']>;
   weightGoal?: Maybe<Scalars['Float']>;
   weights: Array<Weight>;
 };
@@ -955,6 +969,46 @@ export type UserAnswersInput = {
   key: Scalars['String'];
   type: AnswerType;
   value: Scalars['String'];
+};
+
+export type UserSendbirdChannel = {
+  __typename?: 'UserSendbirdChannel';
+  channel_url: Scalars['String'];
+  count_preference?: Maybe<Scalars['String']>;
+  cover_url?: Maybe<Scalars['String']>;
+  created_at: Scalars['Float'];
+  created_by?: Maybe<Scalars['String']>;
+  custom_type?: Maybe<Scalars['String']>;
+  data?: Maybe<Scalars['String']>;
+  freeze: Scalars['Boolean'];
+  hidden_state?: Maybe<Scalars['String']>;
+  ignore_profanity_filter: Scalars['Boolean'];
+  invited_at: Scalars['Float'];
+  inviter?: Maybe<Scalars['String']>;
+  is_access_code_required: Scalars['Boolean'];
+  is_broadcast: Scalars['Boolean'];
+  is_discoverable: Scalars['Boolean'];
+  is_distinct: Scalars['Boolean'];
+  is_ephemeral: Scalars['Boolean'];
+  is_exclusive: Scalars['Boolean'];
+  is_hidden: Scalars['Boolean'];
+  is_muted: Scalars['Boolean'];
+  is_public: Scalars['Boolean'];
+  is_push_enabled: Scalars['Boolean'];
+  is_super: Scalars['Boolean'];
+  joined_member_count: Scalars['Float'];
+  joined_ts?: Maybe<Scalars['Float']>;
+  max_length_message: Scalars['Float'];
+  member_count: Scalars['Float'];
+  member_state: Scalars['String'];
+  message_survival_seconds: Scalars['Float'];
+  my_role?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  push_trigger_option?: Maybe<Scalars['String']>;
+  ts_message_offset: Scalars['Float'];
+  unread_mention_count: Scalars['Float'];
+  unread_message_count: Scalars['Float'];
+  user_last_read: Scalars['Float'];
 };
 
 export type UserTask = {

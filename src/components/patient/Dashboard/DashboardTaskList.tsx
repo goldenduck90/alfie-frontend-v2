@@ -10,6 +10,7 @@ import { TaskSelector } from "../tasks/TaskSelector";
 
 import dayjs from "dayjs";
 import calendar from "dayjs/plugin/calendar";
+import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 dayjs.extend(calendar);
 
 const userTasksQuery = gql`
@@ -37,7 +38,6 @@ const userTasksQuery = gql`
 export const DashboardTaskList = () => {
   const { data, loading, error } = useQuery(userTasksQuery, {
     variables: {
-      limit: 2,
       completed: false,
     },
   });
@@ -68,20 +68,23 @@ export const DashboardTaskList = () => {
     <DashboardPreviewItem key={`task-load-${i}`} {...(item as any)} isLoading />
   ));
 
-  const resultItems = tasks?.map((item: UserTask, i: number) => (
-    <TaskSelector
-      type={item?.task?.type as TaskType}
-      userTaskId={item._id}
-      key={`task-${i}`}
-      trigger={
-        <DashboardPreviewItem
-          renderDate={{ date: "", time: dayjs().calendar(dayjs(item.dueAt)) }}
-          title={item?.task?.name || ""}
-          icon={item?.task?.type}
-        />
-      }
-    />
-  ));
+  const resultItems = tasks
+    // only show the first 2 tasks
+    ?.slice(0, 1)
+    .map((item: UserTask, i: number) => (
+      <TaskSelector
+        type={item?.task?.type as TaskType}
+        userTaskId={item._id}
+        key={`task-${i}`}
+        trigger={
+          <DashboardPreviewItem
+            renderDate={{ date: "", time: dayjs().calendar(dayjs(item.dueAt)) }}
+            title={item?.task?.name || ""}
+            icon={item?.task?.type}
+          />
+        }
+      />
+    ));
 
   return (
     <DashboardCard
@@ -97,7 +100,10 @@ export const DashboardTaskList = () => {
     >
       {error && <div className="h-full">{error?.message}</div>}
       {loading && loadItems}
-      {data?.userTasks && resultItems}
+      {tasks?.length > 0 && resultItems}
+      {data?.userTasks.length === 0 && (
+        <GrayPlaceHolderBox content="No upcoming appointments" />
+      )}
     </DashboardCard>
   );
 };

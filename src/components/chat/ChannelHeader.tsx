@@ -6,8 +6,7 @@ import ChannelAvatar from "@sendbird/uikit-react/ui/ChannelAvatar";
 import { useSendbirdStateContext } from "@sendbird/uikit-react";
 import { useChannelContext } from "@sendbird/uikit-react/Channel/context";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { ArrowLeftIcon } from "@heroicons/react/outline";
 
 export const ChannelHeader = ({
   handleDrawerToggle,
@@ -36,7 +35,7 @@ export const ChannelHeader = ({
         }`}
         onClick={handleDrawerToggle}
       >
-        <FontAwesomeIcon className="px-1" icon={faArrowLeft} />
+        <ArrowLeftIcon className="h-5 w-5 text-gray-400 px-1" />
       </button>
 
       <div className="flex flex-col w-full px-5 py-2 items-center border-b shadow-sm">

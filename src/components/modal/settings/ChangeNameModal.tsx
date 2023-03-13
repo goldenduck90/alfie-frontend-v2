@@ -4,7 +4,7 @@ import { TextField } from "@src/components/ui/TextField";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import {
   useTaskCompletion,
-  createAnwersFromObject,
+  createAnswersFromObject,
 } from "@src/hooks/useTaskCompletion";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

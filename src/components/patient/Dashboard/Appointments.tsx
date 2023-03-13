@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/react";
 import { roleToText } from "@src/utils/roleToText";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
+import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 
 export const appointmentsQuery = gql`
   query AppointmentsQuery($limit: Float) {
@@ -82,8 +83,9 @@ export function DashboardAppointments() {
         </div>
       }
     >
-      {(error || data?.appointments.length === 0) &&
-        "no appointments scheduled"}
+      {(error || data?.appointments.length === 0) && (
+        <GrayPlaceHolderBox content="No upcoming appointments" />
+      )}
       {loading && loadItems}
       {data && renderItems}
     </DashboardCard>

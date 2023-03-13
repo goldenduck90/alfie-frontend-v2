@@ -6,7 +6,7 @@ import { gql, useMutation } from "@apollo/client";
 import { useState } from "react";
 import {
   useTaskCompletion,
-  createAnwersFromObject,
+  createAnswersFromObject,
 } from "@src/hooks/useTaskCompletion";
 import { useForm } from "react-hook-form";
 import { CalculatorIcon } from "@heroicons/react/outline";
@@ -29,7 +29,7 @@ export function WeightEntry({
 
   async function onSubmit(values: any) {
     const { _id, ...rest } = values;
-    const answers = createAnwersFromObject(rest);
+    const answers = createAnswersFromObject(rest);
     mutate({
       variables: {
         input: {
@@ -42,7 +42,12 @@ export function WeightEntry({
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
-      <DialogLongHeader title={title} step={1} total={1} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
+      <DialogLongHeader
+        title={title}
+        step={1}
+        total={1}
+        icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />}
+      />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
           <p className="font-bold text-sm">How much do you currently weigh?</p>

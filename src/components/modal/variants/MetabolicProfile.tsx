@@ -5,7 +5,7 @@ import { TextField } from "@src/components/ui/TextField";
 import { AnswerType } from "@src/graphql/generated";
 import {
   createAnswerInputs,
-  createAnwersFromObject,
+  createAnswersFromObject,
   useTaskCompletion,
 } from "@src/hooks/useTaskCompletion";
 import { useState } from "react";
@@ -35,7 +35,7 @@ export function MetabolicProfileHunger({
 
   async function onSubmit(values: any) {
     const { _id, hungerLevel30Mins, hungerLevel1Hour, ...rest } = values;
-    const answers = createAnwersFromObject(rest);
+    const answers = createAnswersFromObject(rest);
     answers.push(
       createAnswerInputs({
         key: "hungerLevel30Mins",
@@ -62,7 +62,12 @@ export function MetabolicProfileHunger({
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
-      <DialogLongHeader title={title} step={step} total={2} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
+      <DialogLongHeader
+        title={title}
+        step={step}
+        total={2}
+        icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />}
+      />
       <DialogLongBody>
         {step === 1 && (
           <div className="flex flex-col gap-y-2 w-full">
@@ -153,7 +158,7 @@ export function MetabolicProfileActivity({
 
   async function onSubmit(values: any) {
     const { _id, ...rest } = values;
-    const answers = createAnwersFromObject(rest);
+    const answers = createAnswersFromObject(rest);
     mutate({
       variables: {
         input: {
@@ -166,7 +171,12 @@ export function MetabolicProfileActivity({
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
-      <DialogLongHeader title={title} step={1} total={1} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
+      <DialogLongHeader
+        title={title}
+        step={1}
+        total={1}
+        icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />}
+      />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
           <p className="text-sm text-gray-500 mb-6">
@@ -232,7 +242,12 @@ export function MetabolicProfileMeals({
 
   return (
     <div className="w-full max-w-[560px] whitespace-line md:min-w-[560px]">
-      <DialogLongHeader title={title} step={1} total={1} icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />} />
+      <DialogLongHeader
+        title={title}
+        step={1}
+        total={1}
+        icon={<CalculatorIcon className="w-5 h-5 stroke-inherit" />}
+      />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
           <p className="text-sm text-gray-500 mb-6">

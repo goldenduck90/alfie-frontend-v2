@@ -33,43 +33,44 @@ export function AllPatientsTabs() {
   const [globalFilter, setGlobalFilter] = useState("");
 
   return (
-    <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-xl px-4 py-4">
-      <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
-        <div className="flex items-center justify-between flex-wrap gap-y-4">
-          <Tabs.List className="flex gap-x-3">
-            <Tabs.Trigger value="all">
-              <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
-            </Tabs.Trigger>
-            <Tabs.Trigger value="issues">
-              <TabTitle active={activeTab === "issues"}>
-                Patients with Health Issues
-              </TabTitle>
-            </Tabs.Trigger>
-          </Tabs.List>
-          <div className="flex gap-x-3">
-            <TextField
-              leftIcon={<SearchIcon className="h-5 w-5 text-gray-400" />}
-              placeholder="Search Patients"
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-            />
-            <Button buttonType="accent">Add new</Button>
-          </div>
-        </div>
-        <Tabs.Content value="all" className="mt-6">
-          <AllPatientsTable
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
-        </Tabs.Content>
-        <Tabs.Content value="issues" className="mt-6">
-          <AllPatientsTable
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
-        </Tabs.Content>
-      </Tabs.Root>
-    </div>
+    <Tabs.Root
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="relative flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-xl px-4 pb-4"
+    >
+      <div className="flex items-center justify-between flex-wrap gap-y-4 sticky top-0 p-4 -mx-4 bg-white">
+        <Tabs.List className="flex gap-x-3">
+          <Tabs.Trigger value="all">
+            <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="issues">
+            <TabTitle active={activeTab === "issues"}>
+              Patients with Health Issues
+            </TabTitle>
+          </Tabs.Trigger>
+        </Tabs.List>
+
+        <TextField
+          leftIcon={<SearchIcon className="h-5 w-5 text-gray-400" />}
+          placeholder="Search Patients"
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+        />
+      </div>
+
+      <Tabs.Content value="all" className="mt-2">
+        <AllPatientsTable
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      </Tabs.Content>
+      <Tabs.Content value="issues" className="mt-2">
+        <AllPatientsTable
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      </Tabs.Content>
+    </Tabs.Root>
   );
 }
 
@@ -98,7 +99,7 @@ export function AllPatientsTable({
   const table = user?.role === "Admin" ? adminTable : providerTable;
 
   return (
-    <div>
+    <div className="max-h-[50vh]">
       <p className="text-lg">{`${
         table?.getCoreRowModel().rows.length
       } Patients`}</p>

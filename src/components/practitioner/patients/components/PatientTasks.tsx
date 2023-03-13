@@ -3,6 +3,7 @@ import { TaskItem } from "./TaskItem";
 import { LoadingTaskItem } from "./LoadingTaskItem";
 import * as Tabs from "@radix-ui/react-tabs";
 import { UserTask } from "@src/graphql/generated";
+import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 
 const TabList = ["Incomplete", "Complete"];
 
@@ -50,30 +51,22 @@ export function PatientTasks({ taskData }: any) {
             <TaskItem {...task} key={i} />
           ))}
           {loading && renderLoadTasks}
-          {error && <GrayBox content={error.message} />}
+          {error && <GrayPlaceHolderBox content={error.message} />}
           {noIncompleteTasks && (
-            <GrayBox content="There are no task to be shown here" />
+            <GrayPlaceHolderBox content="There are no task to be shown here" />
           )}
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
-          {completeTasks?.map((task: any, i: number) => (
+          {completeTasks?.slice(0, 15)?.map((task: any, i: number) => (
             <TaskItem {...task} key={i} />
           ))}
           {loading && renderLoadTasks}
-          {error && <GrayBox content={error.message} />}
+          {error && <GrayPlaceHolderBox content={error.message} />}
           {noCompleteTasks && (
-            <GrayBox content="There are no task to be shown here" />
+            <GrayPlaceHolderBox content="There are no task to be shown here" />
           )}
         </Tabs.Content>
       </Tabs.Root>
-    </div>
-  );
-}
-
-export function GrayBox({ content }: { content?: string }) {
-  return (
-    <div className="bg-gray-100 rounded-xl border flex justify-center items-center h-80">
-      <h2 className="text-lg">{content}</h2>
     </div>
   );
 }

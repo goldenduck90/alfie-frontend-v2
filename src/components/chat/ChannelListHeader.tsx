@@ -1,6 +1,5 @@
 import React from "react";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { XIcon } from "@heroicons/react/outline";
 
 export const ChannelListHeader = ({
   query,
@@ -33,7 +32,7 @@ export const ChannelListHeader = ({
 
       <div className="flex lg:hidden ml-2">
         <button onClick={handleDrawerToggle} className="px-1">
-          <FontAwesomeIcon icon={faClose} />
+          <XIcon className="h-5 w-5 text-gray-400" />
         </button>
       </div>
     </div>

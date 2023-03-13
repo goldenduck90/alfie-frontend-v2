@@ -18,14 +18,9 @@ import { WeightChart } from "../components/WeightChart";
 import { WaistChart } from "../components/WaistChart";
 import { StepsChart } from "../components/StepsChart";
 import { BloodPressureChart } from "../components/BloodPressureChart";
-import { environment } from "@src/utils/environment";
 
-import { Channel, SendBirdProvider } from "@sendbird/uikit-react";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
-import { colorSet } from "@src/components/chat";
-import "@sendbird/uikit-react/dist/index.css";
-
-const SendBirdId = environment.NEXT_PUBLIC_SENDBIRD_APP_ID;
+import { PatientChat } from "./PatientChat";
 
 const GetUserById = gql`
   query getUser($userId: String!) {
@@ -118,11 +113,6 @@ export function IndividualPatientTabs() {
   const { user } = useCurrentUserStore();
   const patientId = router.query.patientId as string;
   const activeTab = (router?.query?.tab as string) || TabList[0];
-
-  const hasAllParams = user && SendBirdId;
-  const sendBirdParams = hasAllParams
-    ? { appId: SendBirdId, userId: user._id }
-    : { appId: "", userId: "" };
 
   const { data, loading, error } = useQuery(GetUserById, {
     variables: {
@@ -254,15 +244,7 @@ export function IndividualPatientTabs() {
           <MedicalQuestionnaire taskData={taskData} />
         </Tabs.Content>
         <Tabs.Content value={TabList[3]}>
-          <SendBirdProvider {...sendBirdParams} colorSet={colorSet}>
-            <div className="flex flex-col w-full h-[65vh] rounded-lg py-6 chat-container">
-              <Channel
-                channelUrl={patient?.sendbirdChannelUrl || ""}
-                disableUserProfile={true}
-                renderChannelHeader={() => null}
-              />
-            </div>
-          </SendBirdProvider>
+          <PatientChat />
         </Tabs.Content>
         {/* <Tabs.Content value={TabList[4]}>
           <AlertsPlaceholder />

@@ -11,11 +11,11 @@ import { z } from "zod";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
 
-const schemaValidator = z.object({
-  email: z.string().min(1, "Email cannot be empty"),
+const changePhoneSchema = z.object({
+  phoneNumber: z.string().min(1, "Phone number cannot be empty"),
 });
 
-export function ChangeEmailModal({ title }: { title: string }) {
+export function ChangePhoneModal({ title }: { title: string }) {
   const { user } = useCurrentUserStore();
 
   const {
@@ -24,9 +24,9 @@ export function ChangeEmailModal({ title }: { title: string }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: user?.email || "",
+      phoneNumber: user?.phone || "",
     },
-    resolver: zodResolver(schemaValidator),
+    resolver: zodResolver(changePhoneSchema),
   });
 
   const setOpen = useDialogToggle();
@@ -38,23 +38,20 @@ export function ChangeEmailModal({ title }: { title: string }) {
       <DialogLongHeader title={title} step={1} total={1} />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 md:w-[400px]">
-          <p>Email address</p>
+          <p>Phone Number</p>
           <div className="flex gap-x-3 justify-between items-center">
             <TextField
-              placeholder="Enter your email"
+              placeholder="Enter your phone number"
               fullWidth
               inputSize="medium"
-              {...register("email")}
+              type={"tel"}
+              {...register("phoneNumber")}
             />
           </div>
         </div>
-        {errors?.email && (
-          <p className="text-sm text-red-600">{errors?.email?.message}</p>
+        {errors?.phoneNumber && (
+          <p className="text-sm text-red-600">{errors?.phoneNumber?.message}</p>
         )}
-        <p className="text-sm text-gray-500">
-          You’ll need to confirm the change by clicking on the link which we’ll
-          send you to your inbox. Please check your SPAM folder as well.
-        </p>
       </DialogLongBody>
       <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3">
         <RadixDialog.Close asChild>

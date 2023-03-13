@@ -44,7 +44,7 @@ export function useTaskCompletion(onCompleted?: () => void) {
   });
 }
 
-export function createAnwersFromObject(obj: Record<string, string | number>) {
+export function createAnswersFromObject(obj: Record<string, string | number>) {
   const answers: any[] = [];
   for (const [key, value] of Object.entries(obj)) {
     if (Array.isArray(value)) {
