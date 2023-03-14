@@ -4,8 +4,6 @@ import { Control, useController } from "react-hook-form";
 
 export function HookTextField({
   name,
-  placeholder,
-  disabled,
   control,
   ...props
 }: {
