@@ -1,37 +1,37 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/outline";
-import { Navigation } from "@sentry/react/types/types";
+import React from "react";
 import { Role } from "@src/graphql/generated";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
-import { useLogoutMutation } from "@src/hooks/useLogoutMutation";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
 import { useIntercom } from "react-use-intercom";
 import { Navbar } from "../navigation/NavBar";
-import { NavigationItem } from "../navigation/NavigationItem";
-
+import { BackButton } from "../ui/BackButton";
+import { ChevronLeftIcon } from "@heroicons/react/outline";
 interface LayoutProps {
   children: React.ReactNode;
-  title?: string;
+  title?: React.ReactNode;
   subtitle?: string;
+  hasBackButton?: boolean;
+  backRef?: string;
 }
 
-export const Layout = ({ children, title, subtitle }: LayoutProps) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+export const Layout = ({
+  children,
+  title,
+  subtitle,
+  hasBackButton,
+  backRef,
+}: LayoutProps) => {
   const { user } = useCurrentUserStore();
-  const router = useRouter();
   const isAdmin = user?.role === Role.Admin;
-  // const { boot } = useIntercom();
+  const { boot } = useIntercom();
 
-  // useEffect(() => {
-  //   boot({
-  //     email: user?.email,
-  //     name: user?.name,
-  //   });
-  // }, []);
+  React.useEffect(() => {
+    boot({
+      email: user?.email,
+      name: user?.name,
+    });
+  }, []);
 
-  let navigation: any[] = [];
+  let navigation: { name: string; href: string }[] = [];
   const patientNavigation = [
     {
       name: "Dashboard",
@@ -87,16 +87,23 @@ export const Layout = ({ children, title, subtitle }: LayoutProps) => {
           <div className="fixed w-full h-52 top-16 bg-brand-berry" />
         )}
         <div className="mx-auto px-4 md:px-8 lg:py-6 sm:py-6 md:py-6 z-10 mt-24 w-full max-w-7xl justify-center">
-          {title && (
-            <div className="pb-8">
-              <h1 className="text-4xl font-semibold text-white">{title}</h1>
-              {subtitle && (
-                <h2 className="text-base font-normal text-brand-heavenly-tint-1">
-                  {subtitle}
-                </h2>
-              )}
-            </div>
-          )}
+          <div className="flex">
+            {hasBackButton && (
+              <div className="pr-6 pt-1">
+                <BackButton href={backRef} />
+              </div>
+            )}
+            {title && (
+              <div className="pb-8">
+                <h1 className="text-4xl font-semibold text-white">{title}</h1>
+                {subtitle && (
+                  <h2 className="text-base font-normal text-brand-heavenly-tint-1">
+                    {subtitle}
+                  </h2>
+                )}
+              </div>
+            )}
+          </div>
 
           {children}
         </div>

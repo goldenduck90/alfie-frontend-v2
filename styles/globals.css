@@ -21,6 +21,19 @@ body {
   @apply bg-gray-100;
 }
 
+.notification-style {
+  @apply z-50 text-white p-4 w-80 max-w-sm my-1 rounded-md flex justify-between;
+}
+.notification-success {
+  @apply notification-style bg-green-500;
+}
+.notification-error {
+  @apply notification-style bg-red-500;
+}
+.notification-warning {
+  @apply notification-style bg-yellow-500;
+}
+
 .react-calendar__tile--active {
   background: rgb(209 213 219) !important;
 }
@@ -169,3 +182,33 @@ body {
 .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: #e6e6e6;
 }
+
+/* Sendbird CSS */
+.sendbird-badge .sendbird-badge__text {
+  margin: -4px 7px !important;
+}
+.sendbird-conversation {
+  @apply rounded-xl lg:rounded-l-none;
+}
+.sendbird-channel-preview {
+  @apply py-4 px-6  !important;
+}
+.sendbird-avatar {
+  @apply max-h-12 max-w-[48px] !important;
+}
+.chat-container .sendbird-conversation {
+  @apply rounded-xl;
+}
+.chat-container .sendbird-chat-header {
+  @apply rounded-t-xl;
+}
+.sendbird-place-holder {
+  @apply rounded-xl !important;
+}
+.sendbird-theme--light .sendbird-channel-preview--active {
+  @apply border-none bg-primary-50 !important;
+}
+.sendbird-message-input--textarea.sendbird-message-input-text-field {
+  @apply rounded-2xl border-gray-300 bg-white !important;
+}
+/* Sendbird CSS */

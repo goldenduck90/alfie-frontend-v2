@@ -1,6 +1,5 @@
 import React from "react";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { XIcon } from "@heroicons/react/outline";
 
 export const ChannelListHeader = ({
   query,
@@ -21,9 +20,9 @@ export const ChannelListHeader = ({
   }, [value]);
 
   return (
-    <div className="bg-white z-[1] border absolute shadow-sm w-full text-left px-5 py-4 font-bold flex justify-between">
+    <div className="bg-white z-[1] absolute rounded-tl-xl shadow-sm w-full text-left px-5 py-4 font-bold flex justify-between border-r">
       <input
-        className="font-mulish w-full px-3 py-1 focus:outline-none appearance-none rounded-sm border"
+        className="font-mulish w-full px-3 py-1 focus:outline-none appearance-none border rounded-2xl border-1 font-normal"
         onChange={(e) => {
           setValue(e.target.value);
         }}
@@ -33,7 +32,7 @@ export const ChannelListHeader = ({
 
       <div className="flex lg:hidden ml-2">
         <button onClick={handleDrawerToggle} className="px-1">
-          <FontAwesomeIcon icon={faClose} />
+          <XIcon className="h-5 w-5 text-gray-400" />
         </button>
       </div>
     </div>

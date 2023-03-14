@@ -17,10 +17,10 @@ export function PatientDashboard() {
         <DashboardTaskList />
         <DashboardAppointments />
       </div>
-      <div className="md:flex md:pb">
+      {/* <div className="md:flex md:pb">
         <BodyMassIndex />
         <BeforeAndAfter />
-      </div>
+      </div> */}
     </div>
   );
 }

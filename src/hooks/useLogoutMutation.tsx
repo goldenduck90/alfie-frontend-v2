@@ -1,3 +1,4 @@
+import { client } from "@src/graphql";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useCurrentUserStore } from "./useCurrentUser";
@@ -19,6 +20,7 @@ export function useLogoutMutation() {
       onSuccess: async (data) => {
         await router.replace("/login");
         clear();
+        client.clearStore();
       },
       onError: (error) => {
         console.log({ error });

@@ -6,6 +6,12 @@ import { DashboardPreviewItem } from "@src/components/ui/DashboardPreviewItem";
 import Link from "next/link";
 import React from "react";
 import { TaskType, UserTask } from "../../../graphql/generated";
+import { TaskSelector } from "../tasks/TaskSelector";
+
+import dayjs from "dayjs";
+import calendar from "dayjs/plugin/calendar";
+import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
+dayjs.extend(calendar);
 
 const userTasksQuery = gql`
   query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
@@ -30,72 +36,74 @@ const userTasksQuery = gql`
 `;
 
 export const DashboardTaskList = () => {
-  const result = useQuery(userTasksQuery, {
+  const { data, loading, error } = useQuery(userTasksQuery, {
     variables: {
-      limit: 20,
       completed: false,
     },
   });
 
-  const filteredTasks = result.data?.userTasks.userTasks.filter((task: any) => {
+  const filteredTasks = data?.userTasks.userTasks.filter((task: any) => {
     return (
       task.task.type === TaskType.WeightLog ||
       task.task.type === TaskType.NewPatientIntakeForm ||
       task.task.type === TaskType.IdAndInsuranceUpload
     );
   });
-  // if filteredTasks is empty, then we want to show the full list of tasks
   const tasks =
-    filteredTasks?.length > 0
-      ? filteredTasks
-      : result?.data?.userTasks?.userTasks;
+    filteredTasks?.length > 0 ? filteredTasks : data?.userTasks?.userTasks;
 
-  // React.useEffect(() => {
-  //   if (param !== null) {
-  //     result.refetch();
-  //     searchParams.delete("refetch");
-  //     setSearchParams(searchParams);
-  //   }
-  // }, [param, result, searchParams, setSearchParams]);
-  // React.useEffect(() => {
-  //   // If there is an error with the query, we want to log it to Sentry
-  //   if (result.error) {
-  //     Sentry.captureException(new Error(result.error.message), {
-  //       tags: {
-  //         query: "userTasksQuery",
-  //         component: "DashboardTaskList",
-  //       },
-  //     });
-  //   }
-  // }, [result]);
+  React.useEffect(() => {
+    //? If there is an error with the query, we want to log it to Sentry
+    if (error) {
+      Sentry.captureException(new Error(error.message), {
+        tags: {
+          query: "userTasksQuery",
+          component: "DashboardTaskList",
+        },
+      });
+    }
+  }, [error]);
 
-  const renderItems = [0, 1]?.map((item, i) => (
-    <DashboardPreviewItem
-      key={i}
-      {...(item as any)}
-      isLoading={result.loading}
-    />
+  const loadItems = [0, 1]?.map((item, i) => (
+    <DashboardPreviewItem key={`task-load-${i}`} {...(item as any)} isLoading />
   ));
 
+  const resultItems = tasks
+    // only show the first 2 tasks
+    ?.slice(0, 1)
+    .map((item: UserTask, i: number) => (
+      <TaskSelector
+        type={item?.task?.type as TaskType}
+        userTaskId={item._id}
+        key={`task-${i}`}
+        trigger={
+          <DashboardPreviewItem
+            renderDate={{ date: "", time: dayjs().calendar(dayjs(item.dueAt)) }}
+            title={item?.task?.name || ""}
+            icon={item?.task?.type}
+          />
+        }
+      />
+    ));
+
   return (
-    <div className="w-full md:min-w-[49.5%]">
-      <div>
-        <DashboardCard
-          cardHeader={
-            <div className="flex justify-between">
-              <h3 className="font-bold">Tasks</h3>{" "}
-              <Link href="/dashboard/tasks">
-                <p className="font-semibold">View all</p>
-              </Link>
-            </div>
-          }
-        >
-          {result.error && (
-            <div className="h-full">{result?.error?.message}</div>
-          )}
-          {renderItems}
-        </DashboardCard>
-      </div>
-    </div>
+    <DashboardCard
+      className="w-full md:min-w-[49.2%]"
+      cardHeader={
+        <div className="flex justify-between pb-7">
+          <h3 className="font-bold">Tasks</h3>{" "}
+          <Link href="/dashboard/tasks">
+            <p className="font-semibold hover:underline">View all</p>
+          </Link>
+        </div>
+      }
+    >
+      {error && <GrayPlaceHolderBox content={error?.message} />}
+      {loading && loadItems}
+      {tasks?.length > 0 && resultItems}
+      {data?.userTasks.length === 0 && (
+        <GrayPlaceHolderBox content="You have no tasks to complete right now. We'll notify you when you do!" />
+      )}
+    </DashboardCard>
   );
 };

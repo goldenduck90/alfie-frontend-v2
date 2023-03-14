@@ -1,9 +1,20 @@
+import React from "react";
+import { gql, useQuery } from "@apollo/client";
+
 import { CakeIcon } from "@heroicons/react/solid";
 import { PencilIcon } from "@heroicons/react/outline";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
-import React from "react";
+
+export const BodyMassIndexQuery = gql`
+  query BodyMassIndex {
+    something
+    somethingElse
+  }
+`;
 
 export function BodyMassIndex() {
+  const { loading, data, error } = useQuery(BodyMassIndexQuery, {});
+
   return (
     <DashboardCard
       className="w-full md:mr-4"

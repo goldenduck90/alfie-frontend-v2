@@ -2,12 +2,15 @@ import React, { useState, useMemo } from "react";
 import { format, isToday, isTomorrow, formatDistance } from "date-fns";
 import Link from "next/link";
 import { Button } from "../../ui/Button";
-import { CheckCircleIcon, HeartIcon } from "@heroicons/react/solid";
+import { CheckCircleIcon } from "@heroicons/react/solid";
 import {
   CalendarIcon,
   InformationCircleIcon,
   ClockIcon,
 } from "@heroicons/react/outline";
+import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
+import { TaskSelector } from "./TaskSelector";
+import { TaskType } from "@src/graphql/generated";
 
 export const TaskItem = ({
   id,
@@ -22,7 +25,7 @@ export const TaskItem = ({
   providerType,
 }: {
   id: string;
-  type: string;
+  type: TaskType;
   title: string;
   createdAt: Date;
   dueAt?: Date;
@@ -58,22 +61,20 @@ export const TaskItem = ({
   }, [appointmentStartTime]);
 
   const getQueryParamIdFromMeetingUrl = meetingLocation?.split("/").pop();
-  const hasSubTasks = Math.random() >= 0.8;
+  const hasSubTasks = false; //Math.random() >= 0.8;
 
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 md:p-6">
       <div className="flex flex-col justify-between gap-y-3 md:flex-row  md:gap-x-2 ">
         <div className="flex flex-shrink pb-6 md:w-1/2">
-          <div className="flex mr-4 rounded-xl bg-brand-peachy w-10 h-10 items-center justify-center min-w-[40px]">
-            <HeartIcon className="h-6 w-6 text-brand-peachy-shade" />
-          </div>
+          <ChooseTaskIcon value={type} />
           <div className="max-w-md">
             <h3 className="text-gray-900 font-bold">
               {appointmentStartTime ? `Appointment with ${title}` : title}
             </h3>
             <p className="text-gray-700">
-              We need to verify your insurance and identity in order to give you
-              an access to our services.
+              Complete a basic medical form so that we can tailor our services
+              to your needs.
             </p>
           </div>
         </div>
@@ -82,7 +83,7 @@ export const TaskItem = ({
             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
             aria-hidden="true"
           />
-          <p>5 min</p>
+          <p>10 min</p>
         </div>
 
         <div className="hidden md:flex">
@@ -103,17 +104,7 @@ export const TaskItem = ({
               completed
             </div>
           ) : (
-            <Link
-              passHref
-              legacyBehavior
-              href={
-                meetingLocation
-                  ? `/appointments/call/${getQueryParamIdFromMeetingUrl}`
-                  : `/task/${type}/${id}`
-              }
-            >
-              <Button buttonType="secondary">{actionText}</Button>
-            </Link>
+            <TaskSelector type={type} userTaskId={id} createdAt={createdAt} />
           )}
         </div>
       </div>
@@ -148,28 +139,22 @@ export const TaskItem = ({
               <CheckCircleIcon className="h-5 w-5 mt-[2px] mr-1" /> 2/4
               completed
             </div>
-          ) : (
+          ) : meetingLocation ? (
             <Link
               passHref
               legacyBehavior
-              href={
-                meetingLocation
-                  ? `/appointments/call/${getQueryParamIdFromMeetingUrl}`
-                  : `/task/${type}/${id}`
-              }
+              href={`/appointments/call/${getQueryParamIdFromMeetingUrl}`}
             >
               <Button buttonType="secondary">{actionText}</Button>
             </Link>
+          ) : (
+            <TaskSelector type={type} userTaskId={id} createdAt={createdAt} />
           )}
         </div>
       </div>
     </div>
   );
 };
-
-function TaskItemIcon({ Icon }: { Icon: JSX.Element }) {
-  return <div>{/* <Icon className="h-5 w-5" /> */}</div>;
-}
 
 function SubTask({
   isCompleted,

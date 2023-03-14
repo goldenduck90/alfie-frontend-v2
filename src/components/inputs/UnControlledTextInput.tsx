@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Loading } from "../Loading"
+import { Loading } from "../old/Loading";
 
 export interface ITextInput {
-  name: string
-  placeholder: string
+  name: string;
+  placeholder: string;
   type?:
     | "text"
     | "password"
@@ -13,12 +12,12 @@ export interface ITextInput {
     | "range"
     | "datetime-local"
     | "time"
-    | "tel"
-  cache?: boolean
-  handleChange?: any
-  loading?: boolean
-  value?: string
-  disabled?: boolean
+    | "tel";
+  cache?: boolean;
+  handleChange?: any;
+  loading?: boolean;
+  value?: string;
+  disabled?: boolean;
 }
 
 export const UnControlledTextInput = ({
@@ -47,5 +46,5 @@ export const UnControlledTextInput = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

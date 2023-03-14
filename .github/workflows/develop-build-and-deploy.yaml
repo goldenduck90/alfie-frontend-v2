@@ -1,0 +1,47 @@
+
+
+name: (DEV) Build and Deploy
+
+env:
+  APP_NAME:	frontend-v2
+  S3_BUCKET: elasticbeanstalk-us-east-1-322311686188
+  AWS_REGION: us-east-1
+  AWS_PLATFORM: Docker
+  PIPELINE_ID: ${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  # prepare:
+  #   runs-on: ubuntu-latest
+  #   steps:
+      # - name: Tyescript check
+      #   run: yarn tsc
+      # - name: Prettier check
+      #   run: yarn format
+      # - name: ESLint check
+      #   run: yarn lint
+  build:
+    # needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Generate deployment package
+      run: zip -r package.zip . -x ".git/*" -x ".github/*" -x ".vscode/*"
+    - name: Get timestamp
+      id: timestamp
+      run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S-%3NZ')"
+    - name: Run beanstalk deploy
+      uses: einaregilsson/beanstalk-deploy@v21
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ env.AWS_REGION }}
+        application_name: frontend-v2
+        environment_name: develop-fe
+        version_label: "develop_${{ steps.timestamp.outputs.date }}"
+        deployment_package: package.zip

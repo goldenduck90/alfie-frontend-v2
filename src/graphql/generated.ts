@@ -51,16 +51,6 @@ export enum AnswerType {
   String = 'STRING'
 }
 
-export type BatchCreateOrUpdateLabsInput = {
-  labs: Array<LabInput>;
-};
-
-export type BatchCreateOrUpdateLabsResponse = {
-  __typename?: 'BatchCreateOrUpdateLabsResponse';
-  created: Scalars['Int'];
-  updated: Scalars['Int'];
-};
-
 export type BatchCreateOrUpdateProvidersInput = {
   providers: Array<ProviderInput>;
 };
@@ -100,6 +90,17 @@ export type CheckoutResponse = {
   __typename?: 'CheckoutResponse';
   checkout: Checkout;
   message?: Maybe<Scalars['String']>;
+};
+
+export type Classification = {
+  __typename?: 'Classification';
+  calculated1hourPercent?: Maybe<Scalars['Float']>;
+  calculated30minsPercent?: Maybe<Scalars['Float']>;
+  calculatedPercentile?: Maybe<Scalars['Float']>;
+  classification: Scalars['String'];
+  date: Scalars['DateTime'];
+  displayPercentile?: Maybe<Scalars['String']>;
+  percentile: Scalars['String'];
 };
 
 export type CompletePaymentIntentInput = {
@@ -146,6 +147,11 @@ export type CreateCustomerInput = {
   updateUser?: InputMaybe<Scalars['Boolean']>;
   userId: Scalars['String'];
   zipCode: Scalars['String'];
+};
+
+export type CreateLabOrderResponse = {
+  __typename?: 'CreateLabOrderResponse';
+  labOrderId: Scalars['String'];
 };
 
 export type CreateStripeCustomerInput = {
@@ -413,37 +419,6 @@ export type GoogleReverseGeoCodeResult = {
   geometry: GoogleReverseGeoCodeGeometryObject;
 };
 
-export type Lab = {
-  __typename?: 'Lab';
-  _id: Scalars['String'];
-  city: Scalars['String'];
-  company: LabCompany;
-  faxNumber: Scalars['String'];
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
-  name: Scalars['String'];
-  postalCode: Scalars['String'];
-  state: Scalars['String'];
-  streetAddress: Scalars['String'];
-};
-
-/** The company of the lab */
-export enum LabCompany {
-  LabCorp = 'LabCorp'
-}
-
-export type LabInput = {
-  city: Scalars['String'];
-  company: LabCompany;
-  faxNumber: Scalars['String'];
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
-  name: Scalars['String'];
-  postalCode: Scalars['String'];
-  state: Scalars['String'];
-  streetAddress: Scalars['String'];
-};
-
 export type LocationObject = {
   __typename?: 'LocationObject';
   lat: Scalars['Float'];
@@ -475,15 +450,16 @@ export type Mutation = {
   __typename?: 'Mutation';
   archiveTask: UserTask;
   assignTaskToUser: UserTask;
-  batchCreateOrUpdateLabs?: Maybe<BatchCreateOrUpdateLabsResponse>;
   batchCreateOrUpdateProviders?: Maybe<BatchCreateOrUpdateProvidersResponse>;
   bulkAssignTasksToUser: Array<UserTask>;
   cancelAppointment: MessageResponse;
+  classifyPatients: User;
   completePaymentIntent: MessageResponse;
   completeUpload: User;
   completeUserTask: UserTask;
   createAppointment: EaAppointment;
   createCustomer: Scalars['String'];
+  createLabOrder: CreateLabOrderResponse;
   createOrFindCheckout: CheckoutResponse;
   createOrUpdateStripeSession: CheckoutResponse;
   createTask: Task;
@@ -492,6 +468,7 @@ export type Mutation = {
   login: LoginResponse;
   requestSignedUrls: Array<SignedUrlResponse>;
   resetPassword: LoginResponse;
+  scorePatients: Score;
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
   updateProviderProfile: EaProviderProfile;
@@ -510,11 +487,6 @@ export type MutationAssignTaskToUserArgs = {
 };
 
 
-export type MutationBatchCreateOrUpdateLabsArgs = {
-  input: BatchCreateOrUpdateLabsInput;
-};
-
-
 export type MutationBatchCreateOrUpdateProvidersArgs = {
   input: BatchCreateOrUpdateProvidersInput;
 };
@@ -527,6 +499,11 @@ export type MutationBulkAssignTasksToUserArgs = {
 
 export type MutationCancelAppointmentArgs = {
   eaAppointmentId: Scalars['String'];
+};
+
+
+export type MutationClassifyPatientsArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -552,6 +529,11 @@ export type MutationCreateAppointmentArgs = {
 
 export type MutationCreateCustomerArgs = {
   input: CreateCustomerInput;
+};
+
+
+export type MutationCreateLabOrderArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -595,6 +577,11 @@ export type MutationResetPasswordArgs = {
 };
 
 
+export type MutationScorePatientsArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type MutationSubscribeEmailArgs = {
   input: SubscribeEmailInput;
 };
@@ -624,6 +611,7 @@ export type MutationUpdateUserTaskArgs = {
 export type PartialUser = {
   __typename?: 'PartialUser';
   _id: Scalars['String'];
+  eaHealthCoachId?: Maybe<Scalars['String']>;
   eaProviderId?: Maybe<Scalars['String']>;
   email: Scalars['String'];
   name: Scalars['String'];
@@ -694,11 +682,11 @@ export type Query = {
   appointments: Array<EaAppointment>;
   checkout: CheckoutResponse;
   getAProvider: EaProviderProfile;
+  getAllPatientsByHealthCoach: Array<User>;
   getAllPatientsByPractitioner: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
-  getLabLocations: Array<Lab>;
-  labLocations: Array<GooglePlacesSearchResult>;
+  getUserById: User;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
@@ -707,6 +695,7 @@ export type Query = {
   reverseGeoCode: Array<GoogleReverseGeoCodeResult>;
   task?: Maybe<Task>;
   user: User;
+  userSendbirdChannel: Array<UserSendbirdChannel>;
   userTask: UserTask;
   userTasks: UserTaskList;
   users: Array<User>;
@@ -748,8 +737,8 @@ export type QueryGetAllUserTasksByUserArgs = {
 };
 
 
-export type QueryLabLocationsArgs = {
-  input: GooglePlacesSearchInput;
+export type QueryGetUserByIdArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -775,6 +764,11 @@ export type QueryProviderTimeslotsArgs = {
 
 export type QueryTaskArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryUserSendbirdChannelArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -807,11 +801,15 @@ export enum Role {
 
 export type Score = {
   __typename?: 'Score';
+  calculated1hourPercent?: Maybe<Scalars['Float']>;
+  calculated30minsPercent?: Maybe<Scalars['Float']>;
+  calculatedPercentile?: Maybe<Scalars['Float']>;
   date?: Maybe<Scalars['DateTime']>;
   increased?: Maybe<Scalars['Boolean']>;
   increased1hour?: Maybe<Scalars['Boolean']>;
   increasedDiastolic?: Maybe<Scalars['Boolean']>;
   increasedSystolic?: Maybe<Scalars['Boolean']>;
+  latest?: Maybe<Scalars['String']>;
   message?: Maybe<Scalars['String']>;
   percent?: Maybe<Scalars['Float']>;
   percentDifference?: Maybe<Scalars['Float']>;
@@ -819,6 +817,9 @@ export type Score = {
   percentDifference30Mins?: Maybe<Scalars['Float']>;
   percentDifferenceDiastolic?: Maybe<Scalars['Float']>;
   percentDifferenceSystolic?: Maybe<Scalars['Float']>;
+  percentile?: Maybe<Scalars['String']>;
+  percentile1hour?: Maybe<Scalars['String']>;
+  percentile30mins?: Maybe<Scalars['String']>;
   providerMessage?: Maybe<Scalars['String']>;
   score?: Maybe<Scalars['Float']>;
   score1hour?: Maybe<Scalars['String']>;
@@ -926,6 +927,8 @@ export type User = {
   _id: Scalars['String'];
   address: Address;
   akutePatientId?: Maybe<Scalars['String']>;
+  bmi?: Maybe<Scalars['Float']>;
+  classifications?: Maybe<Array<Classification>>;
   dateOfBirth: Scalars['DateTime'];
   eaCustomerId?: Maybe<Scalars['String']>;
   eaHealthCoachId?: Maybe<Scalars['String']>;
@@ -935,7 +938,7 @@ export type User = {
   files: Array<File>;
   gender: Gender;
   heightInInches: Scalars['Float'];
-  labLocation?: Maybe<Scalars['String']>;
+  labOrderSent?: Maybe<Scalars['Boolean']>;
   meetingRoomUrl?: Maybe<Scalars['String']>;
   meetingUrl?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -944,11 +947,14 @@ export type User = {
   phone: Scalars['String'];
   provider?: Maybe<Provider>;
   role: Role;
-  score?: Maybe<Array<Score>>;
+  score: Array<Score>;
+  sendbirdChannelUrl?: Maybe<Scalars['String']>;
   stripeCustomerId: Scalars['String'];
   stripeSubscriptionId: Scalars['String'];
   subscriptionExpiresAt: Scalars['DateTime'];
   textOptIn?: Maybe<Scalars['Boolean']>;
+  timezone?: Maybe<Scalars['String']>;
+  weightGoal?: Maybe<Scalars['Float']>;
   weights: Array<Weight>;
 };
 
@@ -963,6 +969,46 @@ export type UserAnswersInput = {
   key: Scalars['String'];
   type: AnswerType;
   value: Scalars['String'];
+};
+
+export type UserSendbirdChannel = {
+  __typename?: 'UserSendbirdChannel';
+  channel_url: Scalars['String'];
+  count_preference?: Maybe<Scalars['String']>;
+  cover_url?: Maybe<Scalars['String']>;
+  created_at: Scalars['Float'];
+  created_by?: Maybe<Scalars['String']>;
+  custom_type?: Maybe<Scalars['String']>;
+  data?: Maybe<Scalars['String']>;
+  freeze: Scalars['Boolean'];
+  hidden_state?: Maybe<Scalars['String']>;
+  ignore_profanity_filter: Scalars['Boolean'];
+  invited_at: Scalars['Float'];
+  inviter?: Maybe<Scalars['String']>;
+  is_access_code_required: Scalars['Boolean'];
+  is_broadcast: Scalars['Boolean'];
+  is_discoverable: Scalars['Boolean'];
+  is_distinct: Scalars['Boolean'];
+  is_ephemeral: Scalars['Boolean'];
+  is_exclusive: Scalars['Boolean'];
+  is_hidden: Scalars['Boolean'];
+  is_muted: Scalars['Boolean'];
+  is_public: Scalars['Boolean'];
+  is_push_enabled: Scalars['Boolean'];
+  is_super: Scalars['Boolean'];
+  joined_member_count: Scalars['Float'];
+  joined_ts?: Maybe<Scalars['Float']>;
+  max_length_message: Scalars['Float'];
+  member_count: Scalars['Float'];
+  member_state: Scalars['String'];
+  message_survival_seconds: Scalars['Float'];
+  my_role?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  push_trigger_option?: Maybe<Scalars['String']>;
+  ts_message_offset: Scalars['Float'];
+  unread_mention_count: Scalars['Float'];
+  unread_message_count: Scalars['Float'];
+  user_last_read: Scalars['Float'];
 };
 
 export type UserTask = {
@@ -1000,6 +1046,13 @@ export type Weight = {
   value: Scalars['Float'];
 };
 
+export type RequestSignedUrlsMutationVariables = Exact<{
+  requests: Array<SignedUrlRequest> | SignedUrlRequest;
+}>;
+
+
+export type RequestSignedUrlsMutation = { __typename?: 'Mutation', requestSignedUrls: Array<{ __typename?: 'SignedUrlResponse', url: string, key: string }> };
+
 export type UserTasksQueryQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
   offset?: InputMaybe<Scalars['Float']>;
@@ -1009,14 +1062,41 @@ export type UserTasksQueryQueryVariables = Exact<{
 
 export type UserTasksQueryQuery = { __typename?: 'Query', userTasks: { __typename?: 'UserTaskList', total: number, userTasks?: Array<{ __typename?: 'UserTask', _id: string, dueAt?: any | null, pastDue?: boolean | null, createdAt?: any | null, task?: { __typename?: 'Task', _id: string, name?: string | null, type: TaskType } | null }> | null } };
 
-export type RequestSignedUrlsMutationVariables = Exact<{
-  requests: Array<SignedUrlRequest> | SignedUrlRequest;
-}>;
 
+export const RequestSignedUrlsDocument = gql`
+    mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
+  requestSignedUrls(requests: $requests) {
+    url
+    key
+  }
+}
+    `;
+export type RequestSignedUrlsMutationFn = Apollo.MutationFunction<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;
 
-export type RequestSignedUrlsMutation = { __typename?: 'Mutation', requestSignedUrls: Array<{ __typename?: 'SignedUrlResponse', url: string, key: string }> };
-
-
+/**
+ * __useRequestSignedUrlsMutation__
+ *
+ * To run a mutation, you first call `useRequestSignedUrlsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRequestSignedUrlsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [requestSignedUrlsMutation, { data, loading, error }] = useRequestSignedUrlsMutation({
+ *   variables: {
+ *      requests: // value for 'requests'
+ *   },
+ * });
+ */
+export function useRequestSignedUrlsMutation(baseOptions?: Apollo.MutationHookOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>(RequestSignedUrlsDocument, options);
+      }
+export type RequestSignedUrlsMutationHookResult = ReturnType<typeof useRequestSignedUrlsMutation>;
+export type RequestSignedUrlsMutationResult = Apollo.MutationResult<RequestSignedUrlsMutation>;
+export type RequestSignedUrlsMutationOptions = Apollo.BaseMutationOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;
 export const UserTasksQueryDocument = gql`
     query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
   userTasks(input: {limit: $limit, offset: $offset, completed: $completed}) {
@@ -1065,37 +1145,3 @@ export function useUserTasksQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type UserTasksQueryQueryHookResult = ReturnType<typeof useUserTasksQueryQuery>;
 export type UserTasksQueryLazyQueryHookResult = ReturnType<typeof useUserTasksQueryLazyQuery>;
 export type UserTasksQueryQueryResult = Apollo.QueryResult<UserTasksQueryQuery, UserTasksQueryQueryVariables>;
-export const RequestSignedUrlsDocument = gql`
-    mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
-  requestSignedUrls(requests: $requests) {
-    url
-    key
-  }
-}
-    `;
-export type RequestSignedUrlsMutationFn = Apollo.MutationFunction<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;
-
-/**
- * __useRequestSignedUrlsMutation__
- *
- * To run a mutation, you first call `useRequestSignedUrlsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRequestSignedUrlsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [requestSignedUrlsMutation, { data, loading, error }] = useRequestSignedUrlsMutation({
- *   variables: {
- *      requests: // value for 'requests'
- *   },
- * });
- */
-export function useRequestSignedUrlsMutation(baseOptions?: Apollo.MutationHookOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>(RequestSignedUrlsDocument, options);
-      }
-export type RequestSignedUrlsMutationHookResult = ReturnType<typeof useRequestSignedUrlsMutation>;
-export type RequestSignedUrlsMutationResult = Apollo.MutationResult<RequestSignedUrlsMutation>;
-export type RequestSignedUrlsMutationOptions = Apollo.BaseMutationOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;

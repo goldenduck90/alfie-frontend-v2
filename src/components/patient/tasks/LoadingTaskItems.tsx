@@ -17,7 +17,7 @@ export function LoadingTaskItem() {
               <PlaceHolderLine />
             </div>
             <div className="w-3/4">
-              <PlaceHolderLine amount={3} />
+              <PlaceHolderLine amount={2} />
             </div>
           </div>
         </div>
@@ -26,7 +26,7 @@ export function LoadingTaskItem() {
             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
             aria-hidden="true"
           />
-          <PlaceHolderLine />
+          <PlaceHolderLine hasTopMargin />
         </div>
 
         <div className="hidden md:flex md:w-40">
@@ -35,7 +35,7 @@ export function LoadingTaskItem() {
             aria-hidden="true"
           />
           <div className="w-full">
-            <PlaceHolderLine />
+            <PlaceHolderLine hasTopMargin />
           </div>
         </div>
 

@@ -59,6 +59,11 @@ export function useUserSession<R extends boolean = false>({
         router.replace(redirectTo);
       },
       ...queryConfig,
+      /**
+       * Stale time tells this to refetch and check user session after 10 minutes
+       * Cache time says to remove this completely after 10 minutes if not in use.
+       * So technically cacheTime should never be reached.
+       */
       staleTime: 1000 * 60 * 10,
       refetchOnWindowFocus: true,
       cacheTime: 1000 * 60 * 10,

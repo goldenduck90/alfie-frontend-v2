@@ -8,6 +8,7 @@ import { ChannelHeader } from "./ChannelHeader";
 import { ChannelListHeader } from "./ChannelListHeader";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import { randomId } from "@src/utils/randomId";
 
 export const Chat = () => {
   const { user } = useCurrentUserStore();
@@ -24,7 +25,7 @@ export const Chat = () => {
       addNotification({
         type: "error",
         description: "Error with chat please try again later",
-        id: "",
+        id: randomId(),
         title: "Chat Error",
       });
     }
@@ -44,7 +45,7 @@ export const Chat = () => {
     }
   }, [query]);
 
-  function showDrawer() {
+  const showDrawer = useMemo(() => {
     if (user?.role === Role.Patient) {
       return "hidden";
     } else if (toggleChannelDrawer) {
@@ -52,18 +53,25 @@ export const Chat = () => {
     } else {
       return "hidden lg:block";
     }
-  }
+  }, [user?.role, toggleChannelDrawer]);
 
   return (
-    <div className="flex relative h-[75vh] rounded-lg">
-      <div className={`h-[75vh] relative z-10 bg-white ${showDrawer()}`}>
+    <div
+      className={`flex relative h-[75vh] rounded-lg ${
+        user?.role === Role.Patient ? "chat-container" : ""
+      }`}
+    >
+      <div
+        className={`h-[75vh] relative z-10 bg-white rounded-l-xl ${showDrawer}`}
+      >
         <ChannelListUI
           queries={queries}
           allowProfileEdit={false}
-          className={`overflow-y-auto border`}
+          className={`overflow-y-auto border rounded-l-xl border-r-0`}
           onChannelSelect={(channel) => {
             if (channel && channel.url) {
               setCurrentChannelUrl(channel.url);
+              setToggleChannelDrawer(false);
             } else {
               setCurrentChannelUrl("");
             }
@@ -94,7 +102,7 @@ export const Chat = () => {
         {toggleChannelDrawer && (
           <div
             onClick={handleDrawerToggle}
-            className="absolute h-full w-full top-0 right-0 bg-opacity-30 bg-gray-600 z-[9]"
+            className="absolute h-full w-full top-0 right-0 bg-opacity-30 bg-gray-600 z-[9] rounded-xl"
           />
         )}
         <Channel
@@ -102,9 +110,7 @@ export const Chat = () => {
           disableUserProfile={true}
           renderChannelHeader={() => (
             <>
-              <ChannelProvider channelUrl={currentChannelUrl}>
-                <ChannelHeader handleDrawerToggle={handleDrawerToggle} />
-              </ChannelProvider>
+              <ChannelHeader handleDrawerToggle={handleDrawerToggle} />
             </>
           )}
         />
