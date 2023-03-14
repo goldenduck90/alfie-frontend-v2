@@ -1,5 +1,6 @@
 import React from "react";
+import { PreCheckout } from "./PreCheckout";
 
 export function SignUpPage() {
-  return <div></div>;
+  return <PreCheckout />;
 }
