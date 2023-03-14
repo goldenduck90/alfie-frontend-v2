@@ -1,5 +1,5 @@
 import { TableUserObject } from "../tabs/IndividualPatientTabs";
-import { GrayBox } from "./PatientTasks";
+import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 
 export function MedicalQuestionnaire({ taskData }: any) {
   const { data, error } = taskData;
@@ -10,7 +10,7 @@ export function MedicalQuestionnaire({ taskData }: any) {
   const taskAnswers = taskWithAnswers?.answers;
 
   if (error) {
-    return <GrayBox content={error.message} />;
+    return <GrayPlaceHolderBox content={error.message} />;
   }
   return (
     <TableUserObject

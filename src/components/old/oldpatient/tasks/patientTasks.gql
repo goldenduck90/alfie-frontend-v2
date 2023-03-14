@@ -1,6 +1,0 @@
-mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
-  requestSignedUrls(requests: $requests) {
-    url
-    key
-  }
-}

@@ -4,7 +4,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Loading } from "../../Loading";
+import { Loading } from "../Loading";
+
 import { CheckoutPayment } from "./CheckoutPayment";
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
@@ -19,7 +20,6 @@ const getCheckoutQuery = gql`
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY!);
 
 export const StripeWrapper = () => {

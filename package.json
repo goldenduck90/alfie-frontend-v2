@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
@@ -59,6 +60,8 @@
     "react-dom": "18.2.0",
     "react-facebook-pixel": "^1.0.4",
     "react-hook-form": "^7.43.0",
+    "react-router": "^6.9.0",
+    "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "react-use-intercom": "^2.0.0",
     "recharts": "^2.1.16",

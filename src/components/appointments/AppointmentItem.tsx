@@ -2,9 +2,10 @@ import React, { useMemo } from "react";
 import { format, isToday, isTomorrow } from "date-fns";
 import { Role } from "../../graphql/generated";
 import { roleToText } from "../../utils/roleToText";
-import { Link } from "react-router-dom";
+
 import { PencilIcon, XIcon } from "@heroicons/react/solid";
 import { gql, useMutation } from "@apollo/client";
+import Link from "next/link";
 
 const cancelAppointmentMutation = gql`
   mutation CancelAppointment($eaAppointmentId: String!) {
@@ -92,7 +93,7 @@ export const AppointmentItem = ({
         {actions && (
           <>
             <Link
-              to={`/appointments/${id}`}
+              href={`/appointments/${id}`}
               className="flex items-center justify-center px-3 text-md md:text-lg py-2 md:py-2.5 bg-indigo-800 rounded-md text-white font-mulish font-bold hover:bg-indigo-700"
             >
               <PencilIcon className="w-7 h-7 text-white" />

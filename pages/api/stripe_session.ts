@@ -19,7 +19,7 @@ export default async function handler(req: any, res: any) {
         error
       );
       res.status(500);
-      res.send({ error: error?.message });
+      res.send({ error: (error as any)?.message });
     }
   }
 }

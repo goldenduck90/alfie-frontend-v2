@@ -118,6 +118,12 @@ export const medicalQuestions: QuestionProps<any>[] = [
   {
     id: "q7",
     question: "",
+    Component: MultipleTextInput,
+    helperText: "Information",
+  },
+  {
+    id: "q7",
+    question: "Identifying Information:    ",
     Component: FinalSubmitMetabolic,
     helperText: "Information",
   },

@@ -24,8 +24,8 @@ export function Chart() {
       value: item.value,
     }));
 
-  const start = dateSortedWeights?.[0]?.date;
-  const end = dateSortedWeights?.[dateSortedWeights.length - 1]?.date;
+  const start = dateSortedWeights?.[0]?.date as number;
+  const end = dateSortedWeights?.[dateSortedWeights.length - 1]?.date as number;
   const ticks = makeArrayWithRange(start, end, 3);
 
   return (

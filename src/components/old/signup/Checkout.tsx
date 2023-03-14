@@ -1,18 +1,13 @@
 import { gql, useQuery } from "@apollo/client";
-import {
-  faPeopleGroup,
-  faPills,
-  faSyringe,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/react";
+import { Wrapper } from "@src/components/layouts/Wrapper";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import { Button } from "../Button";
-import { FeatureSection } from "../../FeatureSection";
-import { Wrapper } from "../../layouts/Wrapper";
-import { Loading } from "../../Loading";
-import { Logo } from "../../Logo";
+import { FeatureSection } from "../FeatureSection";
+import { Loading } from "../Loading";
+import { Logo } from "../Logo";
+import { useParams } from "react-router-dom";
 
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
@@ -27,12 +22,12 @@ const getCheckoutQuery = gql`
 `;
 
 export const Checkout = () => {
-  // const { id } = useParams();
+  const { id } = useParams();
   const router = useRouter();
 
   const { data, loading, error } = useQuery(getCheckoutQuery, {
     variables: {
-      id: "",
+      id: id,
     },
   });
 
@@ -100,33 +95,18 @@ export const Checkout = () => {
             What&apos;s Included
           </h3>
           <FeatureSection
-            icon={
-              <FontAwesomeIcon
-                icon={faSyringe}
-                className="text-indigo-800 mr-3 h-5 md:h-6"
-              />
-            }
+            icon={<div />}
             title="Metabolic Profiling"
             description="Lab tests and other measurements help us understand your metabolism and the scientific reasoning behind your weight gain to determine which treatment is right for you!"
           />
           <FeatureSection
-            icon={
-              <FontAwesomeIcon
-                icon={faPills}
-                className="text-indigo-800 mr-3 h-5 md:h-6"
-              />
-            }
+            icon={<div />}
             title="Doctor Prescribed Medication"
             asterisk
             description="Connect with one of our licensed providers and be prescribed the right combination of weight loss medications for you, if eligible."
           />
           <FeatureSection
-            icon={
-              <FontAwesomeIcon
-                icon={faPeopleGroup}
-                className="text-indigo-800 mr-3 h-5 md:h-6"
-              />
-            }
+            icon={<div />}
             title="1:1 Accountability"
             description="Alfie pairs you with a certified health coach and integrates with your smart devices to help your care team maximize your weight loss."
           />

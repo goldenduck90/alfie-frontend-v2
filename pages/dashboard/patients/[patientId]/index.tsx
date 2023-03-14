@@ -59,7 +59,7 @@ function Patients() {
       backRef="/dashboard/patients"
       title={data?.getPatientById?.name || "Patient"}
     >
-      <IndividualPatientTabs user={data?.getPatientById || null} />
+      <IndividualPatientTabs />
     </Layout>
   );
 }

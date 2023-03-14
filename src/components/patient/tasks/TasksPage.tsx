@@ -6,6 +6,7 @@ import { UserTask } from "../../../graphql/generated";
 import { TaskItem } from "./TaskItem";
 import { LoadingTaskItem } from "./LoadingTaskItems";
 import { ToggleGroup } from "@src/components/ui/ToggleGroup";
+import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 
 const userTasksQuery = gql`
   query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
@@ -74,7 +75,14 @@ export const TasksPage = () => {
 
   return (
     <div>
-      {error && <div>{error.message}</div>}
+      {error && (
+        <div className="flex flex-col bg-white p-6 rounded-lg">
+          <h2 className="text-xl md:text-2xl font-bold font-mulish">
+            No tasks available
+          </h2>
+          <GrayPlaceHolderBox content={error.message} />
+        </div>
+      )}
       {!error && (
         <div className="flex flex-col bg-white p-6 rounded-lg">
           {/* <div className="flex flex-row pb-8">

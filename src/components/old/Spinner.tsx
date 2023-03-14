@@ -1,6 +1,5 @@
-import React from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSpinner } from "@fortawesome/free-solid-svg-icons"
+import { CubeTransparentIcon } from "@heroicons/react/outline";
+import React from "react";
 
 export const Spinner = ({
   size = 24,
@@ -8,19 +7,18 @@ export const Spinner = ({
   ml = 0,
   mr = 0,
 }: {
-  size?: number
-  scheme?: "dark" | "light"
-  mr?: number
-  ml?: number
+  size?: number;
+  scheme?: "dark" | "light";
+  mr?: number;
+  ml?: number;
 }) => (
-  <FontAwesomeIcon
-    icon={faSpinner}
+  <CubeTransparentIcon
     className={`animate-spin ${
       scheme === "dark" ? "text-indigo-800" : "text-white"
-    } mr-${mr} ml-${ml}`}
+    } mr-${mr} ml-${ml} h-10 w-10`}
     style={{
       height: size,
       width: size,
     }}
   />
-)
+);

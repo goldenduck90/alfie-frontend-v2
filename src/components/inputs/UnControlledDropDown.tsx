@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const UnControlledDropDown = ({
   selectedItem,
   setSelected,
 }: {
-  selectedItem: any
-  setSelected: any
+  selectedItem: any;
+  setSelected: any;
 }) => {
   return (
     <select
@@ -23,6 +22,6 @@ const UnControlledDropDown = ({
       <option>saturday</option>
       <option>sunday</option>
     </select>
-  )
-}
-export default UnControlledDropDown
+  );
+};
+export default UnControlledDropDown;

@@ -2,7 +2,7 @@ import React from "react";
 import { gql, useMutation } from "@apollo/client";
 import { Wrapper } from "../src/components/layouts/Wrapper";
 import { IconInput } from "../src/components/inputs/IconInput";
-import { Button } from "../src/components/old/Button";
+import { Button } from "@src/components/ui/Button";
 import { UserIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
@@ -90,12 +90,9 @@ const ForgotPassword = () => {
             />
           </div>
           <div className="pb-3 flex flex-col items-center">
-            <Button
-              title="Reset Password"
-              onPress={submitForm}
-              disabled={isSubmitting}
-              fullWidth
-            />
+            <Button onClick={submitForm} disabled={isSubmitting} fullWidth>
+              Reset Password
+            </Button>
             <div className="pt-3">
               <Link
                 href="/login"

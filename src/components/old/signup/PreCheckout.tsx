@@ -1,6 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider } from "formik";
-// import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../Button";
 import { Wrapper } from "../../layouts/Wrapper";
 import { BiologicalSex } from "./steps/BiologicalSex";
@@ -14,8 +13,8 @@ import { WeightLossMotivator } from "./steps/WeightLossMotivator";
 import { useFormikWizard } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
 import { ValidStates } from "../../../utils/states";
-import { ProgressBar } from "../../ProgressBar";
-import { Logo } from "../../Logo";
+import { ProgressBar } from "../ProgressBar";
+import { Logo } from "../Logo";
 import { gql, useMutation } from "@apollo/client";
 import { parseError } from "../../../utils/parseError";
 import { Gender } from "../../../graphql/generated";

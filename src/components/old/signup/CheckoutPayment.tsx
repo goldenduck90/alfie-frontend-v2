@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Wrapper } from "../../layouts/Wrapper";
-import { Logo } from "../../Logo";
 import {
   PaymentElement,
   useElements,
@@ -8,6 +7,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button } from "../Button";
 import * as Sentry from "@sentry/react";
+import { Logo } from "../Logo";
 
 export const CheckoutPayment = () => {
   const [loading, setLoading] = useState(false);

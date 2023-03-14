@@ -98,11 +98,11 @@ export const DashboardTaskList = () => {
         </div>
       }
     >
-      {error && <div className="h-full">{error?.message}</div>}
+      {error && <GrayPlaceHolderBox content={error?.message} />}
       {loading && loadItems}
       {tasks?.length > 0 && resultItems}
       {data?.userTasks.length === 0 && (
-        <GrayPlaceHolderBox content="No upcoming appointments" />
+        <GrayPlaceHolderBox content="You have no tasks to complete right now. We'll notify you when you do!" />
       )}
     </DashboardCard>
   );

@@ -18,7 +18,7 @@ export function DialogBody({
   title: string;
   description: string;
   onClick?: () => void;
-  createdAt: Date;
+  createdAt?: Date;
 }) {
   return (
     <div className="w-full md:max-w-[420px]">
@@ -35,7 +35,7 @@ export function DialogBody({
       <div className="w-full flex flex-col gap-y-3 px-6">
         <DialogModal.Title>{title}</DialogModal.Title>
         <DialogModal.Description>{description}</DialogModal.Description>
-        <GrayBox createdAt={createdAt} />
+        <GrayBox createdAt={createdAt as any} />
         <div className="py-4 flex items-center justify-center">
           <Button onClick={onClick} size="medium">
             Start the questionnaire

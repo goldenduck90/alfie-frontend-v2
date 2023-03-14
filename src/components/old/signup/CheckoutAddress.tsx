@@ -1,6 +1,5 @@
 import React from "react";
 import { Wrapper } from "../../layouts/Wrapper";
-import { Logo } from "../../Logo";
 import { gql, useMutation } from "@apollo/client";
 // import { useNavigate, useParams } from "react-router";
 import { Button } from "../Button";
@@ -12,6 +11,7 @@ import { States } from "../../../utils/states";
 import { TextInput } from "../../inputs/TextInput";
 import * as Yup from "yup";
 import { parseError } from "../../../utils/parseError";
+import { Logo } from "../Logo";
 
 const createOrUpdateStripeSessionMutation = gql`
   mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {

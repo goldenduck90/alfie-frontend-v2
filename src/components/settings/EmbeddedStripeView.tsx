@@ -27,13 +27,13 @@ export function EmbeddedStripeView() {
   };
 
   useEffect(() => {
-    window.StripeConnect = window.StripeConnect || {};
+    (window as any).StripeConnect = (window as any).StripeConnect || {};
     (async () => {
       const clientSecret = await fetchClientSecret();
       if (clientSecret) {
         // Initialize StripeConnect after the window loads
-        window.StripeConnect.onLoad = () => {
-          window.StripeConnect.init({
+        (window as any).StripeConnect.onLoad = () => {
+          (window as any).StripeConnect.init({
             publishableKey: user?.stripeSubscriptionId || "",
             clientSecret,
             appearance: {
@@ -60,7 +60,8 @@ export function EmbeddedStripeView() {
         {hasError ? (
           <Billing />
         ) : (
-          <stripe-connect-payments></stripe-connect-payments>
+          // <stripe-connect-payments></stripe-connect-payments>
+          <div />
         )}
       </div>
     </div>

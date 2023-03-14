@@ -1,5 +1,3 @@
-import { gql, useQuery } from "@apollo/client";
-import { AppointmentList } from "@src/components/appointments/AppointmentList";
 import { Layout } from "@src/components/layouts/Layout";
 import React from "react";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
