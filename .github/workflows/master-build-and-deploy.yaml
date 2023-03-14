@@ -40,6 +40,6 @@ jobs:
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         region: ${{ env.AWS_REGION }}
         application_name: frontend-v2
-        environment_name: production
+        environment_name: production-fe
         version_label: "production_${{ steps.timestamp.outputs.date }}"
         deployment_package: package.zip
