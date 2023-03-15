@@ -67,7 +67,7 @@ export const AppointmentItem = ({
     <div className="flex flex-col md:flex-row items-center justify-between w-full h-full bg-white rounded-md px-4 py-3 my-4">
       <div className="flex flex-col">
         <div className="flex flex-row">
-          <h4 className="text-indigo-800 text-lg md:text-xl font-bold font-mulish text-center md:text-left">
+          <h4 className="text-brand-berry text-lg md:text-xl font-bold text-center md:text-left">
             Appointment with {providerName}
           </h4>
         </div>
@@ -85,7 +85,7 @@ export const AppointmentItem = ({
       </div>
       <div className="flex flex-row items-center justify-center mt-4 md:mt-0 md:ml-10 space-x-2">
         <a
-          className="flex items-center justify-center px-8 text-md md:text-lg py-2 md:py-2.5 bg-indigo-800 rounded-md text-white font-mulish font-bold hover:bg-indigo-700"
+          className="flex items-center justify-center px-8 text-md md:text-lg py-2 md:py-2.5 bg-brand-berry rounded-md text-white font-bold hover:bg-brand-berry-tint-1"
           href={meetLink}
         >
           Join visit
@@ -94,13 +94,13 @@ export const AppointmentItem = ({
           <>
             <Link
               href={`/appointments/${id}`}
-              className="flex items-center justify-center px-3 text-md md:text-lg py-2 md:py-2.5 bg-indigo-800 rounded-md text-white font-mulish font-bold hover:bg-indigo-700"
+              className="flex items-center justify-center px-3 text-md md:text-lg py-2 md:py-2.5 bg-brand-berry rounded-md text-white font-bold hover:bg-brand-berry-tint-1"
             >
               <PencilIcon className="w-7 h-7 text-white" />
             </Link>
             <button
               onClick={onClickCancel}
-              className="flex items-center justify-center px-3 text-md md:text-lg py-2 md:py-2.5 bg-indigo-800 rounded-md text-white font-mulish font-bold hover:bg-indigo-700"
+              className="flex items-center justify-center px-3 text-md md:text-lg py-2 md:py-2.5 bg-brand-berry rounded-md text-white font-bold hover:bg-brand-berry-tint-1"
             >
               <XIcon className="w-7 h-7 text-white" />
             </button>

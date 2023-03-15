@@ -1,45 +1,45 @@
-import { useField } from "formik"
-import { ChangeEventHandler, FC } from "react"
-import { useCachedState } from "../../hooks/useCachedState"
+import { useField } from "formik";
+import { ChangeEventHandler, FC } from "react";
+import { useCachedState } from "../../hooks/useCachedState";
 
 export interface IStringFieldArray {
-  name: string
-  cache?: boolean
+  name: string;
+  cache?: boolean;
 }
 export const StringFieldArray: FC<IStringFieldArray> = ({ name, cache }) => {
-  const [, { value }, { setValue }] = useField(name)
-  const values: string[] = value
-  const [cachedValue, setCachedValue] = useCachedState(name, value, cache)
+  const [, { value }, { setValue }] = useField(name);
+  const values: string[] = value;
+  const [cachedValue, setCachedValue] = useCachedState(name, value, cache);
 
-  const desiredValue: string[] = cache ? cachedValue : values
+  const desiredValue: string[] = cache ? cachedValue : values;
 
   const handleAdd = () => {
-    const newValues = [...values, ""]
+    const newValues = [...values, ""];
     if (cache) {
-      setCachedValue(newValues)
+      setCachedValue(newValues);
     }
-    setValue(newValues)
-  }
+    setValue(newValues);
+  };
   return (
     <div>
       <div>
         {desiredValue?.map((_val, i) => {
           const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-            const newFieldInputs = [...desiredValue]
-            newFieldInputs[i] = e.target.value
+            const newFieldInputs = [...desiredValue];
+            newFieldInputs[i] = e.target.value;
             if (cache) {
-              setCachedValue(newFieldInputs)
+              setCachedValue(newFieldInputs);
             }
-            setValue(newFieldInputs)
-          }
+            setValue(newFieldInputs);
+          };
 
           const handleRemove = () => {
-            const newValues = desiredValue.filter((v, index) => index !== i)
+            const newValues = desiredValue.filter((v, index) => index !== i);
             if (cache) {
-              setCachedValue(newValues)
+              setCachedValue(newValues);
             }
-            setValue(newValues)
-          }
+            setValue(newValues);
+          };
           return (
             <div key={i} className="flex flex-col mb-5">
               <div className="flex">
@@ -49,7 +49,7 @@ export const StringFieldArray: FC<IStringFieldArray> = ({ name, cache }) => {
                   value={desiredValue[i]}
                   placeholder=""
                   className={
-                    "border-gray-300  font-mulish w-full px-3 py-2 focus:outline-none appearance-none  rounded-sm border"
+                    "border-gray-300   w-full px-3 py-2 focus:outline-none appearance-none  rounded-sm border"
                   }
                 />
                 {!!i && (
@@ -64,7 +64,7 @@ export const StringFieldArray: FC<IStringFieldArray> = ({ name, cache }) => {
                 )}
               </div>
             </div>
-          )
+          );
         })}
         <button
           onClick={handleAdd}
@@ -76,5 +76,5 @@ export const StringFieldArray: FC<IStringFieldArray> = ({ name, cache }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};

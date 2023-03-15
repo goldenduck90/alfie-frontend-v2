@@ -22,14 +22,14 @@ export const IconInput = ({
       <div
         className={`${
           error ? "border-red-500" : "border-gray-300"
-        } relative w-full border rounded-sm`}
+        } relative w-full border rounded-lg`}
       >
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
           {icon}
         </span>
         <input
           type={type}
-          className="font-mulish w-full py-2 rounded-sm pl-10 appearance-none focus:outline-none placeholder-gray-400 bg-white text-black"
+          className="w-full py-2 rounded-lg pl-10 appearance-none focus:outline-none placeholder-gray-400 bg-white text-black"
           placeholder={placeholder}
           value={value}
           onFocus={() => setError(undefined)}
@@ -79,7 +79,7 @@ export function IconHookInput({
         <input
           {...props}
           {...field}
-          className="font-mulish w-full py-2 rounded-sm pl-10 appearance-none focus:outline-none placeholder-gray-400 bg-white text-black"
+          className="w-full py-2 rounded-sm pl-10 appearance-none focus:outline-none placeholder-gray-400 bg-white text-black"
           placeholder={placeholder}
           disabled={disabled}
         />

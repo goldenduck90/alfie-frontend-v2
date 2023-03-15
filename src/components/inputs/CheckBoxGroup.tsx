@@ -74,16 +74,13 @@ export const CheckboxGroup: FC<ICheckboxGroup> = ({
           >
             <input
               id={item}
-              className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-indigo-800 checked:border-indigo-800 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer"
+              className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer"
               type="checkbox"
               checked={checked}
               value={checked}
               onChange={onChangeHandler}
             />
-            <label
-              htmlFor={item}
-              className="font-mulish form-check-label text-gray-800"
-            >
+            <label htmlFor={item} className="form-check-label text-gray-800">
               {item}
             </label>
           </div>

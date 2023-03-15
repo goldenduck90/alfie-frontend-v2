@@ -14,7 +14,7 @@ export const Spinner = ({
 }) => (
   <CubeTransparentIcon
     className={`animate-spin ${
-      scheme === "dark" ? "text-indigo-800" : "text-white"
+      scheme === "dark" ? "text-brand-berry" : "text-white"
     } mr-${mr} ml-${ml} h-10 w-10`}
     style={{
       height: size,

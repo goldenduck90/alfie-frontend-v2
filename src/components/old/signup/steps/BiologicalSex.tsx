@@ -4,15 +4,13 @@ import { SelectInput } from "../../../inputs/SelectInput";
 export const BiologicalSex = () => {
   return (
     <div>
-      <p className="mb-10 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
+      <p className="mb-10 mt-4 font-md font-bold text-lg text-brand-berry">
         Weight depends a lot on your hormones. Our program targets biological
         pathways to optimize weight management.
       </p>
 
       <div className="flex-flex-col mb-5">
-        <p className="font-mulish text-gray-900">
-          What sex were you assigned at birth?
-        </p>
+        <p className="text-gray-900">What sex were you assigned at birth?</p>
       </div>
 
       <div className="pb-2">
@@ -30,7 +28,7 @@ export const BiologicalSex = () => {
             },
           ]}
         />
-        <p className="font-mulish text-gray-500 text-sm mt-2">
+        <p className="text-gray-500 text-sm mt-2">
           This information is passed securely to the provider and is needed for
           them to provide care.
         </p>

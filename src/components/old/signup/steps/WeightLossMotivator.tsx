@@ -7,13 +7,13 @@ export const WeightLossMotivator = () => {
 
   return (
     <div>
-      <p className="mb-10 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
+      <p className="mb-10 mt-4 font-md font-bold text-lg text-brand-berry">
         Nice to meet you,{" "}
         <span className="capitalize">{value.split(" ")[0]}</span>!
       </p>
 
       <div className="flex-flex-col mb-5">
-        <p className="font-mulish text-gray-900">
+        <p className="text-gray-900">
           What is your primary weight loss motivator?
         </p>
       </div>

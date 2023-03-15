@@ -1,4 +1,4 @@
-import { useField } from "formik"
+import { useField } from "formik";
 
 export const FileBox = ({
   name,
@@ -6,15 +6,15 @@ export const FileBox = ({
   disabled = false,
   onChange,
 }: {
-  name: string
-  placeholder: string
-  disabled?: boolean
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  name: string;
+  placeholder: string;
+  disabled?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
-  const [, { value, error }, { setValue }] = useField(name)
+  const [, { value, error }, { setValue }] = useField(name);
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.files)
-    if (onChange) onChange(e)
+    setValue(e.target.files);
+    if (onChange) onChange(e);
   }
 
   return (
@@ -42,7 +42,7 @@ export const FileBox = ({
                 clip-rule="evenodd"
               />
             </svg>
-            <p className="pt-1 mx-2 text-center text-sm tracking-wider font-mulish text-gray-400 group-hover:text-gray-600">
+            <p className="pt-1 mx-2 text-center text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
               {value ? value[0].name : placeholder}
             </p>
           </div>
@@ -56,5 +56,5 @@ export const FileBox = ({
         </label>
       </div>
     </div>
-  )
-}
+  );
+};

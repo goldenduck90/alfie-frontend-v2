@@ -17,7 +17,7 @@ export const EmailCapture = () => {
 
   return (
     <div>
-      <p className="mb-10 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
+      <p className="mb-10 mt-4 font-md font-bold text-lg text-brand-berry">
         Great news, <span className="capitalize">{fullName.split(" ")[0]}</span>
         ! With Alfie, you could lose over {weightLossValue} in under 6 months.
         We&apos;ll design a customized plan for you that includes metabolic
@@ -25,7 +25,7 @@ export const EmailCapture = () => {
       </p>
 
       <div className="flex-flex-col mb-5">
-        <p className="font-mulish text-gray-900">
+        <p className="text-gray-900">
           Enter your email address and phone number to continue to your plan.
         </p>
       </div>
@@ -35,7 +35,7 @@ export const EmailCapture = () => {
           name="email"
           placeholder="My email address is..."
           type="email"
-          icon={<MailIcon className="h-5 w-5 text-indigo-800" />}
+          icon={<MailIcon className="h-5 w-5 text-brand-berry" />}
         />
       </div>
       <div className="pb-4">
@@ -43,7 +43,7 @@ export const EmailCapture = () => {
           name="phone"
           placeholder="My phone number is..."
           type="tel"
-          icon={<PhoneIcon className="h-5 w-5 text-indigo-800" />}
+          icon={<PhoneIcon className="h-5 w-5 text-brand-berry" />}
         />
       </div>
       <div>

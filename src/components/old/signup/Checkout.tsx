@@ -3,11 +3,10 @@ import * as Sentry from "@sentry/react";
 import { Wrapper } from "@src/components/layouts/Wrapper";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
-import { Button } from "../Button";
 import { FeatureSection } from "../FeatureSection";
 import { Loading } from "../Loading";
 import { Logo } from "../Logo";
-import { useParams } from "react-router-dom";
+import { Button } from "@src/components/ui/Button";
 
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
@@ -22,12 +21,11 @@ const getCheckoutQuery = gql`
 `;
 
 export const Checkout = () => {
-  const { id } = useParams();
   const router = useRouter();
-
+  const checkoutId = router.query.id;
   const { data, loading, error } = useQuery(getCheckoutQuery, {
     variables: {
-      id: id,
+      id: checkoutId,
     },
   });
 
@@ -55,13 +53,14 @@ export const Checkout = () => {
     router.push("/");
   }
 
-  const { checkout } = data.checkout;
+  // console.log();
+  const { checkout } = data?.checkout;
 
   return (
     <Wrapper>
       <Logo />
       <div className="flex flex-col px-6 md:px-8 pt-8 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 max-w-lg">
-        <p className="mb-4 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
+        <p className="mb-4 mt-4 font-md font-bold text-lg text-brand-berry">
           <span className="capitalize">{checkout.name.split(" ")[0]}</span>,
           you&apos;ll lose over {weightLossValue} in 6 months with Alfie, the
           virtual precision medicine clinic for people struggling with obesity.
@@ -69,29 +68,28 @@ export const Checkout = () => {
 
         <div className="flex flex-col md:flex-row justify-between md:items-center pb-4">
           <div className="flex flex-col mb-5 md:mb-0">
-            <p className="font-mulish text-gray-900 text-md font-bold mb-1">
-              Your plan
-            </p>
-            <span className="font-mulish text-indigo-800 text-2xl font-bold">
+            <p className="text-gray-900 text-md font-bold mb-1">Your plan</p>
+            <span className="text-brand-berry text-2xl font-bold">
               $120 monthly
             </span>
           </div>
           <div className="flex flex-col">
-            <p className="font-mulish text-gray-900 text-md font-bold mb-2">
+            <p className="text-gray-900 text-md font-bold mb-2">
               Ready to be the best you?
             </p>
             <Button
-              title="Checkout"
-              onPress={() => {
-                router.push(`/signup/checkout/${"id"}/address`);
+              onClick={() => {
+                router.push(`/signup/checkout/${checkoutId}/address`);
               }}
-              bold
-            />
+              size="medium"
+            >
+              Checkout
+            </Button>
           </div>
         </div>
 
         <div className="flex flex-col">
-          <h3 className="font-mulish text-xl text-gray-800 font-bold mb-8">
+          <h3 className="text-xl text-gray-800 font-bold mb-8">
             What&apos;s Included
           </h3>
           <FeatureSection
@@ -112,7 +110,7 @@ export const Checkout = () => {
           />
         </div>
         <div className="flex flex-col border-t border-gray-200">
-          <p className="font-mulish text-center text-xs text-gray-400 pt-6">
+          <p className="text-center text-xs text-gray-400 pt-6">
             * Your Alfie care team will work directly with your insurance to
             obtain approval for medications and minimize any applicable copays.
             Without commercial insurance approval, some medications, such as

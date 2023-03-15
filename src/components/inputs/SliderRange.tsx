@@ -34,7 +34,7 @@ export const SliderRange: FC<ISliderRange> = ({
         value={value}
         onChange={handleChange}
         onFocus={() => setError(undefined)}
-        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-indigo-800"
+        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-brand-berry"
       />
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
     </div>

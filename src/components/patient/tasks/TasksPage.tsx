@@ -115,7 +115,7 @@ export const TasksPage = () => {
               ))}
 
           {/* <div className="mt-2 md:mt-4 flex flex-col md:flex-row items-center justify-center md:justify-end">
-            <span className="text-gray-700 text-sm mb-1 md:text-md font-mulish font-medium md:hidden">
+            <span className="text-gray-700 text-sm mb-1 md:text-md  font-medium md:hidden">
               1 of {data?.userTasks?.total || 1}
             </span>
           </div> */}

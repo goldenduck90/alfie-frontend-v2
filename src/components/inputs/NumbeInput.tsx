@@ -61,7 +61,7 @@ export const NumberInput: FC<INumberInput> = ({
         <input
           ref={inputRef}
           type={type}
-          className="font-mulish w-full py-2 rounded-sm pl-4 pr-2 focus:outline-none appearance-none placeholder-gray-400"
+          className="w-full py-2 rounded-sm pl-4 pr-2 focus:outline-none appearance-none placeholder-gray-400"
           placeholder={placeholder}
           value={value}
           onFocus={(e) => {

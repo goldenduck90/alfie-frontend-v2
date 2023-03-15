@@ -39,7 +39,7 @@ export const UnControlledTextInput = ({
           placeholder={placeholder}
           onChange={handleChange}
           value={value}
-          className="font-mulish w-full px-3 py-2 focus:outline-none appearance-none rounded-sm border"
+          className=" w-full px-3 py-2 focus:outline-none appearance-none rounded-sm border"
         />
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
           {loading && <Loading size={20} />}

@@ -9,7 +9,7 @@ export const Ineligible = () => {
     <Wrapper>
       <Logo />
       <div className="flex flex-col px-1 sm:px-14 pt-10 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 max-w-lg">
-        <p className="font-mulish text-gray-900">{message}</p>
+        <p className=" text-gray-900">{message}</p>
       </div>
     </Wrapper>
   );

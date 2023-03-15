@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { Wrapper } from "../../layouts/Wrapper";
 import { IconInput } from "../../inputs/IconInput";
-import { Button } from "../Button";
 import { MailIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
@@ -10,6 +9,7 @@ import { parseError } from "../../../utils/parseError";
 import { getStateByAbbreviation } from "../../../utils/states";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { Button } from "@src/components/ui/Button";
 
 const subscribeEmailMutation = gql`
   mutation SubscribeEmail($input: SubscribeEmailInput!) {
@@ -75,12 +75,7 @@ export function WaitListForm() {
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <Image
-          src={require("/assets/logo.png")}
-          alt="Alfie"
-          height={60}
-          width={144}
-        />
+        <Image src={"/assets/logo.png"} alt="Alfie" height={60} width={144} />
       </div>
       <FormikProvider value={subscribeEmailForm}>
         <div className="flex flex-col px-8 sm:px-14 pt-12 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
@@ -95,10 +90,10 @@ export function WaitListForm() {
             </div>
           )}
           <div className="flex flex-col">
-            <p className="mb-2 font-md font-mulish font-bold text-lg text-indigo-800">
-              Unfortunetly, Alfie is not available in {state} yet.
+            <p className="mb-2 font-md font-bold text-lg text-brand-berry">
+              Unfortunately, Alfie is not available in {state} yet.
             </p>
-            <p className="font-mulish text-md text-gray-900 pt-6">
+            <p className="text-md text-gray-900 pt-6">
               Enter your email below and we will notify you as soon as we launch
               in your state.
             </p>
@@ -109,21 +104,22 @@ export function WaitListForm() {
               placeholder="Email address"
               type="email"
               disabled={isSubmitting}
-              icon={<MailIcon className="h-5 w-5 text-indigo-800" />}
+              icon={<MailIcon className="h-5 w-5 text-brand-berry" />}
             />
           </div>
           <div className="pb-3 flex flex-col items-center">
             <Button
-              title="Join Waitlist"
-              onPress={submitForm}
+              onClick={submitForm}
               disabled={isSubmitting}
-              loading={isSubmitting}
               fullWidth
-            />
+              size="medium"
+            >
+              Join Waitlist
+            </Button>
             <div className="pt-3">
               <a
                 href="https://joinalfie.com"
-                className="font-mulish text-sm text-indigo-800 hover:text-indigo-600"
+                className="text-sm text-brand-berry hover:text-brand-berry-tint-1"
               >
                 Return to joinalfie.com
               </a>

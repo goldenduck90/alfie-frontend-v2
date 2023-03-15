@@ -38,8 +38,9 @@ export const SelectInput: FC<ISelectInput> = ({
   return (
     <>
       <div
-        className={`flex flex-row w-full rounded-lg border ${error ? "border-red-500" : "border-gray-300"
-          }`}
+        className={`flex flex-row w-full rounded-lg border ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
       >
         <select
           ref={selectRef}
@@ -51,16 +52,20 @@ export const SelectInput: FC<ISelectInput> = ({
         >
           <option value="">{placeholder}</option>
           {options.map((option) => (
-            <option key={option.value} value={option.value} selected={option?.selected ? true : false}>
+            <option
+              key={option.value}
+              value={option.value}
+              selected={option?.selected ? true : false}
+            >
               {option.label || option.value}
             </option>
           ))}
         </select>
         <button
-          className="flex items-center px-2 text-indigo-800"
+          className="flex items-center px-2 text-brand-berry"
           onClick={() => selectRef.current?.focus()}
         >
-          <ChevronDownIcon className="w-6 h-6 text-indigo-800" />
+          <ChevronDownIcon className="w-6 h-6 text-brand-berry" />
         </button>
       </div>
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}

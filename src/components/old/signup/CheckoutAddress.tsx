@@ -1,8 +1,6 @@
 import React from "react";
 import { Wrapper } from "../../layouts/Wrapper";
 import { gql, useMutation } from "@apollo/client";
-// import { useNavigate, useParams } from "react-router";
-import { Button } from "../Button";
 import { Checkbox } from "../../inputs/Checkbox";
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
@@ -12,6 +10,8 @@ import { TextInput } from "../../inputs/TextInput";
 import * as Yup from "yup";
 import { parseError } from "../../../utils/parseError";
 import { Logo } from "../Logo";
+import { Button } from "@src/components/ui/Button";
+import { useRouter } from "next/router";
 
 const createOrUpdateStripeSessionMutation = gql`
   mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
@@ -24,15 +24,15 @@ const createOrUpdateStripeSessionMutation = gql`
 `;
 
 export const CheckoutAddress = () => {
-  // const { id } = useParams();
-  // const navigate = useNavigate();
-  const [createOrUpdateStripeSession] = useMutation(
+  const router = useRouter();
+  const { id } = router.query;
+  const [createOrUpdateStripeSession, data] = useMutation(
     createOrUpdateStripeSessionMutation
   );
 
   const form = useFormik({
     initialValues: {
-      _id: "",
+      _id: id,
       shipping: {
         line1: "",
         line2: "",
@@ -69,7 +69,7 @@ export const CheckoutAddress = () => {
 
         const { checkout } = data.createOrUpdateStripeSession;
         resetForm();
-        // navigate(`/signup/checkout/${checkout._id}/payment`);
+        router.push(`/signup/checkout/${checkout._id}/payment`);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
@@ -77,11 +77,11 @@ export const CheckoutAddress = () => {
     },
   });
 
-  // if (!id) {
-  //   navigate("/signup");
-  // }
+  if (!id) {
+    router.push("/signup");
+  }
 
-  // const { checkout, paymentLink } = data.checkout
+  // const { checkout, paymentLink } = data.checkout;
   const { submitForm, isSubmitting } = form;
 
   return (
@@ -89,10 +89,10 @@ export const CheckoutAddress = () => {
       <Logo />
       <FormikProvider value={form}>
         <div className="flex flex-col px-6 md:px-8 pt-8 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 max-w-lg">
-          <h1 className="pb-0 mb-0 mt-2 font-md font-mulish font-bold text-2xl text-indigo-800">
+          <h1 className="pb-0 mb-0 mt-2 font-md font-bold text-2xl text-brand-berry">
             Checkout
           </h1>
-          <p className="font-mulish text-gray-900">
+          <p className="text-gray-900">
             Enter your address below so we can ship your welcome kit to you.
           </p>
 
@@ -170,14 +170,14 @@ export const CheckoutAddress = () => {
             <div className="pt-4 flex flex-col items-center">
               <Button
                 fullWidth
-                title="Payment"
-                onPress={submitForm}
+                onClick={submitForm}
                 disabled={isSubmitting}
-                loading={isSubmitting}
-                spinnerMl={3}
-                spinnerSize={16}
-                buttonRight={<ArrowRightIcon className="w-4 h-4 ml-3" />}
-              />
+                icon={<ArrowRightIcon className="w-4 h-4 ml-3" />}
+                iconSide="right"
+                size="medium"
+              >
+                Payment
+              </Button>
             </div>
           </div>
           {/* 

@@ -1,6 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider } from "formik";
-import { Button } from "../Button";
 import { Wrapper } from "../../layouts/Wrapper";
 import { BiologicalSex } from "./steps/BiologicalSex";
 import { BMI } from "./steps/BMI";
@@ -20,6 +19,7 @@ import { parseError } from "../../../utils/parseError";
 import { Gender } from "../../../graphql/generated";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Button } from "@src/components/ui/Button";
 
 const TOTAL_STEPS = 6;
 
@@ -248,9 +248,9 @@ export const PreCheckout = () => {
       <Wrapper>
         <Logo />
         <FormikProvider value={preCheckoutForm}>
-          <div className="flex flex-col px-8 sm:px-14 pt-10 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 max-w-lg">
+          <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
             <div className="flex flex-col">
-              <span className="text-base font-mulish font-light font-sm text-gray-400">
+              <span className="text-base font-light font-sm text-gray-400">
                 Step {currentStepIndex + 1} of {TOTAL_STEPS + 1}
               </span>
             </div>
@@ -258,27 +258,30 @@ export const PreCheckout = () => {
             <div className="flex flex-col">{renderComponent()}</div>
             <div className="pt-5 md:pt-10 pb-3 flex flex-row justify-between">
               <Button
-                title="Back"
-                onPress={handlePrev}
+                onClick={handlePrev}
                 disabled={isPrevDisabled}
-                buttonLeft={<ArrowLeftIcon className="w-4 h-4 mr-3" />}
-              />
+                icon={<ArrowLeftIcon className="w-4 h-4 mr-3" />}
+                iconSide="left"
+                size="medium"
+              >
+                Back
+              </Button>
               <Button
-                title={isLastStep ? "Continue" : "Next"}
-                onPress={handleNext}
+                onClick={handleNext}
                 disabled={isSubmitting || isNextDisabled}
-                loading={isSubmitting}
-                spinnerMl={3}
-                spinnerSize={16}
-                buttonRight={<ArrowRightIcon className="w-4 h-4 ml-3" />}
-              />
+                icon={<ArrowRightIcon className="w-4 h-4 ml-3" />}
+                iconSide="right"
+                size="medium"
+              >
+                {isLastStep ? "Continue" : "Next"}
+              </Button>
             </div>
             <div className="flex flex-col border-t border-gray-200">
-              <p className="font-mulish text-center text-sm text-gray-400 pt-6">
+              <p className="text-center text-sm text-gray-400 pt-6">
                 Already have an account?{" "}
                 <Link
                   href="/login"
-                  className="text-indigo-800 hover:text-indigo-600"
+                  className="text-brand-berry hover:text-brand-berry-tint-1"
                 >
                   Click here to login.
                 </Link>

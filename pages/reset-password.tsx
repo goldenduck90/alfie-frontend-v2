@@ -102,7 +102,7 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
             </div>
           )}
           <div className="flex flex-col">
-            <p className="font-mulish text-sm text-gray-400 pt-6">
+            <p className="text-sm text-gray-400 pt-6">
               Please enter a new password below.
             </p>
           </div>
@@ -112,7 +112,7 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
               placeholder="Password"
               type="password"
               disabled={isSubmitting}
-              icon={<LockClosedIcon className="h-5 w-5 text-indigo-800" />}
+              icon={<LockClosedIcon className="h-5 w-5 text-brand-berry" />}
             />
           </div>
           <div className="pb-2">
@@ -121,7 +121,7 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
               placeholder="Confirm Password"
               type="password"
               disabled={isSubmitting}
-              icon={<LockClosedIcon className="h-5 w-5 text-indigo-800" />}
+              icon={<LockClosedIcon className="h-5 w-5 text-brand-berry" />}
             />
           </div>
           <div className="pb-3 flex flex-col items-center">
@@ -134,18 +134,18 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
             <div className="pt-3">
               <Link
                 href="/login"
-                className="font-mulish text-sm text-indigo-800 hover:text-indigo-600"
+                className="text-sm text-brand-berry hover:text-brand-berry-tint-1"
               >
                 Login
               </Link>
             </div>
           </div>
           <div className="flex flex-col border-t border-gray-200">
-            <p className="font-mulish text-center text-sm text-gray-400 pt-6">
+            <p className="text-center text-sm text-gray-400 pt-6">
               Haven&apos;t signed up yet?{" "}
               <Link
                 href="/signup"
-                className="text-indigo-800 hover:text-indigo-600"
+                className="text-brand-berry hover:text-brand-berry-tint-1"
               >
                 Click here to see if you are eligible for Alfie.
               </Link>

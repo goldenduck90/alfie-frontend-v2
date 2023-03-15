@@ -22,7 +22,7 @@ export const ChannelListHeader = ({
   return (
     <div className="bg-white z-[1] absolute rounded-tl-xl shadow-sm w-full text-left px-5 py-4 font-bold flex justify-between border-r">
       <input
-        className="font-mulish w-full px-3 py-1 focus:outline-none appearance-none border rounded-2xl border-1 font-normal"
+        className="w-full px-3 py-1 focus:outline-none appearance-none border rounded-2xl border-1 font-normal"
         onChange={(e) => {
           setValue(e.target.value);
         }}

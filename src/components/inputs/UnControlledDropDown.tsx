@@ -9,7 +9,7 @@ const UnControlledDropDown = ({
     <select
       id="location"
       name="location"
-      className="font-mulish w-full px-3 py-2 focus:outline-none appearance-none rounded-sm border"
+      className=" w-full px-3 py-2 focus:outline-none appearance-none rounded-sm border"
       defaultValue={"monday"}
       onChange={(e) => setSelected(e.target.value)}
       value={selectedItem}

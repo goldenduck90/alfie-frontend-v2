@@ -19,16 +19,14 @@ export const Checkbox = ({
   return (
     <div className="flex flex-row items-center space-y-1 form-check">
       <input
-        className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-indigo-800 checked:border-indigo-800 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer"
+        className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer"
         type="checkbox"
         value={value}
         checked={value}
         disabled={disabled}
         onChange={handleChange}
       />
-      <label className="font-mulish form-check-label text-gray-800">
-        {label}
-      </label>
+      <label className="form-check-label text-gray-800">{label}</label>
     </div>
   );
 };
@@ -54,13 +52,11 @@ export function CheckboxHook({
     <div className="flex flex-row items-center space-y-1 form-check">
       <input
         {...field}
-        className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-indigo-800 checked:border-indigo-800 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer"
+        className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer"
         type="checkbox"
         disabled={disabled}
       />
-      <label className="font-mulish form-check-label text-gray-800">
-        {label}
-      </label>
+      <label className="form-check-label text-gray-800">{label}</label>
     </div>
   );
 }

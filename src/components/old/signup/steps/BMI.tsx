@@ -11,13 +11,13 @@ export const BMI = () => {
 
   return (
     <div>
-      <p className="mb-10 mt-4 font-md font-mulish font-bold text-lg text-indigo-800">
+      <p className="mb-10 mt-4 font-md font-bold text-lg text-brand-berry">
         Great work, {fullName.split(" ")[0]}! Now lets calculate your BMI, one
         of the many ways we analyze your specific metabolic profile.
       </p>
 
       <div className="flex-flex-col mb-5">
-        <p className="font-mulish text-gray-900">How tall are you?</p>
+        <p className="text-gray-900">How tall are you?</p>
       </div>
 
       <div className="pb-2">
@@ -50,7 +50,7 @@ export const BMI = () => {
       </div>
 
       <div className="flex-flex-col mt-6 mb-5">
-        <p className="font-mulish text-gray-900">How much do you weight?</p>
+        <p className="text-gray-900">How much do you weight?</p>
       </div>
 
       <div className="pb-2">
