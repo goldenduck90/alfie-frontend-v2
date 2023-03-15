@@ -26,7 +26,7 @@ type LoginForm = z.infer<typeof LoginFormSchema>;
 
 const Login = () => {
   const { setUser } = useCurrentUserStore();
-  const { mutateAsync } = useLoginMutation();
+  const { mutateAsync, isLoading } = useLoginMutation();
   const router = useRouter();
   const { control, handleSubmit, reset, setError, formState } =
     useForm<LoginForm>({
@@ -48,8 +48,8 @@ const Login = () => {
         });
         const user = result?.user as User;
         setUser(user);
+        await router.push("/dashboard");
         reset();
-        router.push("/dashboard");
       } catch (err) {
         const msg = parseError(err);
         /**
@@ -88,7 +88,7 @@ const Login = () => {
             name="email"
             placeholder="Email address"
             type="email"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLoading}
             leftIcon={<UserIcon className="h-5 w-5 text-brand-berry" />}
             inputSize="medium"
           />
@@ -99,7 +99,7 @@ const Login = () => {
             name="password"
             placeholder="Password"
             type="password"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLoading}
             leftIcon={<LockClosedIcon className="h-5 w-5 text-brand-berry" />}
             inputSize="medium"
           />
@@ -109,13 +109,13 @@ const Login = () => {
             control={control}
             name="remember"
             label="Remember me"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLoading}
           />
         </div>
         <div className="pb-3 flex flex-col items-center">
           <Button
             onClick={handleSubmit(onSubmission)}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLoading}
             fullWidth
             size="medium"
           >
@@ -124,7 +124,7 @@ const Login = () => {
           <div className="pt-3">
             <Link
               href="/forgot-password"
-              className="font-mulish text-sm text-brand-berry hover:text-brand-berry-tint-1"
+              className="text-sm text-brand-berry hover:text-brand-berry-tint-1"
             >
               Forgot Password
             </Link>

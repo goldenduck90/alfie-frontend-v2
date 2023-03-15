@@ -1,13 +1,17 @@
 import React from "react";
 import { gql, useMutation } from "@apollo/client";
 import { Wrapper } from "../src/components/layouts/Wrapper";
-import { IconInput } from "../src/components/inputs/IconInput";
 import { Button } from "@src/components/ui/Button";
 import { UserIcon } from "@heroicons/react/solid";
-import { FormikProvider, useFormik } from "formik";
-import * as Yup from "yup";
+import Image from "next/image";
 import { parseError } from "../src/utils/parseError";
 import Link from "next/link";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { HookTextField } from "@src/components/ui/hookComponents/HookTextField";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import { randomId } from "@src/utils/randomId";
 
 const forgotPasswordMutation = gql`
   mutation ForgotPassword($input: ForgotPasswordInput!) {
@@ -17,24 +21,26 @@ const forgotPasswordMutation = gql`
   }
 `;
 
-const ForgotPasswordSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Please enter a valid email address.")
-    .required("Please enter a valid email address."),
+const ForgotPasswordSchema = z.object({
+  email: z.string().email().min(1, "Please enter a valid email address."),
 });
 
-const ForgotPassword = () => {
-  const [forgotPassword] = useMutation(forgotPasswordMutation);
+type ForgotPasswordForm = z.infer<typeof ForgotPasswordSchema>;
 
-  const forgotForm = useFormik({
-    initialValues: {
-      email: "",
-    },
-    validateOnChange: false,
-    validationSchema: ForgotPasswordSchema,
-    onSubmit: async (values, { setErrors, setStatus, resetForm }) => {
-      const { email } = values;
+function ForgotPassword() {
+  const { addNotification } = useNotificationStore();
+  const [forgotPassword, { loading }] = useMutation(forgotPasswordMutation);
+  const { control, handleSubmit, reset, setError, formState } =
+    useForm<ForgotPasswordForm>({
+      defaultValues: {
+        email: "",
+      },
+      resolver: zodResolver(ForgotPasswordSchema),
+    });
 
+  const onSubmission = React.useCallback(
+    async (form: ForgotPasswordForm) => {
+      const { email } = form;
       try {
         const { data } = await forgotPassword({
           variables: {
@@ -43,80 +49,85 @@ const ForgotPassword = () => {
             },
           },
         });
-
-        resetForm();
-        setStatus({ success: data.forgotPassword.message });
+        addNotification({
+          type: "success",
+          description: data?.forgotPassword?.message,
+          id: randomId(),
+          title: "Check your email",
+        });
+        reset();
       } catch (err) {
         const msg = parseError(err);
-        setStatus({ error: msg });
-        setErrors({
-          email: " ",
+        setError("root.serverError", {
+          message: msg,
+        });
+        setError("email", {
+          message: "",
         });
       }
     },
-  });
-
-  const { isSubmitting, submitForm, status } = forgotForm;
+    [setError]
+  );
+  const isSubmitting = formState.isSubmitting;
 
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <img src={"/assets/logo.png"} alt="Alfie" className="w-36" />
+        <Image src={"/assets/logo.png"} height={58} width={144} alt="Alfie" />
       </div>
-      <FormikProvider value={forgotForm}>
-        <div className="flex flex-col px-8 sm:px-14 pt-8 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
-          {status?.error && (
-            <div className="text-red-500 text-sm text-center">
-              {status.error}
-            </div>
-          )}
-          {status?.success && (
-            <div className="text-green-500 text-sm text-center">
-              {status.success}
-            </div>
-          )}
-          <div className="flex flex-col">
-            <p className="font-mulish text-sm text-gray-400 pt-6">
-              Please enter your email address below to reset your password.
-            </p>
+      <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
+        {!!formState?.errors?.root?.serverError && (
+          <div className="text-red-500 text-sm text-center">
+            {formState?.errors?.root?.serverError?.message}
           </div>
-          <div className="pb-2">
-            <IconInput
-              name="email"
-              placeholder="Email address"
-              type="email"
-              disabled={isSubmitting}
-              icon={<UserIcon className="h-5 w-5 text-indigo-800" />}
-            />
-          </div>
-          <div className="pb-3 flex flex-col items-center">
-            <Button onClick={submitForm} disabled={isSubmitting} fullWidth>
-              Reset Password
-            </Button>
-            <div className="pt-3">
-              <Link
-                href="/login"
-                className="font-mulish text-sm text-indigo-800 hover:text-indigo-600"
-              >
-                Login
-              </Link>
-            </div>
-          </div>
-          <div className="flex flex-col border-t border-gray-200">
-            <p className="font-mulish text-center text-sm text-gray-400 pt-6">
-              Haven&apos;t signed up yet?{" "}
-              <Link
-                href="/signup"
-                className="text-indigo-800 hover:text-indigo-600"
-              >
-                Click here to see if you are eligible for Alfie.
-              </Link>
-            </p>
-          </div>
+        )}
+        <div className="flex flex-col">
+          <p className="text-sm text-gray-400">
+            Please enter your email address below to reset your password.
+          </p>
         </div>
-      </FormikProvider>
+        <div className="pb-2">
+          <HookTextField
+            control={control}
+            name="email"
+            placeholder="Email address"
+            type="email"
+            disabled={isSubmitting}
+            leftIcon={<UserIcon className="h-5 w-5 text-brand-berry" />}
+            inputSize="medium"
+          />
+        </div>
+        <div className="pb-3 flex flex-col items-center gap-3">
+          <Button
+            onClick={handleSubmit(onSubmission)}
+            disabled={isSubmitting || loading}
+            fullWidth
+            size="medium"
+          >
+            Reset Password
+          </Button>
+          <Link
+            href="/login"
+            className="text-brand-berry hover:text-brand-berry-tint-1 text-sm"
+          >
+            Login
+          </Link>
+        </div>
+        <div className="flex flex-col border-t border-gray-200">
+          <p className="text-center text-sm text-gray-400 pt-6">
+            Haven&apos;t signed up yet?{" "}
+            <Link
+              href="/signup"
+              className="text-brand-berry hover:text-brand-berry-tint-1"
+            >
+              Click here to see if you are eligible for Alfie.
+            </Link>
+          </p>
+        </div>
+      </div>
     </Wrapper>
   );
-};
+}
 
+ForgotPassword.isAuthorized = false;
 export default ForgotPassword;
