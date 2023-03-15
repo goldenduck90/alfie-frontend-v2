@@ -59,7 +59,7 @@ export const Checkout = () => {
   return (
     <Wrapper>
       <Logo />
-      <div className="flex flex-col px-6 md:px-8 pt-8 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 max-w-lg">
+      <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         <p className="mb-4 mt-4 font-md font-bold text-lg text-brand-berry">
           <span className="capitalize">{checkout.name.split(" ")[0]}</span>,
           you&apos;ll lose over {weightLossValue} in 6 months with Alfie, the

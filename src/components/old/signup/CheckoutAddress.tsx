@@ -88,7 +88,7 @@ export const CheckoutAddress = () => {
     <Wrapper>
       <Logo />
       <FormikProvider value={form}>
-        <div className="flex flex-col px-6 md:px-8 pt-8 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 max-w-lg">
+        <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
           <h1 className="pb-0 mb-0 mt-2 font-md font-bold text-2xl text-brand-berry">
             Checkout
           </h1>

@@ -2,11 +2,10 @@ import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
 import { Loading } from "../Loading";
 
-import { CheckoutPayment } from "./CheckoutPayment";
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
     checkout(id: $id) {
@@ -20,11 +19,11 @@ const getCheckoutQuery = gql`
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(process.env.STRIPE_SECRET_KEY || "");
 
-export const StripeWrapper = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+export const StripeWrapper = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+  const id = router.query.id;
 
   const {
     data,
@@ -48,13 +47,13 @@ export const StripeWrapper = () => {
   }, [error]);
 
   if (!id) {
-    navigate("/signup");
+    router.push("/signup");
   }
 
   if (fetching) return <Loading />;
 
   if (error) {
-    navigate("/");
+    router.push("/");
   }
 
   const { stripeClientSecret } = data.checkout.checkout;
@@ -66,7 +65,7 @@ export const StripeWrapper = () => {
         clientSecret: stripeClientSecret,
       }}
     >
-      <CheckoutPayment />
+      {children}
     </Elements>
   );
 };
