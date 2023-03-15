@@ -34,6 +34,29 @@ body {
   @apply notification-style bg-yellow-500;
 }
 
+/* sign up date picker */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+
+input::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.sendbird-badge .sendbird-badge__text {
+  margin: -3px 7px;
+}
+/* sign up date picker */
+
 .react-calendar__tile--active {
   background: rgb(209 213 219) !important;
 }
