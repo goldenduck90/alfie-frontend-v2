@@ -2,16 +2,6 @@
 
 name: (DEV) Build and Deploy
 
-env:
-  APP_NAME:	frontend-v2
-  S3_BUCKET: elasticbeanstalk-us-east-1-322311686188
-  AWS_REGION: us-east-1
-  AWS_PLATFORM: Docker
-  PIPELINE_ID: ${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}
-  NEXT_PUBLIC_SENDBIRD_APP_ID: 56D883B9-B30F-428B-8B7A-31184E513DF4
-  REACT_APP_STRIPE_URL: https://api.stripe.com/v1
-  REACT_APP_GRAPHQL_API: http://develop-alfie-backend.us-east-1.elasticbeanstalk.com/graphql
-  GENERATE_SOURCEMAP: false
 on:
   push:
     branches:
