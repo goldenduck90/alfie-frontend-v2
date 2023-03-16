@@ -219,7 +219,6 @@ export const PreCheckout = () => {
             .required("Please enter your email address."),
         }),
         beforeNext({ email, textOptIn, phone }, _, currentStepIndex) {
-          console.log(textOptIn, "textOptIn");
           localStorage.setItem("email", email);
           localStorage.setItem("textOptIn", textOptIn);
           localStorage.setItem("phone", phone);
@@ -241,7 +240,6 @@ export const PreCheckout = () => {
     isLastStep,
   } = preCheckoutForm;
 
-  console.log(isNextDisabled);
   return (
     <>
       <ProgressBar progress={(currentStepIndex / TOTAL_STEPS) * 100} />

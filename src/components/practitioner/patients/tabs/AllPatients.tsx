@@ -175,7 +175,7 @@ export function AllPatientsTable({
               table?.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="cursor-pointer focus:ring-1  "
+                  className="cursor-pointer focus:bg-gray-50 hover:bg-gray-50"
                   tabIndex={0}
                   onClick={() =>
                     router.push(`/dashboard/patients/${row.getValue("_id")}`)

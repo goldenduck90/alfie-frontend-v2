@@ -8,7 +8,6 @@ export function EmbeddedStripeView() {
   const { user } = useCurrentUserStore();
 
   const fetchClientSecret = async () => {
-    console.log(user?.stripeSubscriptionId, user?.stripeCustomerId);
     // Fetch the AccountSession client secret
     const response = await fetch("/api/stripe_session", {
       method: "POST",

@@ -59,8 +59,6 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
       return percentile;
     };
 
-    console.log(getPercentile());
-
     if (!organizedClassifications[date]) {
       organizedClassifications[date] = {
         ...initialClassification,
