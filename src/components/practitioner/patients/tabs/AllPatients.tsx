@@ -38,7 +38,7 @@ export function AllPatientsTabs() {
       onValueChange={setActiveTab}
       className="relative flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-xl px-4 pb-4"
     >
-      <div className="flex items-center justify-between flex-wrap gap-y-4 sticky top-0 p-4 -mx-4 bg-white">
+      <div className="flex items-center justify-between flex-wrap gap-y-4 sticky top-0 p-4 -mx-4 bg-white rounded-xl">
         <Tabs.List className="flex gap-x-3">
           <Tabs.Trigger value="all">
             <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
@@ -175,10 +175,16 @@ export function AllPatientsTable({
               table?.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="cursor-pointer"
+                  className="cursor-pointer focus:ring-1  "
+                  tabIndex={0}
                   onClick={() =>
                     router.push(`/dashboard/patients/${row.getValue("_id")}`)
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      router.push(`/dashboard/patients/${row.getValue("_id")}`);
+                    }
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="py-4 ">
@@ -228,11 +234,11 @@ const columns = [
     header: undefined,
     cell: (info) => (
       <div className="px-2">
-        <Link href={`/dashboard/patients/${info.getValue()}`}>
-          <div className="p-1 border rounded-md border-gray-200 max-w-fit">
-            <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-          </div>
-        </Link>
+        {/* <Link href={`/dashboard/patients/${info.getValue()}`}> */}
+        <div className="p-1 border rounded-md border-gray-200 max-w-fit">
+          <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+        </div>
+        {/* </Link> */}
       </div>
     ),
   }),

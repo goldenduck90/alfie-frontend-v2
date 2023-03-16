@@ -47,9 +47,19 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
       Empath: "0",
     };
 
-    const percentile = !!classification?.displayPercentile
-      ? classification?.displayPercentile
-      : classification?.calculatedPercentile || classification?.percentile;
+    //? calculated/ display/ then percentile
+    const getPercentile = () => {
+      const percentile = !!classification?.displayPercentile
+        ? classification?.displayPercentile
+        : classification?.calculatedPercentile || classification?.percentile;
+
+      if (typeof percentile === "number") {
+        return Math.round(percentile);
+      }
+      return percentile;
+    };
+
+    console.log(getPercentile());
 
     if (!organizedClassifications[date]) {
       organizedClassifications[date] = {
@@ -59,7 +69,7 @@ export function MetabolicChart({ chartData }: { chartData: Classification[] }) {
     }
 
     (organizedClassifications as any)[date][classification?.classification] =
-      percentile;
+      getPercentile();
   });
 
   const data = Object.values(organizedClassifications).sort((a, b) =>
