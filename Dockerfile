@@ -3,7 +3,11 @@ FROM node:alpine
 RUN mkdir -p /usr/src/app
 ENV PORT 3000
 
-ENV NEXT_PUBLIC_SENDBIRD_APP_ID 56D883B9-B30F-428B-8B7A-31184E513DF4
+ARG sendbird_app_id
+ENV NEXT_PUBLIC_SENDBIRD_APP_ID=$sendbird_app_id
+
+ARG stripe_publishable_key
+ENV REACT_APP_STRIPE_PUBLISHABLE_KEY=$stripe_publishable_key
 
 WORKDIR /usr/src/app
 
