@@ -7,7 +7,7 @@ ARG sendbird_app_id
 ENV NEXT_PUBLIC_SENDBIRD_APP_ID=$sendbird_app_id
 
 ARG stripe_publishable_key
-ENV REACT_APP_STRIPE_PUBLISHABLE_KEY=$stripe_publishable_key
+ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$stripe_publishable_key
 
 WORKDIR /usr/src/app
 

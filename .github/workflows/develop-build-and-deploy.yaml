@@ -39,6 +39,6 @@ jobs:
         ECR_REPOSITORY: "alfie-frontend-v2"
         IMAGE_TAG: develop
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . --build-arg sendbird_app_id=${{ vars.NEXT_PUBLIC_SENDBIRD_APP_ID }} stripe_publishable_key=${{ vars.NEXT_PUBLIC_STRIP_PUBLISHABLE_KEY }}
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . --build-arg sendbird_app_id=${{ vars.NEXT_PUBLIC_SENDBIRD_APP_ID }} stripe_publishable_key=${{ vars.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
