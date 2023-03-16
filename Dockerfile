@@ -9,6 +9,9 @@ ENV NEXT_PUBLIC_SENDBIRD_APP_ID=$sendbird_app_id
 ARG stripe_publishable_key
 ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$stripe_publishable_key
 
+ARG stripe_success_url
+ENV NEXT_PUBLIC_STRIPE_SUCCESS_URL=$stripe_success_url
+
 WORKDIR /usr/src/app
 
 COPY package.json /usr/src/app
