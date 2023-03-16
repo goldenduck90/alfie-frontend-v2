@@ -1046,13 +1046,6 @@ export type Weight = {
   value: Scalars['Float'];
 };
 
-export type RequestSignedUrlsMutationVariables = Exact<{
-  requests: Array<SignedUrlRequest> | SignedUrlRequest;
-}>;
-
-
-export type RequestSignedUrlsMutation = { __typename?: 'Mutation', requestSignedUrls: Array<{ __typename?: 'SignedUrlResponse', url: string, key: string }> };
-
 export type UserTasksQueryQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
   offset?: InputMaybe<Scalars['Float']>;
@@ -1063,40 +1056,6 @@ export type UserTasksQueryQueryVariables = Exact<{
 export type UserTasksQueryQuery = { __typename?: 'Query', userTasks: { __typename?: 'UserTaskList', total: number, userTasks?: Array<{ __typename?: 'UserTask', _id: string, dueAt?: any | null, pastDue?: boolean | null, createdAt?: any | null, task?: { __typename?: 'Task', _id: string, name?: string | null, type: TaskType } | null }> | null } };
 
 
-export const RequestSignedUrlsDocument = gql`
-    mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
-  requestSignedUrls(requests: $requests) {
-    url
-    key
-  }
-}
-    `;
-export type RequestSignedUrlsMutationFn = Apollo.MutationFunction<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;
-
-/**
- * __useRequestSignedUrlsMutation__
- *
- * To run a mutation, you first call `useRequestSignedUrlsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRequestSignedUrlsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [requestSignedUrlsMutation, { data, loading, error }] = useRequestSignedUrlsMutation({
- *   variables: {
- *      requests: // value for 'requests'
- *   },
- * });
- */
-export function useRequestSignedUrlsMutation(baseOptions?: Apollo.MutationHookOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>(RequestSignedUrlsDocument, options);
-      }
-export type RequestSignedUrlsMutationHookResult = ReturnType<typeof useRequestSignedUrlsMutation>;
-export type RequestSignedUrlsMutationResult = Apollo.MutationResult<RequestSignedUrlsMutation>;
-export type RequestSignedUrlsMutationOptions = Apollo.BaseMutationOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;
 export const UserTasksQueryDocument = gql`
     query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
   userTasks(input: {limit: $limit, offset: $offset, completed: $completed}) {
