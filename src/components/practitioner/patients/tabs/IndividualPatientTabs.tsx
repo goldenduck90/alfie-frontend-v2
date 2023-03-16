@@ -60,6 +60,7 @@ const GetUserById = gql`
       bmi
       classifications {
         classification
+        calculatedPercentile
         percentile
         displayPercentile
         date
@@ -67,10 +68,6 @@ const GetUserById = gql`
     }
   }
 `;
-// Todo: put on classifications
-// calculatedPercentile
-// calculated30minsPercent
-// calculated1hourPercent
 
 const getTasksQuery = gql`
   query GetAllUserTasksByUser($userId: String!) {

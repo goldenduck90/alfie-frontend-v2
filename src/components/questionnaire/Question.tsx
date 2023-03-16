@@ -201,8 +201,6 @@ function Questionnaire({
       answers,
     };
 
-    console.log("Presubmission", input);
-
     // Clear Stored Form
     boundForm.persist.clearStorage();
   }
@@ -261,7 +259,6 @@ function Questionnaire({
                   /**
                    * This should never happen
                    */
-                  console.log("Zod", { error });
                 }
               } else {
                 handleSubmit(onSubmitForm)();

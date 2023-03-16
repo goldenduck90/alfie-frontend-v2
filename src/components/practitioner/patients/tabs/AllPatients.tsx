@@ -38,7 +38,7 @@ export function AllPatientsTabs() {
       onValueChange={setActiveTab}
       className="relative flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white shadow-md rounded-xl px-4 pb-4"
     >
-      <div className="flex items-center justify-between flex-wrap gap-y-4 sticky top-0 p-4 -mx-4 bg-white">
+      <div className="flex items-center justify-between flex-wrap gap-y-4 sticky top-0 p-4 -mx-4 bg-white rounded-xl">
         <Tabs.List className="flex gap-x-3">
           <Tabs.Trigger value="all">
             <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
@@ -83,6 +83,7 @@ export function AllPatientsTable({
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
 }) {
+  const router = useRouter();
   const { user } = useCurrentUserStore();
   const { data, error, loading } = useGetAllPatientsByProvider();
   const adminUsers = useGetAllPatientsByAdmins();
@@ -109,7 +110,7 @@ export function AllPatientsTable({
         <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
           <thead>
             {table?.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-gray-50">
+              <tr key={headerGroup.id} className="bg-gray-50 cur">
                 {headerGroup.headers.map((header) => (
                   <th key={header.id} className="">
                     <div className="min-w-max">
@@ -126,54 +127,65 @@ export function AllPatientsTable({
             ))}
           </thead>
           <tbody className="divide-y divide-gray-300 ">
-            {loading ||
-              (adminUsers.loading && (
-                <>
-                  {table?.getHeaderGroups().map((headerGroup, i) => {
-                    return Array(9)
-                      .fill("")
-                      .map((_, j) => (
-                        <tr
-                          key={j}
-                          className={`border-0 border-b-[1px]
+            {(loading || adminUsers.loading) && (
+              <>
+                {table?.getHeaderGroups().map((headerGroup, i) => {
+                  return Array(9)
+                    .fill("")
+                    .map((_, j) => (
+                      <tr
+                        key={j}
+                        className={`border-0 border-b-[1px]
                   ${i == 0 ? "border-t-[1px]" : ""}
                 `}
-                        >
-                          {headerGroup?.headers.map((_, j) => (
-                            <td key={j} className="py-4 px-2 ">
-                              {j === headerGroup.headers.length - 1 ? (
-                                <button
-                                  disabled
-                                  className="p-1 border rounded-md border-gray-200 max-w-fit"
-                                >
-                                  <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-                                </button>
-                              ) : (
-                                <div className="flex">
-                                  {j === 0 && (
-                                    <div className="pr-2">
-                                      <AvatarInitial text={""} index={j} />
-                                    </div>
-                                  )}
-                                  <div
-                                    className={`${
-                                      j === 0 ? "w-24" : "w-[60%]"
-                                    } mt-3 `}
-                                  >
-                                    <PlaceHolderLine />
+                      >
+                        {headerGroup?.headers.map((_, j) => (
+                          <td key={j} className="py-4 px-2 ">
+                            {j === headerGroup.headers.length - 1 ? (
+                              <button
+                                disabled
+                                className="p-1 border rounded-md border-gray-200 max-w-fit"
+                              >
+                                <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+                              </button>
+                            ) : (
+                              <div className="flex">
+                                {j === 0 && (
+                                  <div className="pr-2">
+                                    <AvatarInitial text={""} index={j} />
                                   </div>
+                                )}
+                                <div
+                                  className={`${
+                                    j === 0 ? "w-24" : "w-[60%]"
+                                  } mt-3 `}
+                                >
+                                  <PlaceHolderLine />
                                 </div>
-                              )}
-                            </td>
-                          ))}
-                        </tr>
-                      ));
-                  })}
-                </>
-              ))}
+                              </div>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ));
+                })}
+              </>
+            )}
             {!!data &&
               table?.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="">
+                <tr
+                  key={row.id}
+                  className="cursor-pointer focus:bg-gray-50 hover:bg-gray-50"
+                  tabIndex={0}
+                  onClick={() =>
+                    router.push(`/dashboard/patients/${row.getValue("_id")}`)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      router.push(`/dashboard/patients/${row.getValue("_id")}`);
+                    }
+                  }}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="py-4 ">
                       <div className="min-w-max whitespace-nowrap">
@@ -222,11 +234,11 @@ const columns = [
     header: undefined,
     cell: (info) => (
       <div className="px-2">
-        <Link href={`/dashboard/patients/${info.getValue()}`}>
-          <div className="p-1 border rounded-md border-gray-200 max-w-fit">
-            <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-          </div>
-        </Link>
+        {/* <Link href={`/dashboard/patients/${info.getValue()}`}> */}
+        <div className="p-1 border rounded-md border-gray-200 max-w-fit">
+          <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+        </div>
+        {/* </Link> */}
       </div>
     ),
   }),

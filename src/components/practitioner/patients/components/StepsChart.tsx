@@ -21,8 +21,10 @@ export function StepsChart({
   lineColor?: string;
   chartData: { value: string; date: number }[];
 }) {
-  const start = chartData?.[0]?.date;
-  const end = chartData?.[chartData.length - 1]?.date;
+  const sortedChartData = chartData?.sort((a: any, b: any) => a.date - b.date);
+
+  const start = sortedChartData?.[0]?.date;
+  const end = sortedChartData?.[sortedChartData.length - 1]?.date;
 
   const ticks = makeArrayWithRange(start, end, 3);
   return (

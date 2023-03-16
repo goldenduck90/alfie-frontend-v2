@@ -83,7 +83,6 @@ export function Chart() {
                 y={user?.weightGoal as number}
                 stroke="#E99298"
                 label={(props) => {
-                  // console.log({ props });
                   return (
                     <svg
                       {...props}

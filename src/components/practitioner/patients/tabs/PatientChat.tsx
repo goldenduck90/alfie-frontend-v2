@@ -31,7 +31,6 @@ export function PatientChat() {
       userId: patientId,
     },
   });
-  console.log({ data, error });
 
   return (
     <SendBirdProvider {...sendBirdParams} colorSet={colorSet}>

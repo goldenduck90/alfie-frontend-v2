@@ -1,14 +1,11 @@
 import { CheckoutPayment } from "@src/components/old/signup/CheckoutPayment";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_URL || "");
+import { StripeWrapper } from "@src/components/old/signup/StripeWrapper";
 
 function CheckoutPaymentPage() {
   return (
-    <Elements stripe={stripePromise}>
+    <StripeWrapper>
       <CheckoutPayment />
-    </Elements>
+    </StripeWrapper>
   );
 }
 CheckoutPaymentPage.isAthRequired = false;
