@@ -1,14 +1,16 @@
 import { gql, useMutation } from "@apollo/client";
 import { Wrapper } from "../src/components/layouts/Wrapper";
 import { IconInput } from "../src/components/inputs/IconInput";
-import { Button } from "../src/components/old/Button";
 import { LockClosedIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import { parseError } from "../src/utils/parseError";
-import { useAuth } from "../src/hooks/useAuth";
+import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams, useParams } from "react-router-dom";
+import { useRouter } from "next/router";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { Role } from "@src/graphql/generated";
+import { Button } from "@src/components/ui/Button";
 
 const resetPasswordMutation = gql`
   mutation ResetPassword($input: ResetPasswordInput!) {
@@ -38,12 +40,10 @@ const resetPasswordSchema = Yup.object().shape({
 });
 
 const ResetPassword = ({ register = false }: { register?: boolean }) => {
-  const { token } = useParams();
-  const { setSession } = useAuth();
+  const router = useRouter();
+  const { user } = useCurrentUserStore();
   const [resetPassword] = useMutation(resetPasswordMutation);
-  const [searchParams] = useSearchParams();
-
-  const provider = searchParams.get("provider");
+  const isPatient = user?.role !== Role.Patient;
 
   const forgotForm = useFormik({
     initialValues: {
@@ -59,10 +59,10 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
         const { data } = await resetPassword({
           variables: {
             input: {
-              token,
+              token: router.query.token as string,
               password,
               registration: register,
-              provider: provider === "true" ? true : false,
+              provider: isPatient,
             },
           },
         });
@@ -70,7 +70,6 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
         resetForm();
         setStatus({ success: data.resetPassword.message });
         const { token: newToken, user: newUser } = data.resetPassword;
-        setTimeout(() => setSession({ newToken, newUser }), 2000);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
@@ -87,10 +86,10 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <img src={"./assets/logo.png"} alt="Alfie" className="w-36" />
+        <Image src={"/assets/logo.png"} height={58} width={144} alt="Alfie" />
       </div>
       <FormikProvider value={forgotForm}>
-        <div className="flex flex-col px-8 sm:px-14 pt-8 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
+        <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
           {status?.error && (
             <div className="text-red-500 text-sm text-center">
               {status.error}
@@ -126,11 +125,13 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
           </div>
           <div className="pb-3 flex flex-col items-center">
             <Button
-              title={register ? "Complete Signup" : "Reset Password"}
-              onPress={submitForm}
+              onClick={submitForm}
               disabled={isSubmitting}
               fullWidth
-            />
+              size="medium"
+            >
+              {register ? "Complete Signup" : "Reset Password"}
+            </Button>
             <div className="pt-3">
               <Link
                 href="/login"
