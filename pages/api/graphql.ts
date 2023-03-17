@@ -18,9 +18,7 @@ export default withIronSessionApiRoute(
   },
   {
     cookieName: "Alfie:sessionCookie",
-    //Todo: password should be environment driven
     password: "complex_password_at_least_32_characters_long",
-
     cookieOptions: {
       secure: process.env.NODE_ENV === "production",
     },

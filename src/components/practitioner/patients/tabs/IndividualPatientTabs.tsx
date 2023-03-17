@@ -170,6 +170,10 @@ export function IndividualPatientTabs() {
   });
   const weightChartInfo = chartInformation[TaskType.WeightLog];
 
+  const activeTasks = taskData?.data?.getAllUserTasksByUser?.filter(
+    (item: any) => !item.completed && !item.archived
+  ).length;
+
   return (
     <div className="flex flex-col overflow-y-auto min-h-[73vh] w-full bg-white md:bg-gray-50 shadow-md rounded-md px-4 md:px-8 py-4">
       <Tabs.Root
@@ -192,7 +196,11 @@ export function IndividualPatientTabs() {
           </Tabs.List>
         </div>
         <Tabs.Content value={TabList[0]} className="mt-6">
-          <TableInformationHeader user={patient} loading={loading} />
+          <TableInformationHeader
+            user={patient}
+            loading={loading}
+            activeTasks={activeTasks}
+          />
           <TableUserObject user={patientTable} loading={loading} />
           <div className="w-full mt-6">
             <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
@@ -254,9 +262,11 @@ export function IndividualPatientTabs() {
 function TableInformationHeader({
   user,
   loading,
+  activeTasks,
 }: {
   user: User;
   loading?: boolean;
+  activeTasks: number;
 }) {
   const initials = useMemo(() => {
     if (!user?.name) return "";
@@ -282,7 +292,7 @@ function TableInformationHeader({
         <p className="flex gap-x-2 items-center">
           Active Tasks
           <span className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-700 text-center flex items-center justify-center">
-            0
+            {activeTasks}
           </span>
         </p>
         <p className="flex gap-x-2 items-center">

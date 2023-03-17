@@ -4,6 +4,7 @@ import axios from "axios";
 import qs from "qs";
 import React, { useEffect } from "react";
 import { Button } from "@src/components/ui/Button";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 
 interface StripeSession {
   id: string;
@@ -26,16 +27,18 @@ const getUserDetailsQuery = gql`
   }
 `;
 
+const stripeUrl = process.env.NEXT_PUBLIC_STRIPE_URL;
+
 export const Billing = () => {
+  const { user } = useCurrentUserStore();
   const [userStripeSession, setUserStripeSession] =
     React.useState<StripeSession>();
-
   const { data, loading, error } = useQuery(getUserDetailsQuery, {});
 
   const createUserStripeSession = React.useCallback(async () => {
     try {
       const session = await axios.post(
-        `${process.env.REACT_APP_STRIPE_URL}/billing_portal/sessions`,
+        `${stripeUrl}/billing_portal/sessions`,
         qs.stringify({
           customer: String(data.user?.stripeCustomerId),
           return_url:
@@ -43,13 +46,15 @@ export const Billing = () => {
         }),
         {
           headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_STRIPE_SECRET_KEY}`,
+            Authorization: `Bearer ${stripeSecretKey}`,
             "content-type": "application/x-www-form-urlencoded",
           },
         }
       );
       setUserStripeSession(session.data);
+      console.log(session);
     } catch (err) {
+      console.log({ err });
       Sentry.captureException(new Error(err as any), {
         tags: {
           query: "createUserStripeSession",
@@ -59,9 +64,6 @@ export const Billing = () => {
     }
   }, [data]);
 
-  function navigateToStripe() {
-    window.open(userStripeSession?.url, "_blank");
-  }
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
     if (error) {
@@ -81,5 +83,9 @@ export const Billing = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  return <Button onClick={() => navigateToStripe()}>Manage Billing</Button>;
+  return (
+    <a href={userStripeSession?.url} target="_blank" rel="noreferrer">
+      <Button>Manage Billing</Button>
+    </a>
+  );
 };

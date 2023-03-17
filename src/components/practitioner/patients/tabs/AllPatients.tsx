@@ -7,13 +7,12 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  Table,
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import Link from "next/link";
 import { TextField } from "@src/components/ui/TextField";
 import { SearchIcon } from "@heroicons/react/solid";
-import { Button } from "@src/components/ui/Button";
 import {
   DateOfBirthCell,
   DefaultCell,
@@ -25,12 +24,16 @@ import { useRouter } from "next/router";
 import { TabTitle } from "@src/components/ui/tabs/TabTitle";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { useGetAllPatientsByAdmins } from "@src/hooks/useGetAllPatientsByAdmin";
+import { Role } from "@src/graphql/generated";
+import { QueryResult, OperationVariables } from "@apollo/client";
 
 export function AllPatientsTabs() {
   const router = useRouter();
+  const { user } = useCurrentUserStore();
   const tab = (router?.query?.tab as string) || "all";
   const [activeTab, setActiveTab] = useState(tab || "all");
   const [globalFilter, setGlobalFilter] = useState("");
+  const isAdmin = user?.role === Role.Admin;
 
   return (
     <Tabs.Root
@@ -60,10 +63,17 @@ export function AllPatientsTabs() {
       </div>
 
       <Tabs.Content value="all" className="mt-2">
-        <AllPatientsTable
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
+        {isAdmin ? (
+          <AdminTable
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+        ) : (
+          <PractitionerTable
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+        )}
       </Tabs.Content>
       {/*// TODO: Add back when ready 
        <Tabs.Content value="issues" className="mt-2">
@@ -76,30 +86,69 @@ export function AllPatientsTabs() {
   );
 }
 
-export function AllPatientsTable({
+export function PractitionerTable({
   globalFilter,
   setGlobalFilter,
 }: {
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
 }) {
-  const router = useRouter();
-  const { user } = useCurrentUserStore();
-  const { data, error, loading } = useGetAllPatientsByProvider();
-  const adminUsers = useGetAllPatientsByAdmins();
+  const providerPatients = useGetAllPatientsByProvider();
 
   const providerTable = usePatientTable({
-    data: data?.getAllPatientsByPractitioner || [],
+    data: providerPatients.data?.getAllPatientsByPractitioner || [],
     globalFilter,
     setGlobalFilter,
   });
+  return (
+    <AllPatientsTable
+      globalFilter={globalFilter}
+      setGlobalFilter={setGlobalFilter}
+      table={providerTable}
+      query={providerPatients}
+    />
+  );
+}
+
+export function AdminTable({
+  globalFilter,
+  setGlobalFilter,
+}: {
+  globalFilter: string;
+  setGlobalFilter: (value: string) => void;
+}) {
+  const adminUsers = useGetAllPatientsByAdmins();
+
   const adminTable = usePatientTable({
     data: adminUsers.data?.users || [],
     globalFilter,
     setGlobalFilter,
   });
 
-  const table = user?.role === "Admin" ? adminTable : providerTable;
+  return (
+    <AllPatientsTable
+      globalFilter={globalFilter}
+      setGlobalFilter={setGlobalFilter}
+      table={adminTable}
+      query={adminUsers}
+    />
+  );
+}
+
+export function AllPatientsTable({
+  globalFilter,
+  setGlobalFilter,
+  table,
+  query,
+}: {
+  globalFilter: string;
+  setGlobalFilter: (value: string) => void;
+  table: Table<Patient>;
+  query: QueryResult<any, OperationVariables>;
+}) {
+  const router = useRouter();
+
+  const { data, error, loading } = query;
 
   return (
     <div className="max-h-[50vh]">
@@ -127,7 +176,7 @@ export function AllPatientsTable({
             ))}
           </thead>
           <tbody className="divide-y divide-gray-300 ">
-            {(loading || adminUsers.loading) && (
+            {loading && (
               <>
                 {table?.getHeaderGroups().map((headerGroup, i) => {
                   return Array(9)

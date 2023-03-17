@@ -1,7 +1,6 @@
-const stripe = require("stripe")(
-  "sk_test_51K4tkPDOjl0X0gOqWcyjvCHlkdptYesL7ftuKxd9luFemEWGzxRX1SUbCmcJvknVeg5Le5zGSdW4Oivj3YdgeWq400xp2gTQJ7",
-  { apiVersion: "2022-08-01; embedded_connect_beta=v1" }
-);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2022-08-01; embedded_connect_beta=v1",
+});
 
 export default async function handler(req: any, res: any) {
   if (req.method === "POST") {

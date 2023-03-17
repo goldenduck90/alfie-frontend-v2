@@ -1,11 +1,14 @@
 import React from "react";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
-import dayjs from "dayjs";
+
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import Link from "next/link";
-import { AllPatientsTable } from "../patients/tabs/AllPatients";
+import { AdminTable, PractitionerTable } from "../patients/tabs/AllPatients";
+import { Role } from "@src/graphql/generated";
 
 export function MyPatients() {
+  const { user } = useCurrentUserStore();
+  const isAdmin = user?.role === Role.Admin;
   return (
     <DashboardCard
       className="w-full md:max-w-full md:min-w-max py-4"
@@ -19,7 +22,14 @@ export function MyPatients() {
       }
     >
       <div className="max-h-96 md:max-h-128 overflow-y-auto">
-        <AllPatientsTable globalFilter={""} setGlobalFilter={() => undefined} />
+        {isAdmin ? (
+          <AdminTable globalFilter={""} setGlobalFilter={() => undefined} />
+        ) : (
+          <PractitionerTable
+            globalFilter={""}
+            setGlobalFilter={() => undefined}
+          />
+        )}
       </div>
     </DashboardCard>
   );
