@@ -1,7 +1,7 @@
 import httpProxyMiddleware from "next-http-proxy-middleware";
 import { withIronSessionApiRoute } from "iron-session/next";
 
-const target = process.env.REACT_APP_GRAPHQL_API;
+const target = process.env.NEXT_PUBLIC_GRAPHQL_API;
 
 export default withIronSessionApiRoute(
   async function handler(req, res) {

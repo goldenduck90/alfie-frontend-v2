@@ -19,28 +19,21 @@ interface StripeSession {
   url: string;
 }
 
-const getUserDetailsQuery = gql`
-  query GetUserDetails {
-    user {
-      stripeCustomerId
-    }
-  }
-`;
-
-const stripeUrl = process.env.NEXT_PUBLIC_STRIPE_URL;
-
 export const Billing = () => {
   const { user } = useCurrentUserStore();
+  const stripeUrl = process.env.NEXT_PUBLIC_STRIPE_URL;
+
+  const stripeSecretKey = "";
+
   const [userStripeSession, setUserStripeSession] =
     React.useState<StripeSession>();
-  const { data, loading, error } = useQuery(getUserDetailsQuery, {});
 
   const createUserStripeSession = React.useCallback(async () => {
     try {
       const session = await axios.post(
         `${stripeUrl}/billing_portal/sessions`,
         qs.stringify({
-          customer: String(data.user?.stripeCustomerId),
+          customer: String(user?.stripeCustomerId),
           return_url:
             "http://develop.platform.joinalfie.com.s3-website-us-east-1.amazonaws.com/billing",
         }),
@@ -62,26 +55,12 @@ export const Billing = () => {
         },
       });
     }
-  }, [data]);
-
-  useEffect(() => {
-    // If there is an error with the query, we want to log it to Sentry
-    if (error) {
-      Sentry.captureException(new Error(error.message), {
-        tags: {
-          query: "GetUserDetails",
-          component: "Billing",
-        },
-      });
-    }
-  }, [error]);
+  }, [user?.stripeCustomerId]);
 
   React.useEffect(() => {
-    if (!data?.user?.stripeCustomerId) return;
+    if (user?.stripeCustomerId) return;
     createUserStripeSession();
-  }, [createUserStripeSession, data, loading]);
-
-  if (loading) return <div>Loading...</div>;
+  }, [createUserStripeSession]);
 
   return (
     <a href={userStripeSession?.url} target="_blank" rel="noreferrer">

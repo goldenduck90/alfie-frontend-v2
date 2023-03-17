@@ -86,7 +86,7 @@ export default withSessionRoute(async function loginRoute(req, res) {
     },
   });
 
-  const response = await fetch(`${process.env.REACT_APP_GRAPHQL_API}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -112,7 +112,7 @@ export default withSessionRoute(async function loginRoute(req, res) {
         variables: {},
       });
 
-      const userData = await fetch(`${process.env.REACT_APP_GRAPHQL_API}`, {
+      const userData = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

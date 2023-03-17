@@ -1,12 +1,10 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2022-08-01; embedded_connect_beta=v1",
-});
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req: any, res: any) {
   if (req.method === "POST") {
     try {
       const accountSession = await stripe.accountSessions.create({
-        account: "acct_1K4tkPDOjl0X0gOq",
+        account: req.body.account,
       });
 
       res.json({
