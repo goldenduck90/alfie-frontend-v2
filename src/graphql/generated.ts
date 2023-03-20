@@ -51,6 +51,13 @@ export enum AnswerType {
   String = 'STRING'
 }
 
+export type Attendee = {
+  email: Scalars['String'];
+  locale?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  timeZone: Scalars['String'];
+};
+
 export type BatchCreateOrUpdateProvidersInput = {
   providers: Array<ProviderInput>;
 };
@@ -59,6 +66,55 @@ export type BatchCreateOrUpdateProvidersResponse = {
   __typename?: 'BatchCreateOrUpdateProvidersResponse';
   created: Scalars['Int'];
   updated: Scalars['Int'];
+};
+
+export type BookingResponse = {
+  __typename?: 'BookingResponse';
+  cancellationReason?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  destinationCalendarId?: Maybe<Scalars['String']>;
+  dynamicEventSlugRef?: Maybe<Scalars['String']>;
+  dynamicGroupSlugRef?: Maybe<Scalars['String']>;
+  endTime?: Maybe<Scalars['String']>;
+  eventTypeId?: Maybe<Scalars['Float']>;
+  fromReschedule?: Maybe<Scalars['Boolean']>;
+  hasHashedBookingLink?: Maybe<Scalars['Boolean']>;
+  hashedLink?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Float']>;
+  language?: Maybe<Scalars['String']>;
+  location?: Maybe<Scalars['String']>;
+  paid?: Maybe<Scalars['Boolean']>;
+  recurringEventId?: Maybe<Scalars['String']>;
+  rejectionReason?: Maybe<Scalars['String']>;
+  rescheduled?: Maybe<Scalars['Boolean']>;
+  smsReminderNumber?: Maybe<Scalars['String']>;
+  startTime?: Maybe<Scalars['String']>;
+  status?: Maybe<Status>;
+  title?: Maybe<Scalars['String']>;
+  uid?: Maybe<Scalars['String']>;
+  user?: Maybe<CalUser>;
+  userId?: Maybe<Scalars['Float']>;
+};
+
+export type CalAvailability = {
+  __typename?: 'CalAvailability';
+  availabilities?: Maybe<Array<CalTimeslot>>;
+  busy: Array<EventBusyDetails>;
+  timeZone: Scalars['String'];
+};
+
+export type CalTimeslot = {
+  __typename?: 'CalTimeslot';
+  day?: Maybe<Scalars['Float']>;
+  end: Scalars['String'];
+  start: Scalars['String'];
+};
+
+export type CalUser = {
+  __typename?: 'CalUser';
+  email?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
 };
 
 export type Checkout = {
@@ -119,6 +175,27 @@ export type CreateAppointmentInput = {
   notes?: InputMaybe<Scalars['String']>;
   providerType: Role;
   startTimeInUtc: Scalars['DateTime'];
+  userTaskId: Scalars['String'];
+};
+
+export type CreateBookingInput = {
+  attendees: Attendee;
+  customInput: Array<CustomInput>;
+  description?: InputMaybe<Scalars['String']>;
+  endTime: Scalars['String'];
+  eventTypeId: Scalars['Float'];
+  eventTypeSlug: Scalars['String'];
+  hasHashedBookingLink: Scalars['Boolean'];
+  hashedLink?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<Scalars['String']>;
+  location: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
+  recurringEventId: Scalars['String'];
+  smsReminderNumber?: InputMaybe<Scalars['String']>;
+  startTime: Scalars['String'];
+  status: Status;
+  title: Scalars['String'];
+  user: Scalars['String'];
   userTaskId: Scalars['String'];
 };
 
@@ -223,6 +300,24 @@ export type CreateUserTasksInput = {
   taskTypes: Array<TaskType>;
   userId: Scalars['String'];
 };
+
+export type CustomInput = {
+  eventTypeId: Scalars['Float'];
+  label: Scalars['String'];
+  options?: InputMaybe<Options>;
+  placeholder: Scalars['String'];
+  required: Scalars['Boolean'];
+  type: CustomInputType;
+};
+
+export enum CustomInputType {
+  Bool = 'BOOL',
+  Number = 'NUMBER',
+  Phone = 'PHONE',
+  Radio = 'RADIO',
+  Text = 'TEXT',
+  Textlong = 'TEXTLONG'
+}
 
 export type EaAppointment = {
   __typename?: 'EAAppointment';
@@ -335,6 +430,14 @@ export type EaWorkingPlanDay = {
   breaks?: Maybe<Array<EaWorkingPlanBreak>>;
   end?: Maybe<Scalars['String']>;
   start?: Maybe<Scalars['String']>;
+};
+
+export type EventBusyDetails = {
+  __typename?: 'EventBusyDetails';
+  end: Scalars['String'];
+  source?: Maybe<Scalars['String']>;
+  start: Scalars['String'];
+  title: Scalars['String'];
 };
 
 export type File = {
@@ -458,12 +561,15 @@ export type Mutation = {
   completeUpload: User;
   completeUserTask: UserTask;
   createAppointment: EaAppointment;
+  createBooking: BookingResponse;
   createCustomer: Scalars['String'];
   createLabOrder: CreateLabOrderResponse;
   createOrFindCheckout: CheckoutResponse;
   createOrUpdateStripeSession: CheckoutResponse;
+  createScheduleAvailability: CalAvailability;
   createTask: Task;
   createUser: User;
+  deleteBooking: CalAvailability;
   forgotPassword: MessageResponse;
   login: LoginResponse;
   requestSignedUrls: Array<SignedUrlResponse>;
@@ -471,7 +577,9 @@ export type Mutation = {
   scorePatients: Score;
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
+  updateBooking: BookingResponse;
   updateProviderProfile: EaProviderProfile;
+  updateScheduleAvailability: CalAvailability;
   updateSubscription: MessageResponse;
   updateUserTask: UserTask;
 };
@@ -527,6 +635,11 @@ export type MutationCreateAppointmentArgs = {
 };
 
 
+export type MutationCreateBookingArgs = {
+  input: CreateBookingInput;
+};
+
+
 export type MutationCreateCustomerArgs = {
   input: CreateCustomerInput;
 };
@@ -547,6 +660,11 @@ export type MutationCreateOrUpdateStripeSessionArgs = {
 };
 
 
+export type MutationCreateScheduleAvailabilityArgs = {
+  input: ScheduleAvailability;
+};
+
+
 export type MutationCreateTaskArgs = {
   input: CreateTaskInput;
 };
@@ -554,6 +672,11 @@ export type MutationCreateTaskArgs = {
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+export type MutationDeleteBookingArgs = {
+  id: Scalars['Float'];
 };
 
 
@@ -592,9 +715,19 @@ export type MutationUpdateAppointmentArgs = {
 };
 
 
+export type MutationUpdateBookingArgs = {
+  input: UpdateBookingInput;
+};
+
+
 export type MutationUpdateProviderProfileArgs = {
   eaProviderId: Scalars['String'];
   input: EaProviderProfileInput;
+};
+
+
+export type MutationUpdateScheduleAvailabilityArgs = {
+  id: Scalars['Float'];
 };
 
 
@@ -606,6 +739,11 @@ export type MutationUpdateSubscriptionArgs = {
 export type MutationUpdateUserTaskArgs = {
   input: UpdateUserTaskInput;
   taskId: Scalars['String'];
+};
+
+export type Options = {
+  label?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
 };
 
 export type PartialUser = {
@@ -655,6 +793,12 @@ export type Provider = {
   type: Scalars['String'];
 };
 
+export type ProviderAvailabilityInput = {
+  dateFrom?: InputMaybe<Scalars['String']>;
+  dateTo?: InputMaybe<Scalars['String']>;
+  timezone: Scalars['String'];
+};
+
 export type ProviderInput = {
   akuteId: Scalars['String'];
   eaProviderId: Scalars['Int'];
@@ -686,6 +830,8 @@ export type Query = {
   getAllPatientsByPractitioner: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
+  getProviderAvailability: CalAvailability;
+  getScheduleAvailabilityById: CalAvailability;
   getUserById: User;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
@@ -733,6 +879,16 @@ export type QueryGetAProviderArgs = {
 
 export type QueryGetAllUserTasksByUserArgs = {
   userId: Scalars['String'];
+};
+
+
+export type QueryGetProviderAvailabilityArgs = {
+  input: ProviderAvailabilityInput;
+};
+
+
+export type QueryGetScheduleAvailabilityByIdArgs = {
+  id: Scalars['Float'];
 };
 
 
@@ -793,6 +949,13 @@ export enum Role {
   Practitioner = 'Practitioner'
 }
 
+export type ScheduleAvailability = {
+  days: Array<Scalars['Float']>;
+  endTime: Scalars['String'];
+  scheduleId: Scalars['Float'];
+  startTime: Scalars['String'];
+};
+
 export type Score = {
   __typename?: 'Score';
   calculated1hourPercent?: Maybe<Scalars['Float']>;
@@ -835,6 +998,13 @@ export type SignedUrlResponse = {
   key: Scalars['String'];
   url: Scalars['String'];
 };
+
+export enum Status {
+  Accepted = 'ACCEPTED',
+  Cancelled = 'CANCELLED',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED'
+}
 
 export type SubscribeEmailInput = {
   currentMember: Scalars['Boolean'];
@@ -907,6 +1077,27 @@ export type UpdateAppointmentInput = {
   startTimeInUtc: Scalars['DateTime'];
 };
 
+export type UpdateBookingInput = {
+  attendees: Attendee;
+  customInput: Array<CustomInput>;
+  description?: InputMaybe<Scalars['String']>;
+  endTime: Scalars['String'];
+  eventTypeId: Scalars['Float'];
+  eventTypeSlug: Scalars['String'];
+  hasHashedBookingLink: Scalars['Boolean'];
+  hashedLink?: InputMaybe<Scalars['String']>;
+  id: Scalars['Float'];
+  language?: InputMaybe<Scalars['String']>;
+  location: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
+  recurringEventId: Scalars['String'];
+  smsReminderNumber?: InputMaybe<Scalars['String']>;
+  startTime: Scalars['String'];
+  status: Status;
+  title: Scalars['String'];
+  user: Scalars['String'];
+};
+
 export type UpdateSubscriptionInput = {
   stripeSubscriptionId: Scalars['String'];
   subscriptionExpiresAt: Scalars['DateTime'];
@@ -922,6 +1113,7 @@ export type User = {
   address: Address;
   akutePatientId?: Maybe<Scalars['String']>;
   bmi?: Maybe<Scalars['Float']>;
+  calId: Scalars['String'];
   classifications?: Maybe<Array<Classification>>;
   dateOfBirth: Scalars['DateTime'];
   eaCustomerId?: Maybe<Scalars['String']>;

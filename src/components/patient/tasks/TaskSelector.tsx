@@ -106,7 +106,7 @@ export const TaskSelector = ({
     case TaskType.ScheduleAppointment:
       return (
         <Link href={"/dashboard/appointments"} passHref legacyBehavior>
-          <Button buttonType="secondary">Schedule</Button>
+          {trigger ? trigger : <Button buttonType="secondary">Schedule</Button>}
         </Link>
       );
     case TaskType.AdLibitum:
