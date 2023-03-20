@@ -1,33 +1,41 @@
-import React, { useEffect } from "react";
-import { Control, useController, useForm } from "react-hook-form";
-import { Button } from "../ui/Button";
-import { create, useStore } from "zustand";
-import { persist } from "zustand/middleware";
-import { z } from "zod";
-import { QuestionContainer } from "./QuestionContainer";
-import { Checkbox } from "../ui/Checkbox";
-import { ChevronLeftIcon, DocumentIcon } from "@heroicons/react/outline";
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { ChevronLeftIcon } from '@heroicons/react/outline';
+import { TaskType } from '@src/graphql/generated';
+import {
+  createAnswersFromObject,
+  useTaskCompletion,
+  valueToAnswerType,
+} from '@src/hooks/useTaskCompletion';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { create, useStore } from 'zustand';
+import { persist } from 'zustand/middleware';
 import {
   QuestionnaireLayout,
   useProgressContext,
-} from "../layouts/QuestionaireLayout";
-import { gql, useQuery } from "@apollo/client";
-import { useRouter } from "next/router";
-import { TaskType } from "@src/graphql/generated";
-import { createAnswersFromObject } from "@src/hooks/useTaskCompletion";
-import { QuestionProps } from "./common";
-import { medicalQuestions } from "./medicalQuestions";
-import { threeFactorQuestions } from "./threeFactorQuestions";
-import { metabolicQuestions } from "./metabolicQuestions";
-import { gastroQuestions } from "./gastroQuestions";
+} from '../layouts/QuestionaireLayout';
+import { Button } from '../ui/Button';
+import { QuestionProps } from './common';
+import { gastroQuestions } from './gastroQuestions';
+import { medicalQuestions } from './medicalQuestions';
+import { metabolicQuestions } from './metabolicQuestions';
+import { QuestionContainer } from './QuestionContainer';
+import { threeFactorQuestions } from './threeFactorQuestions';
 
 interface FormState {
   formState: Record<string, any>;
   setFormState: (form: Record<string, any>) => void;
 }
-
+const completeUserTaskMutation = gql`
+  mutation CompleteTask($input: CompleteUserTaskInput!) {
+    completeUserTask(input: $input) {
+      completed
+    }
+  }
+`;
 function createPersistedFormState(formName: string) {
-  return create<FormState, [["zustand/persist", FormState]]>(
+  return create<FormState, [['zustand/persist', FormState]]>(
     persist(
       (set) => ({
         formState: {},
@@ -79,19 +87,19 @@ export function Question() {
   //TODO: Specific loading pages or?
   if (loading)
     return (
-      <QuestionnaireLayout title="Loading...">
+      <QuestionnaireLayout title='Loading...'>
         <div />
       </QuestionnaireLayout>
     );
 
   if (data?.userTask?.task?.type === TaskType.NewPatientIntakeForm) {
     return (
-      <QuestionnaireLayout title="Medical Questionnaire">
-        <div className="relative flex flex-col gap-y-3 items-center w-full">
+      <QuestionnaireLayout title='Medical Questionnaire'>
+        <div className='relative flex flex-col gap-y-3 items-center w-full'>
           <Questionnaire
             taskId={taskId}
             allQuestions={medicalQuestions}
-            formName="medical"
+            formName='medical'
           />
         </div>
       </QuestionnaireLayout>
@@ -100,12 +108,12 @@ export function Question() {
 
   if (data?.userTask?.task?.type === TaskType.MpFeeling) {
     return (
-      <QuestionnaireLayout title="Metabolic Profile (Feeling) Questionnaire">
-        <div className="relative flex flex-col gap-y-3 items-center w-full">
+      <QuestionnaireLayout title='Metabolic Profile (Feeling) Questionnaire'>
+        <div className='relative flex flex-col gap-y-3 items-center w-full'>
           <Questionnaire
             taskId={taskId}
             allQuestions={metabolicQuestions}
-            formName="metabolic"
+            formName='metabolic'
           />
         </div>
       </QuestionnaireLayout>
@@ -114,12 +122,12 @@ export function Question() {
 
   if (data?.userTask?.task?.type === TaskType.Gsrs) {
     return (
-      <QuestionnaireLayout title="Gastrointestinal Symptoms Rating Scale">
-        <div className="relative flex flex-col gap-y-3 items-center w-full">
+      <QuestionnaireLayout title='Gastrointestinal Symptoms Rating Scale'>
+        <div className='relative flex flex-col gap-y-3 items-center w-full'>
           <Questionnaire
             taskId={taskId}
             allQuestions={gastroQuestions}
-            formName="gsrs"
+            formName='gsrs'
           />
         </div>
       </QuestionnaireLayout>
@@ -128,12 +136,12 @@ export function Question() {
 
   if (data?.userTask?.task?.type === TaskType.Tefq) {
     return (
-      <QuestionnaireLayout title="The Three-Factor Eating Questionnaire">
-        <div className="relative flex flex-col gap-y-3 items-center w-full">
+      <QuestionnaireLayout title='The Three-Factor Eating Questionnaire'>
+        <div className='relative flex flex-col gap-y-3 items-center w-full'>
           <Questionnaire
             taskId={taskId}
             allQuestions={threeFactorQuestions}
-            formName="tefq"
+            formName='tefq'
           />
         </div>
       </QuestionnaireLayout>
@@ -141,8 +149,8 @@ export function Question() {
   }
 
   return (
-    <div className="relative flex flex-col gap-y-3 items-center w-full">
-      <p className="text-white"></p>
+    <div className='relative flex flex-col gap-y-3 items-center w-full'>
+      <p className='text-white'></p>
     </div>
   );
 }
@@ -156,6 +164,8 @@ function Questionnaire({
   formName: string;
   taskId: string;
 }) {
+  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
+  const [mutate] = useTaskCompletion();
   const router = useRouter();
   const store = useProgressContext();
   const { setMax, current, setCurrent } = useStore(store, (state: any) => ({
@@ -175,7 +185,7 @@ function Questionnaire({
 
   const { handleSubmit, control, trigger, register, reset } = useForm({
     defaultValues: getStoredForm(formName),
-    reValidateMode: "onBlur",
+    reValidateMode: 'onBlur',
   });
 
   useEffect(() => {
@@ -185,7 +195,7 @@ function Questionnaire({
   const question = allQuestions?.[current];
   const Component = question?.Component;
   const endQuestion = current + 1 === allQuestions?.length;
-
+  console.log(question, 'QUESTION');
   /**
    * All Final Task should be submitted here.
    * Keys based of passed array ID field
@@ -194,35 +204,92 @@ function Questionnaire({
    * @param data
    *
    */
-  function onSubmitForm(data: Record<string, any>) {
-    const answers = createAnswersFromObject(data);
-    const input = {
-      _id: taskId,
-      answers,
-    };
+  async function onSubmitForm(data: Record<string, any>) {
+    try {
+      if (data?.allergies) {
+        const newData = {
+          allergies: data?.allergies
+            .map((a: { value: string }) => a.value)
+            .join(', '),
+          conditions: data?.conditions.map((c: string) => c).join(', '),
+          pharmacyLocation:
+            String(data?.pillpack.pharmacy) === ''
+              ? 'null'
+              : String(data?.pillpack.pharmacy),
+          usePillPack: data?.pillpack.select,
+          previousConditions: data?.previousConditions
+            .map((pc: string) => pc)
+            .join(', '),
+          hasSurgeries: data.surgeries?.hasSurgicalHistory,
+          surgicalHistory: data.surgeries?.surgicalHistory,
+          hasRequiredLabs: String(data?.requiredLabs),
+          weightLossAttemptTime: data?.weightLossAttemptTime,
+          weightManagementMethods: data?.weightManagementMethods
+            .map((wmm: string) => wmm)
+            .join(', '),
+        };
 
-    // Clear Stored Form
-    boundForm.persist.clearStorage();
+        const converAnswersFromObjectV2 = (obj: any) => {
+          const answers = [];
+          for (const key in obj) {
+            answers.push({
+              key,
+              value: obj[key],
+              type: valueToAnswerType(obj[key]),
+            });
+          }
+          return answers;
+        };
+        let answers = converAnswersFromObjectV2(newData);
+        const input = {
+          _id: taskId,
+          answers,
+        };
+        // await completeUserTask({ variables: { input } });
+        mutate({
+          variables: {
+            input,
+          },
+        });
+        // Clear Stored Form
+        boundForm.persist.clearStorage();
+      } else {
+        const answers = createAnswersFromObject(data);
+        const input = {
+          _id: taskId,
+          answers,
+        };
+        await completeUserTask({ variables: { input } });
+
+        // Clear Stored Form
+        boundForm.persist.clearStorage();
+        setTimeout(() => {
+          router.push('/dashboard/tasks');
+        }, 1000);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   return (
     <QuestionContainer helper={question?.helperText}>
-      <div className="flex items-center justify-center">
+      <div className='flex items-center justify-center'>
         {current > 0 && !endQuestion && (
           <button
-            className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center"
+            className='p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center'
             onClick={() =>
               router.push(
                 `/questionnaire/${router?.query?.taskId}?step=${current - 1}`
               )
             }
           >
-            <ChevronLeftIcon className="stroke-gray-400 w-8 h-8" />
+            <ChevronLeftIcon className='stroke-gray-400 w-8 h-8' />
           </button>
         )}
       </div>
-      <div className="flex-grow max-w-[500px] mx-auto w-full">
-        <div className="flex flex-col items-center w-full gap-y-3">
+      <div className='flex-grow max-w-[500px] mx-auto w-full'>
+        <div className='flex flex-col items-center w-full gap-y-3'>
           {!!Component && (
             <Component
               control={control}
@@ -233,9 +300,9 @@ function Questionnaire({
               validation={question.validation}
             />
           )}
-          <div className="pt-3" />
+          <div className='pt-3' />
           <Button
-            size="large"
+            size='large'
             onClick={async () => {
               if (!question?.id) return;
               /**
@@ -247,6 +314,7 @@ function Questionnaire({
                   const valid = await trigger(question?.id);
                   if (!!valid) {
                     handleSubmit((value) => {
+                      console.log(value, 'valuessssss');
                       onSubmit.setFormState(value);
                       router.push(
                         `/questionnaire/${router?.query?.taskId}?step=${
@@ -269,13 +337,13 @@ function Questionnaire({
           </Button>
         </div>
       </div>
-      <div className="flex-1">
+      <div className='flex-1'>
         {current > 0 && !endQuestion && (
           <button
-            className="p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center invisible"
+            className='p-1 border rounded-md border-gray-400 w-[40px] h-[40px] flex items-center justify-center invisible'
             onClick={() => setCurrent(current - 1)}
           >
-            <ChevronLeftIcon className="stroke-gray-400 w-8 h-8" />
+            <ChevronLeftIcon className='stroke-gray-400 w-8 h-8' />
           </button>
         )}
       </div>
@@ -286,7 +354,7 @@ function Questionnaire({
 function getStoredForm(formName: string) {
   const storage = localStorage.getItem(formName);
   try {
-    const parsed = JSON.parse(storage || "{}");
+    const parsed = JSON.parse(storage || '{}');
     return parsed?.state?.formState || {};
   } catch (error) {
     return {};
@@ -294,10 +362,10 @@ function getStoredForm(formName: string) {
 }
 
 const requiredDocNames = [
-  "TSH",
-  "Hb1Ac",
-  "Lipid Panel",
-  "Comprehensive Metabolic Panel",
+  'TSH',
+  'Hb1Ac',
+  'Lipid Panel',
+  'Comprehensive Metabolic Panel',
 ];
 
 /**
