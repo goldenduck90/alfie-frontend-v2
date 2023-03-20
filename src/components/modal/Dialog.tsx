@@ -116,10 +116,9 @@ DialogModal.Description = function Description({
 
 function GrayBox({ createdAt }: { createdAt: Date }) {
   const formattedDate = useMemo(() => {
-    const value = `Assigned ${formatDistance(
-      new Date(createdAt),
-      new Date()
-    )} ago`;
+    const value =
+      createdAt &&
+      `Assigned ${formatDistance(new Date(createdAt), new Date())} ago`;
 
     return value;
   }, [createdAt]);

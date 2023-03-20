@@ -42,7 +42,7 @@ export const DashboardTaskList = () => {
     },
   });
 
-  const filteredTasks = data?.userTasks.userTasks.filter((task: any) => {
+  const filteredTasks = data?.userTasks?.userTasks.filter((task: any) => {
     return (
       task.task.type === TaskType.WeightLog ||
       task.task.type === TaskType.NewPatientIntakeForm ||

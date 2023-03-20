@@ -5,13 +5,11 @@ import { PencilIcon } from "@heroicons/react/solid";
 import { Button } from "@src/components/ui/Button";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { Line } from "@src/components/ui/Line";
-import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { SliderRange } from "@src/components/ui/SliderRange";
-import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { DialogModal } from "@src/components/modal/Dialog";
 import { WeightEntry } from "@src/components/modal/variants/WeightEntry";
 import { ScaleTwoIcon, TargetIcon } from "@src/components/svg";
-import { TaskType } from "@src/graphql/generated";
+import { TaskType, User } from "@src/graphql/generated";
 
 const userTasksQuery = gql`
   query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
@@ -35,9 +33,7 @@ const userTasksQuery = gql`
   }
 `;
 
-export function YourWeight() {
-  const { user } = useCurrentUserStore();
-
+export function YourWeight({ user }: { user: User }) {
   const currentWeight = user?.weights[user?.weights.length - 1]?.value;
   const firstWeight = user?.weights[0]?.value;
 
@@ -69,7 +65,10 @@ export function YourWeight() {
                 {data && !error && (
                   <DialogModal
                     triggerAsChild
-                    trigger={<Button>Update Weight</Button>}
+                    trigger={
+                      //? if there is a weight task, show the button
+                      getWeightTaskId() && <Button>Update Weight</Button>
+                    }
                   >
                     <WeightEntry
                       title="Enter your weight"

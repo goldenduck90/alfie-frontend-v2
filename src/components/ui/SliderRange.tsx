@@ -30,16 +30,27 @@ export function SliderProgressBar({
 export function SliderRange({ defaultNumber }: { defaultNumber: number }) {
   const { control } = useForm({});
 
+  const defValue = () => {
+    if (defaultNumber > 100) {
+      return 100;
+    } else if (defaultNumber < 0) {
+      return 0;
+    } else {
+      return defaultNumber;
+    }
+  };
+
   const { field } = useController({
     name: "weight",
     control,
-    defaultValue: [defaultNumber],
+    defaultValue: [defValue()],
   });
 
   return (
     <div className="w-full">
       <RadixSlider.Root
         max={100}
+        min={0}
         disabled
         step={1}
         value={field.value}

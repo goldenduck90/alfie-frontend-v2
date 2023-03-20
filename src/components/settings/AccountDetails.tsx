@@ -32,9 +32,8 @@ export function AccountDetails() {
                 <DialogModal
                   triggerAsChild
                   trigger={
-                    <Button disabled buttonType="secondary">
-                      Change
-                    </Button>
+                    null
+                    // <Button buttonType="secondary">Change</Button>
                   }
                 >
                   <ChangeNameModal title="Full name" />
@@ -52,9 +51,8 @@ export function AccountDetails() {
                 <DialogModal
                   triggerAsChild
                   trigger={
-                    <Button disabled buttonType="secondary">
-                      Change
-                    </Button>
+                    null
+                    // <Button buttonType="secondary">Change</Button>
                   }
                 >
                   <ChangeEmailModal title="Email address" />
@@ -64,7 +62,9 @@ export function AccountDetails() {
           ]}
         />
       </div>
-      <div className="mt-6">
+      {/*
+      //TODO: Change back when change password is ready
+       <div className="mt-6">
         <h1 className="text-xl font-[600]">Change password</h1>
         <TableViewRow
           inputs={[
@@ -79,9 +79,7 @@ export function AccountDetails() {
                 <DialogModal
                   triggerAsChild
                   trigger={
-                    <Button disabled buttonType="secondary">
-                      Change password
-                    </Button>
+                    <Button buttonType="secondary">Change password</Button>
                   }
                 >
                   <ChangePasswordModal title="Change password" />
@@ -90,7 +88,7 @@ export function AccountDetails() {
             },
           ]}
         />
-      </div>
+      </div> */}
       <div className="mt-6">
         <h1 className="text-xl font-[600]">Language and region</h1>
         <TableViewRow

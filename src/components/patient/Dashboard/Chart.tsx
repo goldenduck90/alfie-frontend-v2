@@ -12,14 +12,14 @@ import {
   ReferenceLine,
 } from "recharts";
 import dayjs from "dayjs";
-import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { makeArrayWithRange } from "@src/utils/range";
+import { User } from "@src/graphql/generated";
 
-export function Chart() {
-  const { user } = useCurrentUserStore();
-  const dateSortedWeights = user?.weights
-    .sort((a, b) => a.date - b.date)
-    .map((item) => ({
+export function Chart({ user }: { user: User }) {
+  const weights = !user?.weights ? [] : [...user?.weights];
+  const dateSortedWeights = weights
+    ?.sort((a, b) => a.date - b.date)
+    ?.map((item) => ({
       date: new Date(item.date).getTime(),
       value: item.value,
     }));
