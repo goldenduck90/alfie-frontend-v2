@@ -246,26 +246,29 @@ function Questionnaire({
           answers,
         };
         // await completeUserTask({ variables: { input } });
-        mutate({
+        await mutate({
           variables: {
             input,
           },
         });
         // Clear Stored Form
         boundForm.persist.clearStorage();
+        router.push('/dashboard/tasks');
       } else {
         const answers = createAnswersFromObject(data);
         const input = {
           _id: taskId,
           answers,
         };
-        await completeUserTask({ variables: { input } });
+        await mutate({
+          variables: {
+            input,
+          },
+        });
 
         // Clear Stored Form
         boundForm.persist.clearStorage();
-        setTimeout(() => {
-          router.push('/dashboard/tasks');
-        }, 1000);
+        router.push('/dashboard/tasks');
       }
     } catch (e) {
       console.error(e);
