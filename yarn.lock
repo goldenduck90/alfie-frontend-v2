@@ -6867,7 +6867,7 @@ globrex@^0.1.2:
 
 google-map-react@^2.2.0:
   version "2.2.0"
-  resolved "https://registry.npmjs.org/google-map-react/-/google-map-react-2.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/google-map-react/-/google-map-react-2.2.0.tgz#10b23a42526556adaacbaeec114a72bf3b733053"
   integrity sha512-UPiTwR3qNKJJizURXTuCbnBr8kLtLsiikj/KH1UTLGhadnU6fT+CE3CLw1lzZwk5zZIduQQODyIcEwNInECmUg==
   dependencies:
     "@googlemaps/js-api-loader" "^1.7.0"
