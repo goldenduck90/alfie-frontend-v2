@@ -3,6 +3,7 @@ import Script from "next/script";
 import React, { useEffect, useState } from "react";
 import { Billing } from "../old/oldpatient/billing/Billings";
 
+// TODO Work in progress
 export function EmbeddedStripeView() {
   const [hasError, setHasError] = useState(false);
   const { user } = useCurrentUserStore();
@@ -11,6 +12,7 @@ export function EmbeddedStripeView() {
     // Fetch the AccountSession client secret
     const response = await fetch("/api/stripe_session", {
       method: "POST",
+      body: JSON.stringify({ stripeCustomerId: user?.stripeCustomerId || "" }),
     });
     if (!response.ok) {
       // Handle errors on the client side here
@@ -56,9 +58,8 @@ export function EmbeddedStripeView() {
     <div>
       <Script async src="https://connect-js.stripe.com/v0.1/connect.js" />
       <div className="container">
-        {hasError ? (
-          <Billing />
-        ) : (
+        <Billing />
+        {!hasError && (
           // <stripe-connect-payments></stripe-connect-payments>
           <div />
         )}
