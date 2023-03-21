@@ -8,5 +8,5 @@ function CheckoutPaymentPage() {
     </StripeWrapper>
   );
 }
-CheckoutPaymentPage.isAthRequired = false;
+CheckoutPaymentPage.isAuthRequired = false;
 export default CheckoutPaymentPage;

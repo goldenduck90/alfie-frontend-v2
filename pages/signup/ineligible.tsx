@@ -4,5 +4,5 @@ function SignupIneligible() {
   return <Ineligible />;
 }
 
-SignupIneligible.isAthRequired = false;
+SignupIneligible.isAuthRequired = false;
 export default SignupIneligible;

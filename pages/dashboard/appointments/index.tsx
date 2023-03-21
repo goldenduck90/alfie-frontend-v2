@@ -14,5 +14,5 @@ Appointments.getLayout = (page: React.ReactNode) => (
     {page}
   </Layout>
 );
-
+Appointments.isAuthRequired = true;
 export default Appointments;

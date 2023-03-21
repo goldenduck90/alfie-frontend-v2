@@ -25,5 +25,5 @@ function Custom404() {
 Custom404.getLayout = (page: React.ReactNode) => (
   <Layout title="Page Not Found">{page}</Layout>
 );
-
+Custom404.isAuthRequired = true;
 export default Custom404;

@@ -146,5 +146,5 @@ const Login = () => {
   );
 };
 
-Login.isAuthorized = false;
+Login.isAuthRequired = false;
 export default Login;

@@ -158,4 +158,5 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
   );
 };
 
+ResetPassword.isAuthRequired = false;
 export default ResetPassword;

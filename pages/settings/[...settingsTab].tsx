@@ -7,7 +7,7 @@ function Page() {
   return <SettingsView />;
 }
 
-Page.isAuthorized = true;
+Page.isAuthRequired = true;
 Page.getLayout = (page: React.ReactNode) => (
   <Layout title="Settings">{page}</Layout>
 );

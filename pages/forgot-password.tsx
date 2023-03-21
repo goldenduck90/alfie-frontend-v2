@@ -129,5 +129,5 @@ function ForgotPassword() {
   );
 }
 
-ForgotPassword.isAuthorized = false;
+ForgotPassword.isAuthRequired = false;
 export default ForgotPassword;

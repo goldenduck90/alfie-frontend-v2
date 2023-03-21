@@ -5,6 +5,6 @@ function SignUp() {
   return <SignUpPage />;
 }
 
-SignUp.isAuthorized = false;
+SignUp.isAuthRequired = false;
 
 export default SignUp;
