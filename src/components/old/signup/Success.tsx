@@ -3,7 +3,7 @@ import { Wrapper } from "../../layouts/Wrapper";
 import Image from "next/image";
 import { CheckCircleIcon } from "@heroicons/react/outline";
 
-const Success = () => {
+export const Success = () => {
   // run once
   useEffect(() => {
     localStorage.clear();
@@ -12,7 +12,7 @@ const Success = () => {
   return (
     <Wrapper>
       <div className="flex flex-col items-center my-10">
-        <Image src={"./assets/logo.png"} alt="Alfie" width={144} height={60} />
+        <Image src={"/assets/logo.png"} alt="Alfie" width={144} height={60} />
       </div>
       <div className="flex flex-col px-8 sm:px-14 pt-12 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
         <div className="flex flex-col items-center">
@@ -52,5 +52,3 @@ const Success = () => {
     </Wrapper>
   );
 };
-
-export default Success;

@@ -58,13 +58,11 @@ export const StripeWrapper = ({ children }: { children: React.ReactNode }) => {
     router.push("/");
   }
 
-  const { stripeClientSecret } = data.checkout.checkout;
-
   return (
     <Elements
       stripe={stripePromise}
       options={{
-        clientSecret: stripeClientSecret,
+        clientSecret: data?.checkout?.checkout?.stripeClientSecret,
       }}
     >
       {children}

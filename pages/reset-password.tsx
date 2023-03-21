@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { Role } from "@src/graphql/generated";
 import { Button } from "@src/components/ui/Button";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
 
 const resetPasswordMutation = gql`
   mutation ResetPassword($input: ResetPasswordInput!) {
@@ -44,6 +45,7 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
   const { user } = useCurrentUserStore();
   const [resetPassword] = useMutation(resetPasswordMutation);
   const isPatient = user?.role !== Role.Patient;
+  const { addNotification } = useNotificationStore();
 
   const forgotForm = useFormik({
     initialValues: {
@@ -68,11 +70,24 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
         });
 
         resetForm();
+        addNotification({
+          description: "Password successfully reset.",
+          id: "reset-password-success",
+          type: "success",
+          title: "Success",
+        });
         setStatus({ success: data.resetPassword.message });
         const { token: newToken, user: newUser } = data.resetPassword;
+        await router.push("/login");
       } catch (err) {
         const msg = parseError(err);
-        setStatus({ error: msg });
+
+        addNotification({
+          description: (err as any)?.message || msg,
+          id: "reset-password-fail",
+          type: "error",
+          title: "Failure",
+        });
         setErrors({
           password: " ",
           confirmPassword: " ",
@@ -93,11 +108,6 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
           {status?.error && (
             <div className="text-red-500 text-sm text-center">
               {status.error}
-            </div>
-          )}
-          {status?.success && (
-            <div className="text-green-500 text-sm text-center">
-              {status.success}
             </div>
           )}
           <div className="flex flex-col">

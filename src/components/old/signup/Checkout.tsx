@@ -50,19 +50,18 @@ export const Checkout = () => {
   if (loading) return <Loading />;
 
   if (error) {
-    router.push("/");
+    router.push("/login");
   }
-
-  // console.log();
-  const { checkout } = data?.checkout;
 
   return (
     <Wrapper>
       <Logo />
       <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         <p className="mb-4 mt-4 font-md font-bold text-lg text-brand-berry">
-          <span className="capitalize">{checkout.name.split(" ")[0]}</span>,
-          you&apos;ll lose over {weightLossValue} in 6 months with Alfie, the
+          <span className="capitalize">
+            {data?.checkout?.checkout?.name?.split(" ")[0]}
+          </span>
+          , you&apos;ll lose over {weightLossValue} in 6 months with Alfie, the
           virtual precision medicine clinic for people struggling with obesity.
         </p>
 
