@@ -1,7 +1,6 @@
 import { ClockIcon } from "@heroicons/react/outline";
 import { HeartIcon, ChevronRightIcon, UserIcon } from "@heroicons/react/solid";
 import { TaskType } from "@src/graphql/generated";
-import { useRouter } from "next/router";
 import React from "react";
 import { ChooseTaskIcon } from "../ChooseTaskIcon";
 import { PlaceHolderLine } from "./PlaceHolderLine";
@@ -42,11 +41,9 @@ export const DashboardPreviewItem = React.forwardRef(
           <div className="flex">
             {!icon && !renderIcon && (
               <div
-                className={`flex mr-4 rounded-full ${
-                  placeHolderIcon === "user" ? "bg-lime-100" : "bg-brand-peachy"
-                } w-10 h-10 items-center justify-center min-w-[40px] ${
-                  isLoading ? "animate-pulse" : ""
-                }`}
+                className={`flex mr-4 rounded-full ${placeHolderIcon === "user" ? "bg-lime-100" : "bg-brand-peachy"
+                  } w-10 h-10 items-center justify-center min-w-[40px] ${isLoading ? "animate-pulse" : ""
+                  }`}
               >
                 {placeHolderIcon === "user" ? (
                   <UserIcon className="h-6 w-6 text-lime-700" />
