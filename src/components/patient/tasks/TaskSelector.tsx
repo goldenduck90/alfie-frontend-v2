@@ -7,6 +7,7 @@ import {
   MetabolicProfileHunger,
   MetabolicProfileMeals,
 } from "@src/components/modal/variants/MetabolicProfile";
+import { ScheduleAppointment } from "@src/components/modal/variants/schedule/Schedule";
 import { WaistMeasurement } from "@src/components/modal/variants/WaistMeasurement";
 import { WeightEntry } from "@src/components/modal/variants/WeightEntry";
 import { Button } from "@src/components/ui/Button";
@@ -105,9 +106,9 @@ export const TaskSelector = ({
     //   return <MpBlueCapsulePartTwo userTaskId={userTaskId} />;
     case TaskType.ScheduleAppointment:
       return (
-        <Link href={"/dashboard/appointments"} passHref legacyBehavior>
-          {trigger ? trigger : <Button buttonType="secondary">Schedule</Button>}
-        </Link>
+        <DialogModal triggerAsChild trigger={trigger}>
+          <ScheduleAppointment userTaskId={userTaskId} />
+        </DialogModal>
       );
     case TaskType.AdLibitum:
       return (

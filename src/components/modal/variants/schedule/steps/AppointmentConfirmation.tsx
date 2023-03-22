@@ -7,11 +7,20 @@ import {
 } from "@heroicons/react/outline";
 import Image from "next/image";
 
+// setup dayjs
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault(dayjs.tz.guess());
+
 export const AppointmentConfirmation = () => {
-  const [, { value: selectedDate }] = useField("selectedDate");
   const [, { value: eaProvider }] = useField("eaProvider");
-  const [, { value: startTimeInUtc }] = useField("startTimeInUtc");
-  const [, { value: endTimeInUtc }] = useField("endTimeInUtc");
+  const [, { value: eaCustomer }] = useField("eaCustomer");
+  const [, { value: start }] = useField("start");
+  const [, { value: end }] = useField("end");
 
   return (
     <div className="w-full max-w-[480px] min-w-full">
@@ -49,15 +58,10 @@ export const AppointmentConfirmation = () => {
             <div className="flex gap-x-4 items-start">
               <CalendarIcon className="w-6 h-6 text-gray-500" />
               <div className="flex flex-col">
-                <p className="font-bold">{format(new Date(startTimeInUtc), "h:mm aa")} -{" "}
-                  {format(new Date(endTimeInUtc), "h:mm aa")}</p>
+                <p className="font-bold">{dayjs(start).format("h:mm A")} -{" "}
+                  {dayjs(end).format("h:mm A")}</p>
                 <p className="text-gray-500 font-medium">
-                  {selectedDate.toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }) || ""}
+                  {dayjs(start).format("MMMM DD, YYYY")}
                 </p>
               </div>
             </div>

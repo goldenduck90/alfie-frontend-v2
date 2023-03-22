@@ -21,6 +21,8 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
+import { ScheduleAppointment } from '@src/components/modal/variants/schedule/Schedule';
+import { DialogModal } from '@src/components/modal/Dialog';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -63,8 +65,7 @@ function AppointmentDetails() {
   const { appointmentId } = useRouter().query as { appointmentId: string };
   const router = useRouter();
   const session = useUserStateContext();
-  const [cancelModalOpen, setCancelModalOpen] = useState(false)
-  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(true)
+
   const { data, loading, error } = useQuery(appointmentDetailQuery, {
     variables: {
       input: {
@@ -88,6 +89,7 @@ function AppointmentDetails() {
   const firstNameInitial = isProvider ? eaCustomer?.name?.charAt(0).toUpperCase() : eaProvider?.name?.charAt(0).toUpperCase();
   const startDate = dayjs(start);
   const is15Before = startDate.diff(dayjs(), "minutes") <= 15;
+  const hasStarted = dayjs().isAfter(startDate);
 
   return (
     <Layout
@@ -219,10 +221,27 @@ function AppointmentDetails() {
             </div>
           </div>
           <div className="bg-gray-50 md:-m-6 p-4 md:mt-2 flex justify-end gap-2 border-t rounded-b-xl">
-            <Button disabled={loading} buttonType="urgent" onClick={() => { setCancelModalOpen(true) }}>
+            <Button
+              disabled={loading || hasStarted}
+              buttonType="urgent"
+              onClick={() => { }}
+            >
               Cancel this visit
             </Button>
-            <Button disabled={loading} onClick={() => { setRescheduleModalOpen(true) }}>Reschedule</Button>
+            <DialogModal triggerAsChild trigger={
+              <Button
+                disabled={loading || hasStarted}
+                onClick={() => { }}>
+                Reschedule
+              </Button>
+            }>
+              <ScheduleAppointment
+                eaAppointmentId={eaAppointmentId}
+                start={start}
+                end={end}
+                notes={notes}
+              />
+            </DialogModal>
           </div>
         </div>
         <div>

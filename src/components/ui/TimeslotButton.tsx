@@ -3,39 +3,43 @@ import { format } from "date-fns";
 import { Timeslot } from "@src/graphql/generated";
 import React from 'react';
 
+// setup dayjs
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault(dayjs.tz.guess());
+
 export const TimeslotButton = ({
   timeslot,
-  tz,
 }: {
   timeslot: Timeslot;
-  tz: any;
 }) => {
   const [
     ,
-    { value: startTimeInUtc },
-    { setValue: setStartTimeInUtc, setError: setStartTimeError },
-  ] = useField("startTimeInUtc");
-  const [, , { setValue: setEndTimeInUtc, setError: setEndTimeError }] =
-    useField("endTimeInUtc");
-  const [, , { setValue: setEaProvider, setError: setEaProviderError }] =
-    useField("eaProvider");
+    { value: start },
+    { setValue: setStart, setError: setStartError },
+  ] = useField("start");
+  const [, , { setValue: setEnd, setError: setEndError }] =
+    useField("end");
 
   const onClick = () => {
-    setEaProvider(timeslot.eaProvider);
-    setStartTimeInUtc(timeslot.startTimeInUtc);
-    setEndTimeInUtc(timeslot.endTimeInUtc);
-    setStartTimeError(undefined);
-    setEndTimeError(undefined);
-    setEaProviderError(undefined);
+    setStart(timeslot.start);
+    setEnd(timeslot.end);
+    setStartError(undefined);
+    setEndError(undefined);
   };
+
   return (
     <button
       onClick={onClick}
-      disabled={timeslot.startTimeInUtc === startTimeInUtc}
+      disabled={dayjs(timeslot.start).isSame(start, "milliseconds")}
       className="bg-gray-100 hover:bg-primary-400 focus:border-primary-700 hover:text-white disabled:bg-primary-400 disabled:text-white text-gray-600 font-eudoxus font-base py-1 md:py-2 px-4 rounded w-full mb-3 ease-in-out duration-300 text-sm md:text-md"
     >
-      {format(new Date(timeslot.startTimeInUtc), "h:mm aa")} -{" "}
-      {format(new Date(timeslot.endTimeInUtc), "h:mm aa")} ({tz.abbreviation})
+      {dayjs(timeslot.start).format("h:mm A")} -{" "}
+      {dayjs(timeslot.end).format("h:mm A")}
     </button>
   );
 };
