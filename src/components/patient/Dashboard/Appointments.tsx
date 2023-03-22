@@ -62,7 +62,7 @@ export function DashboardAppointments() {
     }
   }, [error]);
 
-  const renderItems = data?.upcomingAppointments.map((item: any, i: number) => {
+  const renderItems = data?.upcomingAppointments?.slice(0, 1).map((item: any, i: number) => {
     const date = dayjs(item.start);
 
     return (
