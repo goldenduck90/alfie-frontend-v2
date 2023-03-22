@@ -12,19 +12,40 @@ import { IconButton } from "@src/components/IconButton";
 import { CalendarIcon, ChatIcon } from "@heroicons/react/outline";
 import { Button } from "@src/components/ui/Button";
 import Image from "next/image";
-import dayjs from "dayjs";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
+import { useUserStateContext } from '@src/context/SessionContext';
+
+// setup dayjs
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import isToday from "dayjs/plugin/isToday";
+import isTomorrow from "dayjs/plugin/isTomorrow";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isToday);
+dayjs.extend(isTomorrow);
+dayjs.tz.setDefault(dayjs.tz.guess());
 
 export const appointmentDetailQuery = gql`
-  query AppointmentsQuery($eaAppointmentId: String!) {
-    appointment(eaAppointmentId: $eaAppointmentId) {
+  query AppointmentsQuery($input: GetAppointmentInput!) {
+    appointment(input: $input) {
       eaAppointmentId
-      startTimeInUtc
-      endTimeInUtc
+      start
+      end
       location
+      notes
       eaProvider {
+        id
         name
         type
+        email
+      }
+      eaCustomer {
+        id
+        name
+        email
       }
     }
   }
@@ -41,28 +62,37 @@ const cancelAppointmentMutation = gql`
 function AppointmentDetails() {
   const { appointmentId } = useRouter().query as { appointmentId: string };
   const router = useRouter();
+  const session = useUserStateContext();
   const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(true)
   const { data, loading, error } = useQuery(appointmentDetailQuery, {
     variables: {
-      eaAppointmentId: appointmentId,
+      input: {
+        eaAppointmentId: appointmentId,
+        timezone: dayjs.tz.guess(),
+      },
     },
   });
 
   const {
     eaAppointmentId,
-    startTimeInUtc,
+    start,
+    end,
     location,
+    notes,
     eaProvider,
-    endTimeInUtc,
+    eaCustomer,
   } = data?.appointment || {};
-  console.log(location);
-  const firstNameInitial = eaProvider?.name?.charAt(0).toUpperCase();
+
+  const isProvider = session[0]?.user?.role !== "Patient";
+  const firstNameInitial = isProvider ? eaCustomer?.name?.charAt(0).toUpperCase() : eaProvider?.name?.charAt(0).toUpperCase();
+  const startDate = dayjs(start);
+  const is15Before = startDate.diff(dayjs(), "minutes") <= 15;
 
   return (
     <Layout
       title="Appointment Details"
-      subtitle={`Online appointment scheduled with ${eaProvider?.name}.`}
+      subtitle={loading ? "Loading Details..." : `Online appointment scheduled with ${isProvider ? eaCustomer?.name : eaProvider?.name}.`}
       hasBackButton={true}
     >
       <div className="flex flex-col md:flex-row md:gap-6 bg-white md:bg-transparent border md:border-none p-4 md:p-0 rounded-xl">
@@ -91,8 +121,8 @@ function AppointmentDetails() {
                 </div>
               ) : (
                 <>
-                  <p>{eaProvider?.name}</p>
-                  <p>{eaProvider?.type}</p>
+                  <p>{isProvider ? eaCustomer?.name : eaProvider?.name}</p>
+                  <p>{isProvider ? "Patient" : eaProvider?.type}</p>
                 </>
               )}
               <div className="flex gap-2 pt-3">
@@ -124,15 +154,10 @@ function AppointmentDetails() {
                       <PlaceHolderLine amount={2} hasTopMargin />
                     </div>
                   ) : (
-                    <>
-                      <h2>
-                        {dayjs(startTimeInUtc).format("h:m a")} -{" "}
-                        {dayjs(endTimeInUtc).format("h:m a")}
-                      </h2>
-                      <p className="text-gray-400">
-                        {dayjs(startTimeInUtc).format("d, dddd MMMM YYYY")}
-                      </p>
-                    </>
+                    <h2>
+                      {startDate.isToday() ? `Today @ ${startDate.format("h:mm A")}` : startDate.isTomorrow() ? `Tomorrow @ ${startDate.format("h:mm A")}` : startDate.format("MM-DD-YYYY @ h:mm A")} -{" "}
+                      {dayjs(end).format("h:mm A")}
+                    </h2>
                   )}
                   {loading ? (
                     <PlaceHolderLine />
@@ -154,16 +179,20 @@ function AppointmentDetails() {
                     </div>
                   ) : (
                     <>
-                      <h2>Online Meeting</h2>
+                      <h2>Online Appointment</h2>
                       <p className="text-gray-400 pb-4">
                         The link will be activated 15 minutes before the
-                        meeting.
+                        appointment.
                       </p>
                     </>
                   )}
                   <a href={location} target="_blank" rel="noreferrer">
-                    <Button buttonType="accent" disabled={loading}>
-                      Join Meeting
+                    <Button
+                      buttonType="accent"
+                      onClick={() => { window.open(location, "_blank") }}
+                      disabled={loading || !is15Before}
+                    >
+                      Join Video Call
                     </Button>
                   </a>
                 </div>
@@ -179,10 +208,9 @@ function AppointmentDetails() {
                     </div>
                   ) : (
                     <>
-                      <h2>About the meeting</h2>
+                      <h2>Notes</h2>
                       <p className="text-gray-400">
-                        An introductory meeting with a doctor, and patient
-                        medical interview in the field of gastroenterology.
+                        {notes || "No notes for this appointment."}
                       </p>
                     </>
                   )}
