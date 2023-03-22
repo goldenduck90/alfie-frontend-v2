@@ -23,6 +23,7 @@ import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
 import { ScheduleAppointment } from '@src/components/modal/variants/schedule/Schedule';
 import { DialogModal } from '@src/components/modal/Dialog';
+import { CancelConfirmation } from '@src/components/modal/variants/schedule/CancelConfirmation';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -49,14 +50,6 @@ export const appointmentDetailQuery = gql`
         name
         email
       }
-    }
-  }
-`;
-
-const cancelAppointmentMutation = gql`
-  mutation CancelAppointment($eaAppointmentId: String!) {
-    cancelAppointment(eaAppointmentId: $eaAppointmentId) {
-      message
     }
   }
 `;
@@ -221,13 +214,23 @@ function AppointmentDetails() {
             </div>
           </div>
           <div className="bg-gray-50 md:-m-6 p-4 md:mt-2 flex justify-end gap-2 border-t rounded-b-xl">
-            <Button
-              disabled={loading || hasStarted}
-              buttonType="urgent"
-              onClick={() => { }}
-            >
-              Cancel this visit
-            </Button>
+            <DialogModal triggerAsChild trigger={
+              <Button
+                disabled={loading || hasStarted}
+                buttonType="urgent"
+                onClick={() => { }}
+              >
+                Cancel this visit
+              </Button>
+            }>
+              <CancelConfirmation
+                eaAppointmentId={eaAppointmentId}
+                eaProvider={eaProvider}
+                eaCustomer={eaCustomer}
+                start={start}
+                end={end}
+              />
+            </DialogModal>
             <DialogModal triggerAsChild trigger={
               <Button
                 disabled={loading || hasStarted}
