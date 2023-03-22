@@ -35,6 +35,11 @@ export type AddressInput = {
   state: Scalars['String'];
 };
 
+export type AkuteDocument = {
+  __typename?: 'AkuteDocument';
+  id: Scalars['String'];
+};
+
 export type AllTimeslotsInput = {
   eaServiceId: Scalars['String'];
   providerType?: InputMaybe<Role>;
@@ -319,6 +324,15 @@ export enum CustomInputType {
   Textlong = 'TEXTLONG'
 }
 
+export type DocUploadInput = {
+  description?: InputMaybe<Scalars['String']>;
+  externalPatientId?: InputMaybe<Scalars['String']>;
+  file: Scalars['String'];
+  fileName: Scalars['String'];
+  patientId?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
+};
+
 export type EaAppointment = {
   __typename?: 'EAAppointment';
   eaAppointmentId: Scalars['String'];
@@ -582,6 +596,7 @@ export type Mutation = {
   updateScheduleAvailability: CalAvailability;
   updateSubscription: MessageResponse;
   updateUserTask: UserTask;
+  uploadDocument: AkuteDocument;
 };
 
 
@@ -739,6 +754,11 @@ export type MutationUpdateSubscriptionArgs = {
 export type MutationUpdateUserTaskArgs = {
   input: UpdateUserTaskInput;
   taskId: Scalars['String'];
+};
+
+
+export type MutationUploadDocumentArgs = {
+  input: DocUploadInput;
 };
 
 export type Options = {
@@ -1121,6 +1141,7 @@ export type User = {
   email: Scalars['String'];
   emailToken: Scalars['String'];
   emailTokenExpiresAt: Scalars['DateTime'];
+  externalPatientId?: Maybe<Scalars['String']>;
   files: Array<File>;
   gender: Gender;
   heightInInches: Scalars['Float'];

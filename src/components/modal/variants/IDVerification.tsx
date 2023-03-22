@@ -1,13 +1,18 @@
 import { CalculatorIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Control, useController, useForm, useWatch } from "react-hook-form";
 import { Button } from "../../ui/Button";
 import { DialogLongHeader, useDialogToggle } from "../Dialog";
+import Image from "next/image";
 import { gql, useMutation } from "@apollo/client";
-import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
-import { FileType } from "@src/graphql/generated";
-import { useTaskCompletion } from "@src/hooks/useTaskCompletion";
+import {
+  DocUploadInput,
+  useAkuteMutation,
+} from "../../../hooks/useAkuteMutation";
+import { useCurrentUserStore } from "../../../hooks/useCurrentUser";
+import { useTaskCompletion } from "../../../hooks/useTaskCompletion";
+import { FileType } from "../../../graphql/generated";
 
 function createS3key({
   fileName,
@@ -45,13 +50,13 @@ const completeUploadUserTaskMutation = gql`
   }
 `;
 
-export function IDVerificationModal({
+export const IDVerificationModal = ({
   title,
   taskId,
 }: {
   title: string;
   taskId: string;
-}) {
+}) => {
   const [step, setStep] = useState(1);
   const { user } = useCurrentUserStore();
   const { control, handleSubmit } = useForm({
@@ -61,16 +66,36 @@ export function IDVerificationModal({
       idPhoto: null,
     },
   });
-
+  const setOpen = useDialogToggle();
   const [requestSignedUrls] = useMutation(requestSignedUrlsMutation);
   const [completeUploadFiles] = useMutation(completeUploadUserTaskMutation);
-  const setOpen = useDialogToggle();
   const [mutate] = useTaskCompletion(() => setOpen(false));
-
+  const [mutateAkuteDocUpload] = useAkuteMutation();
   const fileInput = useWatch({
     control,
     name: "idPhoto",
   });
+  const [selectedIdImage, setSelectedId] = useState<Blob | null>(null);
+  const [selectedInsuranceImage, setSelectedInsurance] = useState<Blob | null>(
+    null
+  );
+
+  const toBase64 = (file: Blob): Promise<any> => {
+    if (!file) return new Promise((resolve) => resolve(false));
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64 = reader.result?.toString();
+        if (base64) {
+          resolve(base64);
+        } else {
+          reject(new Error("Unable to convert file to base64"));
+        }
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   useEffect(() => {
     if (!!fileInput) {
@@ -194,6 +219,38 @@ export function IDVerificationModal({
           )
         );
 
+        const idBase64 = await toBase64(idPhoto.file);
+        const insBase64 = await toBase64(insurancePhoto.file);
+        const [idImage, insuranceImage] = await Promise.all([
+          idBase64,
+          insBase64,
+        ]);
+
+        const idDocument: DocUploadInput = {
+          file: idImage.split(",").pop(),
+          fileName: idPhoto.file.name,
+          description: "personal id photo",
+          patientId:
+            user?.akutePatientId || user?.externalPatientId || undefined,
+          tags: [""],
+        };
+        const insuranceIdDocument: DocUploadInput = {
+          file: insuranceImage.split(",").pop(),
+          fileName: insurancePhoto.file.name,
+          description: "insurance id photo",
+          patientId:
+            user?.akutePatientId || user?.externalPatientId || undefined,
+          tags: [""],
+        };
+
+        await mutateAkuteDocUpload({
+          variables: { input: idDocument },
+        });
+
+        await mutateAkuteDocUpload({
+          variables: { input: insuranceIdDocument },
+        });
+
         await completeUploadFiles({
           variables: {
             files: uploadedFiles,
@@ -256,10 +313,33 @@ export function IDVerificationModal({
           <InputFileField
             control={control}
             name={step === 1 ? "idPhoto" : "insurancePhoto"}
+            setSelectedImage={(file: Blob) => {
+              return step === 1
+                ? setSelectedId(file)
+                : step === 2 && file
+                ? setSelectedInsurance(file)
+                : null;
+            }}
           />
           <div className="flex flex-col gap-y-3 items-center justify-center h-full">
-            <div className="p-2 rounded-full bg-blue-100 stroke-blue-500 max-w-fit">
-              <CalculatorIcon className="w-5 h-5 stroke-inherit" />
+            <div className="p-2 rounded-full max-w-fit">
+              {step === 1 && selectedIdImage ? (
+                <Image
+                  src={URL.createObjectURL(selectedIdImage)}
+                  width={140}
+                  height={140}
+                  alt="id thumbnail"
+                />
+              ) : step === 2 && selectedInsuranceImage ? (
+                <Image
+                  src={URL.createObjectURL(selectedInsuranceImage)}
+                  width={140}
+                  height={140}
+                  alt="insurance thumbnail"
+                />
+              ) : (
+                <CalculatorIcon className="w-5 h-5 stroke-inherit" />
+              )}
             </div>
             <p className="font-bold">
               {step === 1
@@ -298,14 +378,16 @@ export function IDVerificationModal({
       </div>
     </div>
   );
-}
+};
 
 function InputFileField({
   name,
   control,
+  setSelectedImage,
 }: {
   name: string;
   control: Control<any>;
+  setSelectedImage: any;
 }) {
   const {
     field: { onChange, value, ...inputProps },
@@ -329,6 +411,9 @@ function InputFileField({
           )
         ) {
           onChange({ value: droppedFile?.name, file: droppedFile });
+          if (setSelectedImage) {
+            setSelectedImage(droppedFile);
+          }
         }
       }}
       accept="image/png, image/jpeg, application/pdf"
