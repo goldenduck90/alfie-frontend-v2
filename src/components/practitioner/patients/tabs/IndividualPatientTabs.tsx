@@ -21,6 +21,7 @@ import { BloodPressureChart } from "../components/BloodPressureChart";
 
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { PatientChat } from "./PatientChat";
+import { GenerateSummary } from "../components/GenerateSummary";
 
 const GetUserById = gql`
   query getUser($userId: String!) {
@@ -202,6 +203,8 @@ export function IndividualPatientTabs() {
             activeTasks={activeTasks}
           />
           <TableUserObject user={patientTable} loading={loading} />
+          {/*//? OPEN AI SUMMARY GENERATION */}
+          <GenerateSummary patient={patient} />
           <div className="w-full mt-6">
             <p className="mb-6 text-xl font-bold">Metabolic Profile</p>
             <MetabolicChart chartData={patient?.classifications} />
