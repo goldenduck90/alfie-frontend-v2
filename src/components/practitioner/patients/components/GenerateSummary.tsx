@@ -20,7 +20,7 @@ export function GenerateSummary({ patient }: { patient: Patient }) {
     <div className='w-full mt-6'>
       <div className='flex justify-between'>
         <h3 className='mb-6 text-xl font-bold'>Medication Recommendations</h3>
-        <Button onClick={() => getSummary()} disabled={loading}>
+        <Button onClick={() => console.log('generate :)')} disabled={loading}>
           Generate
         </Button>
       </div>
