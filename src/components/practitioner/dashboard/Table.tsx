@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   createColumnHelper,
@@ -7,8 +7,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import Link from "next/link";
+} from '@tanstack/react-table';
+import Link from 'next/link';
 export type PatientAddress = {
   line1: string;
   line2: string;
@@ -23,6 +23,7 @@ export type PatientWeights = {
 export type Patient = {
   _id: string;
   name: string;
+  generatedSummary?: string;
   phone: string;
   gender: string;
   email: string;
@@ -47,19 +48,19 @@ export const Table = ({
   const [data, setData] = React.useState(patientData || []);
   const [currentPage, setCurrentPage] = React.useState(1);
   const columns = [
-    columnHelper.accessor("name", {
+    columnHelper.accessor('name', {
       cell: (info) => info.getValue(),
-      header: "Name",
+      header: 'Name',
       footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row.gender, {
-      id: "Gender",
+      id: 'Gender',
       cell: (info) => info.getValue(),
       header: () => <span>Gender</span>,
       footer: (info) => info.column.id,
     }),
-    columnHelper.accessor("dateOfBirth", {
-      header: () => "Date of Birth",
+    columnHelper.accessor('dateOfBirth', {
+      header: () => 'Date of Birth',
       cell: (info) => info.renderValue(),
       footer: (info) => info.column.id,
     }),
@@ -69,14 +70,14 @@ export const Table = ({
     // }),
     // Need a column for an action button
 
-    columnHelper.accessor("status", {
-      header: "Status",
+    columnHelper.accessor('status', {
+      header: 'Status',
       footer: (info) => info.column.id,
       cell: (info) => (
         <span
           className={`
           inline-flex items-center rounded-full  px-3 py-0.5 text-sm font-medium text-white
-          ${info.getValue() === "Scheduled" ? "bg-royalBlue" : "bg-red-500"}
+          ${info.getValue() === 'Scheduled' ? 'bg-royalBlue' : 'bg-red-500'}
         `}
         >
           {info.getValue()}
@@ -92,12 +93,12 @@ export const Table = ({
         // </span>
       ),
     }),
-    columnHelper.accessor("view", {
-      header: "Patient Details",
+    columnHelper.accessor('view', {
+      header: 'Patient Details',
       footer: (info) => info.column.id,
       cell: (info) => (
         <Link
-          className="text-royalBlue hover:text-royalBlueDark"
+          className='text-royalBlue hover:text-royalBlueDark'
           href={`/patients?id=${info.row.original._id}`}
         >
           View
@@ -107,7 +108,7 @@ export const Table = ({
   ];
   // Paginate the table
   const filterFunction: any = (row: any, columnId: any, value: any) => {
-    if (columnId === "name") {
+    if (columnId === 'name') {
       return row.name.toLowerCase().includes(value.toLowerCase());
     }
   };
@@ -126,25 +127,25 @@ export const Table = ({
   }, [data, patientData]);
 
   return (
-    <div className="pt-10">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-xl font-semibold text-gray-900">Patients</h1>
+    <div className='pt-10'>
+      <div className='sm:flex sm:items-center'>
+        <div className='sm:flex-auto'>
+          <h1 className='text-xl font-semibold text-gray-900'>Patients</h1>
         </div>
       </div>
       {/* Search the table */}
-      <div className="mt-8 flex flex-col">
-        <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300 table-fixed">
-                <thead className="bg-gray-50">
+      <div className='mt-8 flex flex-col'>
+        <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+          <div className='inline-block min-w-full py-2 align-middle md:px-6 lg:px-8'>
+            <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+              <table className='min-w-full divide-y divide-gray-300 table-fixed'>
+                <thead className='bg-gray-50'>
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
                         <th
-                          scope="col"
-                          className="py-3.5 pl-3 pr-3 text-left text-sm font-semibold text-gray-900"
+                          scope='col'
+                          className='py-3.5 pl-3 pr-3 text-left text-sm font-semibold text-gray-900'
                           key={header.id}
                         >
                           {header.isPlaceholder
@@ -158,24 +159,24 @@ export const Table = ({
                     </tr>
                   ))}
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className='divide-y divide-gray-200 bg-white'>
                   {table.getRowModel().rows.map((row) => (
                     // Give each row and it's cell an inline loader
                     <tr
                       key={row.id}
-                      className={`${loading ? "animate-pulse" : ""}`}
+                      className={`${loading ? 'animate-pulse' : ''}`}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <td
-                          className="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                          className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'
                           key={cell.id}
                         >
                           {/* If the meetingUrl value is not null put a button there to go to meeting */}
 
-                          {cell.column.id === "meetingUrl" &&
+                          {cell.column.id === 'meetingUrl' &&
                           cell.getValue() !== null ? (
                             <Link
-                              className="text-royalBlue hover:text-royalBlueDark"
+                              className='text-royalBlue hover:text-royalBlueDark'
                               href={String(cell.getValue())}
                             >
                               Go to Meeting
@@ -202,11 +203,11 @@ export const Table = ({
         </div>
       </div>
       {/* Pagination buttons */}
-      <div className="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 relative 2 border text-sm font-medium rounded-md text-gray-700 bg-white mt-6">
-        <div className="flex-1 flex justify-between">
+      <div className='px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 relative 2 border text-sm font-medium rounded-md text-gray-700 bg-white mt-6'>
+        <div className='flex-1 flex justify-between'>
           <button
-            type="button"
-            className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-red hover:bg-gray-50"
+            type='button'
+            className='relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-red hover:bg-gray-50'
             onClick={() => {
               table.previousPage();
               setCurrentPage(currentPage - 1);
@@ -216,16 +217,16 @@ export const Table = ({
             Previous
           </button>
           {/* Current page displayed here */}
-          <div className="relative inline-flex items-center px-4 py-2  text-sm font-medium  text-gray-700 bg-white">
-            <strong className="pr-1">Page</strong>
+          <div className='relative inline-flex items-center px-4 py-2  text-sm font-medium  text-gray-700 bg-white'>
+            <strong className='pr-1'>Page</strong>
             <strong>
               {currentPage} of {table.getPageCount()}
             </strong>
           </div>
 
           <button
-            type="button"
-            className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-red hover:bg-gray-50"
+            type='button'
+            className='ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-red hover:bg-gray-50'
             onClick={() => {
               table.nextPage();
               setCurrentPage(currentPage + 1);
