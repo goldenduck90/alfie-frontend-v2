@@ -1,16 +1,10 @@
-import { gql } from "@apollo/client";
-import * as Apollo from "@apollo/client";
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -23,169 +17,250 @@ export type Scalars = {
 };
 
 export type Address = {
-  __typename?: "Address";
-  city: Scalars["String"];
-  country: Scalars["String"];
-  line1: Scalars["String"];
-  line2?: Maybe<Scalars["String"]>;
-  postalCode: Scalars["String"];
-  state: Scalars["String"];
+  __typename?: 'Address';
+  city: Scalars['String'];
+  country: Scalars['String'];
+  line1: Scalars['String'];
+  line2?: Maybe<Scalars['String']>;
+  postalCode: Scalars['String'];
+  state: Scalars['String'];
 };
 
 export type AddressInput = {
-  city: Scalars["String"];
-  country: Scalars["String"];
-  line1: Scalars["String"];
-  line2?: InputMaybe<Scalars["String"]>;
-  postalCode: Scalars["String"];
-  state: Scalars["String"];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  line1: Scalars['String'];
+  line2?: InputMaybe<Scalars['String']>;
+  postalCode: Scalars['String'];
+  state: Scalars['String'];
 };
 
 export type AkuteDocument = {
-  __typename?: "AkuteDocument";
-  id: Scalars["String"];
+  __typename?: 'AkuteDocument';
+  id: Scalars['String'];
+};
+
+export type AllTimeslotsInput = {
+  eaServiceId: Scalars['String'];
+  providerType?: InputMaybe<Role>;
+  selectedDate: Scalars['DateTime'];
 };
 
 /** The type of answer */
 export enum AnswerType {
-  Array = "ARRAY",
-  Boolean = "BOOLEAN",
-  Date = "DATE",
-  File = "FILE",
-  Number = "NUMBER",
-  String = "STRING",
+  Array = 'ARRAY',
+  Boolean = 'BOOLEAN',
+  Date = 'DATE',
+  File = 'FILE',
+  Number = 'NUMBER',
+  String = 'STRING'
 }
+
+export type Attendee = {
+  email: Scalars['String'];
+  locale?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  timeZone: Scalars['String'];
+};
 
 export type BatchCreateOrUpdateProvidersInput = {
   providers: Array<ProviderInput>;
 };
 
 export type BatchCreateOrUpdateProvidersResponse = {
-  __typename?: "BatchCreateOrUpdateProvidersResponse";
-  created: Scalars["Int"];
-  updated: Scalars["Int"];
+  __typename?: 'BatchCreateOrUpdateProvidersResponse';
+  created: Scalars['Int'];
+  updated: Scalars['Int'];
+};
+
+export type BookingResponse = {
+  __typename?: 'BookingResponse';
+  cancellationReason?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  destinationCalendarId?: Maybe<Scalars['String']>;
+  dynamicEventSlugRef?: Maybe<Scalars['String']>;
+  dynamicGroupSlugRef?: Maybe<Scalars['String']>;
+  endTime?: Maybe<Scalars['String']>;
+  eventTypeId?: Maybe<Scalars['Float']>;
+  fromReschedule?: Maybe<Scalars['Boolean']>;
+  hasHashedBookingLink?: Maybe<Scalars['Boolean']>;
+  hashedLink?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Float']>;
+  language?: Maybe<Scalars['String']>;
+  location?: Maybe<Scalars['String']>;
+  paid?: Maybe<Scalars['Boolean']>;
+  recurringEventId?: Maybe<Scalars['String']>;
+  rejectionReason?: Maybe<Scalars['String']>;
+  rescheduled?: Maybe<Scalars['Boolean']>;
+  smsReminderNumber?: Maybe<Scalars['String']>;
+  startTime?: Maybe<Scalars['String']>;
+  status?: Maybe<Status>;
+  title?: Maybe<Scalars['String']>;
+  uid?: Maybe<Scalars['String']>;
+  user?: Maybe<CalUser>;
+  userId?: Maybe<Scalars['Float']>;
+};
+
+export type CalAvailability = {
+  __typename?: 'CalAvailability';
+  availabilities?: Maybe<Array<CalTimeslot>>;
+  busy: Array<EventBusyDetails>;
+  timeZone: Scalars['String'];
+};
+
+export type CalTimeslot = {
+  __typename?: 'CalTimeslot';
+  day?: Maybe<Scalars['Float']>;
+  end: Scalars['String'];
+  start: Scalars['String'];
+};
+
+export type CalUser = {
+  __typename?: 'CalUser';
+  email?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
 };
 
 export type Checkout = {
-  __typename?: "Checkout";
-  _id: Scalars["String"];
+  __typename?: 'Checkout';
+  _id: Scalars['String'];
   billingAddress: Address;
-  checkedOut: Scalars["Boolean"];
-  dateOfBirth: Scalars["DateTime"];
-  email: Scalars["String"];
+  checkedOut: Scalars['Boolean'];
+  dateOfBirth: Scalars['DateTime'];
+  email: Scalars['String'];
   gender: Gender;
-  heightInInches: Scalars["Float"];
-  name: Scalars["String"];
-  phone: Scalars["String"];
-  sameAsShippingAddress: Scalars["Boolean"];
+  heightInInches: Scalars['Float'];
+  name: Scalars['String'];
+  phone: Scalars['String'];
+  sameAsShippingAddress: Scalars['Boolean'];
   shippingAddress: Address;
-  state: Scalars["String"];
-  stripeCheckoutId: Scalars["String"];
-  stripeClientSecret: Scalars["String"];
-  stripeCustomerId: Scalars["String"];
-  stripePaymentIntentId: Scalars["String"];
-  stripeSubscriptionId: Scalars["String"];
-  textOptIn?: Maybe<Scalars["Boolean"]>;
+  state: Scalars['String'];
+  stripeCheckoutId: Scalars['String'];
+  stripeClientSecret: Scalars['String'];
+  stripeCustomerId: Scalars['String'];
+  stripePaymentIntentId: Scalars['String'];
+  stripeSubscriptionId: Scalars['String'];
+  textOptIn?: Maybe<Scalars['Boolean']>;
   user?: Maybe<User>;
-  weightInLbs: Scalars["Float"];
-  weightLossMotivator: Scalars["String"];
+  weightInLbs: Scalars['Float'];
+  weightLossMotivator: Scalars['String'];
 };
 
 export type CheckoutResponse = {
-  __typename?: "CheckoutResponse";
+  __typename?: 'CheckoutResponse';
   checkout: Checkout;
-  message?: Maybe<Scalars["String"]>;
+  message?: Maybe<Scalars['String']>;
 };
 
 export type Classification = {
-  __typename?: "Classification";
-  calculated1hourPercent?: Maybe<Scalars["Float"]>;
-  calculated30minsPercent?: Maybe<Scalars["Float"]>;
-  calculatedPercentile?: Maybe<Scalars["Float"]>;
-  classification: Scalars["String"];
-  date: Scalars["DateTime"];
-  displayPercentile?: Maybe<Scalars["String"]>;
-  percentile: Scalars["String"];
+  __typename?: 'Classification';
+  calculated1hourPercent?: Maybe<Scalars['Float']>;
+  calculated30minsPercent?: Maybe<Scalars['Float']>;
+  calculatedPercentile?: Maybe<Scalars['Float']>;
+  classification: Scalars['String'];
+  date: Scalars['DateTime'];
+  displayPercentile?: Maybe<Scalars['String']>;
+  percentile: Scalars['String'];
 };
 
 export type CompletePaymentIntentInput = {
-  paymentIntentId: Scalars["String"];
+  paymentIntentId: Scalars['String'];
 };
 
 export type CompleteUserTaskInput = {
-  _id: Scalars["String"];
+  _id: Scalars['String'];
   answers: Array<UserAnswersInput>;
 };
 
 export type CreateAppointmentInput = {
-  bypassNotice?: InputMaybe<Scalars["Boolean"]>;
-  end: Scalars["String"];
-  notes?: InputMaybe<Scalars["String"]>;
-  selectedDate: Scalars["DateTime"];
-  start: Scalars["String"];
-  timezone: Scalars["String"];
-  userId?: InputMaybe<Scalars["String"]>;
-  userTaskId?: InputMaybe<Scalars["String"]>;
+  eaProviderId: Scalars['String'];
+  eaServiceId: Scalars['String'];
+  endTimeInUtc: Scalars['DateTime'];
+  notes?: InputMaybe<Scalars['String']>;
+  providerType: Role;
+  startTimeInUtc: Scalars['DateTime'];
+  userTaskId: Scalars['String'];
+};
+
+export type CreateBookingInput = {
+  attendees: Attendee;
+  customInput: Array<CustomInput>;
+  description?: InputMaybe<Scalars['String']>;
+  endTime: Scalars['String'];
+  eventTypeId: Scalars['Float'];
+  eventTypeSlug: Scalars['String'];
+  hasHashedBookingLink: Scalars['Boolean'];
+  hashedLink?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<Scalars['String']>;
+  location: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
+  recurringEventId: Scalars['String'];
+  smsReminderNumber?: InputMaybe<Scalars['String']>;
+  startTime: Scalars['String'];
+  status: Status;
+  title: Scalars['String'];
+  user: Scalars['String'];
+  userTaskId: Scalars['String'];
 };
 
 export type CreateCheckoutInput = {
-  dateOfBirth: Scalars["DateTime"];
-  email: Scalars["String"];
+  dateOfBirth: Scalars['DateTime'];
+  email: Scalars['String'];
   gender: Gender;
-  heightInInches: Scalars["Float"];
-  name: Scalars["String"];
-  phone: Scalars["String"];
-  state: Scalars["String"];
-  textOptIn?: InputMaybe<Scalars["Boolean"]>;
-  weightInLbs: Scalars["Float"];
-  weightLossMotivator: Scalars["String"];
+  heightInInches: Scalars['Float'];
+  name: Scalars['String'];
+  phone: Scalars['String'];
+  state: Scalars['String'];
+  textOptIn?: InputMaybe<Scalars['Boolean']>;
+  weightInLbs: Scalars['Float'];
+  weightLossMotivator: Scalars['String'];
 };
 
 export type CreateCustomerInput = {
-  address: Scalars["String"];
-  city: Scalars["String"];
-  email: Scalars["String"];
-  firstName: Scalars["String"];
-  lastName: Scalars["String"];
-  notes?: InputMaybe<Scalars["String"]>;
-  phone: Scalars["String"];
-  state: Scalars["String"];
-  timezone: Scalars["String"];
-  updateUser?: InputMaybe<Scalars["Boolean"]>;
-  userId: Scalars["String"];
-  zipCode: Scalars["String"];
+  address: Scalars['String'];
+  city: Scalars['String'];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
+  phone: Scalars['String'];
+  state: Scalars['String'];
+  updateUser?: InputMaybe<Scalars['Boolean']>;
+  userId: Scalars['String'];
+  zipCode: Scalars['String'];
 };
 
 export type CreateLabOrderResponse = {
-  __typename?: "CreateLabOrderResponse";
-  labOrderId: Scalars["String"];
+  __typename?: 'CreateLabOrderResponse';
+  labOrderId: Scalars['String'];
 };
 
 export type CreateStripeCustomerInput = {
-  _id: Scalars["String"];
+  _id: Scalars['String'];
   billing?: InputMaybe<AddressInput>;
-  sameAsShipping: Scalars["Boolean"];
+  sameAsShipping: Scalars['Boolean'];
   shipping: AddressInput;
 };
 
 export type CreateTaskInput = {
   /** If set to true, the task can be assigned multiple times to the same patient without the previously assigned task being completed. */
-  canHaveMultiple?: InputMaybe<Scalars["Boolean"]>;
+  canHaveMultiple?: InputMaybe<Scalars['Boolean']>;
   /** If set, the patient will have the set amount of days to complete the task until they become past due. */
-  daysTillDue?: InputMaybe<Scalars["Float"]>;
+  daysTillDue?: InputMaybe<Scalars['Float']>;
   /** If set to true, the task will be assigned to the patient as a high priority task. */
-  highPriority?: InputMaybe<Scalars["Boolean"]>;
+  highPriority?: InputMaybe<Scalars['Boolean']>;
   /** If set, this task will be assigned on a recurring interval. This is a cron expression. */
-  interval?: InputMaybe<Scalars["String"]>;
-  name: Scalars["String"];
+  interval?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
   /** If set to true, notifies the patient's health coach when the task is past due. Requires hoursTillDue to be set. */
-  notifyHealthCoachWhenPastDue?: InputMaybe<Scalars["Float"]>;
+  notifyHealthCoachWhenPastDue?: InputMaybe<Scalars['Float']>;
   /** If set to true, notifies the patient's provider when the task is past due. Requires hoursTillDue to be set. */
-  notifyProviderWhenPastDue?: InputMaybe<Scalars["Float"]>;
+  notifyProviderWhenPastDue?: InputMaybe<Scalars['Float']>;
   /** Notify patient when task is assigned. */
-  notifyWhenAssigned?: InputMaybe<Scalars["Boolean"]>;
+  notifyWhenAssigned?: InputMaybe<Scalars['Boolean']>;
   /** Notify patient when the task becomes past due. Requires hoursTillDue to be set. */
-  notifyWhenPastDue?: InputMaybe<Scalars["Boolean"]>;
+  notifyWhenPastDue?: InputMaybe<Scalars['Boolean']>;
   type: TaskType;
 };
 
@@ -193,93 +268,119 @@ export type CreateUserInput = {
   /** If not provided, user will be assigned a task to provide this information. */
   address?: InputMaybe<AddressInput>;
   /** User must be atleast 18 years old. */
-  dateOfBirth: Scalars["DateTime"];
+  dateOfBirth: Scalars['DateTime'];
   /** EasyAppointments Customer ID. If not provided, will be created after checkout. */
-  eaCustomerId?: InputMaybe<Scalars["String"]>;
+  eaCustomerId?: InputMaybe<Scalars['String']>;
   /** EasyAppointments Health Coach ID. If not provided, will be assigned after the patient has their first appointment. */
-  eaHealthCoachId?: InputMaybe<Scalars["String"]>;
-  email: Scalars["String"];
+  eaHealthCoachId?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
   gender: Gender;
   /** Height in inches. */
-  heightInInches: Scalars["Float"];
-  name: Scalars["String"];
+  heightInInches: Scalars['Float'];
+  name: Scalars['String'];
   /** If no password is provided, an email will be sent to create one. */
-  password?: InputMaybe<Scalars["String"]>;
-  phone?: InputMaybe<Scalars["String"]>;
+  password?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
   /** Provider ID associated the user to a specific provider in our system. */
-  providerId?: InputMaybe<Scalars["String"]>;
+  providerId?: InputMaybe<Scalars['String']>;
   /** If no role is provided, defaults to Patient. */
   role?: InputMaybe<Role>;
   /** If not provided, will be set after checkout. */
-  stripeCustomerId?: InputMaybe<Scalars["String"]>;
+  stripeCustomerId?: InputMaybe<Scalars['String']>;
   /** If not provided, will be set after checkout. */
-  stripeSubscriptionId?: InputMaybe<Scalars["String"]>;
+  stripeSubscriptionId?: InputMaybe<Scalars['String']>;
   /** When the user's subscription expires. If not provided, the subscription won't be active. */
-  subscriptionExpiresAt?: InputMaybe<Scalars["DateTime"]>;
-  textOptIn?: InputMaybe<Scalars["Boolean"]>;
+  subscriptionExpiresAt?: InputMaybe<Scalars['DateTime']>;
+  textOptIn?: InputMaybe<Scalars['Boolean']>;
   /** Current weight in lbs. */
-  weightInLbs?: InputMaybe<Scalars["Float"]>;
+  weightInLbs?: InputMaybe<Scalars['Float']>;
 };
 
 export type CreateUserTaskInput = {
   taskType: TaskType;
-  userId: Scalars["String"];
+  userId: Scalars['String'];
 };
 
 export type CreateUserTasksInput = {
   taskTypes: Array<TaskType>;
-  userId: Scalars["String"];
+  userId: Scalars['String'];
 };
 
+export type CustomInput = {
+  eventTypeId: Scalars['Float'];
+  label: Scalars['String'];
+  options?: InputMaybe<Options>;
+  placeholder: Scalars['String'];
+  required: Scalars['Boolean'];
+  type: CustomInputType;
+};
+
+export enum CustomInputType {
+  Bool = 'BOOL',
+  Number = 'NUMBER',
+  Phone = 'PHONE',
+  Radio = 'RADIO',
+  Text = 'TEXT',
+  Textlong = 'TEXTLONG'
+}
+
 export type DocUploadInput = {
-  description?: InputMaybe<Scalars["String"]>;
-  externalPatientId?: InputMaybe<Scalars["String"]>;
-  file: Scalars["String"];
-  fileName: Scalars["String"];
-  patientId?: InputMaybe<Scalars["String"]>;
-  tags: Array<Scalars["String"]>;
+  description?: InputMaybe<Scalars['String']>;
+  externalPatientId?: InputMaybe<Scalars['String']>;
+  file: Scalars['String'];
+  fileName: Scalars['String'];
+  patientId?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
 };
 
 export type EaAppointment = {
-  __typename?: "EAAppointment";
-  eaAppointmentId: Scalars["String"];
+  __typename?: 'EAAppointment';
+  eaAppointmentId: Scalars['String'];
+  eaProvider: EaProvider;
+  eaService: EaService;
+  endTimeInUtc: Scalars['DateTime'];
+  location: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  startTimeInUtc: Scalars['DateTime'];
+};
+
+export type EaAppointmentWithCustomer = {
+  __typename?: 'EAAppointmentWithCustomer';
+  eaAppointmentId: Scalars['String'];
   eaCustomer: EaCustomer;
   eaProvider: EaProvider;
   eaService: EaService;
-  end: Scalars["DateTime"];
-  location: Scalars["String"];
-  notes?: Maybe<Scalars["String"]>;
-  start: Scalars["DateTime"];
+  endTimeInUtc: Scalars['DateTime'];
+  location: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  startTimeInUtc: Scalars['DateTime'];
 };
 
 export type EaCustomer = {
-  __typename?: "EACustomer";
-  email: Scalars["String"];
-  id: Scalars["String"];
-  name: Scalars["String"];
-  phone: Scalars["String"];
+  __typename?: 'EACustomer';
+  email: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  phone: Scalars['String'];
 };
 
 export type EaProvider = {
-  __typename?: "EAProvider";
-  bufferTime: Scalars["Float"];
-  email: Scalars["String"];
-  id: Scalars["String"];
-  minAdvancedNotice: Scalars["Float"];
-  name: Scalars["String"];
-  numberOfPatients?: Maybe<Scalars["Float"]>;
-  timezone: Scalars["String"];
+  __typename?: 'EAProvider';
+  email: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  numberOfPatients?: Maybe<Scalars['Float']>;
+  timezone?: Maybe<Scalars['String']>;
   type: Role;
 };
 
 export type EaProviderProfile = {
-  __typename?: "EAProviderProfile";
-  firstName?: Maybe<Scalars["String"]>;
+  __typename?: 'EAProviderProfile';
+  firstName?: Maybe<Scalars['String']>;
   settings?: Maybe<EaProviderSettings>;
 };
 
 export type EaProviderProfileInput = {
-  firstName?: InputMaybe<Scalars["String"]>;
+  firstName?: InputMaybe<Scalars['String']>;
   settings?: InputMaybe<EaProviderProfileSettingsInput>;
 };
 
@@ -288,14 +389,14 @@ export type EaProviderProfileSettingsInput = {
 };
 
 export type EaProviderProfileWorkingPlanBreakInput = {
-  end?: InputMaybe<Scalars["String"]>;
-  start?: InputMaybe<Scalars["String"]>;
+  end?: InputMaybe<Scalars['String']>;
+  start?: InputMaybe<Scalars['String']>;
 };
 
 export type EaProviderProfileWorkingPlanDayInput = {
   breaks?: InputMaybe<Array<EaProviderProfileWorkingPlanBreakInput>>;
-  end?: InputMaybe<Scalars["String"]>;
-  start?: InputMaybe<Scalars["String"]>;
+  end?: InputMaybe<Scalars['String']>;
+  start?: InputMaybe<Scalars['String']>;
 };
 
 export type EaProviderProfileWorkingPlanInput = {
@@ -309,20 +410,20 @@ export type EaProviderProfileWorkingPlanInput = {
 };
 
 export type EaProviderSettings = {
-  __typename?: "EAProviderSettings";
+  __typename?: 'EAProviderSettings';
   workingPlan?: Maybe<EaWorkingPlan>;
 };
 
 export type EaService = {
-  __typename?: "EAService";
-  description?: Maybe<Scalars["String"]>;
-  durationInMins: Scalars["Float"];
-  id: Scalars["String"];
-  name: Scalars["String"];
+  __typename?: 'EAService';
+  description?: Maybe<Scalars['String']>;
+  durationInMins: Scalars['Float'];
+  id: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type EaWorkingPlan = {
-  __typename?: "EAWorkingPlan";
+  __typename?: 'EAWorkingPlan';
   friday?: Maybe<EaWorkingPlanDay>;
   monday?: Maybe<EaWorkingPlanDay>;
   saturday?: Maybe<EaWorkingPlanDay>;
@@ -333,151 +434,137 @@ export type EaWorkingPlan = {
 };
 
 export type EaWorkingPlanBreak = {
-  __typename?: "EAWorkingPlanBreak";
-  end?: Maybe<Scalars["String"]>;
-  start?: Maybe<Scalars["String"]>;
+  __typename?: 'EAWorkingPlanBreak';
+  end?: Maybe<Scalars['String']>;
+  start?: Maybe<Scalars['String']>;
 };
 
 export type EaWorkingPlanDay = {
-  __typename?: "EAWorkingPlanDay";
+  __typename?: 'EAWorkingPlanDay';
   breaks?: Maybe<Array<EaWorkingPlanBreak>>;
-  end?: Maybe<Scalars["String"]>;
-  start?: Maybe<Scalars["String"]>;
+  end?: Maybe<Scalars['String']>;
+  start?: Maybe<Scalars['String']>;
+};
+
+export type EventBusyDetails = {
+  __typename?: 'EventBusyDetails';
+  end: Scalars['String'];
+  source?: Maybe<Scalars['String']>;
+  start: Scalars['String'];
+  title: Scalars['String'];
 };
 
 export type File = {
-  __typename?: "File";
-  ETag: Scalars["String"];
-  contentType: Scalars["String"];
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  key: Scalars["String"];
+  __typename?: 'File';
+  ETag: Scalars['String'];
+  contentType: Scalars['String'];
+  createdAt?: Maybe<Scalars['DateTime']>;
+  key: Scalars['String'];
   metadata?: Maybe<Array<FileMetadata>>;
   type: FileType;
-  url: Scalars["String"];
-  versionId?: Maybe<Scalars["String"]>;
+  url: Scalars['String'];
+  versionId?: Maybe<Scalars['String']>;
 };
 
 export type FileInput = {
-  ETag: Scalars["String"];
-  contentType: Scalars["String"];
-  createdAt?: InputMaybe<Scalars["DateTime"]>;
-  key: Scalars["String"];
+  ETag: Scalars['String'];
+  contentType: Scalars['String'];
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  key: Scalars['String'];
   metadata?: InputMaybe<Array<FileMetadataInput>>;
   type: FileType;
-  url: Scalars["String"];
-  versionId?: InputMaybe<Scalars["String"]>;
+  url: Scalars['String'];
+  versionId?: InputMaybe<Scalars['String']>;
 };
 
 export type FileMetadata = {
-  __typename?: "FileMetadata";
-  key: Scalars["String"];
-  value: Scalars["String"];
+  __typename?: 'FileMetadata';
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type FileMetadataInput = {
-  key: Scalars["String"];
-  value: Scalars["String"];
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 /** Represents the file's purpose */
 export enum FileType {
-  InsuranceCard = "InsuranceCard",
-  Other = "Other",
-  PhotoId = "PhotoId",
+  InsuranceCard = 'InsuranceCard',
+  Other = 'Other',
+  PhotoId = 'PhotoId'
 }
 
 export type ForgotPasswordInput = {
-  email: Scalars["String"];
+  email: Scalars['String'];
 };
 
 export enum Gender {
-  Female = "Female",
-  Male = "Male",
+  Female = 'Female',
+  Male = 'Male'
 }
 
-export type GetAppointmentInput = {
-  eaAppointmentId: Scalars["String"];
-  timezone: Scalars["String"];
-};
-
-export type GetAppointmentsByDateInput = {
-  selectedDate: Scalars["DateTime"];
-  timezone: Scalars["String"];
-};
-
-export type GetAppointmentsByMonthInput = {
-  month: Scalars["Float"];
-  timezone: Scalars["String"];
-};
-
-export type GetTimeslotsInput = {
-  bypassNotice?: InputMaybe<Scalars["Boolean"]>;
-  eaProviderId: Scalars["String"];
-  selectedDate: Scalars["DateTime"];
-  timezone: Scalars["String"];
-};
-
 export type GetUserTasksInput = {
-  completed?: InputMaybe<Scalars["Boolean"]>;
-  limit?: InputMaybe<Scalars["Float"]>;
-  offset?: InputMaybe<Scalars["Float"]>;
-  userId?: InputMaybe<Scalars["String"]>;
+  completed?: InputMaybe<Scalars['Boolean']>;
+  limit?: InputMaybe<Scalars['Float']>;
+  offset?: InputMaybe<Scalars['Float']>;
+  userId?: InputMaybe<Scalars['String']>;
 };
 
 export type GooglePlacesSearchInput = {
-  location: Scalars["String"];
-  query: Scalars["String"];
-  radius: Scalars["Float"];
-  type: Scalars["String"];
+  location: Scalars['String'];
+  query: Scalars['String'];
+  radius: Scalars['Float'];
+  type: Scalars['String'];
 };
 
 export type GooglePlacesSearchResult = {
-  __typename?: "GooglePlacesSearchResult";
-  description: Scalars["String"];
-  place_id: Scalars["String"];
-  reference: Scalars["String"];
+  __typename?: 'GooglePlacesSearchResult';
+  description: Scalars['String'];
+  place_id: Scalars['String'];
+  reference: Scalars['String'];
 };
 
 export type GoogleReverseGeoCodeGeometryObject = {
-  __typename?: "GoogleReverseGeoCodeGeometryObject";
+  __typename?: 'GoogleReverseGeoCodeGeometryObject';
   location: LocationObject;
 };
 
 export type GoogleReverseGeoCodeResult = {
-  __typename?: "GoogleReverseGeoCodeResult";
-  formatted_address: Scalars["String"];
+  __typename?: 'GoogleReverseGeoCodeResult';
+  formatted_address: Scalars['String'];
   geometry: GoogleReverseGeoCodeGeometryObject;
 };
 
 export type LocationObject = {
-  __typename?: "LocationObject";
-  lat: Scalars["Float"];
-  lng: Scalars["Float"];
+  __typename?: 'LocationObject';
+  lat: Scalars['Float'];
+  lng: Scalars['Float'];
 };
 
 export type LoginInput = {
-  email: Scalars["String"];
+  email: Scalars['String'];
   /** Only useable by admins to generate auth tokens */
-  noExpire?: InputMaybe<Scalars["Boolean"]>;
-  password: Scalars["String"];
+  noExpire?: InputMaybe<Scalars['Boolean']>;
+  password: Scalars['String'];
   /** If not set token will expire in 1d. If set to true, token will expire in 7d. */
-  remember?: InputMaybe<Scalars["Boolean"]>;
+  remember?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type LoginResponse = {
-  __typename?: "LoginResponse";
-  message?: Maybe<Scalars["String"]>;
-  token: Scalars["String"];
+  __typename?: 'LoginResponse';
+  message?: Maybe<Scalars['String']>;
+  token: Scalars['String'];
   user: PartialUser;
 };
 
 export type MessageResponse = {
-  __typename?: "MessageResponse";
-  message: Scalars["String"];
+  __typename?: 'MessageResponse';
+  message: Scalars['String'];
 };
 
 export type Mutation = {
-  __typename?: "Mutation";
+  __typename?: 'Mutation';
   archiveTask: UserTask;
   assignTaskToUser: UserTask;
   batchCreateOrUpdateProviders?: Maybe<BatchCreateOrUpdateProvidersResponse>;
@@ -488,12 +575,15 @@ export type Mutation = {
   completeUpload: User;
   completeUserTask: UserTask;
   createAppointment: EaAppointment;
-  createCustomer: Scalars["String"];
+  createBooking: BookingResponse;
+  createCustomer: Scalars['String'];
   createLabOrder: CreateLabOrderResponse;
   createOrFindCheckout: CheckoutResponse;
   createOrUpdateStripeSession: CheckoutResponse;
+  createScheduleAvailability: CalAvailability;
   createTask: Task;
   createUser: User;
+  deleteBooking: CalAvailability;
   forgotPassword: MessageResponse;
   login: LoginResponse;
   requestSignedUrls: Array<SignedUrlResponse>;
@@ -501,547 +591,661 @@ export type Mutation = {
   scorePatients: Score;
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
+  updateBooking: BookingResponse;
   updateProviderProfile: EaProviderProfile;
+  updateScheduleAvailability: CalAvailability;
   updateSubscription: MessageResponse;
   updateUserTask: UserTask;
   uploadDocument: AkuteDocument;
 };
 
+
 export type MutationArchiveTaskArgs = {
-  taskId: Scalars["String"];
+  taskId: Scalars['String'];
 };
+
 
 export type MutationAssignTaskToUserArgs = {
   input: CreateUserTaskInput;
 };
 
+
 export type MutationBatchCreateOrUpdateProvidersArgs = {
   input: BatchCreateOrUpdateProvidersInput;
 };
+
 
 export type MutationBulkAssignTasksToUserArgs = {
   input: CreateUserTasksInput;
 };
 
+
 export type MutationCancelAppointmentArgs = {
-  eaAppointmentId: Scalars["String"];
+  eaAppointmentId: Scalars['String'];
 };
 
+
 export type MutationClassifyPatientsArgs = {
-  userId: Scalars["String"];
+  userId: Scalars['String'];
 };
+
 
 export type MutationCompletePaymentIntentArgs = {
   input: CompletePaymentIntentInput;
 };
 
+
 export type MutationCompleteUploadArgs = {
   files: Array<FileInput>;
 };
+
 
 export type MutationCompleteUserTaskArgs = {
   input: CompleteUserTaskInput;
 };
 
+
 export type MutationCreateAppointmentArgs = {
   input: CreateAppointmentInput;
 };
+
+
+export type MutationCreateBookingArgs = {
+  input: CreateBookingInput;
+};
+
 
 export type MutationCreateCustomerArgs = {
   input: CreateCustomerInput;
 };
 
+
 export type MutationCreateLabOrderArgs = {
-  userId: Scalars["String"];
+  userId: Scalars['String'];
 };
+
 
 export type MutationCreateOrFindCheckoutArgs = {
   input: CreateCheckoutInput;
 };
 
+
 export type MutationCreateOrUpdateStripeSessionArgs = {
   input: CreateStripeCustomerInput;
 };
+
+
+export type MutationCreateScheduleAvailabilityArgs = {
+  input: ScheduleAvailability;
+};
+
 
 export type MutationCreateTaskArgs = {
   input: CreateTaskInput;
 };
 
+
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
 };
+
+
+export type MutationDeleteBookingArgs = {
+  id: Scalars['Float'];
+};
+
 
 export type MutationForgotPasswordArgs = {
   input: ForgotPasswordInput;
 };
 
+
 export type MutationLoginArgs = {
   input: LoginInput;
 };
+
 
 export type MutationRequestSignedUrlsArgs = {
   requests: Array<SignedUrlRequest>;
 };
 
+
 export type MutationResetPasswordArgs = {
   input: ResetPasswordInput;
 };
 
+
 export type MutationScorePatientsArgs = {
-  userId: Scalars["String"];
+  userId: Scalars['String'];
 };
+
 
 export type MutationSubscribeEmailArgs = {
   input: SubscribeEmailInput;
 };
 
+
 export type MutationUpdateAppointmentArgs = {
   input: UpdateAppointmentInput;
 };
 
+
+export type MutationUpdateBookingArgs = {
+  input: UpdateBookingInput;
+};
+
+
 export type MutationUpdateProviderProfileArgs = {
-  eaProviderId: Scalars["String"];
+  eaProviderId: Scalars['String'];
   input: EaProviderProfileInput;
 };
+
+
+export type MutationUpdateScheduleAvailabilityArgs = {
+  id: Scalars['Float'];
+};
+
 
 export type MutationUpdateSubscriptionArgs = {
   input: UpdateSubscriptionInput;
 };
 
+
 export type MutationUpdateUserTaskArgs = {
   input: UpdateUserTaskInput;
-  taskId: Scalars["String"];
+  taskId: Scalars['String'];
 };
+
 
 export type MutationUploadDocumentArgs = {
   input: DocUploadInput;
 };
 
+export type Options = {
+  label?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+};
+
 export type PartialUser = {
-  __typename?: "PartialUser";
-  _id: Scalars["String"];
-  eaHealthCoachId?: Maybe<Scalars["String"]>;
-  eaProviderId?: Maybe<Scalars["String"]>;
-  email: Scalars["String"];
-  name: Scalars["String"];
+  __typename?: 'PartialUser';
+  _id: Scalars['String'];
+  eaHealthCoachId?: Maybe<Scalars['String']>;
+  eaProviderId?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  name: Scalars['String'];
   role: Role;
 };
 
 export type PharmacyLocationInput = {
-  name: Scalars["String"];
+  name: Scalars['String'];
 };
 
 export type PharmacyLocationResult = {
-  __typename?: "PharmacyLocationResult";
-  address_city: Scalars["String"];
-  address_line_1: Scalars["String"];
-  address_line_2?: Maybe<Scalars["String"]>;
-  address_state: Scalars["String"];
-  address_zipcode: Scalars["String"];
-  id: Scalars["Float"];
-  lat?: Maybe<Scalars["Float"]>;
-  lng?: Maybe<Scalars["Float"]>;
-  name: Scalars["String"];
-  pharmacy_specialties: Array<Scalars["String"]>;
-  primary_fax_number: Scalars["String"];
-  primary_phone_number: Scalars["String"];
+  __typename?: 'PharmacyLocationResult';
+  address_city: Scalars['String'];
+  address_line_1: Scalars['String'];
+  address_line_2?: Maybe<Scalars['String']>;
+  address_state: Scalars['String'];
+  address_zipcode: Scalars['String'];
+  id: Scalars['Float'];
+  lat?: Maybe<Scalars['Float']>;
+  lng?: Maybe<Scalars['Float']>;
+  name: Scalars['String'];
+  pharmacy_specialties: Array<Scalars['String']>;
+  primary_fax_number: Scalars['String'];
+  primary_phone_number: Scalars['String'];
 };
 
 export type Provider = {
-  __typename?: "Provider";
-  _id: Scalars["String"];
-  akuteId: Scalars["String"];
-  eaProviderId: Scalars["Int"];
-  email: Scalars["String"];
-  emailToken?: Maybe<Scalars["String"]>;
-  emailTokenExpiresAt: Scalars["DateTime"];
-  firstName: Scalars["String"];
-  lastName: Scalars["String"];
-  licensedStates: Array<Scalars["String"]>;
-  npi: Scalars["String"];
-  numberOfPatients?: Maybe<Scalars["Int"]>;
-  password?: Maybe<Scalars["String"]>;
-  type: Scalars["String"];
+  __typename?: 'Provider';
+  _id: Scalars['String'];
+  akuteId: Scalars['String'];
+  eaProviderId: Scalars['Int'];
+  email: Scalars['String'];
+  emailToken?: Maybe<Scalars['String']>;
+  emailTokenExpiresAt: Scalars['DateTime'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  licensedStates: Array<Scalars['String']>;
+  npi: Scalars['String'];
+  numberOfPatients?: Maybe<Scalars['Int']>;
+  password?: Maybe<Scalars['String']>;
+  type: Scalars['String'];
+};
+
+export type ProviderAvailabilityInput = {
+  dateFrom?: InputMaybe<Scalars['String']>;
+  dateTo?: InputMaybe<Scalars['String']>;
+  timezone: Scalars['String'];
 };
 
 export type ProviderInput = {
-  akuteId: Scalars["String"];
-  eaProviderId: Scalars["Int"];
-  email: Scalars["String"];
-  firstName: Scalars["String"];
-  lastName: Scalars["String"];
-  licensedStates: Array<Scalars["String"]>;
-  npi: Scalars["String"];
-  numberOfPatients?: InputMaybe<Scalars["Int"]>;
+  akuteId: Scalars['String'];
+  eaProviderId: Scalars['Int'];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  licensedStates: Array<Scalars['String']>;
+  npi: Scalars['String'];
+  numberOfPatients?: InputMaybe<Scalars['Int']>;
   type: Role;
 };
 
+export type ProviderTimeslotsInput = {
+  eaProviderId: Scalars['String'];
+  eaServiceId: Scalars['String'];
+  selectedDate: Scalars['DateTime'];
+};
+
 export type Query = {
-  __typename?: "Query";
+  __typename?: 'Query';
+  allTimeslots: TimeslotsResponse;
   allUserTasks: UserTaskList;
   allUserTasksByUserId?: Maybe<Array<UserTask>>;
   appointment: EaAppointment;
-  appointmentsByDate: Array<EaAppointment>;
-  appointmentsByMonth: Array<EaAppointment>;
+  appointments: Array<EaAppointment>;
   checkout: CheckoutResponse;
+  generateSummary: Array<User>;
   getAProvider: EaProviderProfile;
   getAllPatientsByHealthCoach: Array<User>;
   getAllPatientsByPractitioner: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
+  getProviderAvailability: CalAvailability;
+  getScheduleAvailabilityById: CalAvailability;
   getUserById: User;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
+  providerAppointments: Array<EaAppointmentWithCustomer>;
+  providerTimeslots: TimeslotsResponse;
   reverseGeoCode: Array<GoogleReverseGeoCodeResult>;
   task?: Maybe<Task>;
-  timeslots: TimeslotsResponse;
-  upcomingAppointments: Array<EaAppointment>;
   user: User;
   userTask: UserTask;
   userTasks: UserTaskList;
   users: Array<User>;
 };
 
-export type QueryAllUserTasksByUserIdArgs = {
-  userId: Scalars["String"];
+
+export type QueryAllTimeslotsArgs = {
+  input: AllTimeslotsInput;
 };
+
+
+export type QueryAllUserTasksByUserIdArgs = {
+  userId: Scalars['String'];
+};
+
 
 export type QueryAppointmentArgs = {
-  input: GetAppointmentInput;
+  eaAppointmentId: Scalars['String'];
 };
 
-export type QueryAppointmentsByDateArgs = {
-  input: GetAppointmentsByDateInput;
+
+export type QueryAppointmentsArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
 };
 
-export type QueryAppointmentsByMonthArgs = {
-  input: GetAppointmentsByMonthInput;
-};
 
 export type QueryCheckoutArgs = {
-  id: Scalars["String"];
+  id: Scalars['String'];
 };
+
+
+export type QueryGenerateSummaryArgs = {
+  userId: Scalars['String'];
+};
+
 
 export type QueryGetAProviderArgs = {
-  eaProviderId: Scalars["String"];
+  eaProviderId: Scalars['String'];
 };
+
 
 export type QueryGetAllUserTasksByUserArgs = {
-  userId: Scalars["String"];
+  userId: Scalars['String'];
 };
 
-export type QueryGetUserByIdArgs = {
-  userId: Scalars["String"];
+
+export type QueryGetProviderAvailabilityArgs = {
+  input: ProviderAvailabilityInput;
 };
+
+
+export type QueryGetScheduleAvailabilityByIdArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type QueryGetUserByIdArgs = {
+  userId: Scalars['String'];
+};
+
 
 export type QueryPharmacyLocationsArgs = {
   input: PharmacyLocationInput;
 };
 
+
 export type QueryPlacesArgs = {
   input: GooglePlacesSearchInput;
 };
 
+
+export type QueryProviderAppointmentsArgs = {
+  eaProviderId: Scalars['String'];
+};
+
+
+export type QueryProviderTimeslotsArgs = {
+  input: ProviderTimeslotsInput;
+};
+
+
 export type QueryTaskArgs = {
-  id: Scalars["String"];
+  id: Scalars['String'];
 };
 
-export type QueryTimeslotsArgs = {
-  input: GetTimeslotsInput;
-};
-
-export type QueryUpcomingAppointmentsArgs = {
-  input: UpcomingAppointmentsInput;
-};
 
 export type QueryUserTaskArgs = {
-  id: Scalars["String"];
+  id: Scalars['String'];
 };
+
 
 export type QueryUserTasksArgs = {
   input: GetUserTasksInput;
 };
 
 export type ResetPasswordInput = {
-  password: Scalars["String"];
-  provider?: InputMaybe<Scalars["Boolean"]>;
-  registration: Scalars["Boolean"];
-  token: Scalars["String"];
+  password: Scalars['String'];
+  provider?: InputMaybe<Scalars['Boolean']>;
+  registration: Scalars['Boolean'];
+  token: Scalars['String'];
 };
 
 /** The user roles a user can be assigned to */
 export enum Role {
-  Admin = "Admin",
-  CareCoordinator = "CareCoordinator",
-  Doctor = "Doctor",
-  HealthCoach = "HealthCoach",
-  Nutritionist = "Nutritionist",
-  Patient = "Patient",
-  Practitioner = "Practitioner",
+  Admin = 'Admin',
+  CareCoordinator = 'CareCoordinator',
+  Doctor = 'Doctor',
+  HealthCoach = 'HealthCoach',
+  Nutritionist = 'Nutritionist',
+  Patient = 'Patient',
+  Practitioner = 'Practitioner'
 }
 
+export type ScheduleAvailability = {
+  days: Array<Scalars['Float']>;
+  endTime: Scalars['String'];
+  scheduleId: Scalars['Float'];
+  startTime: Scalars['String'];
+};
+
 export type Score = {
-  __typename?: "Score";
-  calculated1hourPercent?: Maybe<Scalars["Float"]>;
-  calculated30minsPercent?: Maybe<Scalars["Float"]>;
-  calculatedPercentile?: Maybe<Scalars["Float"]>;
-  date?: Maybe<Scalars["DateTime"]>;
-  increased?: Maybe<Scalars["Boolean"]>;
-  increased1hour?: Maybe<Scalars["Boolean"]>;
-  increasedDiastolic?: Maybe<Scalars["Boolean"]>;
-  increasedSystolic?: Maybe<Scalars["Boolean"]>;
-  latest?: Maybe<Scalars["String"]>;
-  message?: Maybe<Scalars["String"]>;
-  percent?: Maybe<Scalars["Float"]>;
-  percentDifference?: Maybe<Scalars["Float"]>;
-  percentDifference1Hour?: Maybe<Scalars["Float"]>;
-  percentDifference30Mins?: Maybe<Scalars["Float"]>;
-  percentDifferenceDiastolic?: Maybe<Scalars["Float"]>;
-  percentDifferenceSystolic?: Maybe<Scalars["Float"]>;
-  percentile?: Maybe<Scalars["String"]>;
-  percentile1hour?: Maybe<Scalars["String"]>;
-  percentile30mins?: Maybe<Scalars["String"]>;
-  providerMessage?: Maybe<Scalars["String"]>;
-  score?: Maybe<Scalars["Float"]>;
-  score1hour?: Maybe<Scalars["String"]>;
-  score30mins?: Maybe<Scalars["String"]>;
-  scoreDiastolic?: Maybe<Scalars["Float"]>;
-  scoreSystolic?: Maybe<Scalars["Float"]>;
-  task?: Maybe<Scalars["String"]>;
-  total?: Maybe<Scalars["Float"]>;
+  __typename?: 'Score';
+  calculated1hourPercent?: Maybe<Scalars['Float']>;
+  calculated30minsPercent?: Maybe<Scalars['Float']>;
+  calculatedPercentile?: Maybe<Scalars['Float']>;
+  date?: Maybe<Scalars['DateTime']>;
+  increased?: Maybe<Scalars['Boolean']>;
+  increased1hour?: Maybe<Scalars['Boolean']>;
+  increasedDiastolic?: Maybe<Scalars['Boolean']>;
+  increasedSystolic?: Maybe<Scalars['Boolean']>;
+  latest?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
+  percent?: Maybe<Scalars['Float']>;
+  percentDifference?: Maybe<Scalars['Float']>;
+  percentDifference1Hour?: Maybe<Scalars['Float']>;
+  percentDifference30Mins?: Maybe<Scalars['Float']>;
+  percentDifferenceDiastolic?: Maybe<Scalars['Float']>;
+  percentDifferenceSystolic?: Maybe<Scalars['Float']>;
+  percentile?: Maybe<Scalars['String']>;
+  percentile1hour?: Maybe<Scalars['String']>;
+  percentile30mins?: Maybe<Scalars['String']>;
+  providerMessage?: Maybe<Scalars['String']>;
+  score?: Maybe<Scalars['Float']>;
+  score1hour?: Maybe<Scalars['String']>;
+  score30mins?: Maybe<Scalars['String']>;
+  scoreDiastolic?: Maybe<Scalars['Float']>;
+  scoreSystolic?: Maybe<Scalars['Float']>;
+  task?: Maybe<Scalars['String']>;
+  total?: Maybe<Scalars['Float']>;
 };
 
 export type SignedUrlRequest = {
-  contentType: Scalars["String"];
-  key: Scalars["String"];
+  contentType: Scalars['String'];
+  key: Scalars['String'];
   metadata?: InputMaybe<Array<FileMetadataInput>>;
 };
 
 export type SignedUrlResponse = {
-  __typename?: "SignedUrlResponse";
-  key: Scalars["String"];
-  url: Scalars["String"];
+  __typename?: 'SignedUrlResponse';
+  key: Scalars['String'];
+  url: Scalars['String'];
 };
 
+export enum Status {
+  Accepted = 'ACCEPTED',
+  Cancelled = 'CANCELLED',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED'
+}
+
 export type SubscribeEmailInput = {
-  currentMember: Scalars["Boolean"];
-  email: Scalars["String"];
-  fullName: Scalars["String"];
-  location: Scalars["String"];
-  waitlist: Scalars["Boolean"];
+  currentMember: Scalars['Boolean'];
+  email: Scalars['String'];
+  fullName: Scalars['String'];
+  location: Scalars['String'];
+  waitlist: Scalars['Boolean'];
 };
 
 export type Task = {
-  __typename?: "Task";
-  _id: Scalars["String"];
-  canHaveMultiple: Scalars["Boolean"];
-  daysTillDue?: Maybe<Scalars["Float"]>;
-  highPriority: Scalars["Boolean"];
-  interval?: Maybe<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-  notifyHealthCoachWhenPastDue: Scalars["Boolean"];
-  notifyProviderWhenPastDue: Scalars["Boolean"];
-  notifyWhenAssigned?: Maybe<Scalars["Boolean"]>;
-  notifyWhenPastDue: Scalars["Boolean"];
+  __typename?: 'Task';
+  _id: Scalars['String'];
+  canHaveMultiple: Scalars['Boolean'];
+  daysTillDue?: Maybe<Scalars['Float']>;
+  highPriority: Scalars['Boolean'];
+  interval?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  notifyHealthCoachWhenPastDue: Scalars['Boolean'];
+  notifyProviderWhenPastDue: Scalars['Boolean'];
+  notifyWhenAssigned?: Maybe<Scalars['Boolean']>;
+  notifyWhenPastDue: Scalars['Boolean'];
   type: TaskType;
 };
 
 /** The type of task */
 export enum TaskType {
-  AdLibitum = "AD_LIBITUM",
-  BpLog = "BP_LOG",
-  DailyMetricsLog = "DAILY_METRICS_LOG",
-  FoodLog = "FOOD_LOG",
-  Gsrs = "GSRS",
-  HrAndBpLog = "HR_AND_BP_LOG",
-  IdAndInsuranceUpload = "ID_AND_INSURANCE_UPLOAD",
-  LabSelection = "LAB_SELECTION",
-  MpActivity = "MP_ACTIVITY",
-  MpBlueCapsule = "MP_BLUE_CAPSULE",
-  MpBlueCapsule_2 = "MP_BLUE_CAPSULE_2",
-  MpFeeling = "MP_FEELING",
-  MpHunger = "MP_HUNGER",
-  NewPatientIntakeForm = "NEW_PATIENT_INTAKE_FORM",
-  ScheduleAppointment = "SCHEDULE_APPOINTMENT",
-  ScheduleHealthCoachAppointment = "SCHEDULE_HEALTH_COACH_APPOINTMENT",
-  Tefq = "TEFQ",
-  WaistLog = "WAIST_LOG",
-  WeightLog = "WEIGHT_LOG",
+  AdLibitum = 'AD_LIBITUM',
+  BpLog = 'BP_LOG',
+  DailyMetricsLog = 'DAILY_METRICS_LOG',
+  FoodLog = 'FOOD_LOG',
+  Gsrs = 'GSRS',
+  HrAndBpLog = 'HR_AND_BP_LOG',
+  IdAndInsuranceUpload = 'ID_AND_INSURANCE_UPLOAD',
+  LabSelection = 'LAB_SELECTION',
+  MpActivity = 'MP_ACTIVITY',
+  MpBlueCapsule = 'MP_BLUE_CAPSULE',
+  MpBlueCapsule_2 = 'MP_BLUE_CAPSULE_2',
+  MpFeeling = 'MP_FEELING',
+  MpHunger = 'MP_HUNGER',
+  NewPatientIntakeForm = 'NEW_PATIENT_INTAKE_FORM',
+  ScheduleAppointment = 'SCHEDULE_APPOINTMENT',
+  ScheduleHealthCoachAppointment = 'SCHEDULE_HEALTH_COACH_APPOINTMENT',
+  Tefq = 'TEFQ',
+  WaistLog = 'WAIST_LOG',
+  WeightLog = 'WEIGHT_LOG'
 }
 
 export type Timeslot = {
-  __typename?: "Timeslot";
-  end: Scalars["DateTime"];
-  start: Scalars["DateTime"];
+  __typename?: 'Timeslot';
+  eaProvider: EaProvider;
+  endTimeInUtc: Scalars['DateTime'];
+  startTimeInUtc: Scalars['DateTime'];
 };
 
 export type TimeslotsResponse = {
-  __typename?: "TimeslotsResponse";
-  eaProvider: EaProvider;
+  __typename?: 'TimeslotsResponse';
   eaService: EaService;
-  selectedDate: Scalars["DateTime"];
+  selectedDateInUtc: Scalars['DateTime'];
   timeslots: Array<Timeslot>;
-  timezone: Scalars["String"];
-  total: Scalars["Float"];
-};
-
-export type UpcomingAppointmentsInput = {
-  selectedDate?: InputMaybe<Scalars["DateTime"]>;
-  timezone: Scalars["String"];
+  total: Scalars['Float'];
 };
 
 export type UpdateAppointmentInput = {
-  bypassNotice?: InputMaybe<Scalars["Boolean"]>;
-  eaAppointmentId: Scalars["String"];
-  end: Scalars["String"];
-  notes?: InputMaybe<Scalars["String"]>;
-  selectedDate: Scalars["DateTime"];
-  start: Scalars["String"];
-  timezone: Scalars["String"];
+  eaAppointmentId: Scalars['String'];
+  eaProviderId: Scalars['String'];
+  eaServiceId: Scalars['String'];
+  endTimeInUtc: Scalars['DateTime'];
+  notes?: InputMaybe<Scalars['String']>;
+  providerType: Role;
+  startTimeInUtc: Scalars['DateTime'];
+};
+
+export type UpdateBookingInput = {
+  attendees: Attendee;
+  customInput: Array<CustomInput>;
+  description?: InputMaybe<Scalars['String']>;
+  endTime: Scalars['String'];
+  eventTypeId: Scalars['Float'];
+  eventTypeSlug: Scalars['String'];
+  hasHashedBookingLink: Scalars['Boolean'];
+  hashedLink?: InputMaybe<Scalars['String']>;
+  id: Scalars['Float'];
+  language?: InputMaybe<Scalars['String']>;
+  location: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
+  recurringEventId: Scalars['String'];
+  smsReminderNumber?: InputMaybe<Scalars['String']>;
+  startTime: Scalars['String'];
+  status: Status;
+  title: Scalars['String'];
+  user: Scalars['String'];
 };
 
 export type UpdateSubscriptionInput = {
-  stripeSubscriptionId: Scalars["String"];
-  subscriptionExpiresAt: Scalars["DateTime"];
+  stripeSubscriptionId: Scalars['String'];
+  subscriptionExpiresAt: Scalars['DateTime'];
 };
 
 export type UpdateUserTaskInput = {
-  lastNotifiedUserAt: Scalars["DateTime"];
+  lastNotifiedUserAt: Scalars['DateTime'];
 };
 
 export type User = {
-  __typename?: "User";
-  _id: Scalars["String"];
+  __typename?: 'User';
+  _id: Scalars['String'];
   address: Address;
-  akutePatientId?: Maybe<Scalars["String"]>;
-  bmi?: Maybe<Scalars["Float"]>;
-  calId: Scalars["String"];
+  akutePatientId?: Maybe<Scalars['String']>;
+  bmi?: Maybe<Scalars['Float']>;
+  calId: Scalars['String'];
   classifications?: Maybe<Array<Classification>>;
-  dateOfBirth: Scalars["DateTime"];
-  eaCustomerId?: Maybe<Scalars["String"]>;
-  eaHealthCoachId?: Maybe<Scalars["String"]>;
-  email: Scalars["String"];
-  emailToken: Scalars["String"];
-  emailTokenExpiresAt: Scalars["DateTime"];
-  externalPatientId?: Maybe<Scalars["String"]>;
+  dateOfBirth: Scalars['DateTime'];
+  eaCustomerId?: Maybe<Scalars['String']>;
+  eaHealthCoachId?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  emailToken: Scalars['String'];
+  emailTokenExpiresAt: Scalars['DateTime'];
   files: Array<File>;
   gender: Gender;
-  heightInInches: Scalars["Float"];
-  labOrderSent?: Maybe<Scalars["Boolean"]>;
-  meetingRoomUrl?: Maybe<Scalars["String"]>;
-  meetingUrl?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-  password: Scalars["String"];
-  pharmacyLocation?: Maybe<Scalars["String"]>;
-  phone: Scalars["String"];
+  generatedSummary?: Maybe<Scalars['String']>;
+  heightInInches: Scalars['Float'];
+  labOrderSent?: Maybe<Scalars['Boolean']>;
+  meetingRoomUrl?: Maybe<Scalars['String']>;
+  meetingUrl?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  password: Scalars['String'];
+  pharmacyLocation?: Maybe<Scalars['String']>;
+  phone: Scalars['String'];
   provider?: Maybe<Provider>;
   role: Role;
   score: Array<Score>;
-  stripeCustomerId: Scalars["String"];
-  stripeSubscriptionId: Scalars["String"];
-  subscriptionExpiresAt: Scalars["DateTime"];
-  textOptIn?: Maybe<Scalars["Boolean"]>;
-  timezone?: Maybe<Scalars["String"]>;
-  weightGoal?: Maybe<Scalars["Float"]>;
+  stripeCustomerId: Scalars['String'];
+  stripeSubscriptionId: Scalars['String'];
+  subscriptionExpiresAt: Scalars['DateTime'];
+  textOptIn?: Maybe<Scalars['Boolean']>;
+  timezone?: Maybe<Scalars['String']>;
+  weightGoal?: Maybe<Scalars['Float']>;
   weights: Array<Weight>;
 };
 
 export type UserAnswer = {
-  __typename?: "UserAnswer";
-  key: Scalars["String"];
+  __typename?: 'UserAnswer';
+  key: Scalars['String'];
   type: AnswerType;
-  value: Scalars["String"];
+  value: Scalars['String'];
 };
 
 export type UserAnswersInput = {
-  key: Scalars["String"];
+  key: Scalars['String'];
   type: AnswerType;
-  value: Scalars["String"];
+  value: Scalars['String'];
 };
 
 export type UserTask = {
-  __typename?: "UserTask";
-  _id: Scalars["String"];
+  __typename?: 'UserTask';
+  _id: Scalars['String'];
   answers?: Maybe<Array<UserAnswer>>;
-  archived?: Maybe<Scalars["Boolean"]>;
-  completed: Scalars["Boolean"];
-  completedAt?: Maybe<Scalars["DateTime"]>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  dueAt?: Maybe<Scalars["DateTime"]>;
-  highPriority: Scalars["Boolean"];
-  lastNotifiedHealthCoachPastDueAt?: Maybe<Scalars["DateTime"]>;
-  lastNotifiedProviderPastDueAt?: Maybe<Scalars["DateTime"]>;
-  lastNotifiedUserAt?: Maybe<Scalars["DateTime"]>;
-  lastNotifiedUserPastDueAt?: Maybe<Scalars["DateTime"]>;
-  pastDue?: Maybe<Scalars["Boolean"]>;
-  providerEmail?: Maybe<Scalars["String"]>;
+  archived?: Maybe<Scalars['Boolean']>;
+  completed: Scalars['Boolean'];
+  completedAt?: Maybe<Scalars['DateTime']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  dueAt?: Maybe<Scalars['DateTime']>;
+  highPriority: Scalars['Boolean'];
+  lastNotifiedHealthCoachPastDueAt?: Maybe<Scalars['DateTime']>;
+  lastNotifiedProviderPastDueAt?: Maybe<Scalars['DateTime']>;
+  lastNotifiedUserAt?: Maybe<Scalars['DateTime']>;
+  lastNotifiedUserPastDueAt?: Maybe<Scalars['DateTime']>;
+  pastDue?: Maybe<Scalars['Boolean']>;
+  providerEmail?: Maybe<Scalars['String']>;
   task?: Maybe<Task>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
 };
 
 export type UserTaskList = {
-  __typename?: "UserTaskList";
-  limit: Scalars["Float"];
-  offset: Scalars["Float"];
-  total: Scalars["Float"];
+  __typename?: 'UserTaskList';
+  limit: Scalars['Float'];
+  offset: Scalars['Float'];
+  total: Scalars['Float'];
   userTasks?: Maybe<Array<UserTask>>;
 };
 
 export type Weight = {
-  __typename?: "Weight";
-  date: Scalars["DateTime"];
-  value: Scalars["Float"];
+  __typename?: 'Weight';
+  date: Scalars['DateTime'];
+  value: Scalars['Float'];
 };
 
 export type UserTasksQueryQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars["Float"]>;
-  offset?: InputMaybe<Scalars["Float"]>;
-  completed?: InputMaybe<Scalars["Boolean"]>;
+  limit?: InputMaybe<Scalars['Float']>;
+  offset?: InputMaybe<Scalars['Float']>;
+  completed?: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type UserTasksQueryQuery = {
-  __typename?: "Query";
-  userTasks: {
-    __typename?: "UserTaskList";
-    total: number;
-    userTasks?: Array<{
-      __typename?: "UserTask";
-      _id: string;
-      dueAt?: any | null;
-      pastDue?: boolean | null;
-      createdAt?: any | null;
-      task?: {
-        __typename?: "Task";
-        _id: string;
-        name?: string | null;
-        type: TaskType;
-      } | null;
-    }> | null;
-  };
-};
+
+export type UserTasksQueryQuery = { __typename?: 'Query', userTasks: { __typename?: 'UserTaskList', total: number, userTasks?: Array<{ __typename?: 'UserTask', _id: string, dueAt?: any | null, pastDue?: boolean | null, createdAt?: any | null, task?: { __typename?: 'Task', _id: string, name?: string | null, type: TaskType } | null }> | null } };
+
 
 export const UserTasksQueryDocument = gql`
-  query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
-    userTasks(
-      input: { limit: $limit, offset: $offset, completed: $completed }
-    ) {
-      total
-      userTasks {
+    query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
+  userTasks(input: {limit: $limit, offset: $offset, completed: $completed}) {
+    total
+    userTasks {
+      _id
+      task {
         _id
-        task {
-          _id
-          name
-          type
-        }
-        dueAt
-        pastDue
-        createdAt
+        name
+        type
       }
+      dueAt
+      pastDue
+      createdAt
     }
   }
-`;
+}
+    `;
 
 /**
  * __useUserTasksQueryQuery__
@@ -1061,37 +1265,14 @@ export const UserTasksQueryDocument = gql`
  *   },
  * });
  */
-export function useUserTasksQueryQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    UserTasksQueryQuery,
-    UserTasksQueryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(
-    UserTasksQueryDocument,
-    options
-  );
-}
-export function useUserTasksQueryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    UserTasksQueryQuery,
-    UserTasksQueryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(
-    UserTasksQueryDocument,
-    options
-  );
-}
-export type UserTasksQueryQueryHookResult = ReturnType<
-  typeof useUserTasksQueryQuery
->;
-export type UserTasksQueryLazyQueryHookResult = ReturnType<
-  typeof useUserTasksQueryLazyQuery
->;
-export type UserTasksQueryQueryResult = Apollo.QueryResult<
-  UserTasksQueryQuery,
-  UserTasksQueryQueryVariables
->;
+export function useUserTasksQueryQuery(baseOptions?: Apollo.QueryHookOptions<UserTasksQueryQuery, UserTasksQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
+      }
+export function useUserTasksQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserTasksQueryQuery, UserTasksQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
+        }
+export type UserTasksQueryQueryHookResult = ReturnType<typeof useUserTasksQueryQuery>;
+export type UserTasksQueryLazyQueryHookResult = ReturnType<typeof useUserTasksQueryLazyQuery>;
+export type UserTasksQueryQueryResult = Apollo.QueryResult<UserTasksQueryQuery, UserTasksQueryQueryVariables>;
