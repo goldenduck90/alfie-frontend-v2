@@ -1,6 +1,7 @@
 import { UserIcon, CalendarIcon, ClockIcon } from "@heroicons/react/solid";
 import { TextArea } from "@src/components/inputs/TextArea";
 import { useField } from "formik";
+import { useUserStateContext } from "@src/context/SessionContext";
 
 // setup dayjs
 import dayjs from "dayjs";
@@ -18,8 +19,13 @@ dayjs.tz.setDefault(dayjs.tz.guess());
 export const AppointmentSummary = () => {
   const [, { value: selectedDate }] = useField("selectedDate");
   const [, { value: eaProvider }] = useField("eaProvider");
+  const [, { value: eaCustomer }] = useField("eaCustomer");
+  const [, { value: eaCustomerName }] = useField("eaCustomerName");
   const [, { value: start }] = useField("start");
   const [, { value: end }] = useField("end");
+
+  const session = useUserStateContext();
+  const isProvider = session[0]?.user?.role !== "Patient";
 
   return (<div className="flex flex-col gap-y-2">
     <p className="font-bold text-sm text-gray-600">
@@ -31,10 +37,10 @@ export const AppointmentSummary = () => {
       </div>
       <div>
         <h2 className="text-gray-900 font-medium">
-          {eaProvider?.name}
+          {isProvider ? eaCustomer?.name ? eaCustomer.name : eaCustomerName : eaProvider?.name}
         </h2>
         <p className="text-gray-600 font-normal">
-          {String(eaProvider?.type)}
+          {isProvider ? "Patient" : String(eaProvider?.type)}
         </p>
       </div>
     </div>

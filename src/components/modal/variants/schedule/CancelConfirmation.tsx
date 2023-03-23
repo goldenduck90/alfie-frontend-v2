@@ -18,6 +18,8 @@ import timezone from "dayjs/plugin/timezone";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { client } from "@src/graphql";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import { randomId } from "@src/utils/randomId";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -37,6 +39,7 @@ export const CancelConfirmation = ({
   eaCustomer,
   start,
   end,
+  onCancel,
 }: {
   eaAppointmentId: string;
   eaProvider: {
@@ -47,9 +50,11 @@ export const CancelConfirmation = ({
   };
   start: string;
   end: string;
+  onCancel?: () => void
 }) => {
   const session = useUserStateContext();
   const setOpen = useDialogToggle();
+  const { addNotification } = useNotificationStore();
   const isProvider = session[0]?.user?.role !== "Patient";
   const [loading, setLoading] = useState(false);
   const [cancel] = useMutation(cancelAppointmentMutation);
@@ -65,17 +70,26 @@ export const CancelConfirmation = ({
     })
 
     if (errors) {
-      alert("An error occured cancelling this appointment. Please contact support.")
+      addNotification({
+        type: "error",
+        description: "Please contact support.",
+        id: randomId(),
+        title: "An error occured cancelling this appointment",
+      });
       console.log("An error occured cancelling this appointment", errors)
       setLoading(false);
       return;
     }
 
     console.log(data);
-    alert("Successfully cancelled appointment!");
-    await client.refetchQueries({
-      include: "all",
-    })
+    addNotification({
+      type: "success",
+      description: "Successfully Cancelled Appointment!",
+      id: randomId(),
+      title: "Appointment Cancelled",
+    });
+
+    await client.clearStore();
     setLoading(false);
     setOpen(false);
     router.back();

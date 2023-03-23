@@ -19,9 +19,9 @@ import { WaistChart } from "../components/WaistChart";
 import { StepsChart } from "../components/StepsChart";
 import { BloodPressureChart } from "../components/BloodPressureChart";
 
-import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { PatientChat } from "./PatientChat";
 import { GenerateSummary } from "../components/GenerateSummary";
+import { AdhocSchedule } from "../components/AdhocSchedule";
 
 const GetUserById = gql`
   query getUser($userId: String!) {
@@ -108,7 +108,6 @@ const TabList = [
 
 export function IndividualPatientTabs() {
   const router = useRouter();
-  const { user } = useCurrentUserStore();
   const patientId = router.query.patientId as string;
   const activeTab = (router?.query?.tab as string) || TabList[0];
 
@@ -130,11 +129,9 @@ export function IndividualPatientTabs() {
     "Date of Birth": dayjs(patient?.dateOfBirth).format("MM/DD/YYYY"),
     "Email Address": patient?.email,
     "Phone Number": patient?.phone,
-    Address: `${patient?.address?.line1 || ""}, ${
-      (patient?.address?.line2 && ",") || ""
-    } ${patient?.address?.city}, ${patient?.address?.state}, ${
-      patient?.address?.postalCode
-    }`,
+    Address: `${patient?.address?.line1 || ""}, ${(patient?.address?.line2 && ",") || ""
+      } ${patient?.address?.city}, ${patient?.address?.state}, ${patient?.address?.postalCode
+      }`,
     "Height In Inches": patient?.heightInInches,
     Weight: patient?.weights?.[patient.weights.length - 1]?.value,
     Attachments: "No attachments",
@@ -203,6 +200,10 @@ export function IndividualPatientTabs() {
             activeTasks={activeTasks}
           />
           <TableUserObject user={patientTable} loading={loading} />
+
+          {/*//? ADHOC SCHEDULING */}
+          <AdhocSchedule patient={patient} />
+
           {/*//? OPEN AI SUMMARY GENERATION */}
           <GenerateSummary patient={patient} />
           <div className="w-full mt-6">
@@ -357,9 +358,8 @@ function TabTitle({
   return (
     <Tabs.Trigger
       value={value}
-      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${
-        active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
-      }`}
+      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
+        }`}
     >
       {children}
     </Tabs.Trigger>

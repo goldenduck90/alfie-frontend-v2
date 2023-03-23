@@ -19,6 +19,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
+import { useRouter } from "next/router";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -73,8 +74,10 @@ export const CalendarView = () => {
   const [value, onChange] = useState(new Date());
   const session = useUserStateContext();
   const isProvider = session[0]?.user?.role !== "Patient";
+  const [reloaded, setReloaded] = useState(false);
 
-  const { loading, error, data } = useQuery(getAppointmentsByMonthQuery, {
+
+  const { loading, error, data, refetch: refetchAll } = useQuery(getAppointmentsByMonthQuery, {
     variables: {
       input: {
         timezone: dayjs.tz.guess(),
@@ -83,7 +86,7 @@ export const CalendarView = () => {
     },
   });
 
-  const { loading: loadingUpcoming, data: upcomingData, error: upcomingError } = useQuery(upcomingAppointmentsQuery, {
+  const { loading: loadingUpcoming, data: upcomingData, error: upcomingError, refetch: refetchUpcoming } = useQuery(upcomingAppointmentsQuery, {
     variables: {
       input: {
         timezone: dayjs.tz.guess(),
@@ -91,7 +94,6 @@ export const CalendarView = () => {
       }
     },
   });
-
 
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
@@ -128,9 +130,6 @@ export const CalendarView = () => {
   );
 
   const upcomingAppointment = upcomingData?.upcomingAppointments.length > 0 ? upcomingData?.upcomingAppointments[0] : undefined;
-  console.log(upcomingData)
-
-
   const lastMonth = dayjs(value).subtract(1, "month").set("date", 2);
   const nextMonth = dayjs(value).add(1, "month").set("date", 2);
 
@@ -202,7 +201,7 @@ export const CalendarView = () => {
                 <div className={(i + 1) === meetingListBySelectedDate.length ? "" : "mb-4"}>
                   <AppointmentPreviewItem
                     isLoading={loading}
-                    name={meetingToShow.eaProvider?.name}
+                    name={isProvider ? meetingToShow.eaCustomer?.name : meetingToShow.eaProvider?.name}
                     providerTitle={isProvider ? "Patient" : meetingToShow.eaProvider?.type}
                     renderDate={{
                       time: dayjs(meetingToShow.start).format("h:mm A"),
@@ -231,7 +230,7 @@ export const CalendarView = () => {
             {upcomingData?.upcomingAppointments.length > 0 ? (
               <AppointmentPreviewItem
                 isLoading={loading}
-                name={upcomingAppointment.eaProvider?.name}
+                name={isProvider ? upcomingAppointment.eaCustomer?.name : upcomingAppointment.eaProvider?.name}
                 providerTitle={isProvider ? "Patient" : upcomingAppointment.eaProvider?.type}
                 renderDate={{
                   time: dayjs(upcomingAppointment.start).format("h:mm A"),

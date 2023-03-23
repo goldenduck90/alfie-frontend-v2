@@ -1,5 +1,4 @@
 import { useField } from "formik";
-import { format } from "date-fns";
 import {
   CalendarIcon,
   ClockIcon,
@@ -11,6 +10,7 @@ import Image from "next/image";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { useUserStateContext } from "@src/context/SessionContext";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -19,8 +19,11 @@ dayjs.tz.setDefault(dayjs.tz.guess());
 export const AppointmentConfirmation = () => {
   const [, { value: eaProvider }] = useField("eaProvider");
   const [, { value: eaCustomer }] = useField("eaCustomer");
+  const [, { value: eaCustomerName }] = useField("eaCustomerName");
   const [, { value: start }] = useField("start");
   const [, { value: end }] = useField("end");
+  const session = useUserStateContext();
+  const isProvider = session[0]?.user?.role !== "Patient";
 
   return (
     <div className="w-full max-w-[480px] min-w-full">
@@ -46,10 +49,10 @@ export const AppointmentConfirmation = () => {
               <UserIcon className="h-6 w-6 text-gray-500" />
               <div>
                 <h2 className="text-gray-900 font-medium">
-                  {eaProvider?.name}
+                  {isProvider ? eaCustomer?.name ? eaCustomer.name : eaCustomerName : eaProvider?.name}
                 </h2>
                 <p className="text-gray-600 font-normal">
-                  {eaProvider?.type}
+                  {isProvider ? "Patient" : eaProvider?.type}
                 </p>
               </div>
             </div>

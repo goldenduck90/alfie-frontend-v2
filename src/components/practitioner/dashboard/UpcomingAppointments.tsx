@@ -1,38 +1,78 @@
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import React from "react";
 import Link from "next/link";
-import { useGetAllPatientsByProvider } from "@src/hooks/useGetAllPatientsByProvider";
-import { Patient } from "./Table";
 import { DashboardPreviewItem } from "@src/components/ui/DashboardPreviewItem";
 import { useRouter } from "next/router";
-import { AvatarInitial } from "@src/components/ui/AvatarInitial";
+import { useQuery } from "@apollo/client";
+import { upcomingAppointmentsQuery } from "@src/components/patient/Dashboard/Appointments";
+import * as Sentry from "@sentry/react";
+
+// setup dayjs
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import isToday from "dayjs/plugin/isToday";
+import isTomorrow from "dayjs/plugin/isTomorrow";
+import { CalendarIcon } from "@heroicons/react/outline";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isToday);
+dayjs.extend(isTomorrow);
+dayjs.tz.setDefault(dayjs.tz.guess());
 
 export function UpcomingAppointments() {
   const router = useRouter();
-  const patients = useGetAllPatientsByProvider();
-  const appointments: Patient[] =
-    patients?.data?.getAllPatientsByPractitioner?.filter(
-      (patient: Patient) => patient.meetingUrl !== null
-    );
 
-  const renderAppointments = appointments?.map((appointment, i) => (
-    <DashboardPreviewItem
-      key={i}
-      renderDate={{ date: "today", time: "8:30 am - 9:00 am" }}
-      title={appointment.name}
-      subtitle={appointment.email}
-      renderIcon={
-        <div className="pr-4">
-          <AvatarInitial size="lg" index={i} text={appointment.name[0]} />
-        </div>
-      }
-      onClick={() =>
-        router.push(
-          `/dashboard/appointments/${appointment._id}` || "/dashboard"
-        )
-      }
-    />
-  ));
+  const { data, loading, error } = useQuery(upcomingAppointmentsQuery, {
+    variables: {
+      input: {
+        timezone: dayjs.tz.guess(),
+        selectedDate: dayjs().format("YYYY-MM-DD H:mm"),
+      },
+    },
+  });
+
+  React.useEffect(() => {
+    // If there is an error with the query, we want to log it to Sentry
+    if (error) {
+      Sentry.captureException(new Error(error.message), {
+        tags: {
+          query: "AppointmentsQuery",
+          component: "PatientDashboard",
+        },
+      });
+    }
+  }, [error]);
+
+  const renderItems = data?.upcomingAppointments?.length === 0 ? (
+    <div className="flex flex-col items-center bg-gray-100 py-10">
+      <CalendarIcon className="h-8 w-8" />
+      <p className="text-gray-600 pt-5 max-w-[200px] text-center">
+        You have no upcoming appointments.
+      </p>
+    </div>
+  ) : data?.upcomingAppointments?.slice(0, 2).map((item: any, i: number) => {
+    const date = dayjs(item.start);
+
+    return (
+      <DashboardPreviewItem
+        key={`items-${i}`}
+        onClick={() =>
+          router.push(`/dashboard/appointments/${item.eaAppointmentId}`)
+        }
+        renderDate={{
+          date: date.isToday() ? "Today" : date.isTomorrow() ? "Tomorrow" : date.format("MM-DD-YYYY"),
+          time: `${dayjs(item.start).format("h:mm A")} - ${dayjs(
+            item.end
+          ).format("h:mm A")}`,
+        }}
+        title={item.eaCustomer?.name}
+        subtitle="Patient"
+        placeHolderIcon="user"
+      />
+    );
+  });
 
   const renderLoadItems = [0, 1, 2].map((place, i) => (
     <DashboardPreviewItem {...(place as any)} isLoading key={i} />
@@ -51,8 +91,8 @@ export function UpcomingAppointments() {
       }
     >
       <div className="w-full max-h-96 overflow-auto">
-        {renderAppointments}
-        {patients.loading && renderLoadItems}
+        {renderItems}
+        {loading && renderLoadItems}
       </div>
     </DashboardCard>
   );

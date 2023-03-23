@@ -22,7 +22,7 @@ export function GenerateSummary({ patient }: { patient: Patient }) {
       <div className="bg-white border rounded-xl p-6">
         {(!data || !isLoading) && (
           <p className="text-gray-500">
-            Click generate and you will see a summary of {patient.name} from
+            Click generate and you will see a summary of {patient?.name} from
             Open AI
           </p>
         )}

@@ -20,6 +20,8 @@ import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
 import { gql, useMutation } from "@apollo/client";
 import { client } from "@src/graphql";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import { randomId } from "@src/utils/randomId";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -81,6 +83,8 @@ export function ScheduleAppointment({
   end,
   notes,
   userTaskId,
+  onComplete,
+  eaCustomerName,
 }: {
   eaAppointmentId?: string;
   userId?: string;
@@ -88,11 +92,14 @@ export function ScheduleAppointment({
   end?: string;
   notes?: string;
   userTaskId?: string;
+  onComplete?: () => void
+  eaCustomerName?: string;
 }) {
   const session = useUserStateContext();
   const isProvider = session[0]?.user?.role !== "Patient";
   const [update] = useMutation(updateAppointmentMutation)
   const [create] = useMutation(createAppointmentMutation)
+  const { addNotification } = useNotificationStore();
 
   const [confirmed, setConfirmed] = useState(false)
   const scheduleForm = useFormikWizard({
@@ -106,6 +113,7 @@ export function ScheduleAppointment({
       eaProvider: undefined,
       eaCustomer: undefined,
       userId,
+      eaCustomerName,
     },
     onSubmit: async (values) => {
       try {
@@ -124,6 +132,13 @@ export function ScheduleAppointment({
               }
             },
           })
+
+          addNotification({
+            type: "success",
+            description: "Successfully Updated Appointment!",
+            id: randomId(),
+            title: "Appointment Updated",
+          });
 
           console.log(data);
         } else {
@@ -145,7 +160,20 @@ export function ScheduleAppointment({
             }
           })
 
+          addNotification({
+            type: "success",
+            description: "Successfully Scheduled Appointment!",
+            id: randomId(),
+            title: "Appointment Scheduled",
+          });
+
           console.log(data);
+        }
+
+        await client.clearStore();
+
+        if (onComplete) {
+          onComplete();
         }
 
         setConfirmed(true);
@@ -248,9 +276,6 @@ export function ScheduleAppointment({
                 if (currentStepIndex === 2) {
                   setOpen(false);
                   resetForm();
-                  await client.refetchQueries({
-                    include: "all",
-                  });
                 } else {
                   handleNext();
                 }

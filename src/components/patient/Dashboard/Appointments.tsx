@@ -34,6 +34,10 @@ export const upcomingAppointmentsQuery = gql`
         email
         type
       }
+      eaCustomer {
+        id
+        name
+      }
     }
   }
 `;
@@ -45,7 +49,7 @@ export function DashboardAppointments() {
     variables: {
       input: {
         timezone: dayjs.tz.guess(),
-        selectedDate: dayjs(new Date()).format("YYYY-MM-DD"),
+        selectedDate: dayjs().format("YYYY-MM-DD H:mm")
       },
     },
   });
