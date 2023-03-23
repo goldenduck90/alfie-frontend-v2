@@ -19,6 +19,7 @@ import { WaistChart } from '../components/WaistChart';
 import { WeightChart } from '../components/WeightChart';
 import { MetabolicChart } from './MetabolicChart';
 
+import { AdhocSchedule } from '../components/AdhocSchedule';
 import { GenerateSummary } from '../components/GenerateSummary';
 import { PatientChat } from './PatientChat';
 
