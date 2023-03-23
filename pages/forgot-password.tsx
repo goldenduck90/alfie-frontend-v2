@@ -66,7 +66,7 @@ function ForgotPassword() {
         });
       }
     },
-    [setError]
+    [addNotification, forgotPassword, reset, setError]
   );
   const isSubmitting = formState.isSubmitting;
 

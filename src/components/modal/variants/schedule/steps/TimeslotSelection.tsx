@@ -4,6 +4,7 @@ import { useField } from "formik";
 import { useEffect } from "react";
 import { DateSelector } from "../Schedule";
 import * as Sentry from "@sentry/react";
+import { useUserStateContext } from "@src/context/SessionContext";
 
 // setup dayjs
 import dayjs from "dayjs";
@@ -11,7 +12,6 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
-import { useUserStateContext } from "@src/context/SessionContext";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -75,6 +75,7 @@ export const TimeslotSelection = () => {
   useEffect(() => {
     if (!error) return;
 
+    console.log(error)
     Sentry.captureException(new Error(error.message), {
       tags: {
         query: "get",

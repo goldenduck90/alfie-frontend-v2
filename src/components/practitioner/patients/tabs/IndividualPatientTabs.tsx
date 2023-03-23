@@ -19,7 +19,6 @@ import { WaistChart } from '../components/WaistChart';
 import { WeightChart } from '../components/WeightChart';
 import { MetabolicChart } from './MetabolicChart';
 
-import { useCurrentUserStore } from '@src/hooks/useCurrentUser';
 import { GenerateSummary } from '../components/GenerateSummary';
 import { PatientChat } from './PatientChat';
 
@@ -109,7 +108,6 @@ const TabList = [
 
 export function IndividualPatientTabs() {
   const router = useRouter();
-  const { user } = useCurrentUserStore();
   const patientId = router.query.patientId as string;
   const activeTab = (router?.query?.tab as string) || TabList[0];
 
@@ -204,6 +202,10 @@ export function IndividualPatientTabs() {
             activeTasks={activeTasks}
           />
           <TableUserObject user={patientTable} loading={loading} />
+
+          {/*//? ADHOC SCHEDULING */}
+          <AdhocSchedule patient={patient} />
+
           {/*//? OPEN AI SUMMARY GENERATION */}
           <GenerateSummary patient={patient} />
           <div className='w-full mt-6'>

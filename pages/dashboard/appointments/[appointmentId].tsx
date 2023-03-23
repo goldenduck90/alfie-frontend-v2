@@ -14,6 +14,9 @@ import { Button } from "@src/components/ui/Button";
 import Image from "next/image";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { useUserStateContext } from '@src/context/SessionContext';
+import { ScheduleAppointment } from '@src/components/modal/variants/schedule/Schedule';
+import { DialogModal } from '@src/components/modal/Dialog';
+import { CancelConfirmation } from '@src/components/modal/variants/schedule/CancelConfirmation';
 
 // setup dayjs
 import dayjs from "dayjs";
@@ -21,9 +24,6 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
-import { ScheduleAppointment } from '@src/components/modal/variants/schedule/Schedule';
-import { DialogModal } from '@src/components/modal/Dialog';
-import { CancelConfirmation } from '@src/components/modal/variants/schedule/CancelConfirmation';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -59,7 +59,7 @@ function AppointmentDetails() {
   const router = useRouter();
   const session = useUserStateContext();
 
-  const { data, loading, error } = useQuery(appointmentDetailQuery, {
+  const { data, loading, error, refetch } = useQuery(appointmentDetailQuery, {
     variables: {
       input: {
         eaAppointmentId: appointmentId,
@@ -243,6 +243,10 @@ function AppointmentDetails() {
                 start={start}
                 end={end}
                 notes={notes}
+                eaCustomerName={eaCustomer?.name}
+                onComplete={() => {
+                  refetch();
+                }}
               />
             </DialogModal>
           </div>
