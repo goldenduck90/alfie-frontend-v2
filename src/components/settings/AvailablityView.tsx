@@ -213,9 +213,9 @@ function DailyHours({
           >
             <PlusIcon className="h-5 w-5 text-gray-400" />
           </button>
-          <button>
+          {/* <button>
             <DocumentDuplicateIcon className="h-5 w-5 text-gray-400" />
-          </button>
+          </button> */}
         </div>
       </div>
       {breaks?.map((b, i) => {
@@ -284,7 +284,7 @@ function BreakTimes({
           <TrashIcon className="h-5 w-5 text-gray-400" />
         </button>
       </div>
-      <div className="w-[52px]" />
+      <div className="w-[20px]" />
     </div>
   );
 }
