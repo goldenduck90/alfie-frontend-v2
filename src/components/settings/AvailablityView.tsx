@@ -5,9 +5,11 @@ import {
   TrashIcon,
 } from "@heroicons/react/outline";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { useState } from "react";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import { TextField } from "../ui/TextField";
+import { randomId } from "@src/utils/randomId";
 
 const getProfile = gql`
   query getProvider($eaProviderId: String!) {
@@ -144,42 +146,88 @@ function DailyHours({
   times?: {
     start: string;
     end: string;
-    breaks: { start: string; end: string };
+    breaks: { start: string; end: string; id: string }[];
   };
 }) {
   const hasTime = !!times?.start && !!times?.end;
+  const [check, setCheck] = useState(hasTime);
+  const [start, setStart] = useState(times?.start);
+  const [end, setEnd] = useState(times?.end);
+  const [breaks, setBreaks] = useState<
+    { start: string; end: string; id: string }[]
+  >([]);
+
+  const handleDelete = () => {
+    setCheck(!check);
+    setStart("00:00");
+    setEnd("00:00");
+    setBreaks([]);
+  };
+
+  const deleteBreak = (id: string) => {
+    const newBreaks = breaks?.filter((b) => b.id !== id);
+    setBreaks(newBreaks);
+  };
 
   return (
-    <div className="flex sm:flex-row flex-col sm:items-center justify-between py-4">
-      <div className="flex min-w-[120px]">
-        <Checkbox checked={hasTime} />
-        <p className="capitalize">{day}</p>
-      </div>
-      {hasTime ? (
-        <>
+    <>
+      <div className="flex sm:flex-row flex-col sm:items-center justify-between py-4">
+        <div className="flex min-w-[120px]">
+          <Checkbox checked={check} onChange={handleDelete} />
+          <p className="capitalize">{day}</p>
+        </div>
+        {check ? (
           <div className="flex items-center max-w-[400px]">
-            <TextField inputSize="medium" value={times?.start} />{" "}
+            <TextField
+              inputSize="medium"
+              onChange={(e) => setStart(e.target.value)}
+              value={start}
+            />{" "}
             <span className="px-2 text-gray-300">-</span>{" "}
-            <TextField inputSize="medium" value={times?.end} />
-            <button onClick={undefined} className="pl-6">
+            <TextField
+              inputSize="medium"
+              onChange={(e) => {
+                setEnd(e.target.value);
+              }}
+              value={end}
+            />
+            <button onClick={handleDelete} className="pl-6">
               <TrashIcon className="h-5 w-5 text-gray-400" />
             </button>
           </div>
-          <div className="flex gap-3">
-            <button>
-              <PlusIcon className="h-5 w-5 text-gray-400" />
-            </button>
-            <button>
-              <DocumentDuplicateIcon className="h-5 w-5 text-gray-400" />
-            </button>
+        ) : (
+          <div className="flex items-center min-h-[42px] w-[400px]">
+            <p className="text-gray-400">Unavailable</p>
           </div>
-        </>
-      ) : (
-        <div>
-          <p className="text-gray-400">Unavailable</p>
+        )}
+        <div className="flex gap-3">
+          <button
+            disabled={!check}
+            onClick={() =>
+              // add a break
+              setBreaks([
+                ...breaks,
+                { start: "00:00", end: "00:00", id: randomId() },
+              ])
+            }
+          >
+            <PlusIcon className="h-5 w-5 text-gray-400" />
+          </button>
+          <button>
+            <DocumentDuplicateIcon className="h-5 w-5 text-gray-400" />
+          </button>
         </div>
-      )}
-    </div>
+      </div>
+      {breaks?.map((b, i) => {
+        return (
+          <BreakTimes
+            breaks={b}
+            deleteBreak={() => deleteBreak(b.id)}
+            key={b.id}
+          />
+        );
+      })}
+    </>
   );
 }
 
@@ -201,6 +249,42 @@ function DateOverride({
       <button onClick={onRemove}>
         <TrashIcon className="h-5 w-5 text-gray-400" />
       </button>
+    </div>
+  );
+}
+
+function BreakTimes({
+  breaks,
+  deleteBreak,
+}: {
+  breaks?: { start: string; end: string };
+  deleteBreak: () => void;
+}) {
+  const [start, setStart] = useState(breaks?.start);
+  const [end, setEnd] = useState(breaks?.end);
+
+  return (
+    <div className="flex justify-between pb-4">
+      <div className="w-[120px]" />
+      <div className="flex items-center max-w-[400px]">
+        <TextField
+          inputSize="medium"
+          onChange={(e) => setStart(e.target.value)}
+          value={start}
+        />{" "}
+        <span className="px-2 text-gray-300">-</span>{" "}
+        <TextField
+          inputSize="medium"
+          onChange={(e) => {
+            setEnd(e.target.value);
+          }}
+          value={end}
+        />
+        <button onClick={deleteBreak} className="pl-6">
+          <TrashIcon className="h-5 w-5 text-gray-400" />
+        </button>
+      </div>
+      <div className="w-[52px]" />
     </div>
   );
 }
