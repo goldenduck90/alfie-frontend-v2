@@ -11,6 +11,12 @@ import { Checkbox } from "../ui/Checkbox";
 import { TextField } from "../ui/TextField";
 import { randomId } from "@src/utils/randomId";
 
+export type Time = {
+  start: string;
+  end: string;
+  breaks: { start: string; end: string; id: string }[];
+};
+
 const getProfile = gql`
   query getProvider($eaProviderId: String!) {
     getAProvider(eaProviderId: $eaProviderId) {
@@ -143,11 +149,7 @@ function DailyHours({
   times,
 }: {
   day: string;
-  times?: {
-    start: string;
-    end: string;
-    breaks: { start: string; end: string; id: string }[];
-  };
+  times?: any;
 }) {
   const hasTime = !!times?.start && !!times?.end;
   const [check, setCheck] = useState(hasTime);
