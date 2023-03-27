@@ -46,13 +46,14 @@ export function SettingsView() {
               </Tabs.Trigger>
             )}
             {/* //TODO: Add back when ready */}
-            {/* {isPractitioner && (
+            {isPractitioner && (
               <Tabs.Trigger value="availability">
                 <TabTitle active={activeTab === "availability"}>
                   Availability
                 </TabTitle>
               </Tabs.Trigger>
             )}
+            {/*
             <Tabs.Trigger value="notifications">
               <TabTitle active={activeTab === "notifications"}>
                 Notifications
@@ -70,13 +71,13 @@ export function SettingsView() {
             <EmbeddedStripeView />
           </Tabs.Content>
         )}
-        {/* 
-        //TODO: Add back when ready
         {isPractitioner && (
           <Tabs.Content value="availability" className="mt-6">
             <AvailabilityView />
           </Tabs.Content>
         )}
+        {/* 
+        //TODO: Add back when ready
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />
         </Tabs.Content> */}

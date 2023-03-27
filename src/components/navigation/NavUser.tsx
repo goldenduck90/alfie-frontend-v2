@@ -43,10 +43,10 @@ export default function NavUser() {
       label: "Account details",
       onClick: routeTo("/settings/account-details"),
     },
-    // {
-    //   label: "Availability",
-    //   onClick: routeTo("/settings/availability"),
-    // },
+    {
+      label: "Availability",
+      onClick: routeTo("/settings/availability"),
+    },
     // {
     //   label: "Notifications",
     //   onClick: routeTo("/settings/notifications"),
