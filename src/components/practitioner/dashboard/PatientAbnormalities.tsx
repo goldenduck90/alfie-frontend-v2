@@ -12,8 +12,9 @@ export function PatientAbnormalities() {
   // const patients: Patient[] = data?.getAllPatientsByPractitioner?.filter(
   //   (patient: Patient) => patient.meetingUrl !== null
   // );
+  const dataArr: any = [];
 
-  const renderPatient = []?.map((patient: any, i) => (
+  const renderPatient = dataArr?.map((patient: any, i: number) => (
     <AbnormalPatientPreviewItem
       key={i}
       abnormality="Blood Pressure"
@@ -45,9 +46,11 @@ export function PatientAbnormalities() {
       }
     >
       <div className="flex flex-col w-full gap-y-4">
+        {!loading && dataArr.length === 0 && (
+          <GrayPlaceHolderBox content="No patients with abnormalities" />
+        )}
         {renderPatient}
         {loading && renderLoadItems}
-        <GrayPlaceHolderBox content="No patients with abnormalities" />
       </div>
     </DashboardCard>
   );

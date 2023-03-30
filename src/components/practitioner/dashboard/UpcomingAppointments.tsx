@@ -45,34 +45,41 @@ export function UpcomingAppointments() {
     }
   }, [error]);
 
-  const renderItems = data?.upcomingAppointments?.length === 0 ? (
-    <div className="flex flex-col items-center bg-gray-100 py-10">
-      <CalendarIcon className="h-8 w-8" />
-      <p className="text-gray-600 pt-5 max-w-[200px] text-center">
-        You have no upcoming appointments.
-      </p>
-    </div>
-  ) : data?.upcomingAppointments?.slice(0, 2).map((item: any, i: number) => {
-    const date = dayjs(item.start);
+  const renderItems =
+    data?.upcomingAppointments?.length === 0 ? (
+      <div className="flex flex-col items-center justify-center bg-gray-100 py-10 h-80 rounded-xl border">
+        <CalendarIcon className="h-8 w-8" />
+        <p className="text-gray-600 pt-5 max-w-[200px] text-center">
+          You have no upcoming appointments.
+        </p>
+      </div>
+    ) : (
+      data?.upcomingAppointments?.slice(0, 2).map((item: any, i: number) => {
+        const date = dayjs(item.start);
 
-    return (
-      <DashboardPreviewItem
-        key={`items-${i}`}
-        onClick={() =>
-          router.push(`/dashboard/appointments/${item.eaAppointmentId}`)
-        }
-        renderDate={{
-          date: date.isToday() ? "Today" : date.isTomorrow() ? "Tomorrow" : date.format("MM-DD-YYYY"),
-          time: `${dayjs(item.start).format("h:mm A")} - ${dayjs(
-            item.end
-          ).format("h:mm A")}`,
-        }}
-        title={item.eaCustomer?.name}
-        subtitle="Patient"
-        placeHolderIcon="user"
-      />
+        return (
+          <DashboardPreviewItem
+            key={`items-${i}`}
+            onClick={() =>
+              router.push(`/dashboard/appointments/${item.eaAppointmentId}`)
+            }
+            renderDate={{
+              date: date.isToday()
+                ? "Today"
+                : date.isTomorrow()
+                ? "Tomorrow"
+                : date.format("MM-DD-YYYY"),
+              time: `${dayjs(item.start).format("h:mm A")} - ${dayjs(
+                item.end
+              ).format("h:mm A")}`,
+            }}
+            title={item.eaCustomer?.name}
+            subtitle="Patient"
+            placeHolderIcon="user"
+          />
+        );
+      })
     );
-  });
 
   const renderLoadItems = [0, 1, 2].map((place, i) => (
     <DashboardPreviewItem {...(place as any)} isLoading key={i} />

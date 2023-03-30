@@ -231,7 +231,7 @@ export function MultipleTextInput({
               key={field.id}
               type="text"
               className="w-full border border-[#CBD5E1] rounded-md py-2 px-4 focus:outline-primary-400"
-              {...register(`${name}.${index}.value`)}
+              name={`${name}.${index}.value`}
             />
             {index > 0 && (
               <Button buttonType="tertiary" onClick={() => remove(index)}>

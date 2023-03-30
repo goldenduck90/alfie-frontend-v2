@@ -82,7 +82,7 @@ input::-webkit-date-and-time-value {
   margin: -0.5em;
 }
 
-.react-calendar--doubleView .react-calendar__viewContainer>* {
+.react-calendar--doubleView .react-calendar__viewContainer > * {
   width: 50%;
   margin: 0.5em;
 }
@@ -161,6 +161,52 @@ input::-webkit-date-and-time-value {
     padding: 10px 0 !important;
   }
 }
+.override-calendar .react-calendar__month-view__days__day {
+  padding: 10px 0 !important;
+  background-color: white !important;
+  border: 3px solid white !important;
+  font-weight: 500;
+}
+.override-calendar .react-calendar__month-view__days__day:hover {
+  background-color: #0c52e8 !important;
+  color: white !important;
+}
+.override-calendar .react-calendar__tile--active {
+  border: 3px solid white !important;
+  background-color: #e2e8f0 !important;
+}
+.override-calendar .react-calendar__month-view__days__day:focus {
+  border: 3px solid #0c52e8 !important;
+  background-color: #e2e8f0 !important;
+}
+.override-calendar .react-calendar__month-view__days__day:hover {
+  border: 3px solid #0c52e8 !important;
+  background-color: #0c52e8 !important;
+}
+.override-calendar .react-calendar__navigation__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.override-calendar .react-calendar__navigation {
+  justify-content: end !important;
+  gap: 8px !important;
+}
+.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button {
+  display: none !important;
+}
+.react-calendar__navigation__arrow.react-calendar__navigation__next2-button {
+  display: none !important;
+}
+.react-calendar__navigation__arrow.react-calendar__navigation__prev-button {
+  @apply border rounded-xl;
+}
+.react-calendar__navigation__arrow.react-calendar__navigation__next-button {
+  @apply border rounded-xl;
+}
+.react-calendar__navigation__label {
+  display: none !important;
+}
 
 .react-calendar__month-view__days__day:hover {
   background-color: #e2e8f0 !important;
@@ -171,7 +217,8 @@ input::-webkit-date-and-time-value {
   border-color: #0c52e8 !important;
 }
 
-.react-calendar__month-view__weekdays__weekday {}
+.react-calendar__month-view__weekdays__weekday {
+}
 
 .react-calendar__month-view__weekNumbers .react-calendar__tile {
   display: flex;

@@ -1,20 +1,25 @@
 import { gql, useQuery } from "@apollo/client";
-import {
-  DocumentDuplicateIcon,
-  PlusIcon,
-  TrashIcon,
-} from "@heroicons/react/outline";
+import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
-import { useState } from "react";
+import {
+  Control,
+  useFieldArray,
+  useForm,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
+import { z } from "zod";
+import { GrayPlaceHolderBox } from "../GrayPlaceHolderBox";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import { TextField } from "../ui/TextField";
-import { randomId } from "@src/utils/randomId";
+import { DateOverrideModal } from "./components/DateOverrideModal";
 
 export type Time = {
   start: string;
   end: string;
-  breaks: { start: string; end: string; id: string }[];
+  breaks: { start: string; end: string }[];
 };
 
 const getProfile = gql`
@@ -109,6 +114,39 @@ const updateProfile = gql`
     }
   }
 `;
+const days = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
+
+const day = z.object({
+  isSelected: z.boolean(),
+  start: z.string().nullable(),
+  end: z.string().nullable(),
+  breaks: z.array(
+    z.object({
+      start: z.string().nullable(),
+      end: z.string().nullable(),
+    })
+  ),
+});
+
+const AvailabilityFormSchema = z.object({
+  monday: day,
+  tuesday: day,
+  wednesday: day,
+  thursday: day,
+  friday: day,
+  saturday: day,
+  sunday: day,
+});
+
+type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
   const { user } = useCurrentUserStore();
@@ -117,11 +155,46 @@ export function AvailabilityView() {
       eaProviderId: (user as any)?.eaProviderId,
     },
   });
+  const formattedState: AvailabilityForm = {} as any;
 
-  const plans = Object.entries(data?.getAProvider?.settings?.workingPlan || {});
+  Object.entries(data?.getAProvider?.settings?.workingPlan || {})?.forEach(
+    (day: [string, unknown]) => {
+      const dayName = day[0];
+      const dayData: Time = day[1] as Time;
 
-  const weeklyHours = plans?.map((plan, i) => (
-    <DailyHours key={i} day={plan[0]} times={plan[1]} />
+      (formattedState as any)[dayName] = {
+        ...dayData,
+        isSelected: dayData.start !== "00:00" && !!dayData.end,
+      };
+    }
+  );
+
+  const {
+    control,
+    register,
+    setValue,
+    formState: { isDirty },
+  } = useForm<AvailabilityForm>({
+    defaultValues: formattedState,
+    values: formattedState,
+    resolver: zodResolver(AvailabilityFormSchema),
+  });
+
+  const weeklyHours = days.map((day, i) => {
+    return (
+      <DailyHours
+        key={i}
+        day={day}
+        control={control}
+        register={register}
+        setValue={setValue}
+        isLast={i === days.length - 1}
+      />
+    );
+  });
+
+  const loadingHours = days.map((day, i) => (
+    <DailyHoursLoad key={i} day={day} />
   ));
 
   return (
@@ -129,15 +202,18 @@ export function AvailabilityView() {
       <h3 className="pb-8 font-semibold text-xl">Availability</h3>
       <div className="flex flex-col md:flex-row border border-1 rounded-lg w-full h-full">
         <div className="w-full md:w-2/3 p-6">
-          <p className="gray-900 font-bold pb-6">Set your weekly hours</p>
-          {weeklyHours}
-        </div>
-        <div className="md:w-1/3 w-full md:border-l  p-6">
-          <div>
-            <p className="gray-900 font-bold pb-6">Add date overrides</p>
-            <Button>Add a date override</Button>
-            {true && <DateOverride {...({} as any)} />}
+          <div className="flex justify-between">
+            <p className="gray-900 font-bold pb-6">Set your weekly hours</p>
+            <Button buttonType="secondary" disabled={!isDirty}>
+              Update
+            </Button>
           </div>
+
+          {data && weeklyHours}
+          {loading && loadingHours}
+        </div>
+        <div className="md:w-1/3 w-full md:border-l p-6">
+          <OverrideView />
         </div>
       </div>
     </div>
@@ -146,54 +222,55 @@ export function AvailabilityView() {
 
 function DailyHours({
   day,
-  times,
+  control,
+  register,
+  setValue,
+  isLast,
 }: {
   day: string;
-  times?: any;
+  control: Control<any>;
+  register: UseFormRegister<any>;
+  setValue: UseFormSetValue<any>;
+  isLast: boolean;
 }) {
-  const hasTime = !!times?.start && !!times?.end;
-  const [check, setCheck] = useState(hasTime);
-  const [start, setStart] = useState(times?.start);
-  const [end, setEnd] = useState(times?.end);
-  const [breaks, setBreaks] = useState<
-    { start: string; end: string; id: string }[]
-  >([]);
+  const { fields, append, remove } = useFieldArray({
+    name: `${day}.breaks`,
+    control,
+  });
+  const isSelected = control?._formValues?.[day]?.isSelected;
 
-  const handleDelete = () => {
-    setCheck(!check);
-    setStart("00:00");
-    setEnd("00:00");
-    setBreaks([]);
-  };
-
-  const deleteBreak = (id: string) => {
-    const newBreaks = breaks?.filter((b) => b.id !== id);
-    setBreaks(newBreaks);
+  const handleSelection = () => {
+    setValue(`${day}.isSelected`, !isSelected, { shouldDirty: true });
+    setValue(`${day}.start`, isSelected ? "00:00" : "09:00", {
+      shouldDirty: true,
+    });
+    setValue(`${day}.end`, isSelected ? "00:00" : "17:00", {
+      shouldDirty: true,
+    });
+    setValue(`${day}.breaks`, [], { shouldDirty: true });
   };
 
   return (
-    <>
-      <div className="flex sm:flex-row flex-col sm:items-center justify-between py-4">
+    <div className={!isLast ? "border-b" : ""}>
+      <div className="flex sm:flex-row flex-col sm:items-center justify-between py-4 gap-y-6">
         <div className="flex min-w-[120px]">
-          <Checkbox checked={check} onChange={handleDelete} />
+          <Checkbox onChange={handleSelection} checked={isSelected} />
           <p className="capitalize">{day}</p>
         </div>
-        {check ? (
+        {isSelected ? (
           <div className="flex items-center max-w-[400px]">
             <TextField
+              {...register(`${day}.start`)}
+              maxLength={5}
               inputSize="medium"
-              onChange={(e) => setStart(e.target.value)}
-              value={start}
             />{" "}
             <span className="px-2 text-gray-300">-</span>{" "}
             <TextField
+              {...register(`${day}.end`)}
+              maxLength={5}
               inputSize="medium"
-              onChange={(e) => {
-                setEnd(e.target.value);
-              }}
-              value={end}
             />
-            <button onClick={handleDelete} className="pl-6">
+            <button onClick={handleSelection} className="pl-6">
               <TrashIcon className="h-5 w-5 text-gray-400" />
             </button>
           </div>
@@ -204,32 +281,79 @@ function DailyHours({
         )}
         <div className="flex gap-3">
           <button
-            disabled={!check}
-            onClick={() =>
-              // add a break
-              setBreaks([
-                ...breaks,
-                { start: "00:00", end: "00:00", id: randomId() },
-              ])
-            }
+            disabled={!isSelected}
+            onClick={() => append({ start: "09:00", end: "17:00" })}
           >
             <PlusIcon className="h-5 w-5 text-gray-400" />
           </button>
-          {/* <button>
-            <DocumentDuplicateIcon className="h-5 w-5 text-gray-400" />
-          </button> */}
         </div>
       </div>
-      {breaks?.map((b, i) => {
-        return (
-          <BreakTimes
-            breaks={b}
-            deleteBreak={() => deleteBreak(b.id)}
-            key={b.id}
-          />
-        );
-      })}
-    </>
+      {fields.map((breakItem: any, index) => (
+        <BreakTimes
+          breakItem={breakItem}
+          key={breakItem.id}
+          day={day}
+          index={index}
+          register={register}
+          remove={remove}
+        />
+      ))}
+    </div>
+  );
+}
+
+function DailyHoursLoad({ day }: { day: string }) {
+  return (
+    <div className="flex sm:flex-row flex-col sm:items-center justify-between py-4 gap-y-6">
+      <div className="flex min-w-[120px]">
+        <Checkbox disabled />
+        <p className="capitalize">{day}</p>
+      </div>
+      <div className="flex items-center min-h-[42px] w-[400px]">
+        <p className="text-gray-400">Unavailable</p>
+      </div>
+      <div className="flex gap-3">
+        <button disabled>
+          <PlusIcon className="h-5 w-5 text-gray-400" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function OverrideView() {
+  //? when overload is ready
+  const { data, loading } = useQuery(getProfile, {
+    variables: {
+      eaProviderId: "2",
+    },
+    onCompleted: (data) => {
+      console.log({ data });
+    },
+  });
+
+  const loadItems = Array(2)
+    .fill("")
+    .map((_, i) => <DateOverrideLoad key={i} />);
+
+  return (
+    <div>
+      <p className="gray-900 font-bold pb-6">Add date overrides</p>
+      <DateOverrideModal
+        data={undefined}
+        trigger={<Button>Add a date override</Button>}
+      />
+      {[].map((item, i) => (
+        <DateOverride {...({} as any)} />
+      ))}
+      {loading && loadItems}
+      {!!data && (
+        <GrayPlaceHolderBox
+          className="h-40 mt-6"
+          content="You currently have no overrides"
+        />
+      )}
+    </div>
   );
 }
 
@@ -255,34 +379,51 @@ function DateOverride({
   );
 }
 
+function DateOverrideLoad() {
+  return (
+    <div className="flex justify-between w-full border-b items-center py-4">
+      <div className="w-1/2 items-center">
+        <hr className="h-2 w-full animate-pulse bg-gray-200 mb-3 rounded-sm" />
+        <hr className="h-2 w-1/2 animate-pulse bg-gray-200 rounded-sm" />
+      </div>
+      <button disabled>
+        <TrashIcon className="h-5 w-5 text-gray-400" />
+      </button>
+    </div>
+  );
+}
+
 function BreakTimes({
-  breaks,
-  deleteBreak,
+  breakItem,
+  day,
+  remove,
+  register,
+  index,
 }: {
-  breaks?: { start: string; end: string };
-  deleteBreak: () => void;
+  breakItem: { start: string; end: string; id: string };
+  day: string;
+  remove: (index: number) => void;
+  register: UseFormRegister<any>;
+  index: number;
 }) {
-  const [start, setStart] = useState(breaks?.start);
-  const [end, setEnd] = useState(breaks?.end);
+  if (!breakItem?.start || !breakItem?.end) return null;
 
   return (
     <div className="flex justify-between pb-4">
       <div className="w-[120px]" />
       <div className="flex items-center max-w-[400px]">
         <TextField
+          maxLength={5}
+          {...register(`${day}.breaks.[${index}].start`)}
           inputSize="medium"
-          onChange={(e) => setStart(e.target.value)}
-          value={start}
         />{" "}
         <span className="px-2 text-gray-300">-</span>{" "}
         <TextField
+          maxLength={5}
+          {...register(`${day}.breaks.[${index}].end`)}
           inputSize="medium"
-          onChange={(e) => {
-            setEnd(e.target.value);
-          }}
-          value={end}
         />
-        <button onClick={deleteBreak} className="pl-6">
+        <button onClick={() => remove(index)} className="pl-6">
           <TrashIcon className="h-5 w-5 text-gray-400" />
         </button>
       </div>
