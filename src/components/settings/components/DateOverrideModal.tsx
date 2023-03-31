@@ -13,6 +13,8 @@ import Calendar from "react-calendar";
 import dayjs from "dayjs";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import { randomId } from "@src/utils/randomId";
 
 type DateRange = Date | null | undefined | [Date | null, Date | null];
 
@@ -43,6 +45,8 @@ export function DateOverrideModal({
   data?: [];
   trigger: React.ReactNode;
 }) {
+  const { addNotification } = useNotificationStore();
+
   const {
     register,
     control,
@@ -62,6 +66,27 @@ export function DateOverrideModal({
     control,
     name: "overrides",
   });
+
+  const onSubmit = async (data: DateOverrideForm) => {
+    console.log(data);
+    try {
+      addNotification({
+        id: randomId(),
+        type: "success",
+        description: "Your availability has been updated",
+        title: "Success",
+      });
+    } catch (error) {
+      console.log("error");
+      addNotification({
+        id: randomId(),
+        type: "error",
+        description:
+          "Could not update your availability, please try again later",
+        title: "Failure",
+      });
+    }
+  };
 
   return (
     <DialogModal trigger={trigger} triggerAsChild>

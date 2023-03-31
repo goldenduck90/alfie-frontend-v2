@@ -2,6 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
 import {
   Control,
   useFieldArray,
@@ -15,6 +16,7 @@ import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import { TextField } from "../ui/TextField";
 import { DateOverrideModal } from "./components/DateOverrideModal";
+import { randomId } from "@src/utils/randomId";
 
 export type Time = {
   start: string;
@@ -150,6 +152,7 @@ type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
   const { user } = useCurrentUserStore();
+  const { addNotification } = useNotificationStore();
   const { data, loading } = useQuery(getProfile, {
     variables: {
       eaProviderId: (user as any)?.eaProviderId,
@@ -174,11 +177,33 @@ export function AvailabilityView() {
     register,
     setValue,
     formState: { isDirty },
+    handleSubmit,
   } = useForm<AvailabilityForm>({
     defaultValues: formattedState,
     values: formattedState,
     resolver: zodResolver(AvailabilityFormSchema),
   });
+
+  const onSubmit = async (data: AvailabilityForm) => {
+    console.log(data);
+    try {
+      addNotification({
+        id: randomId(),
+        type: "success",
+        description: "Your availability has been updated",
+        title: "Success",
+      });
+    } catch (error) {
+      console.log("error");
+      addNotification({
+        id: randomId(),
+        type: "error",
+        description:
+          "Could not update your availability, please try again later",
+        title: "Failure",
+      });
+    }
+  };
 
   const weeklyHours = days.map((day, i) => {
     return (
