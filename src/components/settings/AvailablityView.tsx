@@ -447,7 +447,7 @@ function OverrideView() {
       {" "}
       <p className="gray-900 font-bold pb-6">Add date overrides</p>
       <DateOverrideModal trigger={<Button>Add a date override</Button>} />
-      {data?.map((item, i) => (
+      {data?.map((item: any, i: number) => (
         <DateOverride {...({} as any)} />
       ))}
       {loading && loadItems}
