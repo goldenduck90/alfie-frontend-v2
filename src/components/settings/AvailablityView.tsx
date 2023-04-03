@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation} from "@apollo/client";
 import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
@@ -93,21 +93,64 @@ const getProfile = gql`
 
 const updateProfile = gql`
   mutation updateEaProfile(
-    $eaProviderId: String!
-    $input: EAProviderProfileInput!
-  ) {
-    updateProviderProfile(eaProviderId: $eaProviderId, input: $input) {
-      settings {
-        workingPlan {
-          monday {
+  $eaProviderId: String!
+  $input: EAProviderProfileInput!
+) {
+  updateProviderProfile(eaProviderId: $eaProviderId, input: $input) {
+    settings {
+      workingPlan {
+        monday {
+          start
+          end
+          breaks {
             start
             end
-            breaks {
-              start
-              end
-            }
           }
-          tuesday {
+        }
+        tuesday {
+          start
+          end
+          breaks {
+            start
+            end
+          }
+        }
+        wednesday {
+          start
+          end
+          breaks {
+            start
+            end
+          }
+        }
+        thursday {
+          start
+          end
+          breaks {
+            start
+            end
+          }
+        }
+        friday {
+          start
+          end
+          breaks {
+            start
+            end
+          }
+        }
+        saturday {
+          start
+          end
+          breaks {
+            start
+            end
+          }
+        }
+        sunday {
+          start
+          end
+          breaks {
             start
             end
           }
@@ -115,6 +158,7 @@ const updateProfile = gql`
       }
     }
   }
+}
 `;
 const days = [
   "monday",
@@ -151,6 +195,7 @@ const AvailabilityFormSchema = z.object({
 type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
+  const [updateProviderAvailability, { loading: updateLoading, error: updateError }] = useMutation(updateProfile);
   const { user } = useCurrentUserStore();
   const { addNotification } = useNotificationStore();
   const { data, loading } = useQuery(getProfile, {
@@ -185,8 +230,27 @@ export function AvailabilityView() {
   });
 
   const onSubmit = async (data: AvailabilityForm) => {
-    console.log(data);
     try {
+      console.log(data, "data")
+     
+const updatedData = Object.fromEntries(
+  Object.entries(data).map(([day, dayData]) => {
+    const { isSelected, ...rest } = dayData;
+    return [day, rest];
+  })
+);
+
+      await updateProviderAvailability({
+        variables: {
+          eaProviderId: (user as any)?.eaProviderId,
+          input: {
+            settings: {
+              workingPlan: updatedData,
+            },
+          },
+        },
+      });
+  
       addNotification({
         id: randomId(),
         type: "success",
@@ -229,9 +293,8 @@ export function AvailabilityView() {
         <div className="w-full md:w-2/3 p-6">
           <div className="flex justify-between">
             <p className="gray-900 font-bold pb-6">Set your weekly hours</p>
-            <Button buttonType="secondary" disabled={!isDirty}>
-              Update
-            </Button>
+            <Button buttonType="secondary" disabled={!isDirty} onClick={handleSubmit(onSubmit)}>Update</Button>
+
           </div>
 
           {data && weeklyHours}
