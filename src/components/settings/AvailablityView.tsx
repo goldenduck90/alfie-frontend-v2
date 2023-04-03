@@ -294,7 +294,8 @@ export function AvailabilityView() {
     <div>
       <h3 className="pb-8 font-semibold text-xl">Availability</h3>
       <div className="flex flex-col md:flex-row border border-1 rounded-lg w-full h-full">
-        <div className="w-full md:w-2/3 p-6">
+        <div className="w-full  p-6">
+          {/* md:w-2/3 */}
           <div className="flex justify-between">
             <p className="gray-900 font-bold pb-6">Set your weekly hours</p>
             <Button
@@ -309,9 +310,8 @@ export function AvailabilityView() {
           {data && weeklyHours}
           {loading && loadingHours}
         </div>
-        <div className="md:w-1/3 w-full md:border-l p-6">
-          <OverrideView />
-        </div>
+
+        {/* <OverrideView /> */}
       </div>
     </div>
   );
@@ -443,7 +443,8 @@ function OverrideView() {
     .map((_, i) => <DateOverrideLoad key={i} />);
 
   return (
-    <div>
+    <div className="md:w-1/3 w-full md:border-l p-6">
+      {" "}
       <p className="gray-900 font-bold pb-6">Add date overrides</p>
       <DateOverrideModal trigger={<Button>Add a date override</Button>} />
       {data?.map((item, i) => (
