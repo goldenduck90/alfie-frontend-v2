@@ -875,11 +875,11 @@ export type ScheduleBreak = {
 
 export type ScheduleExceptions = {
   __typename?: 'ScheduleExceptions';
-  date: Scalars['String'];
+  date: DailySchedule;
 };
 
 export type ScheduleExceptionsInput = {
-  date: Scalars['String'];
+  date: DailyScheduleInput;
 };
 
 export type ScheduleInput = {

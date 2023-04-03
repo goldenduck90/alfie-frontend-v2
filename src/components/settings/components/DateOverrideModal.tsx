@@ -29,7 +29,7 @@ const updateExceptionDate = gql`
   mutation updateExceptions(
     $timezone: String!
     $eaProviderId: String!
-    $exceptions: [String!]!
+    $exceptions: DailyScheduleInput!
   ) {
     getProviderSchedule(
       timezone: $timezone
@@ -37,7 +37,14 @@ const updateExceptionDate = gql`
       exceptions: $exceptions
     ) {
       exceptions {
-        date
+        date {
+          start
+          end
+          breaks {
+            start
+            end
+          }
+        }
       }
     }
   }
@@ -92,13 +99,36 @@ export function DateOverrideModal({ trigger }: { trigger: React.ReactNode }) {
   });
 
   const onSubmit = async (data: DateOverrideForm) => {
+    const getAllDatesFromRange = (range: DateRange) => {
+      if (Array.isArray(range)) {
+        const [start, end] = range;
+        const dates = [];
+        let currentDate = dayjs(start);
+        const endDate = dayjs(end);
+        while (currentDate <= endDate) {
+          dates.push(dayjs(currentDate.toISOString()).format("YYYY-MM-DD"));
+          currentDate = currentDate.add(1, "day");
+        }
+        return dates;
+      }
+    };
+
+    const exceptions: any = {};
+    getAllDatesFromRange(data.date)?.forEach((date) => {
+      exceptions[date] = data.overrides[0];
+    });
+
+    console.log({ exceptions });
+
     try {
       await updateException({
         variables: {
           eaProviderId: (user as any)?.eaProviderId,
           timezone: dayjs.tz.guess(),
+          exceptions: JSON.stringify(exceptions),
         },
       });
+
       addNotification({
         id: randomId(),
         type: "success",
