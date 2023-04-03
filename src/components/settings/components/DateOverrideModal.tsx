@@ -10,13 +10,45 @@ import { TextField } from "@src/components/ui/TextField";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { Button } from "@src/components/ui/Button";
 import Calendar from "react-calendar";
-import dayjs from "dayjs";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
 import { randomId } from "@src/utils/randomId";
+import { gql, useMutation } from "@apollo/client";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(timezone);
+dayjs.tz.setDefault(dayjs.tz.guess());
 
 type DateRange = Date | null | undefined | [Date | null, Date | null];
+
+const updateExceptionDate = gql`
+  mutation updateExceptions(
+    $timezone: String!
+    $eaProviderId: String!
+    $exceptions: DailyScheduleInput!
+  ) {
+    getProviderSchedule(
+      timezone: $timezone
+      eaProviderId: $eaProviderId
+      exceptions: $exceptions
+    ) {
+      exceptions {
+        date {
+          start
+          end
+          breaks {
+            start
+            end
+          }
+        }
+      }
+    }
+  }
+`;
 
 const DateOverrideFormSchema = z.object({
   dateTitle: z.date(),
@@ -30,35 +62,34 @@ const DateOverrideFormSchema = z.object({
     .nullable(),
   overrides: z.array(
     z.object({
-      start: z.string().nullable(),
-      end: z.string().nullable(),
+      start: z.string().min(5, "Please enter a valid time range").nullable(),
+      end: z.string().min(5, "Please enter a valid time range").nullable(),
     })
   ),
 });
 
 type DateOverrideForm = z.infer<typeof DateOverrideFormSchema>;
 
-export function DateOverrideModal({
-  trigger,
-  data,
-}: {
-  data?: [];
-  trigger: React.ReactNode;
-}) {
+export function DateOverrideModal({ trigger }: { trigger: React.ReactNode }) {
+  const { user } = useCurrentUserStore();
   const { addNotification } = useNotificationStore();
+
+  const [updateException, { loading }] = useMutation(updateExceptionDate);
 
   const {
     register,
     control,
     setValue,
-    formState: { isDirty },
+    formState: { isDirty, isSubmitting, errors },
+    setError,
     watch,
     reset,
+    handleSubmit,
   } = useForm<DateOverrideForm>({
     defaultValues: {
       dateTitle: new Date(),
       date: new Date(),
-      overrides: [{ start: "00:00", end: "00:00" }],
+      overrides: [{ start: null, end: null }],
     },
   });
 
@@ -68,8 +99,36 @@ export function DateOverrideModal({
   });
 
   const onSubmit = async (data: DateOverrideForm) => {
-    console.log(data);
+    const getAllDatesFromRange = (range: DateRange) => {
+      if (Array.isArray(range)) {
+        const [start, end] = range;
+        const dates = [];
+        let currentDate = dayjs(start);
+        const endDate = dayjs(end);
+        while (currentDate <= endDate) {
+          dates.push(dayjs(currentDate.toISOString()).format("YYYY-MM-DD"));
+          currentDate = currentDate.add(1, "day");
+        }
+        return dates;
+      }
+    };
+
+    const exceptions: any = {};
+    getAllDatesFromRange(data.date)?.forEach((date) => {
+      exceptions[date] = data.overrides[0];
+    });
+
+    console.log({ exceptions });
+
     try {
+      await updateException({
+        variables: {
+          eaProviderId: (user as any)?.eaProviderId,
+          timezone: dayjs.tz.guess(),
+          exceptions: JSON.stringify(exceptions),
+        },
+      });
+
       addNotification({
         id: randomId(),
         type: "success",
@@ -77,12 +136,13 @@ export function DateOverrideModal({
         title: "Success",
       });
     } catch (error) {
-      console.log("error");
+      setError("root.serverError", {
+        message: (error as any)?.message,
+      });
       addNotification({
         id: randomId(),
         type: "error",
-        description:
-          "Could not update your availability, please try again later",
+        description: (error as any)?.message,
         title: "Failure",
       });
     }
@@ -96,7 +156,7 @@ export function DateOverrideModal({
             Select the date(s) you want to assign specific hours
           </p>
 
-          <RadixDialog.Close className="" asChild>
+          <RadixDialog.Close className="" asChild onClick={() => reset()}>
             <button>
               <XIcon className="w-5 h-5" />
             </button>
@@ -153,9 +213,7 @@ export function DateOverrideModal({
                         <TrashIcon className="h-5 w-5 text-gray-400" />
                       </button>
                     )}
-                    <button
-                      onClick={() => append({ start: "00:00", end: "00:00" })}
-                    >
+                    <button onClick={() => append({ start: null, end: null })}>
                       <PlusIcon className="h-5 w-5 text-gray-400" />
                     </button>
                   </div>
@@ -170,7 +228,12 @@ export function DateOverrideModal({
               Cancel
             </Button>
           </RadixDialog.Close>
-          <Button disabled={!isDirty}>Apply</Button>
+          <Button
+            disabled={!isDirty || isSubmitting || !!errors?.root?.serverErrors}
+            onClick={handleSubmit(onSubmit)}
+          >
+            Apply
+          </Button>
         </div>
       </div>
     </DialogModal>

@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
@@ -17,6 +17,11 @@ import { Checkbox } from "../ui/Checkbox";
 import { TextField } from "../ui/TextField";
 import { DateOverrideModal } from "./components/DateOverrideModal";
 import { randomId } from "@src/utils/randomId";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(timezone);
+dayjs.tz.setDefault(dayjs.tz.guess());
 
 export type Time = {
   start: string;
@@ -110,6 +115,50 @@ const updateProfile = gql`
           tuesday {
             start
             end
+            breaks {
+              start
+              end
+            }
+          }
+          wednesday {
+            start
+            end
+            breaks {
+              start
+              end
+            }
+          }
+          thursday {
+            start
+            end
+            breaks {
+              start
+              end
+            }
+          }
+          friday {
+            start
+            end
+            breaks {
+              start
+              end
+            }
+          }
+          saturday {
+            start
+            end
+            breaks {
+              start
+              end
+            }
+          }
+          sunday {
+            start
+            end
+            breaks {
+              start
+              end
+            }
           }
         }
       }
@@ -151,6 +200,8 @@ const AvailabilityFormSchema = z.object({
 type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
+  const [updateAvailability, { loading: updateLoading, error: updateError }] =
+    useMutation(updateProfile);
   const { user } = useCurrentUserStore();
   const { addNotification } = useNotificationStore();
   const { data, loading } = useQuery(getProfile, {
@@ -185,8 +236,25 @@ export function AvailabilityView() {
   });
 
   const onSubmit = async (data: AvailabilityForm) => {
-    console.log(data);
     try {
+      const updatedData = Object.fromEntries(
+        Object.entries(data).map(([day, dayData]) => {
+          const { isSelected, ...rest } = dayData;
+          return [day, rest];
+        })
+      );
+
+      await updateAvailability({
+        variables: {
+          eaProviderId: (user as any)?.eaProviderId,
+          input: {
+            settings: {
+              workingPlan: updatedData,
+            },
+          },
+        },
+      });
+
       addNotification({
         id: randomId(),
         type: "success",
@@ -229,7 +297,11 @@ export function AvailabilityView() {
         <div className="w-full md:w-2/3 p-6">
           <div className="flex justify-between">
             <p className="gray-900 font-bold pb-6">Set your weekly hours</p>
-            <Button buttonType="secondary" disabled={!isDirty}>
+            <Button
+              buttonType="secondary"
+              disabled={!isDirty}
+              onClick={handleSubmit(onSubmit)}
+            >
               Update
             </Button>
           </div>
@@ -346,17 +418,26 @@ function DailyHoursLoad({ day }: { day: string }) {
   );
 }
 
+const getExceptions = gql`
+  query Exceptions($timezone: String!, $eaProviderId: String!) {
+    getProviderSchedule(timezone: $timezone, eaProviderId: $eaProviderId) {
+      exceptions {
+        date
+      }
+    }
+  }
+`;
+
 function OverrideView() {
-  //? when overload is ready
-  const { data, loading } = useQuery(getProfile, {
+  const { user } = useCurrentUserStore();
+  const { data, loading } = useQuery(getExceptions, {
     variables: {
-      eaProviderId: "2",
-    },
-    onCompleted: (data) => {
-      console.log({ data });
+      timezone: dayjs.tz.guess(),
+      eaProviderId: (user as any)?.eaProviderId,
     },
   });
 
+  console.log({ data });
   const loadItems = Array(2)
     .fill("")
     .map((_, i) => <DateOverrideLoad key={i} />);
@@ -364,15 +445,12 @@ function OverrideView() {
   return (
     <div>
       <p className="gray-900 font-bold pb-6">Add date overrides</p>
-      <DateOverrideModal
-        data={undefined}
-        trigger={<Button>Add a date override</Button>}
-      />
-      {[].map((item, i) => (
+      <DateOverrideModal trigger={<Button>Add a date override</Button>} />
+      {data?.map((item, i) => (
         <DateOverride {...({} as any)} />
       ))}
       {loading && loadItems}
-      {!!data && (
+      {!data && (
         <GrayPlaceHolderBox
           className="h-40 mt-6"
           content="You currently have no overrides"

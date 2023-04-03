@@ -60,6 +60,11 @@ export type BatchCreateOrUpdateProvidersResponse = {
   updated: Scalars['Int'];
 };
 
+export type BreakInput = {
+  end: Scalars['String'];
+  start: Scalars['String'];
+};
+
 export type Checkout = {
   __typename?: 'Checkout';
   _id: Scalars['String'];
@@ -222,6 +227,19 @@ export type CreateUserTaskInput = {
 export type CreateUserTasksInput = {
   taskTypes: Array<TaskType>;
   userId: Scalars['String'];
+};
+
+export type DailySchedule = {
+  __typename?: 'DailySchedule';
+  breaks: Array<ScheduleBreak>;
+  end: Scalars['String'];
+  start: Scalars['String'];
+};
+
+export type DailyScheduleInput = {
+  breaks: Array<BreakInput>;
+  end: Scalars['String'];
+  start: Scalars['String'];
 };
 
 export type DocUploadInput = {
@@ -496,6 +514,7 @@ export type Mutation = {
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
   updateProviderProfile: EaProviderProfile;
+  updateProviderSchedule: ScheduleObject;
   updateSubscription: MessageResponse;
   updateUserTask: UserTask;
   uploadDocument: AkuteDocument;
@@ -623,6 +642,13 @@ export type MutationUpdateProviderProfileArgs = {
 };
 
 
+export type MutationUpdateProviderScheduleArgs = {
+  eaProviderId: Scalars['String'];
+  schedule: ScheduleInput2;
+  timezone: Scalars['String'];
+};
+
+
 export type MutationUpdateSubscriptionArgs = {
   input: UpdateSubscriptionInput;
 };
@@ -711,6 +737,7 @@ export type Query = {
   getAllPatientsByPractitioner: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
+  getProviderSchedule: ScheduleObject;
   getUserById: User;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
@@ -763,6 +790,12 @@ export type QueryGetAProviderArgs = {
 
 export type QueryGetAllUserTasksByUserArgs = {
   userId: Scalars['String'];
+};
+
+
+export type QueryGetProviderScheduleArgs = {
+  eaProviderId: Scalars['String'];
+  timezone: Scalars['String'];
 };
 
 
@@ -822,6 +855,55 @@ export enum Role {
   Patient = 'Patient',
   Practitioner = 'Practitioner'
 }
+
+export type Schedule = {
+  __typename?: 'Schedule';
+  friday: DailySchedule;
+  monday: DailySchedule;
+  saturday: DailySchedule;
+  sunday: DailySchedule;
+  thursday: DailySchedule;
+  tuesday: DailySchedule;
+  wednesday: DailySchedule;
+};
+
+export type ScheduleBreak = {
+  __typename?: 'ScheduleBreak';
+  end: Scalars['String'];
+  start: Scalars['String'];
+};
+
+export type ScheduleExceptions = {
+  __typename?: 'ScheduleExceptions';
+  date: DailySchedule;
+};
+
+export type ScheduleExceptionsInput = {
+  date: DailyScheduleInput;
+};
+
+export type ScheduleInput = {
+  friday: DailyScheduleInput;
+  monday: DailyScheduleInput;
+  saturday: DailyScheduleInput;
+  sunday: DailyScheduleInput;
+  thursday: DailyScheduleInput;
+  tuesday: DailyScheduleInput;
+  wednesday: DailyScheduleInput;
+};
+
+export type ScheduleInput2 = {
+  exceptions: ScheduleExceptionsInput;
+  schedule: ScheduleInput;
+  timezone: Scalars['String'];
+};
+
+export type ScheduleObject = {
+  __typename?: 'ScheduleObject';
+  exceptions: ScheduleExceptions;
+  schedule: Schedule;
+  timezone: Scalars['String'];
+};
 
 export type Score = {
   __typename?: 'Score';
