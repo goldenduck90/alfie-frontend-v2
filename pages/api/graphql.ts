@@ -18,7 +18,7 @@ export default withIronSessionApiRoute(
   },
   {
     cookieName: "Alfie:sessionCookie",
-    password: process.env.SESSION_COOKIE_PASSWORD as string,
+    password: "HQ3x9hkUHNM37woBQdrquNL2CF2RbTxUHNM37wo" as string,
     cookieOptions: {
       secure: process.env.NODE_ENV === "production",
     },
