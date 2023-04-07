@@ -380,8 +380,9 @@ function DailyHours({
           <button
             disabled={!isSelected}
             onClick={() => append({ start: "09:00", end: "17:00" })}
+            className="flex flex-row items-center"
           >
-            <PlusIcon className="h-5 w-5 text-gray-400" />
+            <PlusIcon className="h-5 w-5 text-gray-400 mr-2" />
             <p className="capitalize text-gray-400">Add Break</p>
           </button>
         </div>
@@ -514,30 +515,32 @@ function BreakTimes({
   if (!breakItem?.start || !breakItem?.end) return null;
 
   return (
-    <div className="flex justify-between pb-4">
-      <div className="w-[120px]" />
-      {(index === 0) && (
-        <div className="flex items-center -max-w-[400px]">
-          <p className="capitalize">Breaks</p>
+    <>
+      {index === 0 && (
+        <div className="flex flex-items-center pb-4">
+          <p className="capitalize font-bold">Breaks</p>
         </div>
       )}
-      <div className="flex items-center max-w-[400px]">
-        <TextField
-          maxLength={5}
-          {...register(`${day}.breaks.[${index}].start`)}
-          inputSize="medium"
-        />{" "}
-        <span className="px-2 text-gray-300">-</span>{" "}
-        <TextField
-          maxLength={5}
-          {...register(`${day}.breaks.[${index}].end`)}
-          inputSize="medium"
-        />
-        <button onClick={() => remove(index)} className="pl-6">
-          <TrashIcon className="h-5 w-5 text-gray-400" />
-        </button>
+      <div className="flex justify-between pb-4">
+        <div className="w-[80px]" />
+        <div className="flex items-center max-w-[400px]">
+          <TextField
+            maxLength={5}
+            {...register(`${day}.breaks.[${index}].start`)}
+            inputSize="medium"
+          />{" "}
+          <span className="px-2 text-gray-300">-</span>{" "}
+          <TextField
+            maxLength={5}
+            {...register(`${day}.breaks.[${index}].end`)}
+            inputSize="medium"
+          />
+          <button onClick={() => remove(index)} className="pl-6">
+            <TrashIcon className="h-5 w-5 text-gray-400" />
+          </button>
+        </div>
+        <div className="w-[62px]" />
       </div>
-      <div className="w-[20px]" />
-    </div>
+    </>
   );
 }
