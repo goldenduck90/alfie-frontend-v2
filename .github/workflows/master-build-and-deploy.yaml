@@ -5,7 +5,7 @@ name: (DEV) Build and Deploy
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
   # prepare:
@@ -37,7 +37,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: "alfie-frontend-v2"
-        IMAGE_TAG: latest
+        IMAGE_TAG: production
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . --build-arg sendbird_app_id=${{ vars.PRODUCTION_SENDBIRD_APP_ID }} --build-arg stripe_publishable_key=${{ vars.PRODUCTION_STRIPE_PUBLISHABLE_KEY }} --build-arg stripe_success_url=${{ vars.PRODUCTION_STRIPE_SUCCESS_URL }} --build-arg graphql_api=${{ vars.PRODUCTION_GRAPHQL_API }}
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
