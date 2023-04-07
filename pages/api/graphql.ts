@@ -7,6 +7,7 @@ export default withIronSessionApiRoute(
   async function handler(req, res) {
     const token = (req.session as any).token;
     const headers: { [key: string]: string } = {};
+    console.log(req, "request in graphql.ts")
     if (token) {
       console.log(token, "token in graphql.ts")
       headers["Authorization"] = `Bearer ${token}`;
