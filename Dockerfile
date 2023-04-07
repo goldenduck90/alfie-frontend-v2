@@ -12,6 +12,9 @@ ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$stripe_publishable_key
 ARG stripe_success_url
 ENV NEXT_PUBLIC_STRIPE_SUCCESS_URL=$stripe_success_url
 
+ARG graphql_api
+ENV NEXT_PUBLIC_GRAPHQL_API=$graphql_api
+
 WORKDIR /usr/src/app
 
 COPY package.json /usr/src/app
