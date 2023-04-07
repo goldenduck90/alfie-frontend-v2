@@ -382,6 +382,7 @@ function DailyHours({
             onClick={() => append({ start: "09:00", end: "17:00" })}
           >
             <PlusIcon className="h-5 w-5 text-gray-400" />
+            <p className="capitalize text-gray-400">Add Break</p>
           </button>
         </div>
       </div>
