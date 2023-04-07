@@ -102,10 +102,11 @@ export default withSessionRoute(async function loginRoute(req, res) {
         .status(401)
         .json({ message: "Invalid credentials! Please try again." });
     }
-
+    console.log(data.login, "data.login in login.ts");
     (req.session as any).token = data.login.token;
     (req.session as any).user = data.login.user;
 
+    
     if (data.login.user.role === Role.Patient) {
       const patientBody = JSON.stringify({
         query: getPatientInfo,

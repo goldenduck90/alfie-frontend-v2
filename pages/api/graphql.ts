@@ -8,6 +8,7 @@ export default withIronSessionApiRoute(
     const token = (req.session as any).token;
     const headers: { [key: string]: string } = {};
     if (token) {
+      console.log(token, "token in graphql.ts"")
       headers["Authorization"] = `Bearer ${token}`;
     }
     return httpProxyMiddleware(req, res, {
