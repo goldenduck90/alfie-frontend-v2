@@ -19,8 +19,10 @@ import { DateOverrideModal } from "./components/DateOverrideModal";
 import { randomId } from "@src/utils/randomId";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
+import advanced from "dayjs/plugin/advancedFormat";
 
 dayjs.extend(timezone);
+dayjs.extend(advanced);
 dayjs.tz.setDefault(dayjs.tz.guess());
 
 export type Time = {
@@ -29,66 +31,64 @@ export type Time = {
   breaks: { start: string; end: string }[];
 };
 
-const getProfile = gql`
-  query getProvider($eaProviderId: String!) {
-    getAProvider(eaProviderId: $eaProviderId) {
-      settings {
-        workingPlan {
-          monday {
+const getProviderSchedule = gql`
+  query getProviderSchedule($eaProviderId: String!, $timezone: String!) {
+    getProviderSchedule(eaProviderId: $eaProviderId, timezone: $timezone) {
+      schedule {
+        monday {
+          start
+          end
+          breaks {
             start
             end
-            breaks {
-              start
-              end
-            }
           }
-          tuesday {
+        }
+        tuesday {
+          start
+          end
+          breaks {
             start
             end
-            breaks {
-              start
-              end
-            }
           }
-          wednesday {
+        }
+        wednesday {
+          start
+          end
+          breaks {
             start
             end
-            breaks {
-              start
-              end
-            }
           }
-          thursday {
+        }
+        thursday {
+          start
+          end
+          breaks {
             start
             end
-            breaks {
-              start
-              end
-            }
           }
-          friday {
+        }
+        friday {
+          start
+          end
+          breaks {
             start
             end
-            breaks {
-              start
-              end
-            }
           }
-          saturday {
+        }
+        saturday {
+          start
+          end
+          breaks {
             start
             end
-            breaks {
-              start
-              end
-            }
           }
-          sunday {
+        }
+        sunday {
+          start
+          end
+          breaks {
             start
             end
-            breaks {
-              start
-              end
-            }
           }
         }
       }
@@ -96,75 +96,18 @@ const getProfile = gql`
   }
 `;
 
-const updateProfile = gql`
-  mutation updateEaProfile(
+const updateProviderSchedule = gql`
+  mutation updateProviderSchedule(
     $eaProviderId: String!
-    $input: EAProviderProfileInput!
+    $timezone: String!
+    $schedule: ScheduleInput!
   ) {
-    updateProviderProfile(eaProviderId: $eaProviderId, input: $input) {
-      settings {
-        workingPlan {
-          monday {
-            start
-            end
-            breaks {
-              start
-              end
-            }
-          }
-          tuesday {
-            start
-            end
-            breaks {
-              start
-              end
-            }
-          }
-          wednesday {
-            start
-            end
-            breaks {
-              start
-              end
-            }
-          }
-          thursday {
-            start
-            end
-            breaks {
-              start
-              end
-            }
-          }
-          friday {
-            start
-            end
-            breaks {
-              start
-              end
-            }
-          }
-          saturday {
-            start
-            end
-            breaks {
-              start
-              end
-            }
-          }
-          sunday {
-            start
-            end
-            breaks {
-              start
-              end
-            }
-          }
-        }
-      }
+    updateProviderSchedule(eaProviderId: $eaProviderId, timezone: $timezone, schedule: $schedule) {
+      message
     }
   }
 `;
+
 const days = [
   "monday",
   "tuesday",
@@ -201,17 +144,19 @@ type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
   const [updateAvailability, { loading: updateLoading, error: updateError }] =
-    useMutation(updateProfile);
+    useMutation(updateProviderSchedule);
   const { user } = useCurrentUserStore();
   const { addNotification } = useNotificationStore();
-  const { data, loading } = useQuery(getProfile, {
+  const { data, loading } = useQuery(getProviderSchedule, {
     variables: {
       eaProviderId: (user as any)?.eaProviderId,
+      timezone: dayjs.tz.guess(),
     },
   });
+
   const formattedState: AvailabilityForm = {} as any;
 
-  Object.entries(data?.getAProvider?.settings?.workingPlan || {})?.forEach(
+  Object.entries(data?.getProviderSchedule?.schedule || {})?.forEach(
     (day: [string, unknown]) => {
       const dayName = day[0];
       const dayData: Time = day[1] as Time;
@@ -244,14 +189,13 @@ export function AvailabilityView() {
         })
       );
 
+      console.log(updatedData)
+
       await updateAvailability({
         variables: {
           eaProviderId: (user as any)?.eaProviderId,
-          input: {
-            settings: {
-              workingPlan: updatedData,
-            },
-          },
+          timezone: dayjs.tz.guess(),
+          schedule: updatedData,
         },
       });
 
@@ -292,7 +236,10 @@ export function AvailabilityView() {
 
   return (
     <div>
-      <h3 className="pb-8 font-semibold text-xl">Availability</h3>
+      <h3 className="pb-2 font-semibold text-xl">Availability</h3>
+      <p className="pb-2">All times are in 24 hour format & should be entered in the current timezone you are in.</p>
+      <p className="pb-2">You are currently in timezone: <b>{dayjs().format("z")} ({dayjs.tz.guess()})</b></p>
+      <p className="pb-6"><b>For Example:</b> 9:00 AM = 09:00, 5:00 PM = 17:00.</p>
       <div className="flex flex-col md:flex-row border border-1 rounded-lg w-full h-full">
         <div className="w-full  p-6">
           {/* md:w-2/3 */}
