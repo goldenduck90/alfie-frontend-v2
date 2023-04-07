@@ -515,6 +515,11 @@ function BreakTimes({
   return (
     <div className="flex justify-between pb-4">
       <div className="w-[120px]" />
+      {(index === 0) && (
+        <div className="flex items-center -max-w-[400px]">
+          <p className="capitalize">Breaks</p>
+        </div>
+      )}
       <div className="flex items-center max-w-[400px]">
         <TextField
           maxLength={5}
