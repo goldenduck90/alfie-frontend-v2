@@ -26,8 +26,8 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault(dayjs.tz.guess());
 
 const cancelAppointmentMutation = gql`
-  mutation CancelAppointment($eaAppointmentId: String!) {
-    cancelAppointment(eaAppointmentId: $eaAppointmentId) {
+  mutation CancelAppointment($input: GetAppointmentInput!) {
+    cancelAppointment(input: $input) {
       message
     }
   }
@@ -65,7 +65,10 @@ export const CancelConfirmation = ({
 
     const { data, errors } = await cancel({
       variables: {
-        eaAppointmentId,
+        input: {
+          eaAppointmentId,
+          timezone: dayjs.tz.guess(),
+        },
       }
     })
 
