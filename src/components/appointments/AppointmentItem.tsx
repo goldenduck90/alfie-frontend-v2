@@ -7,9 +7,18 @@ import { PencilIcon, XIcon } from "@heroicons/react/solid";
 import { gql, useMutation } from "@apollo/client";
 import Link from "next/link";
 
+// setup dayjs
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault(dayjs.tz.guess());
+
 const cancelAppointmentMutation = gql`
-  mutation CancelAppointment($eaAppointmentId: String!) {
-    cancelAppointment(eaAppointmentId: $eaAppointmentId) {
+  mutation CancelAppointment($input: GetAppointmentInput!) {
+    cancelAppointment(input: $input) {
       message
     }
   }
@@ -40,7 +49,10 @@ export const AppointmentItem = ({
     if (answer) {
       const { data } = await cancelAppointment({
         variables: {
-          eaAppointmentId: id,
+          input: {
+            eaAppointmentId: id,
+            timezone: dayjs.tz.guess(),
+          },
         },
       });
 
