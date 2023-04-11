@@ -148,7 +148,7 @@ type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
   const { user } = useCurrentUserStore();
-  
+
   const [updateAvailability, { loading: updateLoading, error: updateError }] =
     useMutation(updateProviderSchedule, {
       refetchQueries: [{ query: getProviderSchedule, variables: {
@@ -199,9 +199,7 @@ export function AvailabilityView() {
           const { isSelected, ...rest } = dayData;
           return [day, rest];
         })
-      );
-
-      console.log(updatedData);
+      );      
 
       await updateAvailability({
         variables: {
