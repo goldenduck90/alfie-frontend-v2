@@ -66,7 +66,7 @@ const Login = () => {
         });
       }
     },
-    [setError]
+    [mutateAsync, reset, router, setError, setUser]
   );
 
   const isSubmitting = formState.isSubmitting;

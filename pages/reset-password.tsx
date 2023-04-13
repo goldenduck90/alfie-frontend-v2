@@ -8,8 +8,6 @@ import { parseError } from "../src/utils/parseError";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
-import { Role } from "@src/graphql/generated";
 import { Button } from "@src/components/ui/Button";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
 
@@ -40,11 +38,15 @@ const resetPasswordSchema = Yup.object().shape({
     .required("Please confirm your password."),
 });
 
-const ResetPassword = ({ register = false }: { register?: boolean }) => {
+const ResetPassword = () => {
   const router = useRouter();
-  const { user } = useCurrentUserStore();
+  console.log(router.query)
+
+  const registration = router.query?.registration === "true"
+  const isPatient = router.query?.patient === "true"
+  const token = router.query?.token as string
+
   const [resetPassword] = useMutation(resetPasswordMutation);
-  const isPatient = user?.role !== Role.Patient;
   const { addNotification } = useNotificationStore();
 
   const forgotForm = useFormik({
@@ -61,10 +63,10 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
         const { data } = await resetPassword({
           variables: {
             input: {
-              token: router.query.token as string,
+              token,
               password,
-              registration: register,
-              provider: isPatient,
+              registration,
+              provider: !isPatient,
             },
           },
         });
@@ -77,7 +79,7 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
           title: "Success",
         });
         setStatus({ success: data.resetPassword.message });
-        const { token: newToken, user: newUser } = data.resetPassword;
+        console.log(data.resetPassword);
         await router.push("/login");
       } catch (err) {
         const msg = parseError(err);
@@ -140,7 +142,7 @@ const ResetPassword = ({ register = false }: { register?: boolean }) => {
               fullWidth
               size="medium"
             >
-              {register ? "Complete Signup" : "Reset Password"}
+              {registration ? "Complete Signup" : "Reset Password"}
             </Button>
             <div className="pt-3">
               <Link
