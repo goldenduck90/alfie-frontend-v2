@@ -102,7 +102,11 @@ const updateProviderSchedule = gql`
     $timezone: String!
     $schedule: ScheduleInput!
   ) {
-    updateProviderSchedule(eaProviderId: $eaProviderId, timezone: $timezone, schedule: $schedule) {
+    updateProviderSchedule(
+      eaProviderId: $eaProviderId
+      timezone: $timezone
+      schedule: $schedule
+    ) {
       message
     }
   }
@@ -143,9 +147,17 @@ const AvailabilityFormSchema = z.object({
 type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
-  const [updateAvailability, { loading: updateLoading, error: updateError }] =
-    useMutation(updateProviderSchedule);
   const { user } = useCurrentUserStore();
+
+  const [updateAvailability, { loading: updateLoading, error: updateError }] =
+    useMutation(updateProviderSchedule, {
+      refetchQueries: [{ query: getProviderSchedule, variables: {
+        eaProviderId: (user as any)?.eaProviderId,
+        timezone: dayjs.tz.guess()
+      } }],
+      awaitRefetchQueries: true,
+    });
+  
   const { addNotification } = useNotificationStore();
   const { data, loading } = useQuery(getProviderSchedule, {
     variables: {
@@ -187,9 +199,7 @@ export function AvailabilityView() {
           const { isSelected, ...rest } = dayData;
           return [day, rest];
         })
-      );
-
-      console.log(updatedData)
+      );      
 
       await updateAvailability({
         variables: {
@@ -237,9 +247,19 @@ export function AvailabilityView() {
   return (
     <div>
       <h3 className="pb-2 font-semibold text-xl">Availability</h3>
-      <p className="pb-2">All times are in 24 hour format & should be entered in the current timezone you are in.</p>
-      <p className="pb-2">You are currently in timezone: <b>{dayjs().format("z")} ({dayjs.tz.guess()})</b></p>
-      <p className="pb-6"><b>For Example:</b> 9:00 AM = 09:00, 5:00 PM = 17:00.</p>
+      <p className="pb-2">
+        All times are in 24 hour format & should be entered in the current
+        timezone you are in.
+      </p>
+      <p className="pb-2">
+        You are currently in timezone:{" "}
+        <b>
+          {dayjs().format("z")} ({dayjs.tz.guess()})
+        </b>
+      </p>
+      <p className="pb-6">
+        <b>For Example:</b> 9:00 AM = 09:00, 5:00 PM = 17:00.
+      </p>
       <div className="flex flex-col md:flex-row border border-1 rounded-lg w-full h-full">
         <div className="w-full  p-6">
           {/* md:w-2/3 */}
@@ -250,7 +270,7 @@ export function AvailabilityView() {
               disabled={!isDirty}
               onClick={handleSubmit(onSubmit)}
             >
-              Update
+              {updateLoading ? "Loading" : "Update"}
             </Button>
           </div>
 
