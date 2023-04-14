@@ -45,7 +45,7 @@ export function YourWeight({ user }: { user: User }) {
 
   const getWeightTaskId = () => {
     const weightTask = data?.userTasks?.userTasks?.find((task: any) => {
-      return task.task.type === TaskType.WeightLog;
+      return task?.task?.type === TaskType.WeightLog;
     });
     return weightTask?._id;
   };

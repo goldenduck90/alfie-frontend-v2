@@ -4,7 +4,7 @@ import { IndividualPatientTabs } from "@src/components/practitioner/patients/tab
 import { useRouter } from "next/router";
 const getPatientInfo = gql`
   query getPatientById($userId: String!) {
-    getPatientById(userId: $userId) {
+    getUserById(userId: $userId) {
       _id
       textOptIn
       meetingRoomUrl
@@ -57,7 +57,7 @@ function Patients() {
     <Layout
       hasBackButton
       backRef="/dashboard/patients"
-      title={data?.getPatientById?.name || "Patient"}
+      title={data?.getUserById?.name || "Patient"}
     >
       <IndividualPatientTabs />
     </Layout>

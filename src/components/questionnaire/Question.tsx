@@ -190,7 +190,7 @@ function Questionnaire({
 
   useEffect(() => {
     reset(getStoredForm(formName));
-  }, [taskId]);
+  }, [formName, reset, taskId]);
 
   const question = allQuestions?.[current];
   const Component = question?.Component;
@@ -320,8 +320,7 @@ function Questionnaire({
                       console.log(value, 'valuessssss');
                       onSubmit.setFormState(value);
                       router.push(
-                        `/questionnaire/${router?.query?.taskId}?step=${
-                          current + 1
+                        `/questionnaire/${router?.query?.taskId}?step=${current + 1
                         }`
                       );
                     })();
