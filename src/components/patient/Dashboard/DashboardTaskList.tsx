@@ -44,9 +44,9 @@ export const DashboardTaskList = () => {
 
   const filteredTasks = data?.userTasks?.userTasks.filter((task: any) => {
     return (
-      task.task.type === TaskType.WeightLog ||
-      task.task.type === TaskType.NewPatientIntakeForm ||
-      task.task.type === TaskType.IdAndInsuranceUpload
+      task?.task?.type === TaskType.WeightLog ||
+      task?.task?.type === TaskType.NewPatientIntakeForm ||
+      task?.task?.type === TaskType.IdAndInsuranceUpload
     );
   });
   const tasks =

@@ -278,7 +278,7 @@ function PillPackStep(props: any) {
       // set the selectedMarker to localStorage under the key "pharmacyLocation"
       pharmacy.onChange(selectedMarker.id);
     }
-  }, [selectedMarker]);
+  }, [pharmacy, selectedMarker]);
 
   const googleReverseGeoCode = gql`
     query reverseGeoCodeAddress {
