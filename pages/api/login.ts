@@ -69,6 +69,7 @@ const partialUserLoginMutation = `
   }`;
 
 export default withSessionRoute(async function loginRoute(req, res) {
+  console.log(req.body, "req.body in login.ts")
   const { email, password, rememberMe } = req.body;
   if (email === "" || password === "") {
     return res.status(400).json({
@@ -85,8 +86,9 @@ export default withSessionRoute(async function loginRoute(req, res) {
       },
     },
   });
-
-  const response = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API}`, {
+  console.log(body, "body")
+  console.log(process.env.NEXT_PUBLIC_GRAPHQL_API, "process.env.NEXT_PUBLIC_GRAPHQL_APIprocess.env.NEXT_PUBLIC_GRAPHQL_API")
+  const response = await fetch(`${"http://localhost:4000/graphql"}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -94,9 +96,10 @@ export default withSessionRoute(async function loginRoute(req, res) {
     },
     body,
   });
-
+  console.log(response, "response")
   if (response.ok) {
     const { data } = await response.json();
+    console.log(data, "data")
     if (!data) {
       return res
         .status(401)
@@ -112,7 +115,7 @@ export default withSessionRoute(async function loginRoute(req, res) {
         query: getPatientInfo,
         variables: {},
       });
-
+      console.log(process.env.NEXT_PUBLIC_GRAPHQL_API, "process.env.NEXT_PUBLIC_GRAPHQL_API")
       const userData = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API}`, {
         method: "POST",
         headers: {

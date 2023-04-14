@@ -12,18 +12,22 @@ export function MedicalQuestionnaire({ taskData }: any) {
   if (error) {
     return <GrayPlaceHolderBox content={error.message} />;
   }
+  console.log(taskAnswers, "taskAnswers")
+  function getTaskValueBasedOnKey(key: string) {
+    return taskAnswers?.find((answer: any) => answer.key === key)?.value;
+  }
   return (
     <TableUserObject
       user={{
-        "Weight Loss Attempt": taskAnswers?.[0]?.value,
-        "Weight Management": taskAnswers?.[1]?.value,
-        Conditions: taskAnswers?.[2]?.value,
-        "Previous Conditions": taskAnswers?.[3]?.value,
-        Medications: taskAnswers?.[4]?.value,
-        "Surgical History": taskAnswers?.[5]?.value,
-        "Use Pill Pack": taskAnswers?.[6]?.value,
-        "Has Required Labs": taskAnswers?.[7]?.value === "true" ? "Yes" : "No",
-        Pharmacy: taskAnswers?.[8]?.value,
+        "Weight Loss Attempt": getTaskValueBasedOnKey("weightLossAttemptTime"),        
+        "Weight Management": getTaskValueBasedOnKey("weightManagementMethods"),        
+        Conditions: getTaskValueBasedOnKey("conditions"),        
+        "Previous Conditions": getTaskValueBasedOnKey("previousConditions"),        
+        Medications: getTaskValueBasedOnKey("medications"),        
+        "Surgical History": getTaskValueBasedOnKey("surgicalHistory"),        
+        "Use Pill Pack": getTaskValueBasedOnKey("usePillPack"),        
+        "Has Required Labs": getTaskValueBasedOnKey("hasRequiredLabs"),        
+        Pharmacy: getTaskValueBasedOnKey("pharmacyLocation"),        
       }}
     />
   );
