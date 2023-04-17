@@ -2,7 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { DocumentIcon } from "@heroicons/react/outline";
 import { LocationMarkerIcon } from "@heroicons/react/solid";
 import GoogleMapReact from "google-map-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Control, useController } from "react-hook-form";
 import { z } from "zod";
 import { Checkbox } from "../ui/Checkbox";
@@ -147,6 +147,16 @@ export const medicalQuestions: QuestionProps<any>[] = [
     id: "surgeries",
     question: "Have you had any surgeries in the past?",
     Component: (props: MultiCheckboxQuestionProps) => {
+      const [showSurgicalHistoryTextArea, setShowSurgicalHisotryTextArea] =
+        useState(false);
+      useEffect(() => {
+        if (props.control._formValues.surgeries.hasSurgicalHistory === "Yes") {
+          setShowSurgicalHisotryTextArea(true);
+        } else {
+          setShowSurgicalHisotryTextArea(false);
+        }
+      }, [props.control?._formValues?.surgeries?.hasSurgicalHistory]);
+
       return (
         <React.Fragment>
           <RadioGroupInput
