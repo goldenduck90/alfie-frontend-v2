@@ -26,16 +26,11 @@ export function GenerateSummary({ patient }: { patient: Patient }) {
         </Button>
       </div>
       <div className='bg-white border rounded-xl p-6'>
-        {patient?.generatedSummary && (
-          <p className='text-gray-500'>
-            {loading ? 'Loading...' : patient?.generatedSummary}
-          </p>
-        )}
-        {data && (
-          <p className='text-gray-500'>
-            {loading ? 'Loading...' : data?.generateSummary?.generatedSummary}
-          </p>
-        )}       
+        <p className='text-gray-500'>
+          {loading
+            ? 'Loading...'
+            : data?.generateSummary?.generatedSummary || patient?.generatedSummary}
+        </p>
       </div>
     </div>
   );
