@@ -17,7 +17,7 @@ export default withSessionRoute(async function handler(req: any, res: any) {
       qs.stringify({
         customer: req.body.stripeCustomer,
         return_url:
-          "http://develop.platform.joinalfie.com.s3-website-us-east-1.amazonaws.com/billing",
+          "https://production-fe.us-east-1.elasticbeanstalk.com/billing",
       }),
       {
         headers: {

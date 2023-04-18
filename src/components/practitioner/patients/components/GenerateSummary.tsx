@@ -20,22 +20,13 @@ export function GenerateSummary({ patient }: { patient: Patient }) {
     <div className='w-full mt-6'>
       <div className='flex justify-between'>
         <h3 className='mb-6 text-xl font-bold'>Medication Recommendations</h3>
-        <Button onClick={() => console.log('generate :)')} disabled={loading}>
+        <Button onClick={() => getSummary()} disabled={loading}>
           Generate
         </Button>
       </div>
       <div className='bg-white border rounded-xl p-6'>
         <p className='text-gray-500'>
-          {`Based on the patient's profile, the primary subtype is Rover. Since
-          the patient is already taking naltrexone/bupropion for the Empath
-          subtype, consider adding phentermine/topiramate combination for the
-          Rover subtype. Initiate generic phentermine 18.75mg AND topiramate
-          25mg PO daily for 14 days. If the patient's PROs are not showing
-          significant changes (+/- 10%) or are decreasing, increase the
-          medication dosages as indicated below: - May increase phentermine to
-          37.5mg PO daily, as tolerated. - May increase topiramate to 100mg
-          daily, as tolerated. Take topiramate in the evening and phentermine in
-          the morning.`}
+          {loading ? 'Loading...' : data?.generateSummary?.generatedSummary}
         </p>
         {/* {patient?.generatedSummary && (
           <p className='text-gray-500'>
