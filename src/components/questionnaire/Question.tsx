@@ -28,13 +28,7 @@ interface FormState {
   formState: Record<string, any>;
   setFormState: (form: Record<string, any>) => void;
 }
-const completeUserTaskMutation = gql`
-  mutation CompleteTask($input: CompleteUserTaskInput!) {
-    completeUserTask(input: $input) {
-      completed
-    }
-  }
-`;
+
 function createPersistedFormState(formName: string) {
   return create<FormState, [['zustand/persist', FormState]]>(
     persist(
@@ -165,7 +159,6 @@ function Questionnaire({
   formName: string;
   taskId: string;
 }) {
-  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
   const [mutate] = useTaskCompletion();
   const router = useRouter();
   const store = useProgressContext();
@@ -255,7 +248,7 @@ function Questionnaire({
         // Clear Stored Form
         boundForm.persist.clearStorage();
         await client.clearStore();
-        router.push('/dashboard/tasks');
+        router.replace('/dashboard/tasks');
       } else {
         const answers = createAnswersFromObject(data);
         const input = {
@@ -270,7 +263,8 @@ function Questionnaire({
 
         // Clear Stored Form
         boundForm.persist.clearStorage();
-        router.push('/dashboard/tasks');
+        await client.clearStore();
+        router.replace('/dashboard/tasks');
       }
     } catch (e) {
       console.error(e);
