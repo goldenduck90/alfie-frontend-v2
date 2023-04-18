@@ -3,6 +3,7 @@ import { Button } from '@src/components/ui/Button';
 import { Patient } from '../../dashboard/Table';
 
 export function GenerateSummary({ patient }: { patient: Patient }) {
+  console.log('patient', patient)
   const query = gql`
     query getUser($userId: String!) {
       generateSummary(userId: $userId) {
@@ -25,19 +26,16 @@ export function GenerateSummary({ patient }: { patient: Patient }) {
         </Button>
       </div>
       <div className='bg-white border rounded-xl p-6'>
-        <p className='text-gray-500'>
-          {loading ? 'Loading...' : data?.generateSummary?.generatedSummary}
-        </p>
-        {/* {patient?.generatedSummary && (
+        {patient?.generatedSummary && (
           <p className='text-gray-500'>
             {loading ? 'Loading...' : patient?.generatedSummary}
           </p>
         )}
-        {(!data || !loading) && (
+        {data && (
           <p className='text-gray-500'>
             {loading ? 'Loading...' : data?.generateSummary?.generatedSummary}
           </p>
-        )} */}
+        )}       
       </div>
     </div>
   );
