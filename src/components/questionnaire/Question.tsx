@@ -22,6 +22,7 @@ import { medicalQuestions } from './medicalQuestions';
 import { metabolicQuestions } from './metabolicQuestions';
 import { QuestionContainer } from './QuestionContainer';
 import { threeFactorQuestions } from './threeFactorQuestions';
+import { client } from '@src/graphql';
 
 interface FormState {
   formState: Record<string, any>;
@@ -253,6 +254,7 @@ function Questionnaire({
         });
         // Clear Stored Form
         boundForm.persist.clearStorage();
+        await client.clearStore();
         router.push('/dashboard/tasks');
       } else {
         const answers = createAnswersFromObject(data);
