@@ -86,9 +86,8 @@ export default withSessionRoute(async function loginRoute(req, res) {
       },
     },
   });
-  console.log(body, "body")
-  console.log(process.env.NEXT_PUBLIC_GRAPHQL_API, "process.env.NEXT_PUBLIC_GRAPHQL_APIprocess.env.NEXT_PUBLIC_GRAPHQL_API")
-  const response = await fetch(`${"http://localhost:4000/graphql"}`, {
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -109,13 +108,13 @@ export default withSessionRoute(async function loginRoute(req, res) {
     (req.session as any).token = data.login.token;
     (req.session as any).user = data.login.user;
 
-    
+
     if (data.login.user.role === Role.Patient) {
       const patientBody = JSON.stringify({
         query: getPatientInfo,
         variables: {},
       });
-      console.log(process.env.NEXT_PUBLIC_GRAPHQL_API, "process.env.NEXT_PUBLIC_GRAPHQL_API")
+
       const userData = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API}`, {
         method: "POST",
         headers: {
