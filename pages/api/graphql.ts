@@ -6,11 +6,8 @@ const target = process.env.NEXT_PUBLIC_GRAPHQL_API
 export default withIronSessionApiRoute(
   async function handler(req, res) {
     const token = (req.session as any).token;
-    const headers: { [key: string]: string } = {};
-    console.log(req, "request in graphql.ts")
-    console.log(process.env.SESSION_COOKIE_PASSWORD, "process.env.SESSION_COOKIE_PASSWORD")
-    if (token) {
-      console.log(token, "token in graphql.ts")
+    const headers: { [key: string]: string } = {};    
+    if (token) {      
       headers["Authorization"] = `Bearer ${token}`;
     }
     return httpProxyMiddleware(req, res, {

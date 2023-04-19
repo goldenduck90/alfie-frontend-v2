@@ -199,6 +199,7 @@ function Questionnaire({
    *
    */
   async function onSubmitForm(data: Record<string, any>) {
+    console.log(data, "DATA")
     try {
       if (data?.allergies) {
         const newData = {
