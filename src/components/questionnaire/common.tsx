@@ -219,7 +219,7 @@ export function MultipleTextInput({
     console.log("fields", fields)
     if (fields?.length === 0) {
       append(" ");
-      
+
     }
   }, [fields, append]);
 
@@ -230,6 +230,8 @@ export function MultipleTextInput({
         return (
           <div key={field.id} className="flex w-full items-center gap-x-2">
             <input
+              {...register(`${name}.${index}.value`)}
+              // ref={field.ref}
               key={field.id}
               type="text"
               className="w-full border border-[#CBD5E1] rounded-md py-2 px-4 focus:outline-primary-400"
