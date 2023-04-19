@@ -216,8 +216,9 @@ export function MultipleTextInput({
   });
 
   useEffect(() => {
+    console.log("fields", fields)
     if (fields?.length === 0) {
-      append("");
+      append(" ");
     }
   }, [fields, append]);
 
@@ -243,7 +244,7 @@ export function MultipleTextInput({
       })}
       <button
         className="w-full py-2 px-4 rounded-md border border-gray-400 flex items-center justify-center bg-gray-100"
-        onClick={() => append("")}
+        onClick={() => append(" ")}
       >
         <PlusIcon className="w-6 h-6 stroke-gray-500" />
       </button>
