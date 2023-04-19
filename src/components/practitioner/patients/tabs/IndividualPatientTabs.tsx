@@ -130,11 +130,9 @@ export function IndividualPatientTabs() {
     'Date of Birth': dayjs(patient?.dateOfBirth).format('MM/DD/YYYY'),
     'Email Address': patient?.email,
     'Phone Number': patient?.phone,
-    Address: `${patient?.address?.line1 || ''}, ${
-      (patient?.address?.line2 && ',') || ''
-    } ${patient?.address?.city}, ${patient?.address?.state}, ${
-      patient?.address?.postalCode
-    }`,
+    Address: `${patient?.address?.line1 || ''}, ${(patient?.address?.line2 && ',') || ''
+      } ${patient?.address?.city}, ${patient?.address?.state}, ${patient?.address?.postalCode
+      }`,
     'Height In Inches': patient?.heightInInches,
     Weight: patient?.weights?.[patient.weights.length - 1]?.value,
     Attachments: 'No attachments',
@@ -150,11 +148,11 @@ export function IndividualPatientTabs() {
   } = {} as any;
 
   taskData?.data?.getAllUserTasksByUser?.forEach((item: any) => {
-    if (!chartInformation[item.task.type as TaskType]) {
-      chartInformation[item.task.type as TaskType] = [];
+    if (!chartInformation[item?.task?.type as TaskType]) {
+      chartInformation[item?.task?.type as TaskType] = [];
     }
-    if (item.task.type === TaskType.BpLog && item.completed > 0) {
-      chartInformation[item.task.type as TaskType].push({
+    if (item?.task?.type === TaskType.BpLog && item.completed > 0) {
+      chartInformation[item?.task?.type as TaskType].push({
         date: new Date(item.completedAt).getTime(),
         systolic: item?.answers[0]?.value,
         diastolic: item?.answers[1]?.value,
@@ -162,7 +160,7 @@ export function IndividualPatientTabs() {
       });
     } else {
       if (item?.answers?.[0]?.value && item.completed > 0) {
-        chartInformation[item.task.type as TaskType].push({
+        chartInformation[item?.task?.type as TaskType].push({
           date: new Date(item.completedAt).getTime(),
           value: item?.answers[0]?.value,
         });
@@ -361,9 +359,8 @@ function TabTitle({
   return (
     <Tabs.Trigger
       value={value}
-      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${
-        active ? 'text-brand-berry bg-blue-100 hover:bg-blue-100' : ''
-      }`}
+      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${active ? 'text-brand-berry bg-blue-100 hover:bg-blue-100' : ''
+        }`}
     >
       {children}
     </Tabs.Trigger>
