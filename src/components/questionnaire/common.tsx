@@ -219,6 +219,7 @@ export function MultipleTextInput({
     console.log("fields", fields)
     if (fields?.length === 0) {
       append(" ");
+      
     }
   }, [fields, append]);
 
