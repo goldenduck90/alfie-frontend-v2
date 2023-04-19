@@ -69,7 +69,6 @@ const partialUserLoginMutation = `
   }`;
 
 export default withSessionRoute(async function loginRoute(req, res) {
-  console.log(req.body, "req.body in login.ts")
   const { email, password, rememberMe } = req.body;
   if (email === "" || password === "") {
     return res.status(400).json({
