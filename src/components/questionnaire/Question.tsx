@@ -22,18 +22,13 @@ import { medicalQuestions } from './medicalQuestions';
 import { metabolicQuestions } from './metabolicQuestions';
 import { QuestionContainer } from './QuestionContainer';
 import { threeFactorQuestions } from './threeFactorQuestions';
+import { client } from '@src/graphql';
 
 interface FormState {
   formState: Record<string, any>;
   setFormState: (form: Record<string, any>) => void;
 }
-const completeUserTaskMutation = gql`
-  mutation CompleteTask($input: CompleteUserTaskInput!) {
-    completeUserTask(input: $input) {
-      completed
-    }
-  }
-`;
+
 function createPersistedFormState(formName: string) {
   return create<FormState, [['zustand/persist', FormState]]>(
     persist(
@@ -164,7 +159,6 @@ function Questionnaire({
   formName: string;
   taskId: string;
 }) {
-  const [completeUserTask, { loading }] = useMutation(completeUserTaskMutation);
   const [mutate] = useTaskCompletion();
   const router = useRouter();
   const store = useProgressContext();
@@ -205,6 +199,7 @@ function Questionnaire({
    *
    */
   async function onSubmitForm(data: Record<string, any>) {
+    console.log(data, "DATA")
     try {
       if (data?.allergies) {
         const newData = {
@@ -253,7 +248,8 @@ function Questionnaire({
         });
         // Clear Stored Form
         boundForm.persist.clearStorage();
-        router.push('/dashboard/tasks');
+        await client.clearStore();
+        router.replace('/dashboard/tasks');
       } else {
         const answers = createAnswersFromObject(data);
         const input = {
@@ -268,7 +264,8 @@ function Questionnaire({
 
         // Clear Stored Form
         boundForm.persist.clearStorage();
-        router.push('/dashboard/tasks');
+        await client.clearStore();
+        router.replace('/dashboard/tasks');
       }
     } catch (e) {
       console.error(e);

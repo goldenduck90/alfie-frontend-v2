@@ -216,8 +216,10 @@ export function MultipleTextInput({
   });
 
   useEffect(() => {
+    console.log("fields", fields)
     if (fields?.length === 0) {
-      append("");
+      append(" ");
+
     }
   }, [fields, append]);
 
@@ -228,6 +230,8 @@ export function MultipleTextInput({
         return (
           <div key={field.id} className="flex w-full items-center gap-x-2">
             <input
+              {...register(`${name}.${index}.value`)}
+              // ref={field.ref}
               key={field.id}
               type="text"
               className="w-full border border-[#CBD5E1] rounded-md py-2 px-4 focus:outline-primary-400"
@@ -243,7 +247,7 @@ export function MultipleTextInput({
       })}
       <button
         className="w-full py-2 px-4 rounded-md border border-gray-400 flex items-center justify-center bg-gray-100"
-        onClick={() => append("")}
+        onClick={() => append(" ")}
       >
         <PlusIcon className="w-6 h-6 stroke-gray-500" />
       </button>
