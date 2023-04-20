@@ -18,10 +18,11 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { client } from "@src/graphql";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
 import { randomId } from "@src/utils/randomId";
+import { Role } from "@src/graphql/generated";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -29,6 +30,14 @@ dayjs.extend(isToday);
 dayjs.extend(isTomorrow);
 dayjs.tz.setDefault(dayjs.tz.guess());
 
+const getMeQuery = gql`
+  query getMe {
+    me {
+      _id
+      role
+    }
+  }
+`
 
 const updateAppointmentMutation = gql`
   mutation UpdateAppointmentMutation($input: UpdateAppointmentInput!) {
@@ -95,8 +104,11 @@ export function ScheduleAppointment({
   onComplete?: () => void
   eaCustomerName?: string;
 }) {
-  const session = useUserStateContext();
-  const isProvider = session[0]?.user?.role !== "Patient";
+
+
+  const result = useQuery(getMeQuery)
+  const isProvider = result.data?.me?.role === Role.Practitioner || result.data?.me?.role === Role.CareCoordinator || result.data?.me?.role === Role.Doctor || result.data?.me?.role === Role.HealthCoach
+
   const [update] = useMutation(updateAppointmentMutation)
   const [create] = useMutation(createAppointmentMutation)
   const { addNotification } = useNotificationStore();
@@ -128,7 +140,7 @@ export function ScheduleAppointment({
                 ...(values.notes && {
                   notes: values.notes,
                 }),
-                bypassNotice: isProvider ? true : false,
+                bypassNotice: result.data?.me?.role === Role.Patient ? true : false,
               }
             },
           })
