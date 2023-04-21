@@ -30,10 +30,9 @@ dayjs.extend(isToday);
 dayjs.extend(isTomorrow);
 dayjs.tz.setDefault(dayjs.tz.guess());
 
-const getMeQuery = gql`
-  query getMe {
-    me {
-      _id
+const getRoleQuery = gql`
+  query getRole {
+    getRole {
       role
     }
   }
@@ -106,8 +105,8 @@ export function ScheduleAppointment({
 }) {
 
 
-  const result = useQuery(getMeQuery)
-  const isProvider = result.data?.me?.role === Role.Practitioner || result.data?.me?.role === Role.CareCoordinator || result.data?.me?.role === Role.Doctor || result.data?.me?.role === Role.HealthCoach
+  const result = useQuery(getRoleQuery)
+  const isProvider = result.data?.getRole?.role === Role.Practitioner || result.data?.getRole?.role === Role.CareCoordinator || result.data?.getRole?.role === Role.Doctor || result.data?.getRole?.role === Role.HealthCoach
 
   const [update] = useMutation(updateAppointmentMutation)
   const [create] = useMutation(createAppointmentMutation)
