@@ -32,7 +32,7 @@ export function QuestionnaireLayout({
   title,
 }: QuestionnaireLayoutProps) {
   const { user } = useCurrentUserStore();
-  const isAdmin = user?.role === Role.Admin;
+  const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach;
   const router = useRouter();
   const { step } = router?.query;
   const { max, current, setCurrent } = useStore(progressStore, (state) => ({
@@ -57,7 +57,7 @@ export function QuestionnaireLayout({
         { shallow: true }
       );
     }
-  }, [router, current, step, max]);
+  }, [router, current, step, max, setCurrent]);
 
   return (
     <QuestionProgressContext.Provider value={progressStore}>

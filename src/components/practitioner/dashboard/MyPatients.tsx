@@ -8,7 +8,7 @@ import { Role } from "@src/graphql/generated";
 
 export function MyPatients() {
   const { user } = useCurrentUserStore();
-  const isAdmin = user?.role === Role.Admin;
+  const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach;
   return (
     <DashboardCard
       className="w-full md:max-w-full md:min-w-max py-4"

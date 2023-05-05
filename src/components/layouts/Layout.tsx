@@ -21,7 +21,7 @@ export const Layout = ({
   backRef,
 }: LayoutProps) => {
   const { user } = useCurrentUserStore();
-  const isAdmin = user?.role === Role.Admin;
+  const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach;
   const { boot } = useIntercom();
 
   React.useEffect(() => {
@@ -29,7 +29,7 @@ export const Layout = ({
       email: user?.email,
       name: user?.name,
     });
-  }, []);
+  }, [boot, user?.email, user?.name]);
 
   let navigation: { name: string; href: string }[] = [];
   const patientNavigation = [

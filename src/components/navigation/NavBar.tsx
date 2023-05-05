@@ -18,7 +18,7 @@ interface NavbarProps {
 
 export function Navbar({ navItems }: NavbarProps) {
   const { user } = useCurrentUserStore();
-  const isAdmin = user?.role === Role.Admin;
+  const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach;
 
   const navigationItems = navItems.map((item, i) => (
     <NavigationItem key={i} href={item.href}>

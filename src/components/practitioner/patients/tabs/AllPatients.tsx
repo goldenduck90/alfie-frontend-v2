@@ -33,7 +33,7 @@ export function AllPatientsTabs() {
   const tab = (router?.query?.tab as string) || "all";
   const [activeTab, setActiveTab] = useState(tab || "all");
   const [globalFilter, setGlobalFilter] = useState("");
-  const isAdmin = user?.role === Role.Admin;
+  const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach;
 
   return (
     <Tabs.Root
@@ -152,9 +152,8 @@ export function AllPatientsTable({
 
   return (
     <div className="max-h-[50vh]">
-      <p className="text-lg">{`${
-        table?.getCoreRowModel().rows.length
-      } Patients`}</p>
+      <p className="text-lg">{`${table?.getCoreRowModel().rows.length
+        } Patients`}</p>
       <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
         <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
           <thead>
@@ -166,9 +165,9 @@ export function AllPatientsTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </div>
                   </th>
                 ))}
@@ -205,9 +204,8 @@ export function AllPatientsTable({
                                   </div>
                                 )}
                                 <div
-                                  className={`${
-                                    j === 0 ? "w-24" : "w-[60%]"
-                                  } mt-3 `}
+                                  className={`${j === 0 ? "w-24" : "w-[60%]"
+                                    } mt-3 `}
                                 >
                                   <PlaceHolderLine />
                                 </div>
