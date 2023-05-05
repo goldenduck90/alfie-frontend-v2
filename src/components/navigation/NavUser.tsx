@@ -57,7 +57,7 @@ export default function NavUser() {
     routeItems = patientItems;
   } else if (user?.role === Role.Practitioner) {
     routeItems = providerItems;
-  } else if (user?.role === Role.Admin) {
+  } else if (user?.role === Role.Admin || user?.role === Role.HealthCoach) {
     routeItems = providerItems;
   }
 
