@@ -148,20 +148,23 @@ type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
   const { user } = useCurrentUserStore();
+  const eaId = (user as any).eaProviderId ? (user as any).eaProviderId : user?.eaHealthCoachId
 
   const [updateAvailability, { loading: updateLoading, error: updateError }] =
     useMutation(updateProviderSchedule, {
-      refetchQueries: [{ query: getProviderSchedule, variables: {
-        eaProviderId: (user as any)?.eaProviderId,
-        timezone: dayjs.tz.guess()
-      } }],
+      refetchQueries: [{
+        query: getProviderSchedule, variables: {
+          eaProviderId: eaId,
+          timezone: dayjs.tz.guess()
+        }
+      }],
       awaitRefetchQueries: true,
     });
-  
+
   const { addNotification } = useNotificationStore();
   const { data, loading } = useQuery(getProviderSchedule, {
     variables: {
-      eaProviderId: (user as any)?.eaProviderId,
+      eaProviderId: eaId,
       timezone: dayjs.tz.guess(),
     },
   });
@@ -199,11 +202,11 @@ export function AvailabilityView() {
           const { isSelected, ...rest } = dayData;
           return [day, rest];
         })
-      );      
+      );
 
       await updateAvailability({
         variables: {
-          eaProviderId: (user as any)?.eaProviderId,
+          eaProviderId: eaId,
           timezone: dayjs.tz.guess(),
           schedule: updatedData,
         },
@@ -402,7 +405,7 @@ function OverrideView() {
   const { data, loading } = useQuery(getExceptions, {
     variables: {
       timezone: dayjs.tz.guess(),
-      eaProviderId: (user as any)?.eaProviderId,
+      eaProviderId: (user as any)?.eaProviderId, // TO DO: pass in eaId from the above component
     },
   });
 
