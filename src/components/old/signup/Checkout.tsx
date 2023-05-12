@@ -1,12 +1,11 @@
-import { gql, useQuery } from "@apollo/client";
-import * as Sentry from "@sentry/react";
-import { Wrapper } from "@src/components/layouts/Wrapper";
-import { useRouter } from "next/router";
-import { useEffect, useMemo } from "react";
-import { FeatureSection } from "../FeatureSection";
-import { Loading } from "../Loading";
-import { Logo } from "../Logo";
-import { Button } from "@src/components/ui/Button";
+import { gql, useQuery } from '@apollo/client';
+import * as Sentry from '@sentry/react';
+import { Wrapper } from '@src/components/layouts/Wrapper';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
+import { FeatureSection } from '../FeatureSection';
+import { Loading } from '../Loading';
+import { Button } from '@src/components/ui/Button';
 
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
@@ -34,14 +33,14 @@ export const Checkout = () => {
     if (error) {
       Sentry.captureException(new Error(error.message), {
         tags: {
-          query: "GetCheckout",
-          component: "Checkout",
+          query: 'GetCheckout',
+          component: 'Checkout',
         },
       });
     }
   }, [error]);
   const weightLossValue = useMemo(() => {
-    if (!data) return "15% of your current weight";
+    if (!data) return '15% of your current weight';
 
     const weightInLbs = parseInt(data.checkout.checkout.weightInLbs);
     return `${weightInLbs * 0.15} pounds`;
@@ -50,16 +49,15 @@ export const Checkout = () => {
   if (loading) return <Loading />;
 
   if (error) {
-    router.push("/login");
+    router.push('/login');
   }
 
   return (
     <Wrapper>
-      <Logo />
       <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         <p className="mb-4 mt-4 font-md font-bold text-lg text-brand-berry">
           <span className="capitalize">
-            {data?.checkout?.checkout?.name?.split(" ")[0]}
+            {data?.checkout?.checkout?.name?.split(' ')[0]}
           </span>
           , you&apos;ll lose over {weightLossValue} in 6 months with Alfie, the
           virtual precision medicine clinic for people struggling with obesity.

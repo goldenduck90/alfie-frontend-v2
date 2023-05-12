@@ -1,17 +1,16 @@
-import React from "react";
-import { Wrapper } from "../../layouts/Wrapper";
-import { gql, useMutation } from "@apollo/client";
-import { Checkbox } from "../../inputs/Checkbox";
-import { ArrowRightIcon } from "@heroicons/react/solid";
-import { FormikProvider, useFormik } from "formik";
-import { SelectInput } from "../../inputs/SelectInput";
-import { States } from "../../../utils/states";
-import { TextInput } from "../../inputs/TextInput";
-import * as Yup from "yup";
-import { parseError } from "../../../utils/parseError";
-import { Logo } from "../Logo";
-import { Button } from "@src/components/ui/Button";
-import { useRouter } from "next/router";
+import React from 'react';
+import { Wrapper } from '../../layouts/Wrapper';
+import { gql, useMutation } from '@apollo/client';
+import { Checkbox } from '../../inputs/Checkbox';
+import { ArrowRightIcon } from '@heroicons/react/solid';
+import { FormikProvider, useFormik } from 'formik';
+import { SelectInput } from '../../inputs/SelectInput';
+import { States } from '../../../utils/states';
+import { TextInput } from '../../inputs/TextInput';
+import * as Yup from 'yup';
+import { parseError } from '../../../utils/parseError';
+import { Button } from '@src/components/ui/Button';
+import { useRouter } from 'next/router';
 
 const createOrUpdateStripeSessionMutation = gql`
   mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
@@ -34,29 +33,29 @@ export const CheckoutAddress = () => {
     initialValues: {
       _id: id,
       shipping: {
-        line1: "",
-        line2: "",
-        city: "",
-        state: "",
-        postalCode: "",
-        country: "US",
+        line1: '',
+        line2: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: 'US',
       },
       billing: {
-        line1: "",
-        line2: "",
-        city: "",
-        state: "",
-        postalCode: "",
-        country: "US",
+        line1: '',
+        line2: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: 'US',
       },
       sameAsShipping: true,
     },
     validationSchema: Yup.object().shape({
       shipping: Yup.object().shape({
-        line1: Yup.string().required("Please enter your address."),
-        city: Yup.string().required("Please enter your city."),
-        state: Yup.string().required("Please enter your state."),
-        postalCode: Yup.string().required("Please enter your zip code."),
+        line1: Yup.string().required('Please enter your address.'),
+        city: Yup.string().required('Please enter your city.'),
+        state: Yup.string().required('Please enter your state.'),
+        postalCode: Yup.string().required('Please enter your zip code.'),
       }),
     }),
     onSubmit: async (values, { resetForm, setStatus }) => {
@@ -78,7 +77,7 @@ export const CheckoutAddress = () => {
   });
 
   if (!id) {
-    router.push("/signup");
+    router.push('/signup');
   }
 
   // const { checkout, paymentLink } = data.checkout;
@@ -86,7 +85,6 @@ export const CheckoutAddress = () => {
 
   return (
     <Wrapper>
-      <Logo />
       <FormikProvider value={form}>
         <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
           <h1 className="pb-0 mb-0 mt-2 font-md font-bold text-2xl text-brand-berry">
