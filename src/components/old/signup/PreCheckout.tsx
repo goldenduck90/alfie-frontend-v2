@@ -1,4 +1,3 @@
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
 import { FormikProvider } from 'formik';
 import { Wrapper } from '../../layouts/Wrapper';
 import { BiologicalSex } from './steps/BiologicalSex';
@@ -131,6 +130,22 @@ export const PreCheckout = () => {
         },
       },
       {
+        component: Location,
+        validationSchema: Yup.object().shape({
+          location: Yup.string().required('Please select an option.'),
+        }),
+        beforeNext({ location }, _, currentStepIndex) {
+          localStorage.setItem('location', location);
+          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
+
+          if (!ValidStates.includes(location)) {
+            router.push('/signup/waitlist');
+          }
+
+          return Promise.resolve();
+        },
+      },
+      {
         component: WeightLossMotivator,
         validationSchema: Yup.object().shape({
           weightLossMotivator: Yup.string().required(
@@ -172,22 +187,6 @@ export const PreCheckout = () => {
         beforeNext({ biologicalSex }, _, currentStepIndex) {
           localStorage.setItem('biologicalSex', biologicalSex);
           localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
-        },
-      },
-      {
-        component: Location,
-        validationSchema: Yup.object().shape({
-          location: Yup.string().required('Please select an option.'),
-        }),
-        beforeNext({ location }, _, currentStepIndex) {
-          localStorage.setItem('location', location);
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-
-          if (!ValidStates.includes(location)) {
-            router.push('/signup/waitlist');
-          }
-
           return Promise.resolve();
         },
       },
@@ -255,20 +254,18 @@ export const PreCheckout = () => {
   return (
     <Wrapper title={FORM_TITLES[currentStepIndex + 1]}>
       <FormikProvider value={preCheckoutForm}>
-        <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
-          <div className="flex flex-col">
-            <span className="text-base font-light font-sm text-gray-400">
-              Step {currentStepIndex + 1} of {TOTAL_STEPS + 1}
+        <div className="flex flex-col max-w-lg bg-white rounded-xl gap-5">
+          <div className="border-b px-8 py-4">
+            <span className="text-primary-700 bg-primary-100 font-medium font-sm px-4 py-1 rounded-3xl">
+              {currentStepIndex + 1} out of {TOTAL_STEPS + 1}
             </span>
           </div>
 
           <div className="flex flex-col">{renderComponent()}</div>
-          <div className="pt-5 md:pt-10 pb-3 flex flex-row justify-between">
+          <div className="pt-5 md:pt-10 pb-3 px-8 flex flex-row justify-between">
             <Button
               onClick={handlePrev}
               disabled={isPrevDisabled}
-              icon={<ArrowLeftIcon className="w-4 h-4 mr-3" />}
-              iconSide="left"
               size="medium"
             >
               Back
@@ -276,19 +273,17 @@ export const PreCheckout = () => {
             <Button
               onClick={handleNext}
               disabled={isSubmitting || isNextDisabled}
-              icon={<ArrowRightIcon className="w-4 h-4 ml-3" />}
-              iconSide="right"
               size="medium"
             >
               {isLastStep ? 'Continue' : 'Next'}
             </Button>
           </div>
-          <div className="flex flex-col border-t border-gray-200">
-            <p className="text-center text-sm text-gray-400 pt-6">
+          <div className="flex flex-col">
+            <p className="text-center text-sm font-medium text-gray-400 py-6">
               Already have an account?{' '}
               <Link
                 href="/login"
-                className="text-brand-berry hover:text-brand-berry-tint-1"
+                className="text-brand-berry hover:text-brand-berry-tint-1 underline"
               >
                 Click here to login.
               </Link>
