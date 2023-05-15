@@ -1,13 +1,13 @@
-import React, { FC, RefObject } from "react";
-import { useField } from "formik";
-import { useCachedState } from "../../hooks/useCachedState";
+import React, { FC, RefObject } from 'react';
+import { useField } from 'formik';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export interface INumberInput {
   inputRef?: RefObject<HTMLInputElement>;
   name: string;
   placeholder: string;
-  type?: "number" | "tel";
-  position?: "left" | "right";
+  type?: 'number' | 'tel';
+  position?: 'left' | 'right';
   addonText?: string;
   disabled?: boolean;
   showError?: boolean;
@@ -20,10 +20,10 @@ export const NumberInput: FC<INumberInput> = ({
   inputRef,
   name,
   placeholder,
-  type = "tel",
+  type = 'tel',
   disabled = false,
-  position = "left",
-  addonText = "",
+  position = 'left',
+  addonText = '',
   showError = true,
   maxLength = 0,
   nextFieldRef,
@@ -50,10 +50,10 @@ export const NumberInput: FC<INumberInput> = ({
     <>
       <div
         className={`${
-          error ? "border-red-500" : "border-gray-300"
-        } flex flex-row w-full border rounded-sm`}
+          error ? 'border-red-500' : 'border-gray-300'
+        } flex flex-row w-full border rounded-2xl overflow-hidden`}
       >
-        {position === "left" && addonText && (
+        {position === 'left' && addonText && (
           <span className="flex items-center px-3 text-gray-500 bg-gray-200">
             {addonText}
           </span>
@@ -61,7 +61,7 @@ export const NumberInput: FC<INumberInput> = ({
         <input
           ref={inputRef}
           type={type}
-          className="w-full py-2 rounded-sm pl-4 pr-2 focus:outline-none appearance-none placeholder-gray-400"
+          className="w-full py-1 rounded-sm pl-4 pr-2 focus:outline-none appearance-none placeholder-gray-400"
           placeholder={placeholder}
           value={value}
           onFocus={(e) => {
@@ -71,7 +71,7 @@ export const NumberInput: FC<INumberInput> = ({
           onChange={onChange}
           disabled={disabled}
         />
-        {position === "right" && addonText && (
+        {position === 'right' && addonText && (
           <span className="flex items-center px-3 text-gray-500 bg-gray-200 whitespace-nowrap">
             {addonText}
           </span>

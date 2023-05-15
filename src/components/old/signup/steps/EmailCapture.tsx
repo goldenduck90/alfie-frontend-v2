@@ -1,14 +1,14 @@
-import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
-import React, { useMemo } from "react";
-import { Checkbox } from "../../../inputs/Checkbox";
-import { IconInput } from "../../../inputs/IconInput";
+import { MailIcon, PhoneIcon } from '@heroicons/react/solid';
+import React, { useMemo } from 'react';
+import { Checkbox } from '../../../inputs/Checkbox';
+import { IconInput } from '../../../inputs/IconInput';
 
 export const EmailCapture = () => {
-  const fullName = localStorage.getItem("fullName") || "";
-  const weight = localStorage.getItem("weight") || "";
+  const fullName = localStorage.getItem('fullName') || '';
+  const weight = localStorage.getItem('weight') || '';
 
   const weightLossValue = useMemo(() => {
-    if (!weight) return "15% of your current weight";
+    if (!weight) return '15% of your current weight';
 
     const weightInLbs = parseInt(weight);
     const roundedWeightLoss = Math.round(weightInLbs * 0.15);
@@ -16,16 +16,21 @@ export const EmailCapture = () => {
   }, [weight]);
 
   return (
-    <div>
-      <p className="mb-10 mt-4 font-md font-bold text-lg text-brand-berry">
-        Great news, <span className="capitalize">{fullName.split(" ")[0]}</span>
-        ! With Alfie, you could lose over {weightLossValue} in under 6 months.
+    <div className="px-8">
+      <p className="mb-10 mt-4 font-md font-medium text-lg text-secondary-500">
+        Great news,{' '}
+        <span className="capitalize">{fullName.split(' ')[0]}!</span>
+        <br />
+        <br />
+        With Alfie, you could lose over {weightLossValue} in under 6 months.
+        <br />
+        <br />
         We&apos;ll design a customized plan for you that includes metabolic
         profiling, doctor-managed care, and accountability.
       </p>
 
       <div className="flex-flex-col mb-5">
-        <p className="text-gray-900">
+        <p className="text-primary-700 font-bold">
           Enter your email address and phone number to continue to your plan.
         </p>
       </div>
@@ -55,6 +60,11 @@ export const EmailCapture = () => {
           label="I would like to receive text messages from Alfie"
         />
       </div>
+      <p className="text-gray-500 font-semibold text-sm mt-8">
+        Your data’s security is our top priority. This information is passed
+        securely to the provider and is needed for them to provide care and is
+        never shared outside of Alfie Health.
+      </p>
     </div>
   );
 };

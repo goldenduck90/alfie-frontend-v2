@@ -1,12 +1,21 @@
 import { FormikProvider } from 'formik';
+import * as Yup from 'yup';
+
 import { Wrapper } from '../../layouts/Wrapper';
+
+// Steps
+import { FullName } from './steps/FullName';
+import { Location } from './steps/Location';
+import { WeightLossMotivatorV2 } from './steps/WeightLossMotivatorV2';
+import { Testimonial } from './steps/Testimonial';
+import { PastTries } from './steps/PastTries';
+import { WhatAlfieUse } from './steps/WhatAlfieUse';
 import { BiologicalSex } from './steps/BiologicalSex';
 import { BMI } from './steps/BMI';
 import { DateOfBirth } from './steps/DateOfBirth';
 import { EmailCapture } from './steps/EmailCapture';
-import { FullName } from './steps/FullName';
-import { Location } from './steps/Location';
-import * as Yup from 'yup';
+import { HealthInsurance } from './steps/healthInsurance';
+
 import { WeightLossMotivator } from './steps/WeightLossMotivator';
 import { useFormikWizard } from 'formik-wizard-form';
 import { differenceInYears, format } from 'date-fns';
@@ -52,17 +61,23 @@ export const PreCheckout = () => {
   const preCheckoutForm = useFormikWizard({
     initialValues: {
       fullName: localStorage.getItem('fullName') || '',
-      weightLossMotivator: localStorage.getItem('weightLossMotivator') || '',
+      location: localStorage.getItem('location') || '',
+      weightLossMotivatorV2: JSON.parse(
+        localStorage.getItem('weightLossMotivatorV2') ?? '[]'
+      ),
       dateOfBirth:
         localStorage.getItem('dateOfBirth') || format(new Date(), 'yyyy-MM-dd'),
+      pastTries: JSON.parse(localStorage.getItem('pastTries') ?? '[]'),
       biologicalSex: localStorage.getItem('biologicalSex') || '',
-      location: localStorage.getItem('location') || '',
       heightFeet: localStorage.getItem('heightFeet') || '',
       heightInches: localStorage.getItem('heightInches') || '',
       weight: localStorage.getItem('weight') || '',
       email: localStorage.getItem('email') || '',
       textOptIn: Boolean(localStorage.getItem('textOptIn')) || null,
       phone: localStorage.getItem('phone') || '',
+      healthInsurance: localStorage.getItem('healthInsurance') || '',
+
+      weightLossMotivator: localStorage.getItem('weightLossMotivator') || '',
     },
     onSubmit: async (
       {
@@ -146,14 +161,25 @@ export const PreCheckout = () => {
         },
       },
       {
-        component: WeightLossMotivator,
+        component: WeightLossMotivatorV2,
         validationSchema: Yup.object().shape({
-          weightLossMotivator: Yup.string().required(
-            'Please select an option.'
-          ),
+          weightLossMotivatorV2: Yup.array()
+            .of(Yup.string())
+            .min(1, 'Please select at least 1 option.')
+            .required('Please select options.'),
         }),
-        beforeNext({ weightLossMotivator }, _, currentStepIndex) {
-          localStorage.setItem('weightLossMotivator', weightLossMotivator);
+        beforeNext({ weightLossMotivatorV2 }, _, currentStepIndex) {
+          localStorage.setItem(
+            'weightLossMotivatorV2',
+            JSON.stringify(weightLossMotivatorV2)
+          );
+          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
+          return Promise.resolve();
+        },
+      },
+      {
+        component: Testimonial,
+        beforeNext({}, _, currentStepIndex) {
           localStorage.setItem('preCheckoutStep', String(currentStepIndex));
           return Promise.resolve();
         },
@@ -175,6 +201,27 @@ export const PreCheckout = () => {
         }),
         beforeNext({ dateOfBirth }, _, currentStepIndex) {
           localStorage.setItem('dateOfBirth', dateOfBirth);
+          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
+          return Promise.resolve();
+        },
+      },
+      {
+        component: PastTries,
+        validationSchema: Yup.object().shape({
+          pastTries: Yup.array()
+            .of(Yup.string())
+            .min(1, 'Please select at least 1 option.')
+            .required('Please select options.'),
+        }),
+        beforeNext({ pastTries }, _, currentStepIndex) {
+          localStorage.setItem('pastTries', JSON.stringify(pastTries));
+          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
+          return Promise.resolve();
+        },
+      },
+      {
+        component: WhatAlfieUse,
+        beforeNext({}, _, currentStepIndex) {
           localStorage.setItem('preCheckoutStep', String(currentStepIndex));
           return Promise.resolve();
         },
@@ -233,6 +280,20 @@ export const PreCheckout = () => {
           localStorage.setItem('email', email);
           localStorage.setItem('textOptIn', textOptIn);
           localStorage.setItem('phone', phone);
+          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
+          return Promise.resolve();
+        },
+      },
+      {
+        component: HealthInsurance,
+        validationSchema: Yup.object().shape({
+          healthInsurance: Yup.string().required('Please select an option.'),
+        }),
+        beforeNext({ healthInsurance }, _, currentStepIndex) {
+          localStorage.setItem(
+            'healthInsurance',
+            JSON.stringify(healthInsurance)
+          );
           localStorage.setItem('preCheckoutStep', String(currentStepIndex));
           return Promise.resolve();
         },

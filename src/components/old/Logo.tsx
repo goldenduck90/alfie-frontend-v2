@@ -15,12 +15,18 @@ const LOGOS = {
 
 type Props = {
   color?: LogoColor;
+  width?: number;
+  height?: number;
 };
 
-const Logo: React.FC<Props> = ({ color = LogoColor.DEFAULT }) => {
+const Logo: React.FC<Props> = ({ color, width, height }) => {
+  const _color = color ?? LogoColor.DEFAULT;
+  const _width = width ?? 144;
+  const _height = height ?? 58;
+
   return (
     <div className="flex flex-col items-center my-4">
-      <Image src={LOGOS[color]} height={58} width={144} alt="Alfie" />
+      <Image src={LOGOS[_color]} height={_height} width={_width} alt="Alfie" />
     </div>
   );
 };

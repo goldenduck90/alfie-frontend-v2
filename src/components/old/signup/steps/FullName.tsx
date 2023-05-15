@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextInput } from '../../../inputs/TextInput';
 
-export const FullName = () => {
+export const FullName: React.FC = () => {
   return (
     <div className="px-8">
       <p className="mb-10 mt-4 font-md font-medium text-lg text-secondary-500">

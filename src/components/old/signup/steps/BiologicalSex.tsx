@@ -1,16 +1,18 @@
-import React from "react";
-import { SelectInput } from "../../../inputs/SelectInput";
+import React from 'react';
+import { SelectInput } from '../../../inputs/SelectInput';
 
 export const BiologicalSex = () => {
   return (
-    <div>
-      <p className="mb-10 mt-4 font-md font-bold text-lg text-brand-berry">
-        Weight depends a lot on your hormones. Our program targets biological
-        pathways to optimize weight management.
+    <div className="px-8">
+      <p className="mb-10 mt-4 font-md font-medium text-lg text-secondary-500">
+        Metabolic health and genetics go hand in hand. Understanding your sex at
+        birth helps us know which treatment plans may be right for you.
       </p>
 
       <div className="flex-flex-col mb-5">
-        <p className="text-gray-900">What sex were you assigned at birth?</p>
+        <p className="text-primary-700 font-bold">
+          What was your assigned sex at birth?
+        </p>
       </div>
 
       <div className="pb-2">
@@ -19,20 +21,21 @@ export const BiologicalSex = () => {
           placeholder="Select an option..."
           options={[
             {
-              label: "Male",
-              value: "male",
+              label: 'Male',
+              value: 'male',
             },
             {
-              label: "Female",
-              value: "female",
+              label: 'Female',
+              value: 'female',
             },
           ]}
         />
-        <p className="text-gray-500 text-sm mt-2">
-          This information is passed securely to the provider and is needed for
-          them to provide care.
-        </p>
       </div>
+      <p className="text-gray-500 font-semibold text-sm mt-8">
+        Your data’s security is our top priority. This information is passed
+        securely to the provider and is needed for them to provide care and is
+        never shared outside of Alfie Health.
+      </p>
     </div>
   );
 };
