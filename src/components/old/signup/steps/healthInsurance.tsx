@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useFormikContext, useField } from 'formik';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import { RadioGroupInput } from '@src/components/questionnaire/common';
+
+const options = [
+  'Employer provided / Commercial (Aetna, United, BCBS, etc.)',
+  'Kaiser Permanente',
+  'Medicare or Medicare Advantage',
+  'Medicaid',
+  'None',
+  'Don’t know / unsure',
+];
 
 export const HealthInsurance: React.FC = () => {
+  const [, { error: insuranceError }] = useField('healthInsurance');
+  const healthInsurance = localStorage.getItem('healthInsurance') || '';
+  const { setFieldValue } = useFormikContext();
+
   return (
     <div className="px-8">
       <p className="mb-10 mt-4 font-md font-medium text-lg text-secondary-500">
@@ -17,18 +30,32 @@ export const HealthInsurance: React.FC = () => {
       </div>
 
       <div className="pb-2">
-        {/**
-         <RadioGroupInput
-          name="healthInsurance"
-          options={[
-            'My whole life',
-            'Several years',
-            '6-12 Months',
-            'Less than 6 Months',
-            `I've never tried to lose weigth before`,
-          ]}
-        />
-         */}
+        <RadioGroup.Root
+          className="flex flex-col gap-2"
+          defaultValue={healthInsurance}
+          onValueChange={(val) => setFieldValue('healthInsurance', val)}
+        >
+          {options.map((option, index) => (
+            <div key={index} className="flex items-center">
+              <RadioGroup.Item
+                className="bg-white w-[18px] h-[18px] rounded-full border border-[#CBD5E1] cursor-pointer"
+                value={option}
+                id={`health-insurance-option-${index}`}
+              >
+                <RadioGroup.Indicator className="flex items-center justify-center w-full h-full after:content-[''] after:block after:bg-primary-700 after:w-[8px] after:h-[8px] after:rounded-full" />
+              </RadioGroup.Item>
+              <label
+                className="pl-[16px] text-[16px] text-secondary-500 cursor-pointer select-none"
+                htmlFor={`health-insurance-option-${index}`}
+              >
+                {option}
+              </label>
+            </div>
+          ))}
+        </RadioGroup.Root>
+        {insuranceError && (
+          <span className="text-red-500 text-sm">{insuranceError}</span>
+        )}
       </div>
     </div>
   );

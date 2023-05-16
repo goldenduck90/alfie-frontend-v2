@@ -14,9 +14,8 @@ import { BiologicalSex } from './steps/BiologicalSex';
 import { BMI } from './steps/BMI';
 import { DateOfBirth } from './steps/DateOfBirth';
 import { EmailCapture } from './steps/EmailCapture';
-import { HealthInsurance } from './steps/healthInsurance';
+import { HealthInsurance } from './steps/HealthInsurance';
 
-import { WeightLossMotivator } from './steps/WeightLossMotivator';
 import { useFormikWizard } from 'formik-wizard-form';
 import { differenceInYears, format } from 'date-fns';
 import { ValidStates } from '../../../utils/states';
@@ -62,6 +61,7 @@ export const PreCheckout = () => {
     initialValues: {
       fullName: localStorage.getItem('fullName') || '',
       location: localStorage.getItem('location') || '',
+      weightLossMotivator: '',
       weightLossMotivatorV2: JSON.parse(
         localStorage.getItem('weightLossMotivatorV2') ?? '[]'
       ),
@@ -76,22 +76,23 @@ export const PreCheckout = () => {
       textOptIn: Boolean(localStorage.getItem('textOptIn')) || null,
       phone: localStorage.getItem('phone') || '',
       healthInsurance: localStorage.getItem('healthInsurance') || '',
-
-      weightLossMotivator: localStorage.getItem('weightLossMotivator') || '',
     },
     onSubmit: async (
       {
         fullName: name,
-        weightLossMotivator,
-        dateOfBirth,
-        biologicalSex,
         location: state,
+        weightLossMotivator,
+        weightLossMotivatorV2,
+        dateOfBirth,
+        pastTries,
+        biologicalSex,
         heightFeet,
         heightInches,
         weight,
         email,
         textOptIn,
         phone,
+        healthInsurance,
       },
       { setStatus, resetForm }
     ) => {
@@ -104,6 +105,7 @@ export const PreCheckout = () => {
               name,
               email,
               weightLossMotivator,
+              weightLossMotivatorV2,
               dateOfBirth,
               gender: biologicalSex === 'male' ? Gender.Male : Gender.Female,
               state,
@@ -111,6 +113,8 @@ export const PreCheckout = () => {
               weightInLbs: Number(weight),
               textOptIn,
               phone,
+              pastTries,
+              healthInsurance,
             },
           },
         });
@@ -290,10 +294,7 @@ export const PreCheckout = () => {
           healthInsurance: Yup.string().required('Please select an option.'),
         }),
         beforeNext({ healthInsurance }, _, currentStepIndex) {
-          localStorage.setItem(
-            'healthInsurance',
-            JSON.stringify(healthInsurance)
-          );
+          localStorage.setItem('healthInsurance', healthInsurance);
           localStorage.setItem('preCheckoutStep', String(currentStepIndex));
           return Promise.resolve();
         },
@@ -318,7 +319,7 @@ export const PreCheckout = () => {
         <div className="flex flex-col max-w-lg bg-white rounded-xl gap-5">
           <div className="border-b px-8 py-4">
             <span className="text-primary-700 bg-primary-100 font-medium font-sm px-4 py-1 rounded-3xl">
-              {currentStepIndex + 1} out of {TOTAL_STEPS + 1}
+              {currentStepIndex + 1} out of {TOTAL_STEPS}
             </span>
           </div>
 

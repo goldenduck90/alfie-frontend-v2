@@ -43,6 +43,7 @@
     "@types/react-dom": "18.0.9",
     "@vvo/tzdb": "^6.101.0",
     "axios": "^0.27.2",
+    "chart.js": "^4.3.0",
     "date-fns": "^2.29.2",
     "dayjs": "^1.11.7",
     "eslint": "8.30.0",
@@ -57,6 +58,7 @@
     "qs": "^6.11.0",
     "react": "18.2.0",
     "react-calendar": "^4.0.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "react-facebook-pixel": "^1.0.4",
     "react-hook-form": "^7.43.0",
@@ -76,6 +78,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^2.11.3",
     "@graphql-codegen/typescript": "^2.7.2",
+    "@types/chart.js": "^2.9.37",
     "@types/google-map-react": "^2.1.7",
     "@types/google.maps": "^3.50.2",
     "@types/react-calendar": "^3.5.3",

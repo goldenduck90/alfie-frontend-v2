@@ -3,7 +3,6 @@ import { useField } from 'formik';
 import { NumberInput } from '../../../inputs/NumbeInput';
 
 export const BMI = () => {
-  const fullName = localStorage.getItem('fullName') || '';
   const [, { error: feetError }] = useField('heightFeet');
   const [, { error: inchError }] = useField('heightInches');
   const heightInchesRef = useRef(null);
