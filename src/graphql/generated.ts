@@ -174,7 +174,7 @@ export type CreateTaskInput = {
   /** If set to true, the task will be assigned to the patient as a high priority task. */
   highPriority?: InputMaybe<Scalars['Boolean']>;
   /** If set, this task will be assigned on a recurring interval. This is a cron expression. */
-  interval?: InputMaybe<Scalars['String']>;
+  interval?: InputMaybe<Scalars['Float']>;
   name: Scalars['String'];
   /** If set to true, notifies the patient's health coach when the task is past due. Requires hoursTillDue to be set. */
   notifyHealthCoachWhenPastDue?: InputMaybe<Scalars['Float']>;
@@ -514,7 +514,7 @@ export type Mutation = {
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
   updateProviderProfile: EaProviderProfile;
-  updateProviderSchedule: ScheduleObject;
+  updateProviderSchedule: UpdateScheduleMessage;
   updateSubscription: MessageResponse;
   updateUserTask: UserTask;
   uploadDocument: AkuteDocument;
@@ -542,7 +542,7 @@ export type MutationBulkAssignTasksToUserArgs = {
 
 
 export type MutationCancelAppointmentArgs = {
-  eaAppointmentId: Scalars['String'];
+  input: GetAppointmentInput;
 };
 
 
@@ -644,7 +644,7 @@ export type MutationUpdateProviderProfileArgs = {
 
 export type MutationUpdateProviderScheduleArgs = {
   eaProviderId: Scalars['String'];
-  schedule: ScheduleInput2;
+  schedule: ScheduleInput;
   timezone: Scalars['String'];
 };
 
@@ -738,6 +738,7 @@ export type Query = {
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
   getProviderSchedule: ScheduleObject;
+  getRole: RoleResponse;
   getUserById: User;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
@@ -747,6 +748,7 @@ export type Query = {
   timeslots: TimeslotsResponse;
   upcomingAppointments: Array<EaAppointment>;
   user: User;
+  userSendbirdChannel: Array<UserSendbirdChannel>;
   userTask: UserTask;
   userTasks: UserTaskList;
   users: Array<User>;
@@ -829,6 +831,11 @@ export type QueryUpcomingAppointmentsArgs = {
 };
 
 
+export type QueryUserSendbirdChannelArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type QueryUserTaskArgs = {
   id: Scalars['String'];
 };
@@ -840,7 +847,6 @@ export type QueryUserTasksArgs = {
 
 export type ResetPasswordInput = {
   password: Scalars['String'];
-  provider?: InputMaybe<Scalars['Boolean']>;
   registration: Scalars['Boolean'];
   token: Scalars['String'];
 };
@@ -855,6 +861,11 @@ export enum Role {
   Patient = 'Patient',
   Practitioner = 'Practitioner'
 }
+
+export type RoleResponse = {
+  __typename?: 'RoleResponse';
+  role: Role;
+};
 
 export type Schedule = {
   __typename?: 'Schedule';
@@ -878,10 +889,6 @@ export type ScheduleExceptions = {
   date: DailySchedule;
 };
 
-export type ScheduleExceptionsInput = {
-  date: DailyScheduleInput;
-};
-
 export type ScheduleInput = {
   friday: DailyScheduleInput;
   monday: DailyScheduleInput;
@@ -890,12 +897,6 @@ export type ScheduleInput = {
   thursday: DailyScheduleInput;
   tuesday: DailyScheduleInput;
   wednesday: DailyScheduleInput;
-};
-
-export type ScheduleInput2 = {
-  exceptions: ScheduleExceptionsInput;
-  schedule: ScheduleInput;
-  timezone: Scalars['String'];
 };
 
 export type ScheduleObject = {
@@ -962,7 +963,7 @@ export type Task = {
   canHaveMultiple: Scalars['Boolean'];
   daysTillDue?: Maybe<Scalars['Float']>;
   highPriority: Scalars['Boolean'];
-  interval?: Maybe<Scalars['String']>;
+  interval?: Maybe<Scalars['Float']>;
   name?: Maybe<Scalars['String']>;
   notifyHealthCoachWhenPastDue: Scalars['Boolean'];
   notifyProviderWhenPastDue: Scalars['Boolean'];
@@ -1025,6 +1026,12 @@ export type UpdateAppointmentInput = {
   timezone: Scalars['String'];
 };
 
+export type UpdateScheduleMessage = {
+  __typename?: 'UpdateScheduleMessage';
+  code: Scalars['Float'];
+  message: Scalars['String'];
+};
+
 export type UpdateSubscriptionInput = {
   stripeSubscriptionId: Scalars['String'];
   subscriptionExpiresAt: Scalars['DateTime'];
@@ -1063,6 +1070,7 @@ export type User = {
   provider?: Maybe<Provider>;
   role: Role;
   score: Array<Score>;
+  sendbirdChannelUrl?: Maybe<Scalars['String']>;
   stripeCustomerId: Scalars['String'];
   stripeSubscriptionId: Scalars['String'];
   subscriptionExpiresAt: Scalars['DateTime'];
@@ -1085,6 +1093,46 @@ export type UserAnswersInput = {
   value: Scalars['String'];
 };
 
+export type UserSendbirdChannel = {
+  __typename?: 'UserSendbirdChannel';
+  channel_url: Scalars['String'];
+  count_preference?: Maybe<Scalars['String']>;
+  cover_url?: Maybe<Scalars['String']>;
+  created_at: Scalars['Float'];
+  created_by?: Maybe<Scalars['String']>;
+  custom_type?: Maybe<Scalars['String']>;
+  data?: Maybe<Scalars['String']>;
+  freeze: Scalars['Boolean'];
+  hidden_state?: Maybe<Scalars['String']>;
+  ignore_profanity_filter: Scalars['Boolean'];
+  invited_at: Scalars['Float'];
+  inviter?: Maybe<Scalars['String']>;
+  is_access_code_required: Scalars['Boolean'];
+  is_broadcast: Scalars['Boolean'];
+  is_discoverable: Scalars['Boolean'];
+  is_distinct: Scalars['Boolean'];
+  is_ephemeral: Scalars['Boolean'];
+  is_exclusive: Scalars['Boolean'];
+  is_hidden: Scalars['Boolean'];
+  is_muted: Scalars['Boolean'];
+  is_public: Scalars['Boolean'];
+  is_push_enabled: Scalars['Boolean'];
+  is_super: Scalars['Boolean'];
+  joined_member_count: Scalars['Float'];
+  joined_ts?: Maybe<Scalars['Float']>;
+  max_length_message: Scalars['Float'];
+  member_count: Scalars['Float'];
+  member_state: Scalars['String'];
+  message_survival_seconds: Scalars['Float'];
+  my_role?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  push_trigger_option?: Maybe<Scalars['String']>;
+  ts_message_offset: Scalars['Float'];
+  unread_mention_count: Scalars['Float'];
+  unread_message_count: Scalars['Float'];
+  user_last_read: Scalars['Float'];
+};
+
 export type UserTask = {
   __typename?: 'UserTask';
   _id: Scalars['String'];
@@ -1095,6 +1143,7 @@ export type UserTask = {
   createdAt?: Maybe<Scalars['DateTime']>;
   dueAt?: Maybe<Scalars['DateTime']>;
   highPriority: Scalars['Boolean'];
+  isReadyForProfiling?: Maybe<Scalars['Boolean']>;
   lastNotifiedHealthCoachPastDueAt?: Maybe<Scalars['DateTime']>;
   lastNotifiedProviderPastDueAt?: Maybe<Scalars['DateTime']>;
   lastNotifiedUserAt?: Maybe<Scalars['DateTime']>;
@@ -1168,13 +1217,13 @@ export const UserTasksQueryDocument = gql`
  * });
  */
 export function useUserTasksQueryQuery(baseOptions?: Apollo.QueryHookOptions<UserTasksQueryQuery, UserTasksQueryQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
+      }
 export function useUserTasksQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserTasksQueryQuery, UserTasksQueryQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
+        }
 export type UserTasksQueryQueryHookResult = ReturnType<typeof useUserTasksQueryQuery>;
 export type UserTasksQueryLazyQueryHookResult = ReturnType<typeof useUserTasksQueryLazyQuery>;
 export type UserTasksQueryQueryResult = Apollo.QueryResult<UserTasksQueryQuery, UserTasksQueryQueryVariables>;
