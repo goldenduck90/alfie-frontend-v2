@@ -316,7 +316,7 @@ export const PreCheckout = () => {
   return (
     <Wrapper title={FORM_TITLES[currentStepIndex + 1]}>
       <FormikProvider value={preCheckoutForm}>
-        <div className="flex flex-col max-w-lg bg-white rounded-xl gap-5">
+        <div className="flex flex-col max-w-xl bg-white rounded-xl gap-5">
           <div className="border-b px-8 py-4">
             <span className="text-primary-700 bg-primary-100 font-medium font-sm px-4 py-1 rounded-3xl">
               {currentStepIndex + 1} out of {TOTAL_STEPS}

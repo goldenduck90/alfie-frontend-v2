@@ -38,11 +38,11 @@ export const HealthInsurance: React.FC = () => {
           {options.map((option, index) => (
             <div key={index} className="flex items-center">
               <RadioGroup.Item
-                className="bg-white w-[18px] h-[18px] rounded-full border border-[#CBD5E1] cursor-pointer"
+                className="relative w-[18px] h-[18px] min-w-[18px] bg-white border border-[#CBD5E1] rounded-full cursor-pointer"
                 value={option}
                 id={`health-insurance-option-${index}`}
               >
-                <RadioGroup.Indicator className="flex items-center justify-center w-full h-full after:content-[''] after:block after:bg-primary-700 after:w-[8px] after:h-[8px] after:rounded-full" />
+                <RadioGroup.Indicator className="absolute bg-primary-700 w-[8px] h-[8px] rounded-full top-[4px] left-[4px]" />
               </RadioGroup.Item>
               <label
                 className="pl-[16px] text-[16px] text-secondary-500 cursor-pointer select-none"

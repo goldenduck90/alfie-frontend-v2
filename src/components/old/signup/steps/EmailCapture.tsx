@@ -107,8 +107,8 @@ export const EmailCapture = () => {
 
   return (
     <div className="px-8">
-      <div>
-        <Line options={options} data={chartData} />
+      <div className="flex justify-center items-center">
+        <Line className="w-full" options={options} data={chartData} />
       </div>
       <p className="mb-10 mt-4 font-md font-medium text-lg text-secondary-500">
         Great news,{' '}
