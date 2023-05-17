@@ -14,7 +14,7 @@ import { BiologicalSex } from "./steps/BiologicalSex";
 import { BMI } from "./steps/BMI";
 import { DateOfBirth } from "./steps/DateOfBirth";
 import { EmailCapture } from "./steps/EmailCapture";
-import { HealthInsurance } from "./steps/healthInsurance";
+import { HealthInsurance } from "./steps/Insurance";
 
 import { useFormikWizard } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
