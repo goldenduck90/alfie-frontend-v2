@@ -1,8 +1,6 @@
-import React from 'react';
-import Image from 'next/image';
-import { StarIcon } from '@heroicons/react/solid';
-import Logo, { LogoColor } from '../../Logo';
-import testimonialImg from '@src/assets/testimonial.png';
+import React from "react"
+import Image from "next/image"
+import testimonialImg from "@src/assets/testimonial.png"
 
 export const Testimonial: React.FC = () => {
   return (
@@ -21,5 +19,5 @@ export const Testimonial: React.FC = () => {
         help you achieve your health goals.
       </p>
     </div>
-  );
-};
+  )
+}

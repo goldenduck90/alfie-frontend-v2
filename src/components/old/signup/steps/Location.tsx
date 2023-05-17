@@ -1,15 +1,15 @@
-import React from 'react';
-import { useField } from 'formik';
-import { SelectInput } from '../../../inputs/SelectInput';
-import { States } from '../../../../utils/states';
+import React from "react"
+import { useField } from "formik"
+import { SelectInput } from "../../../inputs/SelectInput"
+import { States } from "../../../../utils/states"
 
 export const Location: React.FC = () => {
-  const [, { value }] = useField('fullName');
+  const [, { value }] = useField("fullName")
   return (
     <div className="px-8">
       <p className="mb-10 mt-4 font-md font-medium text-lg text-secondary-500">
-        Nice to meet you,{' '}
-        <span className="capitalize">{value.split(' ')[0]}</span>!
+        Nice to meet you,{" "}
+        <span className="capitalize">{value.split(" ")[0]}</span>!
         <br />
         <br />
         Alfie is currently available in select states. If we’re not available in
@@ -28,5 +28,5 @@ export const Location: React.FC = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}

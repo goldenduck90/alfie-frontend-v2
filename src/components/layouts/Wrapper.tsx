@@ -1,10 +1,10 @@
-import React from 'react';
-import Logo, { LogoColor } from '../old/Logo';
+import React from "react"
+import Logo, { LogoColor } from "../old/Logo"
 
 type Props = {
-  title?: string;
-  children: React.ReactNode;
-};
+  title?: string
+  children: React.ReactNode
+}
 
 export const Wrapper: React.FC<Props> = ({ title, children }) => {
   return (
@@ -22,7 +22,7 @@ export const Wrapper: React.FC<Props> = ({ title, children }) => {
         <div className="flex flex-col items-center">{children}</div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Wrapper;
+export default Wrapper

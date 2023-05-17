@@ -1,46 +1,46 @@
-import { FormikProvider } from 'formik';
-import * as Yup from 'yup';
+import { FormikProvider } from "formik"
+import * as Yup from "yup"
 
-import { Wrapper } from '../../layouts/Wrapper';
+import { Wrapper } from "../../layouts/Wrapper"
 
 // Steps
-import { FullName } from './steps/FullName';
-import { Location } from './steps/Location';
-import { WeightLossMotivatorV2 } from './steps/WeightLossMotivatorV2';
-import { Testimonial } from './steps/Testimonial';
-import { PastTries } from './steps/PastTries';
-import { WhatAlfieUse } from './steps/WhatAlfieUse';
-import { BiologicalSex } from './steps/BiologicalSex';
-import { BMI } from './steps/BMI';
-import { DateOfBirth } from './steps/DateOfBirth';
-import { EmailCapture } from './steps/EmailCapture';
-import { HealthInsurance } from './steps/HealthInsurance';
+import { FullName } from "./steps/FullName"
+import { Location } from "./steps/Location"
+import { WeightLossMotivatorV2 } from "./steps/WeightLossMotivatorV2"
+import { Testimonial } from "./steps/Testimonial"
+import { PastTries } from "./steps/PastTries"
+import { WhatAlfieUse } from "./steps/WhatAlfieUse"
+import { BiologicalSex } from "./steps/BiologicalSex"
+import { BMI } from "./steps/BMI"
+import { DateOfBirth } from "./steps/DateOfBirth"
+import { EmailCapture } from "./steps/EmailCapture"
+import { HealthInsurance } from "./steps/HealthInsurance"
 
-import { useFormikWizard } from 'formik-wizard-form';
-import { differenceInYears, format } from 'date-fns';
-import { ValidStates } from '../../../utils/states';
-import { gql, useMutation } from '@apollo/client';
-import { parseError } from '../../../utils/parseError';
-import { Gender } from '../../../graphql/generated';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Button } from '@src/components/ui/Button';
+import { useFormikWizard } from "formik-wizard-form"
+import { differenceInYears, format } from "date-fns"
+import { ValidStates } from "../../../utils/states"
+import { gql, useMutation } from "@apollo/client"
+import { parseError } from "../../../utils/parseError"
+import { Gender } from "../../../graphql/generated"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { Button } from "@src/components/ui/Button"
 
-const TOTAL_STEPS = 11;
+const TOTAL_STEPS = 11
 
 const FORM_TITLES: { [key: number]: string } = {
-  1: 'Let’s start off with your details.',
-  2: 'Let’s start off with your details.',
-  3: 'Let’s start off with your details.',
-  4: 'Let’s start off with your details.',
-  5: 'A few more details about you.',
-  6: 'Let’s start off with your details.',
-  7: 'Let’s start off with your details.',
-  8: 'Understanding your health',
-  9: 'Understanding your health',
-  10: 'Get started with Alfie today!',
-  11: 'Insurance Coverage',
-};
+  1: "Let’s start off with your details.",
+  2: "Let’s start off with your details.",
+  3: "Let’s start off with your details.",
+  4: "Let’s start off with your details.",
+  5: "A few more details about you.",
+  6: "Let’s start off with your details.",
+  7: "Let’s start off with your details.",
+  8: "Understanding your health",
+  9: "Understanding your health",
+  10: "Get started with Alfie today!",
+  11: "Insurance Coverage",
+}
 
 const createOrFindCheckoutMutation = gql`
   mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
@@ -51,31 +51,31 @@ const createOrFindCheckoutMutation = gql`
       }
     }
   }
-`;
+`
 
 export const PreCheckout = () => {
-  const router = useRouter();
-  const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
+  const router = useRouter()
+  const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation)
 
   const preCheckoutForm = useFormikWizard({
     initialValues: {
-      fullName: localStorage.getItem('fullName') || '',
-      location: localStorage.getItem('location') || '',
-      weightLossMotivator: '',
+      fullName: localStorage.getItem("fullName") || "",
+      location: localStorage.getItem("location") || "",
+      weightLossMotivator: "",
       weightLossMotivatorV2: JSON.parse(
-        localStorage.getItem('weightLossMotivatorV2') ?? '[]'
+        localStorage.getItem("weightLossMotivatorV2") ?? "[]"
       ),
       dateOfBirth:
-        localStorage.getItem('dateOfBirth') || format(new Date(), 'yyyy-MM-dd'),
-      pastTries: JSON.parse(localStorage.getItem('pastTries') ?? '[]'),
-      biologicalSex: localStorage.getItem('biologicalSex') || '',
-      heightFeet: localStorage.getItem('heightFeet') || '',
-      heightInches: localStorage.getItem('heightInches') || '',
-      weight: localStorage.getItem('weight') || '',
-      email: localStorage.getItem('email') || '',
-      textOptIn: Boolean(localStorage.getItem('textOptIn')) || null,
-      phone: localStorage.getItem('phone') || '',
-      healthInsurance: localStorage.getItem('healthInsurance') || '',
+        localStorage.getItem("dateOfBirth") || format(new Date(), "yyyy-MM-dd"),
+      pastTries: JSON.parse(localStorage.getItem("pastTries") ?? "[]"),
+      biologicalSex: localStorage.getItem("biologicalSex") || "",
+      heightFeet: localStorage.getItem("heightFeet") || "",
+      heightInches: localStorage.getItem("heightInches") || "",
+      weight: localStorage.getItem("weight") || "",
+      email: localStorage.getItem("email") || "",
+      textOptIn: Boolean(localStorage.getItem("textOptIn")) || null,
+      phone: localStorage.getItem("phone") || "",
+      healthInsurance: localStorage.getItem("healthInsurance") || "",
     },
     onSubmit: async (
       {
@@ -98,7 +98,7 @@ export const PreCheckout = () => {
     ) => {
       try {
         const heightInInches =
-          parseInt(heightFeet) * 12 + parseInt(heightInches);
+          parseInt(heightFeet) * 12 + parseInt(heightInches)
         const { data } = await createOrFindCheckout({
           variables: {
             input: {
@@ -107,7 +107,7 @@ export const PreCheckout = () => {
               weightLossMotivator,
               weightLossMotivatorV2,
               dateOfBirth,
-              gender: biologicalSex === 'male' ? Gender.Male : Gender.Female,
+              gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
               state,
               heightInInches,
               weightInLbs: Number(weight),
@@ -117,51 +117,51 @@ export const PreCheckout = () => {
               healthInsurance,
             },
           },
-        });
+        })
 
-        const { checkout } = data.createOrFindCheckout;
-        resetForm();
-        router.push(`/signup/checkout/${checkout._id}`);
+        const { checkout } = data.createOrFindCheckout
+        resetForm()
+        router.push(`/signup/checkout/${checkout._id}`)
       } catch (err) {
-        const msg = parseError(err);
-        setStatus({ error: msg });
+        const msg = parseError(err)
+        setStatus({ error: msg })
       }
     },
     validateOnNext: true,
     validateOnChange: false,
-    activeStepIndex: Number(localStorage.getItem('preCheckoutStep')) || 0,
+    activeStepIndex: Number(localStorage.getItem("preCheckoutStep")) || 0,
     steps: [
       {
         component: FullName,
         validationSchema: Yup.object().shape({
           fullName: Yup.string()
-            .min(4, 'Please enter your full name.')
-            .required('Please enter your full name.')
+            .min(4, "Please enter your full name.")
+            .required("Please enter your full name.")
             .matches(
               /^[A-Za-z]+((\s)?((\'|\-|\.)?([A-Za-z])+))*$/,
-              'Please enter a valid full name. ie. John Smith'
+              "Please enter a valid full name. ie. John Smith"
             ),
         }),
         beforeNext({ fullName }, _, currentStepIndex) {
-          localStorage.setItem('fullName', fullName);
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          localStorage.setItem("fullName", fullName)
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
       {
         component: Location,
         validationSchema: Yup.object().shape({
-          location: Yup.string().required('Please select an option.'),
+          location: Yup.string().required("Please select an option."),
         }),
         beforeNext({ location }, _, currentStepIndex) {
-          localStorage.setItem('location', location);
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
+          localStorage.setItem("location", location)
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
 
           if (!ValidStates.includes(location)) {
-            router.push('/signup/waitlist');
+            router.push("/signup/waitlist")
           }
 
-          return Promise.resolve();
+          return Promise.resolve()
         },
       },
       {
@@ -169,44 +169,44 @@ export const PreCheckout = () => {
         validationSchema: Yup.object().shape({
           weightLossMotivatorV2: Yup.array()
             .of(Yup.string())
-            .min(1, 'Please select at least 1 option.')
-            .required('Please select options.'),
+            .min(1, "Please select at least 1 option.")
+            .required("Please select options."),
         }),
         beforeNext({ weightLossMotivatorV2 }, _, currentStepIndex) {
           localStorage.setItem(
-            'weightLossMotivatorV2',
+            "weightLossMotivatorV2",
             JSON.stringify(weightLossMotivatorV2)
-          );
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          )
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
       {
         component: Testimonial,
         beforeNext({}, _, currentStepIndex) {
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
       {
         component: DateOfBirth,
         validationSchema: Yup.object().shape({
           dateOfBirth: Yup.date()
-            .required('Please enter your date of birth.')
+            .required("Please enter your date of birth.")
             .test(
-              'dateOfBirth',
-              'You must be at least 18 years old to signup for Alfie.',
+              "dateOfBirth",
+              "You must be at least 18 years old to signup for Alfie.",
               (value) => {
                 return (
-                  differenceInYears(new Date(), new Date(value || '')) >= 18
-                );
+                  differenceInYears(new Date(), new Date(value || "")) >= 18
+                )
               }
             ),
         }),
         beforeNext({ dateOfBirth }, _, currentStepIndex) {
-          localStorage.setItem('dateOfBirth', dateOfBirth);
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          localStorage.setItem("dateOfBirth", dateOfBirth)
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
       {
@@ -214,93 +214,93 @@ export const PreCheckout = () => {
         validationSchema: Yup.object().shape({
           pastTries: Yup.array()
             .of(Yup.string())
-            .min(1, 'Please select at least 1 option.')
-            .required('Please select options.'),
+            .min(1, "Please select at least 1 option.")
+            .required("Please select options."),
         }),
         beforeNext({ pastTries }, _, currentStepIndex) {
-          localStorage.setItem('pastTries', JSON.stringify(pastTries));
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          localStorage.setItem("pastTries", JSON.stringify(pastTries))
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
       {
         component: WhatAlfieUse,
         beforeNext({}, _, currentStepIndex) {
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
       {
         component: BiologicalSex,
         validationSchema: Yup.object().shape({
-          biologicalSex: Yup.string().required('Please select an option.'),
+          biologicalSex: Yup.string().required("Please select an option."),
         }),
         beforeNext({ biologicalSex }, _, currentStepIndex) {
-          localStorage.setItem('biologicalSex', biologicalSex);
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          localStorage.setItem("biologicalSex", biologicalSex)
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
       {
         component: BMI,
         validationSchema: Yup.object().shape({
           heightFeet: Yup.number()
-            .required('Please enter your height.')
-            .min(4, 'Please enter a valid height.')
-            .max(8, 'Please enter a valid height.'),
+            .required("Please enter your height.")
+            .min(4, "Please enter a valid height.")
+            .max(8, "Please enter a valid height."),
           heightInches: Yup.number()
-            .required('Please enter your height.')
-            .min(0, 'Please enter a valid height.')
-            .max(11, 'Please enter a valid height.'),
+            .required("Please enter your height.")
+            .min(0, "Please enter a valid height.")
+            .max(11, "Please enter a valid height."),
           weight: Yup.number()
-            .required('Please enter your weight.')
-            .min(70, 'Please enter a valid weight.')
-            .max(800, 'Please enter a valid weight.'),
+            .required("Please enter your weight.")
+            .min(70, "Please enter a valid weight.")
+            .max(800, "Please enter a valid weight."),
         }),
         beforeNext({ heightFeet, heightInches, weight }, _, currentStepIndex) {
           // We need to calculate the users BMI and throw an ineligible error if they are not eligible for the program because their BMI is less than 27.
           const heightInInches =
-            parseInt(heightFeet) * 12 + parseInt(heightInches);
-          const bmi = (weight / (heightInInches * heightInInches)) * 703;
+            parseInt(heightFeet) * 12 + parseInt(heightInches)
+          const bmi = (weight / (heightInInches * heightInInches)) * 703
           if (bmi < 27) {
-            router.push('/signup/ineligible');
+            router.push("/signup/ineligible")
           } else {
-            localStorage.setItem('heightFeet', heightFeet);
-            localStorage.setItem('heightInches', heightInches);
-            localStorage.setItem('weight', weight);
-            localStorage.setItem('preCheckoutStep', String(currentStepIndex));
+            localStorage.setItem("heightFeet", heightFeet)
+            localStorage.setItem("heightInches", heightInches)
+            localStorage.setItem("weight", weight)
+            localStorage.setItem("preCheckoutStep", String(currentStepIndex))
           }
-          return Promise.resolve();
+          return Promise.resolve()
         },
       },
       {
         component: EmailCapture,
         validationSchema: Yup.object().shape({
           email: Yup.string()
-            .email('Please enter a valid email address.')
-            .required('Please enter your email address.'),
+            .email("Please enter a valid email address.")
+            .required("Please enter your email address."),
         }),
         beforeNext({ email, textOptIn, phone }, _, currentStepIndex) {
-          localStorage.setItem('email', email);
-          localStorage.setItem('textOptIn', textOptIn);
-          localStorage.setItem('phone', phone);
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          localStorage.setItem("email", email)
+          localStorage.setItem("textOptIn", textOptIn)
+          localStorage.setItem("phone", phone)
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
       {
         component: HealthInsurance,
         validationSchema: Yup.object().shape({
-          healthInsurance: Yup.string().required('Please select an option.'),
+          healthInsurance: Yup.string().required("Please select an option."),
         }),
         beforeNext({ healthInsurance }, _, currentStepIndex) {
-          localStorage.setItem('healthInsurance', healthInsurance);
-          localStorage.setItem('preCheckoutStep', String(currentStepIndex));
-          return Promise.resolve();
+          localStorage.setItem("healthInsurance", healthInsurance)
+          localStorage.setItem("preCheckoutStep", String(currentStepIndex))
+          return Promise.resolve()
         },
       },
     ],
-  });
+  })
 
   const {
     handlePrev,
@@ -311,7 +311,7 @@ export const PreCheckout = () => {
     renderComponent,
     currentStepIndex,
     isLastStep,
-  } = preCheckoutForm;
+  } = preCheckoutForm
 
   return (
     <Wrapper title={FORM_TITLES[currentStepIndex + 1]}>
@@ -337,12 +337,12 @@ export const PreCheckout = () => {
               disabled={isSubmitting || isNextDisabled}
               size="medium"
             >
-              {isLastStep ? 'Continue' : 'Next'}
+              {isLastStep ? "Continue" : "Next"}
             </Button>
           </div>
           <div className="flex flex-col">
             <p className="text-center text-sm font-medium text-gray-400 py-6">
-              Already have an account?{' '}
+              Already have an account?{" "}
               <Link
                 href="/login"
                 className="text-brand-berry hover:text-brand-berry-tint-1 underline"
@@ -354,5 +354,5 @@ export const PreCheckout = () => {
         </div>
       </FormikProvider>
     </Wrapper>
-  );
-};
+  )
+}

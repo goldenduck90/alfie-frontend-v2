@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react"
 
 export const WhatAlfieUse: React.FC = () => {
   return (
@@ -8,5 +8,5 @@ export const WhatAlfieUse: React.FC = () => {
         metabolic issues that may be causing you to gain weight.
       </p>
     </div>
-  );
-};
+  )
+}

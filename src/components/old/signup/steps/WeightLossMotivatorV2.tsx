@@ -1,5 +1,5 @@
-import React from 'react';
-import { CheckboxGroup } from '@src/components/inputs/CheckBoxGroup';
+import React from "react"
+import { CheckboxGroup } from "@src/components/inputs/CheckBoxGroup"
 
 export const WeightLossMotivatorV2: React.FC = () => {
   return (
@@ -19,13 +19,13 @@ export const WeightLossMotivatorV2: React.FC = () => {
         <CheckboxGroup
           name="weightLossMotivatorV2"
           items={[
-            'Lose weight and keep it off for good.',
-            'Improve my overall health.',
-            'Do a better job of being healthy for my family and others.',
-            'Find a program that actually works for me.',
+            "Lose weight and keep it off for good.",
+            "Improve my overall health.",
+            "Do a better job of being healthy for my family and others.",
+            "Find a program that actually works for me.",
           ]}
         />
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,5 +1,5 @@
-import React from 'react';
-import { CheckboxGroup } from '@src/components/inputs/CheckBoxGroup';
+import React from "react"
+import { CheckboxGroup } from "@src/components/inputs/CheckBoxGroup"
 
 export const PastTries: React.FC = () => {
   return (
@@ -19,13 +19,13 @@ export const PastTries: React.FC = () => {
         <CheckboxGroup
           name="pastTries"
           items={[
-            'Calorie counting or calorie restricting',
-            'Using a diet (keto, intermittent fasting, etc.)',
-            'Meal replacements (e.g. Huel)',
-            'Lifestyle change programs  (Weight Watchers, Noom, etc.)',
+            "Calorie counting or calorie restricting",
+            "Using a diet (keto, intermittent fasting, etc.)",
+            "Meal replacements (e.g. Huel)",
+            "Lifestyle change programs  (Weight Watchers, Noom, etc.)",
           ]}
         />
       </div>
     </div>
-  );
-};
+  )
+}
