@@ -1,5 +1,5 @@
-import React from "react"
-import { SelectInput } from "../../../inputs/SelectInput"
+import React from "react";
+import { SelectInput } from "../../../inputs/SelectInput";
 
 export const BiologicalSex = () => {
   return (
@@ -37,5 +37,5 @@ export const BiologicalSex = () => {
         never shared outside of Alfie Health.
       </p>
     </div>
-  )
-}
+  );
+};

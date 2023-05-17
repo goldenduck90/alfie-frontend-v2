@@ -1,6 +1,6 @@
-import React, { useState } from "react"
-import { useFormikContext, useField } from "formik"
-import * as RadioGroup from "@radix-ui/react-radio-group"
+import React, { useState } from "react";
+import { useFormikContext, useField } from "formik";
+import * as RadioGroup from "@radix-ui/react-radio-group";
 
 const options = [
   "Employer provided / Commercial (Aetna, United, BCBS, etc.)",
@@ -9,12 +9,12 @@ const options = [
   "Medicaid",
   "None",
   "Don’t know / unsure",
-]
+];
 
 export const HealthInsurance: React.FC = () => {
-  const [, { error: insuranceError }] = useField("healthInsurance")
-  const healthInsurance = localStorage.getItem("healthInsurance") || ""
-  const { setFieldValue } = useFormikContext()
+  const [, { error: insuranceError }] = useField("healthInsurance");
+  const healthInsurance = localStorage.getItem("healthInsurance") || "";
+  const { setFieldValue } = useFormikContext();
 
   return (
     <div className="px-8">
@@ -58,5 +58,5 @@ export const HealthInsurance: React.FC = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};

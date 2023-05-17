@@ -1,5 +1,5 @@
-import React from "react"
-import { TextInput } from "../../../inputs/TextInput"
+import React from "react";
+import { TextInput } from "../../../inputs/TextInput";
 
 export const FullName: React.FC = () => {
   return (
@@ -21,5 +21,5 @@ export const FullName: React.FC = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

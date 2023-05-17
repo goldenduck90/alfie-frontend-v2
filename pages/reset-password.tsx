@@ -1,14 +1,14 @@
-import { gql, useMutation } from '@apollo/client';
-import { Wrapper } from '../src/components/layouts/Wrapper';
-import { IconInput } from '../src/components/inputs/IconInput';
-import { LockClosedIcon } from '@heroicons/react/solid';
-import { FormikProvider, useFormik } from 'formik';
-import * as Yup from 'yup';
-import { parseError } from '../src/utils/parseError';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Button } from '@src/components/ui/Button';
-import { useNotificationStore } from '@src/hooks/useNotificationStore';
+import { gql, useMutation } from "@apollo/client";
+import { Wrapper } from "../src/components/layouts/Wrapper";
+import { IconInput } from "../src/components/inputs/IconInput";
+import { LockClosedIcon } from "@heroicons/react/solid";
+import { FormikProvider, useFormik } from "formik";
+import * as Yup from "yup";
+import { parseError } from "../src/utils/parseError";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { Button } from "@src/components/ui/Button";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
 
 const resetPasswordMutation = gql`
   mutation ResetPassword($input: ResetPasswordInput!) {
@@ -27,22 +27,22 @@ const resetPasswordMutation = gql`
 
 const resetPasswordSchema = Yup.object().shape({
   password: Yup.string()
-    .required('Please enter your password.')
+    .required("Please enter your password.")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-      'Your password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.'
+      "Your password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character."
     ),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password'), null], 'Passwords must match.')
-    .required('Please confirm your password.'),
+    .oneOf([Yup.ref("password"), null], "Passwords must match.")
+    .required("Please confirm your password."),
 });
 
 const ResetPassword = () => {
   const router = useRouter();
   console.log(router.query);
 
-  const registration = router.query?.registration === 'true';
-  const isPatient = router.query?.patient === 'true';
+  const registration = router.query?.registration === "true";
+  const isPatient = router.query?.patient === "true";
   const token = router.query?.token as string;
 
   const [resetPassword] = useMutation(resetPasswordMutation);
@@ -50,8 +50,8 @@ const ResetPassword = () => {
 
   const forgotForm = useFormik({
     initialValues: {
-      password: '',
-      confirmPassword: '',
+      password: "",
+      confirmPassword: "",
     },
     validateOnChange: true,
     validationSchema: resetPasswordSchema,
@@ -72,26 +72,26 @@ const ResetPassword = () => {
 
         resetForm();
         addNotification({
-          description: 'Password successfully reset.',
-          id: 'reset-password-success',
-          type: 'success',
-          title: 'Success',
+          description: "Password successfully reset.",
+          id: "reset-password-success",
+          type: "success",
+          title: "Success",
         });
         setStatus({ success: data.resetPassword.message });
         console.log(data.resetPassword);
-        await router.push('/login');
+        await router.push("/login");
       } catch (err) {
         const msg = parseError(err);
 
         addNotification({
           description: (err as any)?.message || msg,
-          id: 'reset-password-fail',
-          type: 'error',
-          title: 'Failure',
+          id: "reset-password-fail",
+          type: "error",
+          title: "Failure",
         });
         setErrors({
-          password: ' ',
-          confirmPassword: ' ',
+          password: " ",
+          confirmPassword: " ",
         });
       }
     },
@@ -138,7 +138,7 @@ const ResetPassword = () => {
               fullWidth
               size="medium"
             >
-              {registration ? 'Complete Signup' : 'Reset Password'}
+              {registration ? "Complete Signup" : "Reset Password"}
             </Button>
             <div className="pt-3">
               <Link
@@ -151,7 +151,7 @@ const ResetPassword = () => {
           </div>
           <div className="flex flex-col border-t border-gray-200">
             <p className="text-center text-sm text-gray-400 pt-6">
-              Haven&apos;t signed up yet?{' '}
+              Haven&apos;t signed up yet?{" "}
               <Link
                 href="/signup"
                 className="text-brand-berry hover:text-brand-berry-tint-1"

@@ -1,5 +1,5 @@
-import React from "react"
-import { CheckboxGroup } from "@src/components/inputs/CheckBoxGroup"
+import React from "react";
+import { CheckboxGroup } from "@src/components/inputs/CheckBoxGroup";
 
 export const PastTries: React.FC = () => {
   return (
@@ -27,5 +27,5 @@ export const PastTries: React.FC = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

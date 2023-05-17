@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/prettierrc",
   "trailingComma": "es5",
-  "semi": false,
+  "semi": true,
   "proseWrap": "always",
   "quoteProps": "consistent",
   "tabWidth": 2,

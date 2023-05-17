@@ -1,23 +1,23 @@
-import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useCurrentUserStore } from '@src/hooks/useCurrentUser';
-import { User } from '@src/graphql/generated';
-import { parseError } from '../src/utils/parseError';
-import { useLoginMutation } from '../src/hooks/useLoginMutation';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
+import { User } from "@src/graphql/generated";
+import { parseError } from "../src/utils/parseError";
+import { useLoginMutation } from "../src/hooks/useLoginMutation";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
 
-import { Wrapper } from '../src/components/layouts/Wrapper';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '../src/components/ui/Button';
-import { HookTextField } from '@src/components/ui/hookComponents/HookTextField';
-import { LockClosedIcon, UserIcon } from '@heroicons/react/solid';
-import { HookCheckbox } from '@src/components/ui/hookComponents/HookCheckBox';
+import { Wrapper } from "../src/components/layouts/Wrapper";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "../src/components/ui/Button";
+import { HookTextField } from "@src/components/ui/hookComponents/HookTextField";
+import { LockClosedIcon, UserIcon } from "@heroicons/react/solid";
+import { HookCheckbox } from "@src/components/ui/hookComponents/HookCheckBox";
 
 const LoginFormSchema = z.object({
-  email: z.string().email('Please enter a valid email address.'),
-  password: z.string().trim().min(1, 'Please enter your password.'),
+  email: z.string().email("Please enter a valid email address."),
+  password: z.string().trim().min(1, "Please enter your password."),
   remember: z.boolean().nullable(),
 });
 
@@ -30,8 +30,8 @@ const Login = () => {
   const { control, handleSubmit, reset, setError, formState } =
     useForm<LoginForm>({
       defaultValues: {
-        email: '',
-        password: '',
+        email: "",
+        password: "",
         remember: false,
       },
       resolver: zodResolver(LoginFormSchema),
@@ -47,21 +47,21 @@ const Login = () => {
         });
         const user = result?.user as User;
         setUser(user);
-        await router.push('/dashboard');
+        await router.push("/dashboard");
         reset();
       } catch (err) {
         const msg = parseError(err);
         /**
          * Simple hack since setError only allows a single
          */
-        setError('root.serverError', {
+        setError("root.serverError", {
           message: msg,
         });
-        setError('email', {
-          message: '',
+        setError("email", {
+          message: "",
         });
-        setError('password', {
-          message: '',
+        setError("password", {
+          message: "",
         });
       }
     },
@@ -128,7 +128,7 @@ const Login = () => {
         </div>
         <div className="flex flex-col border-t border-gray-200">
           <p className="text-center text-sm text-gray-400 pt-6">
-            Haven&apos;t signed up yet?{' '}
+            Haven&apos;t signed up yet?{" "}
             <Link
               href="/signup"
               className="text-brand-berry hover:text-brand-berry-tint-1"

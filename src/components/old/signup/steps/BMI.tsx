@@ -1,12 +1,12 @@
-import React, { useRef } from "react"
-import { useField } from "formik"
-import { NumberInput } from "../../../inputs/NumbeInput"
+import React, { useRef } from "react";
+import { useField } from "formik";
+import { NumberInput } from "../../../inputs/NumbeInput";
 
 export const BMI = () => {
-  const [, { error: feetError }] = useField("heightFeet")
-  const [, { error: inchError }] = useField("heightInches")
-  const heightInchesRef = useRef(null)
-  const weightRef = useRef(null)
+  const [, { error: feetError }] = useField("heightFeet");
+  const [, { error: inchError }] = useField("heightInches");
+  const heightInchesRef = useRef(null);
+  const weightRef = useRef(null);
 
   return (
     <div className="px-8">
@@ -72,5 +72,5 @@ export const BMI = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

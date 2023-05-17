@@ -1,7 +1,7 @@
-import { ChangeEventHandler, FC, useEffect, useRef } from 'react';
-import { useField } from 'formik';
-import { ChevronDownIcon } from '@heroicons/react/solid';
-import { useCachedState } from '../../hooks/useCachedState';
+import { ChangeEventHandler, FC, useEffect, useRef } from "react";
+import { useField } from "formik";
+import { ChevronDownIcon } from "@heroicons/react/solid";
+import { useCachedState } from "../../hooks/useCachedState";
 
 export type OptionInput = {
   label?: string;
@@ -28,7 +28,7 @@ export const SelectInput: FC<ISelectInput> = ({
   const selectRef = useRef<HTMLSelectElement>(null);
   const [, setCachedValue] = useCachedState(name, value, cache);
   const handleChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
-    const selectVal = e.target.value.length ? e.target.value : '';
+    const selectVal = e.target.value.length ? e.target.value : "";
     if (cache) {
       setCachedValue(selectVal);
     }
@@ -39,7 +39,7 @@ export const SelectInput: FC<ISelectInput> = ({
     <>
       <div
         className={`flex flex-row w-full rounded-2xl border overflow-hidden ${
-          error ? 'border-red-500' : 'border-gray-300'
+          error ? "border-red-500" : "border-gray-300"
         }`}
       >
         <select

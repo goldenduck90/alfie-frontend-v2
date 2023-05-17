@@ -1,7 +1,7 @@
-import { MailIcon, PhoneIcon } from "@heroicons/react/solid"
-import React, { useMemo } from "react"
-import { Checkbox } from "../../../inputs/Checkbox"
-import { IconInput } from "../../../inputs/IconInput"
+import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
+import React, { useMemo } from "react";
+import { Checkbox } from "../../../inputs/Checkbox";
+import { IconInput } from "../../../inputs/IconInput";
 
 import {
   Chart as ChartJS,
@@ -12,8 +12,8 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js"
-import { Line } from "react-chartjs-2"
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -23,7 +23,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend
-)
+);
 
 export const options = {
   responsive: true,
@@ -46,48 +46,48 @@ export const options = {
       display: false,
     },
   },
-}
+};
 
 export const EmailCapture = () => {
-  const fullName = localStorage.getItem("fullName") || ""
-  const weight = localStorage.getItem("weight") || ""
+  const fullName = localStorage.getItem("fullName") || "";
+  const weight = localStorage.getItem("weight") || "";
 
   const weightLossValue = useMemo(() => {
-    if (!weight) return "15% of your current weight"
+    if (!weight) return "15% of your current weight";
 
-    const weightInLbs = parseInt(weight)
-    const roundedWeightLoss = Math.round(weightInLbs * 0.15)
-    return `${roundedWeightLoss} pounds`
-  }, [weight])
+    const weightInLbs = parseInt(weight);
+    const roundedWeightLoss = Math.round(weightInLbs * 0.15);
+    return `${roundedWeightLoss} pounds`;
+  }, [weight]);
 
   const chartData = useMemo(() => {
-    const weightInLbs = parseInt(weight)
-    const percentLost = 0.15
-    const months = 6
+    const weightInLbs = parseInt(weight);
+    const percentLost = 0.15;
+    const months = 6;
 
     // Calculate the weight loss per month
-    const weightLossPerMonth = (weightInLbs * percentLost) / months
+    const weightLossPerMonth = (weightInLbs * percentLost) / months;
 
     // Create an array to store the weight loss values
-    const weightLossArr = []
+    const weightLossArr = [];
 
     // Initialize variables
-    let remainingWeight = weightInLbs
+    let remainingWeight = weightInLbs;
 
     // Generate randomized weight loss values for each month
     for (let i = 0; i < months; i++) {
       // Calculate the maximum and minimum weight loss for this month
-      const maxValue = weightLossPerMonth + weightLossPerMonth * 0.5
-      const minValue = weightLossPerMonth - weightLossPerMonth * 0.1
+      const maxValue = weightLossPerMonth + weightLossPerMonth * 0.5;
+      const minValue = weightLossPerMonth - weightLossPerMonth * 0.1;
 
       // Generate a random weight loss value within the range
-      const randomLoss = Math.random() * (maxValue - minValue) + minValue
+      const randomLoss = Math.random() * (maxValue - minValue) + minValue;
 
       // Update the remaining weight
-      remainingWeight -= randomLoss
+      remainingWeight -= randomLoss;
 
       // Add the random weight loss value to the array
-      weightLossArr.push(Math.floor(remainingWeight))
+      weightLossArr.push(Math.floor(remainingWeight));
     }
 
     return {
@@ -102,8 +102,8 @@ export const EmailCapture = () => {
           backgroundColor: "#0C52E8",
         },
       ],
-    }
-  }, [weight])
+    };
+  }, [weight]);
 
   return (
     <div className="px-8">
@@ -159,5 +159,5 @@ export const EmailCapture = () => {
         never shared outside of Alfie Health.
       </p>
     </div>
-  )
-}
+  );
+};
