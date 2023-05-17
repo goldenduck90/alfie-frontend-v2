@@ -41,9 +41,8 @@ const ResetPassword = () => {
   const router = useRouter();
   console.log(router.query);
 
-  const registration = router.query?.registration === "true";
-  const isPatient = router.query?.patient === "true";
-  const token = router.query?.token as string;
+  const registration = router.query?.registration === "true"
+  const token = router.query?.token as string
 
   const [resetPassword] = useMutation(resetPasswordMutation);
   const { addNotification } = useNotificationStore();
@@ -65,7 +64,6 @@ const ResetPassword = () => {
               token,
               password,
               registration,
-              provider: !isPatient,
             },
           },
         });

@@ -82,7 +82,7 @@ export function DialogModal({
         </RadixDialog.Trigger>
         <RadixDialog.Portal>
           <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-40 z-[99]" />
-          <RadixDialog.Content className="bg-white bottom-0 right-0 left-0 h-fit fixed  md:inset-[unset] md:top-1/2 md:left-1/2  md:-translate-x-[50%] md:-translate-y-[50%] md:max-w-fit md:max-h-1/2 shadow-md py-4 md:py-6 rounded-md gap-y-3 z-[100] flex flex-col justify-end">
+          <RadixDialog.Content className="bg-white bottom-0 right-0 left-0 h-fit fixed  md:inset-[unset] md:top-1/2 md:left-1/2  md:-translate-x-[50%] md:-translate-y-[50%] md:max-w-fit md:max-h-1/2 shadow-md py-4 md:py-6 rounded-md gap-y-3 z-[100] flex flex-col justify-end overflow-y-auto max-h-[90%]">
             {children}
           </RadixDialog.Content>
         </RadixDialog.Portal>
