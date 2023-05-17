@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo } from 'react';
-import { gql, useMutation } from '@apollo/client';
-import { Wrapper } from '../../layouts/Wrapper';
-import { IconInput } from '../../inputs/IconInput';
-import { MailIcon } from '@heroicons/react/solid';
-import { FormikProvider, useFormik } from 'formik';
-import * as Yup from 'yup';
-import { parseError } from '../../../utils/parseError';
-import { getStateByAbbreviation } from '../../../utils/states';
-import { useRouter } from 'next/router';
-import { Button } from '@src/components/ui/Button';
+import React, { useEffect, useMemo } from "react";
+import { gql, useMutation } from "@apollo/client";
+import { Wrapper } from "../../layouts/Wrapper";
+import { IconInput } from "../../inputs/IconInput";
+import { MailIcon } from "@heroicons/react/solid";
+import { FormikProvider, useFormik } from "formik";
+import * as Yup from "yup";
+import { parseError } from "../../../utils/parseError";
+import { getStateByAbbreviation } from "../../../utils/states";
+import { useRouter } from "next/router";
+import { Button } from "@src/components/ui/Button";
 
 const subscribeEmailMutation = gql`
   mutation SubscribeEmail($input: SubscribeEmailInput!) {
@@ -23,25 +23,25 @@ export function WaitListForm() {
   const [subscribeEmail] = useMutation(subscribeEmailMutation);
 
   useEffect(() => {
-    if (localStorage.getItem('fullName') || localStorage.getItem('location'))
+    if (localStorage.getItem("fullName") || localStorage.getItem("location"))
       return;
 
-    router.push('/signup');
+    router.push("/signup");
   }, [router]);
 
   const subscribeEmailForm = useFormik({
     initialValues: {
-      email: '',
-      fullName: localStorage.getItem('fullName') || '',
-      location: localStorage.getItem('location') || '',
+      email: "",
+      fullName: localStorage.getItem("fullName") || "",
+      location: localStorage.getItem("location") || "",
       waitlist: true,
       currentMember: false,
     },
     validateOnChange: false,
     validationSchema: Yup.object().shape({
       email: Yup.string()
-        .email('Please enter a valid email address.')
-        .required('Please enter a valid email address.'),
+        .email("Please enter a valid email address.")
+        .required("Please enter a valid email address."),
     }),
     onSubmit: async (values, { setErrors, setStatus, resetForm }) => {
       try {
@@ -57,7 +57,7 @@ export function WaitListForm() {
         const msg = parseError(err);
         setStatus({ error: msg });
         setErrors({
-          email: ' ',
+          email: " ",
         });
       }
     },

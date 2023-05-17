@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Wrapper } from '../../layouts/Wrapper';
-import Image from 'next/image';
-import { CheckCircleIcon } from '@heroicons/react/outline';
+import React, { useEffect } from "react";
+import { Wrapper } from "../../layouts/Wrapper";
+import Image from "next/image";
+import { CheckCircleIcon } from "@heroicons/react/outline";
 
 export const Success = () => {
   // run once
@@ -25,7 +25,7 @@ export const Success = () => {
             see an email from us in your inbox, please check your spam folder.
           </p>
           <p className="text-md text-gray-900 pt-6">
-            If you have any questions, please reach out to us at{' '}
+            If you have any questions, please reach out to us at{" "}
             <a
               href="mailto:support@joinalfie.com"
               className="text-brand-berry hover:text-brand-berry-tint-1"

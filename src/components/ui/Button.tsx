@@ -1,5 +1,5 @@
-import React from "react"
-import { ButtonHTMLAttributes } from "react"
+import React from "react";
+import { ButtonHTMLAttributes } from "react";
 
 type ButtonStyleType =
   | "primary"
@@ -7,28 +7,28 @@ type ButtonStyleType =
   | "accent"
   | "tertiary"
   | "urgent"
-  | "alert"
-type ButtonSizeType = "small" | "medium" | "large"
+  | "alert";
+type ButtonSizeType = "small" | "medium" | "large";
 
 type ButtonClassName = {
-  [key in ButtonStyleType]: string
-}
+  [key in ButtonStyleType]: string;
+};
 
-type ButtonRef = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+type ButtonRef = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement;
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  buttonType?: ButtonStyleType
-  size?: ButtonSizeType
-  icon?: React.ReactNode
-  iconSide?: "left" | "right"
-  children: React.ReactNode
+  buttonType?: ButtonStyleType;
+  size?: ButtonSizeType;
+  icon?: React.ReactNode;
+  iconSide?: "left" | "right";
+  children: React.ReactNode;
   onClick?: (
     e: React.MouseEvent<
       HTMLButtonElement | HTMLInputElement | HTMLAnchorElement | HTMLDivElement
     >
-  ) => void
-  fullWidth?: boolean
-  disabled?: boolean
+  ) => void;
+  fullWidth?: boolean;
+  disabled?: boolean;
 }
 
 export const Button = React.forwardRef(
@@ -50,8 +50,8 @@ export const Button = React.forwardRef(
       small: "h-8",
       medium: "h-10",
       large: "h-12",
-    }
-    const buttonFoundation = `flex ${buttonSize[size]} focus:ring-primary-500 focus:ring-4 text-lg font font-bold px-6 rounded-md border items-center justify-center`
+    };
+    const buttonFoundation = `flex ${buttonSize[size]} focus:ring-primary-500 focus:ring-4 text-lg font font-bold px-6 rounded-md border items-center justify-center`;
 
     const buttonClass: ButtonClassName = {
       primary:
@@ -64,7 +64,7 @@ export const Button = React.forwardRef(
         "bg-white text-prim-700 border-white hover:bg-prim-200 hover:border-prim-200",
       urgent: "bg-white text-red-500 border-red-500 hover:bg-red-100",
       alert: "bg-red-500 text-white border-red-500 hover:bg-red-300",
-    }
+    };
 
     const disabledStyle: ButtonClassName = {
       primary:
@@ -79,18 +79,18 @@ export const Button = React.forwardRef(
         "disabled:border-red-300 disabled:bg-red-100 text-red-400 cursor-not-allowed",
       alert:
         "disabled:border-red-100 disabled:bg-red-100 text-red-400 cursor-not-allowed",
-    }
+    };
 
     //* if there is an icon without a side picked it will default to right side
-    const showLeftSideIcon = icon && iconSide === "left"
-    const showRightSideIcon = icon && iconSide !== "left"
+    const showLeftSideIcon = icon && iconSide === "left";
+    const showRightSideIcon = icon && iconSide !== "left";
     const chooseStyle = disabled
       ? disabledStyle[buttonType]
-      : buttonClass[buttonType]
-    const showFullWidth = fullWidth ? "w-full" : "min-w-fit"
+      : buttonClass[buttonType];
+    const showFullWidth = fullWidth ? "w-full" : "min-w-fit";
     const renderIcon = (side: "l" | "r") => (
       <div className={side === "l" ? "pr-2" : "pl-2"}>{icon}</div>
-    )
+    );
 
     return (
       <button
@@ -104,8 +104,8 @@ export const Button = React.forwardRef(
         {children}
         {showRightSideIcon && renderIcon("r")}
       </button>
-    )
+    );
   }
-)
+);
 
-Button.displayName = "Button"
+Button.displayName = "Button";
