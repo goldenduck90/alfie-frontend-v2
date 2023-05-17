@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Wrapper } from '../../layouts/Wrapper';
+import React, { useState } from "react";
+import { Wrapper } from "../../layouts/Wrapper";
 import {
   PaymentElement,
   useElements,
   useStripe,
-} from '@stripe/react-stripe-js';
-import * as Sentry from '@sentry/react';
-import { Button } from '@src/components/ui/Button';
+} from "@stripe/react-stripe-js";
+import * as Sentry from "@sentry/react";
+import { Button } from "@src/components/ui/Button";
 
 export const CheckoutPayment = () => {
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ export const CheckoutPayment = () => {
       elements,
       confirmParams: {
         return_url:
-          process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL?.replace('\r', '') || '',
+          process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL?.replace("\r", "") || "",
       },
     });
 
@@ -42,7 +42,7 @@ export const CheckoutPayment = () => {
     } else {
       Sentry.captureMessage(
         `Payment successful: ${JSON.stringify(result.error)}`,
-        'info'
+        "info"
       );
       console.log(result);
     }
