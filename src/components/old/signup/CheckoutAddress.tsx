@@ -9,7 +9,6 @@ import { States } from "../../../utils/states";
 import { TextInput } from "../../inputs/TextInput";
 import * as Yup from "yup";
 import { parseError } from "../../../utils/parseError";
-import { Logo } from "../Logo";
 import { Button } from "@src/components/ui/Button";
 import { useRouter } from "next/router";
 
@@ -86,7 +85,6 @@ export const CheckoutAddress = () => {
 
   return (
     <Wrapper>
-      <Logo />
       <FormikProvider value={form}>
         <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
           <h1 className="pb-0 mb-0 mt-2 font-md font-bold text-2xl text-brand-berry">

@@ -54,7 +54,7 @@ export const TextInput: FC<ITextInput> = ({
           placeholder={placeholder}
           className={`${
             error ? "border-red-500" : "border-gray-300"
-          }  w-full px-3 py-2  appearance-none rounded-lg border`}
+          }  w-full px-3 py-1  appearance-none rounded-2xl border-2`}
         />
         <div className="pointer-events-none absolute in set-y-0 right-0 flex items-center pr-3">
           {loading && <Loading size={20} />}

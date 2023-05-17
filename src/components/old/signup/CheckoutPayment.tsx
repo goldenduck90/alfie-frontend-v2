@@ -6,7 +6,6 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import * as Sentry from "@sentry/react";
-import { Logo } from "../Logo";
 import { Button } from "@src/components/ui/Button";
 
 export const CheckoutPayment = () => {
@@ -30,7 +29,8 @@ export const CheckoutPayment = () => {
       //`Elements` instance that was used to create the Payment Element
       elements,
       confirmParams: {
-        return_url: process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL?.replace("\r", "") || "",
+        return_url:
+          process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL?.replace("\r", "") || "",
       },
     });
 
@@ -51,7 +51,6 @@ export const CheckoutPayment = () => {
 
   return (
     <Wrapper>
-      <Logo />
       <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         <h1 className="pb-0 mb-0 mt-2 font-md font-bold text-2xl text-brand-berry">
           Checkout

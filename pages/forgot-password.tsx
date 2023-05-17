@@ -3,7 +3,6 @@ import { gql, useMutation } from "@apollo/client";
 import { Wrapper } from "../src/components/layouts/Wrapper";
 import { Button } from "@src/components/ui/Button";
 import { UserIcon } from "@heroicons/react/solid";
-import Image from "next/image";
 import { parseError } from "../src/utils/parseError";
 import Link from "next/link";
 import { z } from "zod";
@@ -72,9 +71,6 @@ function ForgotPassword() {
 
   return (
     <Wrapper>
-      <div className="flex flex-col items-center my-10">
-        <Image src={"/assets/logo.png"} height={58} width={144} alt="Alfie" />
-      </div>
       <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         {!!formState?.errors?.root?.serverError && (
           <div className="text-red-500 text-sm text-center">

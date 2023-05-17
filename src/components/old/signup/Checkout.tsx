@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import { FeatureSection } from "../FeatureSection";
 import { Loading } from "../Loading";
-import { Logo } from "../Logo";
 import { Button } from "@src/components/ui/Button";
 
 const getCheckoutQuery = gql`
@@ -55,7 +54,6 @@ export const Checkout = () => {
 
   return (
     <Wrapper>
-      <Logo />
       <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         <p className="mb-4 mt-4 font-md font-bold text-lg text-brand-berry">
           <span className="capitalize">

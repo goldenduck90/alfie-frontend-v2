@@ -38,7 +38,7 @@ export const SelectInput: FC<ISelectInput> = ({
   return (
     <>
       <div
-        className={`flex flex-row w-full rounded-lg border ${
+        className={`flex flex-row w-full rounded-2xl border overflow-hidden ${
           error ? "border-red-500" : "border-gray-300"
         }`}
       >

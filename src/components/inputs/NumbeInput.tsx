@@ -51,7 +51,7 @@ export const NumberInput: FC<INumberInput> = ({
       <div
         className={`${
           error ? "border-red-500" : "border-gray-300"
-        } flex flex-row w-full border rounded-sm`}
+        } flex flex-row w-full border rounded-2xl overflow-hidden`}
       >
         {position === "left" && addonText && (
           <span className="flex items-center px-3 text-gray-500 bg-gray-200">
@@ -61,7 +61,7 @@ export const NumberInput: FC<INumberInput> = ({
         <input
           ref={inputRef}
           type={type}
-          className="w-full py-2 rounded-sm pl-4 pr-2 focus:outline-none appearance-none placeholder-gray-400"
+          className="w-full py-1 rounded-sm pl-4 pr-2 focus:outline-none appearance-none placeholder-gray-400"
           placeholder={placeholder}
           value={value}
           onFocus={(e) => {
