@@ -14,7 +14,7 @@ import { BiologicalSex } from "./steps/BiologicalSex";
 import { BMI } from "./steps/BMI";
 import { DateOfBirth } from "./steps/DateOfBirth";
 import { EmailCapture } from "./steps/EmailCapture";
-import { HealthInsurance } from "./steps/HealthInsurance";
+// import { HealthInsurance } from "./steps/Insurance";
 
 import { useFormikWizard } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
@@ -39,7 +39,7 @@ const FORM_TITLES: { [key: number]: string } = {
   8: "Understanding your health",
   9: "Understanding your health",
   10: "Get started with Alfie today!",
-  11: "Insurance Coverage",
+  // 11: "Insurance Coverage",
 };
 
 const createOrFindCheckoutMutation = gql`
@@ -75,7 +75,7 @@ export const PreCheckout = () => {
       email: localStorage.getItem("email") || "",
       textOptIn: Boolean(localStorage.getItem("textOptIn")) || null,
       phone: localStorage.getItem("phone") || "",
-      healthInsurance: localStorage.getItem("healthInsurance") || "",
+      // healthInsurance: localStorage.getItem("healthInsurance") || "",
     },
     onSubmit: async (
       {
@@ -92,7 +92,7 @@ export const PreCheckout = () => {
         email,
         textOptIn,
         phone,
-        healthInsurance,
+        // healthInsurance,
       },
       { setStatus, resetForm }
     ) => {
@@ -114,7 +114,7 @@ export const PreCheckout = () => {
               textOptIn,
               phone,
               pastTries,
-              healthInsurance,
+              // healthInsurance,
             },
           },
         });
@@ -288,17 +288,17 @@ export const PreCheckout = () => {
           return Promise.resolve();
         },
       },
-      {
-        component: HealthInsurance,
-        validationSchema: Yup.object().shape({
-          healthInsurance: Yup.string().required("Please select an option."),
-        }),
-        beforeNext({ healthInsurance }, _, currentStepIndex) {
-          localStorage.setItem("healthInsurance", healthInsurance);
-          localStorage.setItem("preCheckoutStep", String(currentStepIndex));
-          return Promise.resolve();
-        },
-      },
+      // {
+      //   component: HealthInsurance,
+      //   validationSchema: Yup.object().shape({
+      //     healthInsurance: Yup.string().required("Please select an option."),
+      //   }),
+      //   beforeNext({ healthInsurance }, _, currentStepIndex) {
+      //     localStorage.setItem("healthInsurance", healthInsurance);
+      //     localStorage.setItem("preCheckoutStep", String(currentStepIndex));
+      //     return Promise.resolve();
+      //   },
+      // },
     ],
   });
 
