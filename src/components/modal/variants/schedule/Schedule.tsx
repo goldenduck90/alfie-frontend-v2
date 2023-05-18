@@ -124,8 +124,8 @@ export function ScheduleAppointment({
       eaAppointmentId,
       selectedDate: start
         ? dayjs(
-            `${dayjs(start).format("YYYY-MM-DD")} ${dayjs().format("H:mm")}`
-          )
+          `${dayjs(start).format("YYYY-MM-DD")} ${dayjs().format("H:mm")}`
+        )
         : dayjs(),
       start: start,
       end: end,
@@ -148,8 +148,7 @@ export function ScheduleAppointment({
                 ...(values.notes && {
                   notes: values.notes,
                 }),
-                bypassNotice:
-                  result.data?.me?.role === Role.Patient ? true : false,
+                bypassNotice: isProvider ? true : false,
               },
             },
           });
@@ -317,8 +316,8 @@ export function ScheduleAppointment({
               {currentStepIndex === 0
                 ? "Next"
                 : currentStepIndex === 1
-                ? "Confirm"
-                : "Done"}
+                  ? "Confirm"
+                  : "Done"}
             </Button>
           </div>
         </>
