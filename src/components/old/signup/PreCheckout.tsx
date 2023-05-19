@@ -104,7 +104,6 @@ export const PreCheckout = () => {
             input: {
               name,
               email,
-              weightLossMotivator,
               weightLossMotivatorV2,
               dateOfBirth,
               gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
@@ -183,7 +182,7 @@ export const PreCheckout = () => {
       },
       {
         component: Testimonial,
-        beforeNext({}, _, currentStepIndex) {
+        beforeNext({ }, _, currentStepIndex) {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
@@ -225,7 +224,7 @@ export const PreCheckout = () => {
       },
       {
         component: WhatAlfieUse,
-        beforeNext({}, _, currentStepIndex) {
+        beforeNext({ }, _, currentStepIndex) {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
