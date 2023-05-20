@@ -3,13 +3,17 @@ import { useFormikWizard } from "formik-wizard-form";
 import { FormikProvider, useField } from "formik";
 import { useState } from "react";
 import { Button } from "../../../ui/Button";
-import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../../Dialog";
+import {
+  DialogLongBody,
+  DialogLongHeader,
+  useDialogToggle,
+} from "../../Dialog";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import * as Yup from "yup";
 import { TimeslotSelection } from "./steps/TimeslotSelection";
 import { AppointmentSummary } from "./steps/AppointmentSummary";
 import { AppointmentConfirmation } from "./steps/AppointmentConfirmation";
-import { useUserStateContext } from '@src/context/SessionContext';
+import { useUserStateContext } from "@src/context/SessionContext";
 import * as Sentry from "@sentry/react";
 
 // setup dayjs
@@ -36,7 +40,7 @@ const getRoleQuery = gql`
       role
     }
   }
-`
+`;
 
 const updateAppointmentMutation = gql`
   mutation UpdateAppointmentMutation($input: UpdateAppointmentInput!) {
@@ -44,7 +48,7 @@ const updateAppointmentMutation = gql`
       eaAppointmentId
     }
   }
-`
+`;
 
 const createAppointmentMutation = gql`
   mutation CreateAppointmentMutation($input: CreateAppointmentInput!) {
@@ -52,14 +56,11 @@ const createAppointmentMutation = gql`
       eaAppointmentId
     }
   }
-`
+`;
 
 export const DateSelector = () => {
-  const [
-    ,
-    { value: selectedDate },
-    { setValue: setSelectedDate },
-  ] = useField("selectedDate");
+  const [, { value: selectedDate }, { setValue: setSelectedDate }] =
+    useField("selectedDate");
 
   return (
     <div className="flex justify-center">
@@ -75,7 +76,9 @@ export const DateSelector = () => {
       </p>
       <button
         className="ml-8 p-2 border rounded-xl"
-        disabled={dayjs(selectedDate).isAfter(dayjs().add(1, "month").subtract(1, "day"))}
+        disabled={dayjs(selectedDate).isAfter(
+          dayjs().add(1, "month").subtract(1, "day")
+        )}
         onClick={() => setSelectedDate(dayjs(selectedDate).add(1, "day"))}
       >
         <ChevronRightIcon className="h-5 w-5 md:w-6 md:h-6" id="nextLabel" />
@@ -100,24 +103,30 @@ export function ScheduleAppointment({
   end?: string;
   notes?: string;
   userTaskId?: string;
-  onComplete?: () => void
+  onComplete?: () => void;
   eaCustomerName?: string;
 }) {
+  const result = useQuery(getRoleQuery);
+  const isProvider =
+    result.data?.getRole?.role === Role.Practitioner ||
+    result.data?.getRole?.role === Role.CareCoordinator ||
+    result.data?.getRole?.role === Role.Doctor ||
+    result.data?.getRole?.role === Role.HealthCoach;
 
-
-  const result = useQuery(getRoleQuery)
-  const isProvider = result.data?.getRole?.role === Role.Practitioner || result.data?.getRole?.role === Role.CareCoordinator || result.data?.getRole?.role === Role.Doctor || result.data?.getRole?.role === Role.HealthCoach
-
-  const [update] = useMutation(updateAppointmentMutation)
-  const [create] = useMutation(createAppointmentMutation)
+  const [update] = useMutation(updateAppointmentMutation);
+  const [create] = useMutation(createAppointmentMutation);
   const { addNotification } = useNotificationStore();
 
-  const [confirmed, setConfirmed] = useState(false)
+  const [confirmed, setConfirmed] = useState(false);
   const scheduleForm = useFormikWizard({
     initialValues: {
       reschedule: true,
       eaAppointmentId,
-      selectedDate: start ? dayjs(`${dayjs(start).format("YYYY-MM-DD")} ${dayjs().format("H:mm")}`) : dayjs(),
+      selectedDate: start
+        ? dayjs(
+          `${dayjs(start).format("YYYY-MM-DD")} ${dayjs().format("H:mm")}`
+        )
+        : dayjs(),
       start: start,
       end: end,
       notes: notes || "",
@@ -139,10 +148,10 @@ export function ScheduleAppointment({
                 ...(values.notes && {
                   notes: values.notes,
                 }),
-                bypassNotice: result.data?.me?.role === Role.Patient ? true : false,
-              }
+                bypassNotice: isProvider ? true : false,
+              },
             },
-          })
+          });
 
           addNotification({
             type: "success",
@@ -167,9 +176,9 @@ export function ScheduleAppointment({
                 ...(userTaskId && {
                   userTaskId,
                 }),
-              }
-            }
-          })
+              },
+            },
+          });
 
           addNotification({
             type: "success",
@@ -190,7 +199,9 @@ export function ScheduleAppointment({
         setConfirmed(true);
       } catch (e) {
         console.log("Errors occured updating/creating appointment.", e);
-        alert("An error occured updating/creating your appointment. Please contact support.");
+        alert(
+          "An error occured updating/creating your appointment. Please contact support."
+        );
 
         Sentry.captureException(e, {
           tags: {
@@ -207,10 +218,8 @@ export function ScheduleAppointment({
       {
         component: TimeslotSelection,
         validationSchema: Yup.object().shape({
-          start: Yup.string()
-            .required("Please select a timeslot to continue"),
-          end: Yup.string()
-            .required("Please select a timeslot to continue"),
+          start: Yup.string().required("Please select a timeslot to continue"),
+          end: Yup.string().required("Please select a timeslot to continue"),
         }),
       },
       {
@@ -220,7 +229,7 @@ export function ScheduleAppointment({
         }),
         beforeNext: async (_, { submitForm }) => {
           await submitForm();
-        }
+        },
       },
       {
         component: AppointmentConfirmation,
@@ -242,21 +251,35 @@ export function ScheduleAppointment({
   } = scheduleForm;
 
   const getErrors = () => {
-    if (errors?.start || errors.end || errors?.selectedDate || errors?.eaProvider) {
+    if (
+      errors?.start ||
+      errors.end ||
+      errors?.selectedDate ||
+      errors?.eaProvider
+    ) {
       return (
         <span className="text-red-500 text-sm">
-          <div>{(errors as any).startTimeInUtc || (errors as any).endTimeInUtc || (errors as any).selectedDate || (errors as any).eaProvider}</div>
+          <div>
+            {(errors as any).startTimeInUtc ||
+              (errors as any).endTimeInUtc ||
+              (errors as any).selectedDate ||
+              (errors as any).eaProvider}
+          </div>
         </span>
-      )
+      );
     }
-  }
+  };
 
   return (
-    <div className="w-full max-w-[480px] min-w-full">
+    <div className="w-full max-w-[480px] min-w-full overflow-y-auto">
       <FormikProvider value={scheduleForm}>
         <>
           <DialogLongHeader
-            title={values.eaAppointmentId ? "Reschedule Appointment" : "Schedule Appointment"}
+            title={
+              values.eaAppointmentId
+                ? "Reschedule Appointment"
+                : "Schedule Appointment"
+            }
             step={currentStepIndex + 1}
             total={2}
             icon={undefined}
@@ -274,10 +297,7 @@ export function ScheduleAppointment({
               </RadixDialog.Close>
             )}
             {currentStepIndex === 1 && (
-              <Button
-                buttonType="secondary"
-                onClick={() => handlePrev()}
-              >
+              <Button buttonType="secondary" onClick={() => handlePrev()}>
                 <ChevronLeftIcon className="w-6 h-6" />
               </Button>
             )}
@@ -293,11 +313,15 @@ export function ScheduleAppointment({
               }}
               disabled={isSubmitting}
             >
-              {currentStepIndex === 0 ? "Next" : currentStepIndex === 1 ? "Confirm" : "Done"}
+              {currentStepIndex === 0
+                ? "Next"
+                : currentStepIndex === 1
+                  ? "Confirm"
+                  : "Done"}
             </Button>
           </div>
         </>
-      </FormikProvider >
-    </div >
+      </FormikProvider>
+    </div>
   );
 }

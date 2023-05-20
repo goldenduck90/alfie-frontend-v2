@@ -5,7 +5,6 @@ import { LockClosedIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import { parseError } from "../src/utils/parseError";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "@src/components/ui/Button";
@@ -40,10 +39,9 @@ const resetPasswordSchema = Yup.object().shape({
 
 const ResetPassword = () => {
   const router = useRouter();
-  console.log(router.query)
+  console.log(router.query);
 
   const registration = router.query?.registration === "true"
-  const isPatient = router.query?.patient === "true"
   const token = router.query?.token as string
 
   const [resetPassword] = useMutation(resetPasswordMutation);
@@ -66,7 +64,6 @@ const ResetPassword = () => {
               token,
               password,
               registration,
-              provider: !isPatient,
             },
           },
         });
@@ -102,9 +99,6 @@ const ResetPassword = () => {
 
   return (
     <Wrapper>
-      <div className="flex flex-col items-center my-10">
-        <Image src={"/assets/logo.png"} height={58} width={144} alt="Alfie" />
-      </div>
       <FormikProvider value={forgotForm}>
         <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
           {status?.error && (

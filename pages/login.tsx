@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { User } from "@src/graphql/generated";
 import { parseError } from "../src/utils/parseError";
@@ -72,10 +71,7 @@ const Login = () => {
   const isSubmitting = formState.isSubmitting;
 
   return (
-    <Wrapper>
-      <div className="flex flex-col items-center my-10">
-        <Image src={"/assets/logo.png"} height={58} width={144} alt="Alfie" />
-      </div>
+    <Wrapper title="Welcome back!">
       <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         {!!formState?.errors?.root?.serverError && (
           <div className="text-red-500 text-sm text-center">

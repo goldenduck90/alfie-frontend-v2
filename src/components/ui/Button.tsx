@@ -51,7 +51,7 @@ export const Button = React.forwardRef(
       medium: "h-10",
       large: "h-12",
     };
-    const buttonFoundation = `flex ${buttonSize[size]} focus:ring-primary-500 focus:ring-4 text-base font font-normal px-4 rounded-xl border items-center justify-center`;
+    const buttonFoundation = `flex ${buttonSize[size]} focus:ring-primary-500 focus:ring-4 text-lg font font-bold px-6 rounded-md border items-center justify-center`;
 
     const buttonClass: ButtonClassName = {
       primary:

@@ -8,7 +8,6 @@ import * as Yup from "yup";
 import { parseError } from "../../../utils/parseError";
 import { getStateByAbbreviation } from "../../../utils/states";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { Button } from "@src/components/ui/Button";
 
 const subscribeEmailMutation = gql`
@@ -74,9 +73,6 @@ export function WaitListForm() {
 
   return (
     <Wrapper>
-      <div className="flex flex-col items-center my-10">
-        <Image src={"/assets/logo.png"} alt="Alfie" height={60} width={144} />
-      </div>
       <FormikProvider value={subscribeEmailForm}>
         <div className="flex flex-col px-8 sm:px-14 pt-12 pb-10 bg-white rounded-md space-y-5 min-w-full md:min-w-0 md:max-w-md">
           {status?.error && (
