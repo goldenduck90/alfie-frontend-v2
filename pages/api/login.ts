@@ -33,6 +33,7 @@ query Me {
     stripeSubscriptionId
     eaCustomerId
     eaHealthCoachId
+    metriportUserId
     subscriptionExpiresAt
     provider {
       _id
@@ -90,14 +91,14 @@ export default withSessionRoute(async function loginRoute(req, res) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json",
+      "Accept": "application/json",
     },
     body,
   });
-  console.log(response, "response")
+  console.log(response, "response");
   if (response.ok) {
     const { data } = await response.json();
-    console.log(data, "data")
+    console.log(data, "data");
     if (!data) {
       return res
         .status(401)
@@ -106,7 +107,6 @@ export default withSessionRoute(async function loginRoute(req, res) {
     console.log(data.login, "data.login in login.ts");
     (req.session as any).token = data.login.token;
     (req.session as any).user = data.login.user;
-
 
     if (data.login.user.role === Role.Patient) {
       const patientBody = JSON.stringify({
@@ -118,8 +118,8 @@ export default withSessionRoute(async function loginRoute(req, res) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${data.login.token}`,
+          "Accept": "application/json",
+          "Authorization": `Bearer ${data.login.token}`,
         },
         body: patientBody,
       });

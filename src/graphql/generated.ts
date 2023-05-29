@@ -75,6 +75,7 @@ export type Checkout = {
   gender: Gender;
   heightInInches: Scalars['Float'];
   name: Scalars['String'];
+  pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
   sameAsShippingAddress: Scalars['Boolean'];
   shippingAddress: Address;
@@ -82,12 +83,12 @@ export type Checkout = {
   stripeCheckoutId: Scalars['String'];
   stripeClientSecret: Scalars['String'];
   stripeCustomerId: Scalars['String'];
-  stripePaymentIntentId: Scalars['String'];
+  stripeSetupIntentId: Scalars['String'];
   stripeSubscriptionId: Scalars['String'];
   textOptIn?: Maybe<Scalars['Boolean']>;
   user?: Maybe<User>;
   weightInLbs: Scalars['Float'];
-  weightLossMotivator: Scalars['String'];
+  weightLossMotivatorV2: Array<Scalars['String']>;
 };
 
 export type CheckoutResponse = {
@@ -105,10 +106,6 @@ export type Classification = {
   date: Scalars['DateTime'];
   displayPercentile?: Maybe<Scalars['String']>;
   percentile: Scalars['String'];
-};
-
-export type CompletePaymentIntentInput = {
-  paymentIntentId: Scalars['String'];
 };
 
 export type CompleteUserTaskInput = {
@@ -132,11 +129,12 @@ export type CreateCheckoutInput = {
   gender: Gender;
   heightInInches: Scalars['Float'];
   name: Scalars['String'];
+  pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
   state: Scalars['String'];
   textOptIn?: InputMaybe<Scalars['Boolean']>;
   weightInLbs: Scalars['Float'];
-  weightLossMotivator: Scalars['String'];
+  weightLossMotivatorV2: Array<Scalars['String']>;
 };
 
 export type CreateCustomerInput = {
@@ -488,6 +486,11 @@ export type MessageResponse = {
   message: Scalars['String'];
 };
 
+export type MetriportConnectResponse = {
+  __typename?: 'MetriportConnectResponse';
+  url: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   archiveTask: UserTask;
@@ -496,7 +499,6 @@ export type Mutation = {
   bulkAssignTasksToUser: Array<UserTask>;
   cancelAppointment: MessageResponse;
   classifyPatients: User;
-  completePaymentIntent: MessageResponse;
   completeUpload: User;
   completeUserTask: UserTask;
   createAppointment: EaAppointment;
@@ -507,6 +509,7 @@ export type Mutation = {
   createTask: Task;
   createUser: User;
   forgotPassword: MessageResponse;
+  generateMetriportConnectUrl: MetriportConnectResponse;
   login: LoginResponse;
   requestSignedUrls: Array<SignedUrlResponse>;
   resetPassword: LoginResponse;
@@ -515,7 +518,6 @@ export type Mutation = {
   updateAppointment: EaAppointment;
   updateProviderProfile: EaProviderProfile;
   updateProviderSchedule: UpdateScheduleMessage;
-  updateSubscription: MessageResponse;
   updateUserTask: UserTask;
   uploadDocument: AkuteDocument;
 };
@@ -548,11 +550,6 @@ export type MutationCancelAppointmentArgs = {
 
 export type MutationClassifyPatientsArgs = {
   userId: Scalars['String'];
-};
-
-
-export type MutationCompletePaymentIntentArgs = {
-  input: CompletePaymentIntentInput;
 };
 
 
@@ -606,6 +603,11 @@ export type MutationForgotPasswordArgs = {
 };
 
 
+export type MutationGenerateMetriportConnectUrlArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type MutationLoginArgs = {
   input: LoginInput;
 };
@@ -646,11 +648,6 @@ export type MutationUpdateProviderScheduleArgs = {
   eaProviderId: Scalars['String'];
   schedule: ScheduleInput;
   timezone: Scalars['String'];
-};
-
-
-export type MutationUpdateSubscriptionArgs = {
-  input: UpdateSubscriptionInput;
 };
 
 
@@ -1032,11 +1029,6 @@ export type UpdateScheduleMessage = {
   message: Scalars['String'];
 };
 
-export type UpdateSubscriptionInput = {
-  stripeSubscriptionId: Scalars['String'];
-  subscriptionExpiresAt: Scalars['DateTime'];
-};
-
 export type UpdateUserTaskInput = {
   lastNotifiedUserAt: Scalars['DateTime'];
 };
@@ -1063,6 +1055,7 @@ export type User = {
   labOrderSent?: Maybe<Scalars['Boolean']>;
   meetingRoomUrl?: Maybe<Scalars['String']>;
   meetingUrl?: Maybe<Scalars['String']>;
+  metriportUserId?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   password: Scalars['String'];
   pharmacyLocation?: Maybe<Scalars['String']>;
