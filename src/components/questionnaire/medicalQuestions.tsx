@@ -25,12 +25,11 @@ const conditions = [
   "Prostate disease",
   "Migraines",
   "Arthritis",
-  "Cancer",
   "High Cholesterol",
   "Type II Diabetes",
   "Sleep apnea",
   "Back pain",
-  "Never pain",
+  "Nerve pain",
   "PCOS (polycystic ovary syndrome)",
   "None of the above",
 ];
@@ -40,9 +39,9 @@ const previousconditions = [
   "Suicidal attempts or ideation",
   "Anorexia or bulimia",
   "Stroke",
-  "Brain cancer",
+  "Cancer",
   "Seizures",
-  "Liver disease (not including non - alcoholic fatty liver disease)",
+  "Liver disease (not including non-alcoholic fatty liver disease)",
   "If Female: Pregnant or plan on getting pregnant up to 6 months from now",
   "If Female: Breastfeeding or plan on breastfeeding up to 6 months from now",
   "None of the above",
@@ -61,7 +60,7 @@ export const medicalQuestions: QuestionProps<any>[] = [
             "Several years",
             "6-12 Months",
             "Less than 6 Months",
-            `I've never tried to lose weigth before`,
+            "I've never tried to lose weight before",
           ]}
         />
       );
@@ -78,12 +77,6 @@ export const medicalQuestions: QuestionProps<any>[] = [
         name: props.name,
         control: props.control,
       });
-      // React.useEffect(() => {
-      //   if (!field.value) return;
-      //   const flattenedValues = field?.value?.map((v: any) => v).join(', ');
-      //   console.log(flattenedValues);
-      //   field.onChange(flattenedValues);
-      // }, [field, field.value]);
       return (
         <MultiCheckboxFormQuestion
           {...props}
@@ -128,15 +121,6 @@ export const medicalQuestions: QuestionProps<any>[] = [
             multiple={true}
             options={previousconditions}
           />
-          {/* NOT SUPPORTED AT THIS TIME -- DOM */}
-          {/* <div className='w-full'>
-            <TextAreaInput
-              {...props}
-              validation={undefined}
-              question=''
-              name={`q4.text`}
-            />
-          </div> */}
         </React.Fragment>
       );
     },
@@ -147,13 +131,13 @@ export const medicalQuestions: QuestionProps<any>[] = [
     id: "surgeries",
     question: "Have you had any surgeries in the past?",
     Component: (props: MultiCheckboxQuestionProps) => {
-      const [showSurgicalHistoryTextArea, setShowSurgicalHisotryTextArea] =
+      const [showSurgicalHistoryTextArea, setShowSurgicalHistoryTextArea] =
         useState(false);
       useEffect(() => {
         if (props.control._formValues.surgeries.hasSurgicalHistory === "Yes") {
-          setShowSurgicalHisotryTextArea(true);
+          setShowSurgicalHistoryTextArea(true);
         } else {
-          setShowSurgicalHisotryTextArea(false);
+          setShowSurgicalHistoryTextArea(false);
         }
       }, [props.control?._formValues?.surgeries?.hasSurgicalHistory]);
 
