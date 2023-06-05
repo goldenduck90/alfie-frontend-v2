@@ -1051,6 +1051,7 @@ export type User = {
   files: Array<File>;
   gender: Gender;
   generatedSummary?: Maybe<Scalars['String']>;
+  hasScale?: Maybe<Scalars['Boolean']>;
   heightInInches: Scalars['Float'];
   labOrderSent?: Maybe<Scalars['Boolean']>;
   meetingRoomUrl?: Maybe<Scalars['String']>;

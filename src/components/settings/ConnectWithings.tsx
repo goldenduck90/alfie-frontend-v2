@@ -37,10 +37,10 @@ export const ConnectWithings = () => {
   return (
     <div>
       <Button
-        disabled={loading || !!user?.metriportUserId}
+        disabled={loading || !!user?.hasScale}
         onClick={handleConnectClick}
       >
-        <span>{user?.metriportUserId ? "Connected" : "Connect"}</span>
+        <span>{user?.hasScale ? "Connected" : "Connect"}</span>
         <div className="absolute">{loading && <Loading size={24} />}</div>
       </Button>
     </div>

@@ -28,6 +28,7 @@ query Me {
     }
     gender
     heightInInches
+    hasScale
     akutePatientId
     stripeCustomerId
     stripeSubscriptionId
