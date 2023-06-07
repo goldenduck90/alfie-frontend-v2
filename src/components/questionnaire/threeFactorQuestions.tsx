@@ -124,7 +124,7 @@ export const threeFactorQuestions: QuestionProps<any>[] = [
   },
   {
     id: "holdBack",
-    question: "I conciously hold back at meals in order not to gain weight.",
+    question: "I consciously hold back at meals in order not to gain weight.",
     Component: (props: MultiCheckboxQuestionProps) => (
       <RadioGroupInput {...props} options={commonOptions} />
     ),
@@ -165,8 +165,8 @@ export const threeFactorQuestions: QuestionProps<any>[] = [
     helperText: "Select one answer",
   },
   {
-    id: "conciouslyEatLess",
-    question: "How likely are you to conciously eat less than you want",
+    id: "consciouslyEatLess",
+    question: "How likely are you to consciously eat less than you want",
     Component: (props: MultiCheckboxQuestionProps) => (
       <RadioGroupInput {...props} options={likelyOptions} />
     ),

@@ -8,7 +8,7 @@ import {
 const options = [
   "Most of the time",
   "A lot of the time",
-  "From time to time, ocassionally",
+  "From time to time, occasionally",
   "Not at all",
 ];
 
