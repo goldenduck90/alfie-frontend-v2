@@ -70,7 +70,7 @@ export const CheckboxGroup: FC<ICheckboxGroup> = ({
         return (
           <div
             key={item}
-            className="mb-5 md:flex items-center space-y-1 form-check"
+            className="mb-2 md:flex items-center space-y-2 form-check"
           >
             <input
               id={item}

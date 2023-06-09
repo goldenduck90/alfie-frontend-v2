@@ -21,14 +21,14 @@ export const IconInput = ({
       <div
         className={`${
           error ? "border-red-500" : "border-gray-300"
-        } relative w-full border rounded-lg`}
+        } relative w-full appearance-none rounded-2xl border-2 overflow-hidden`}
       >
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
           {icon}
         </span>
         <input
           type={type}
-          className="w-full py-2 rounded-lg pl-10 appearance-none  placeholder-gray-400 bg-white text-black"
+          className="w-full py-1 rounded-lg pl-10 appearance-none  placeholder-gray-400 bg-white text-black"
           placeholder={placeholder}
           value={value}
           onFocus={() => setError(undefined)}
