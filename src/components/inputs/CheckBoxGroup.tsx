@@ -70,11 +70,11 @@ export const CheckboxGroup: FC<ICheckboxGroup> = ({
         return (
           <div
             key={item}
-            className="mb-2 md:flex items-center space-y-2 form-check"
+            className="mb-2 flex items-center space-y-2 form-check"
           >
             <input
               id={item}
-              className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer"
+              className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer basis-5 grow-0 shrink-0 "
               type="checkbox"
               checked={checked}
               value={checked}

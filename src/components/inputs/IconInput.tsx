@@ -28,7 +28,7 @@ export const IconInput = ({
         </span>
         <input
           type={type}
-          className="w-full py-1 rounded-lg pl-10 appearance-none  placeholder-gray-400 bg-white text-black"
+          className="w-full py-1 rounded-lg pl-10 appearance-none  placeholder-gray-400 bg-white text-black border-none"
           placeholder={placeholder}
           value={value}
           onFocus={() => setError(undefined)}

@@ -21,7 +21,7 @@ export const SelectInput: FC<ISelectInput> = ({
   placeholder,
   options,
   disabled = false,
-  cache,
+  cache = false,
   onChange, // TODO: extend on when needed
 }) => {
   const [, { value, error }, { setError, setValue }] = useField(name);
@@ -52,16 +52,13 @@ export const SelectInput: FC<ISelectInput> = ({
         >
           <option value="">{placeholder}</option>
           {options.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              selected={option?.selected ? true : false}
-            >
+            <option key={option.value} value={option.value}>
               {option.label || option.value}
             </option>
           ))}
         </select>
         <button
+          type="button"
           className="flex items-center px-2 text-brand-berry"
           onClick={() => selectRef.current?.focus()}
         >

@@ -1,4 +1,4 @@
-import { useFormikContext, useField } from "formik";
+import { useField } from "formik";
 import { TextInput } from "@src/components/inputs/TextInput";
 import { IconInput } from "@src/components/inputs/IconInput";
 import { SelectInput } from "@src/components/inputs/SelectInput";
@@ -7,8 +7,7 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 import { States } from "@src/utils/states";
 
 const ContactInformation = () => {
-  const [, { error: insuranceError }] = useField("biologicalSex");
-  const { setFieldValue } = useFormikContext();
+  const [, , { setValue: setBiologicalSexValue }] = useField("biologicalSex");
 
   return (
     <div>
@@ -16,7 +15,7 @@ const ContactInformation = () => {
         Contact Information
       </h3>
       <div className="flex flex-col gap-8 px-4">
-        <div className="flex gap-16 w-full">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-16 w-full">
           <div className="flex flex-col w-64">
             <p className="text-primary-700 font-bold">
               First Name<span className="text-[red]">*</span>
@@ -38,7 +37,7 @@ const ContactInformation = () => {
             />
           </div>
         </div>
-        <div className="flex gap-16 w-full">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-16 w-full">
           <div className="flex flex-col w-64">
             <p className="text-primary-700 font-bold">
               Date of Birth<span className="text-[red]">*</span>
@@ -58,9 +57,7 @@ const ContactInformation = () => {
               <RadioGroup.Root
                 className="flex gap-8"
                 defaultValue="male"
-                onValueChange={(val: string) =>
-                  setFieldValue("biologicalSex", val)
-                }
+                onValueChange={(val: string) => setBiologicalSexValue(val)}
               >
                 {["Male", "Female"].map((option, index) => (
                   <div key={index} className="flex items-center">
@@ -80,13 +77,10 @@ const ContactInformation = () => {
                   </div>
                 ))}
               </RadioGroup.Root>
-              {insuranceError && (
-                <span className="text-red-500 text-sm">{insuranceError}</span>
-              )}
             </div>
           </div>
         </div>
-        <div className="flex gap-16 w-full">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-16 w-full">
           <div className="flex flex-col w-64">
             <p className="text-primary-700 font-bold">
               Street Address<span className="text-[red]">*</span>
@@ -107,7 +101,7 @@ const ContactInformation = () => {
             <p className="text-primary-700 font-bold">
               State<span className="text-[red]">*</span>
             </p>
-            <SelectInput name="location" placeholder="State" options={States} />
+            <SelectInput name="state" placeholder="State" options={States} />
           </div>
           <div className="flex flex-col w-40">
             <p className="text-primary-700 font-bold">
@@ -131,7 +125,7 @@ const ContactInformation = () => {
             <p className="text-primary-700 font-bold">
               Phone Number<span className="text-[red]">*</span>
             </p>
-            <TextInput name="phoneNumber" placeholder="" type="text" />
+            <TextInput name="phone" placeholder="(000)000-0000" type="tel" />
           </div>
         </div>
         <div className="flex gap-16 w-full">

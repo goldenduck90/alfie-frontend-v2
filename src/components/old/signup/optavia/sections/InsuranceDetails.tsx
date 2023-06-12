@@ -7,7 +7,7 @@ const InsuranceDetails = () => {
         Insurance Details
       </h3>
       <div className="flex flex-col gap-8 px-4">
-        <div className="flex gap-16 w-full">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-16 w-full">
           <div className="flex flex-col w-64">
             <p className="text-primary-700 font-bold">
               Insurance Plan<span className="text-[red]">*</span>
