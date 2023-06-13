@@ -1,5 +1,5 @@
 import { SelectInput } from "@src/components/inputs/SelectInput";
-import { InsurancePlanTypes, InsurancePlans } from "@src/utils/insurance";
+import { InsuranceTypes, InsurancePlans } from "@src/utils/insurance";
 const InsuranceDetails = () => {
   return (
     <div>
@@ -13,7 +13,7 @@ const InsuranceDetails = () => {
               Insurance Plan<span className="text-[red]">*</span>
             </p>
             <SelectInput
-              name="insuranceType"
+              name="insurancePlan"
               placeholder="Select"
               options={InsurancePlans}
             />
@@ -23,9 +23,9 @@ const InsuranceDetails = () => {
               Plan Type<span className="text-[red]">*</span>
             </p>
             <SelectInput
-              name="insurancePlan"
+              name="insuranceType"
               placeholder="Select"
-              options={InsurancePlanTypes}
+              options={InsuranceTypes}
             />
           </div>
         </div>

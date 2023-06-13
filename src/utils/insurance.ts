@@ -1,27 +1,27 @@
 export const InsurancePlans = [
-  { label: "Anthem Blue Cross", value: "Anthem Blue Cross" },
-  { label: "Humana", value: "Humana" },
-  { label: "Blue Cross Blue Shield", value: "Blue Cross Blue Shield" },
-  { label: "Partner Direct", value: "Partner Direct" },
-  { label: "Aetna", value: "Aetna" },
+  { label: "Anthem Blue Cross", value: "ANTHEM_BLUE_CROSS" },
+  { label: "Humana", value: "HUMANA" },
+  { label: "Blue Cross Blue Shield", value: "BLUE_CROSS_BLUE_SHIELD" },
+  { label: "Partner Direct", value: "PARTNER_DIRECT" },
+  { label: "Aetna", value: "AETNA" },
   {
     label: "Empire Bluecross Blueshield",
-    value: "Empire Bluecross Blueshield",
+    value: "EMPIRE_BLUECROSS_BLUESHIELD",
   },
-  { label: "United Healthcare", value: "United Healthcare" },
-  { label: "Cigna", value: "Cigna" },
-  { label: "Medicare", value: "Medicare" },
-  { label: "Medicaid", value: "Medicaid" },
-  { label: "Other", value: "Other" },
+  { label: "United Healthcare", value: "UNITED_HEALTHCARE" },
+  { label: "Cigna", value: "CIGNA" },
+  { label: "Medicare", value: "MEDICARE" },
+  { label: "Medicaid", value: "MEDICAID" },
+  { label: "Other", value: "OTHER" },
 ];
 
-export const InsurancePlanTypes = [
+export const InsuranceTypes = [
   { label: "EPO", value: "EPO" },
   { label: "POS", value: "POS" },
   { label: "PPO", value: "PPO" },
   { label: "HMO", value: "HMO" },
   {
     label: "Government(Medicaid, Tricare, CHIP)",
-    value: "Government(Medicaid, Tricare, CHIP)",
+    value: "GOVERNMENT_MEDICAID_TRICARE_CHIP",
   },
 ];

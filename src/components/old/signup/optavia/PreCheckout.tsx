@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { gql, useMutation } from "@apollo/client";
 import { useFormik, FormikProvider } from "formik";
 import * as Yup from "yup";
-import { differenceInYears, format } from "date-fns";
+import { differenceInYears } from "date-fns";
 
 import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
 import { Button } from "@src/components/ui/Button";
@@ -13,6 +13,7 @@ import ContactInformation from "./sections/ContactInformation";
 import PatientDetails from "./sections/PatientDetails";
 import InsuranceDetails from "./sections/InsuranceDetails";
 
+import { ValidStates } from "@src/utils/states";
 import { Gender } from "@src/graphql/generated";
 
 const TOTAL_STEPS = 2;
@@ -122,33 +123,58 @@ const PreCheckout = () => {
         insuranceType,
       } = values;
 
+      const fullName = `${firstName} ${lastName}`;
+
+      if (!ValidStates.includes(state)) {
+        localStorage.setItem("fullName", fullName);
+        localStorage.setItem("location", state);
+        router.push("/signup/waitlist");
+        resetForm();
+        return;
+      }
+
+      const heightInInches = parseInt(heightFeet) * 12 + parseInt(heightInches);
+      const bmi = (Number(weight) / (heightInInches * heightInInches)) * 703;
+      if (bmi < 27) {
+        resetForm();
+        router.push("/signup/ineligible");
+        return;
+      }
+
+      const input = {
+        name: fullName,
+        email,
+        dateOfBirth,
+        gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
+        state: state,
+        phone: `+1${phone.replace(/[^0-9]/g, "")}`,
+        heightInInches,
+        weightInLbs: Number(weight),
+        weightLossMotivatorV2: [],
+        pastTries: pastTries,
+        address: {
+          line1: streetAddress,
+          line2: apartmentUnit,
+          city: city,
+          state: state,
+          postalCode: zipCode,
+        },
+        insurancePlan,
+        insuranceType,
+        signupPartner: "OPTAVIA",
+      };
+
+      console.log(input);
+
       const { data } = await createOrFindCheckout({
         variables: {
-          input: {
-            name: `${firstName} ${lastName}`,
-            email,
-            dateOfBirth,
-            gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
-            line1: streetAddress,
-            line2: apartmentUnit,
-            city: city,
-            state: state,
-            postalCode: zipCode,
-            phone: phone,
-            heightInInches: parseInt(heightFeet) * 12 + parseInt(heightInches),
-            weightInLbs: Number(weight),
-            weightLossMotivatorV2: [],
-            pastTries: pastTries,
-            insurancePlan: insurancePlan,
-            insuranceType: insuranceType,
-            signupPartner: "optavia",
-          },
+          input,
         },
       });
       const { checkout } = data.createOrFindCheckout;
       console.log(checkout);
       resetForm();
-      router.push(`/signup/checkout/${checkout._id}`);
+      router.push(`/signup/optavia/checkout/${checkout._id}`);
     },
   });
 
