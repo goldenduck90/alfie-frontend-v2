@@ -97,7 +97,8 @@ export const PreCheckout = () => {
       { setStatus, resetForm }
     ) => {
       try {
-        const phone = parseInt(heightFeet) * 12 + parseInt(heightInches);
+        const heightInInches =
+          parseInt(heightFeet) * 12 + parseInt(heightInches);
         const { data } = await createOrFindCheckout({
           variables: {
             input: {

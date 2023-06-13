@@ -101,7 +101,7 @@ const PreCheckout = () => {
         "Please select your insurance type."
       ),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       const {
         firstName,
         lastName,
@@ -125,26 +125,30 @@ const PreCheckout = () => {
       const { data } = await createOrFindCheckout({
         variables: {
           input: {
-            firstName: firstName,
-            lastName: lastName,
-            dateOfBirth: dateOfBirth,
+            name: `${firstName} ${lastName}`,
+            email,
+            dateOfBirth,
             gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
-            addressLine1: streetAddress,
-            addressLine2: apartmentUnit,
+            line1: streetAddress,
+            line2: apartmentUnit,
             city: city,
             state: state,
-            zipCode: zipCode,
-            email: email,
+            postalCode: zipCode,
             phone: phone,
             heightInInches: parseInt(heightFeet) * 12 + parseInt(heightInches),
             weightInLbs: Number(weight),
+            weightLossMotivatorV2: [],
             pastTries: pastTries,
             insurancePlan: insurancePlan,
             insuranceType: insuranceType,
+            signupPartner: "optavia",
           },
         },
       });
-      alert(JSON.stringify(values, null, 2));
+      const { checkout } = data.createOrFindCheckout;
+      console.log(checkout);
+      resetForm();
+      router.push(`/signup/checkout/${checkout._id}`);
     },
   });
 
