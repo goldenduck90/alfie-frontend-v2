@@ -1,11 +1,18 @@
+import Link from "next/link";
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
-import { Wrapper } from "@src/components/layouts/Wrapper";
+import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import { FeatureSection } from "../../FeatureSection";
 import { Loading } from "../../Loading";
 import { Button } from "@src/components/ui/Button";
+import { InsuranceType, InsurancePlan } from "@src/graphql/generated";
+
+import InsuranceCovered from "./checkout/InsuranceCovered";
+import InsuranceNotCovered from "./checkout/InsuranceNotCovered";
+
+const TOTAL_STEPS = 2;
 
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
@@ -14,6 +21,8 @@ const getCheckoutQuery = gql`
         _id
         name
         weightInLbs
+        insurancePlan
+        insuranceType
       }
     }
   }
@@ -46,6 +55,22 @@ export const Checkout = () => {
     return `${weightInLbs * 0.15} pounds`;
   }, [data]);
 
+  const insuranceCovered = useMemo(() => {
+    let covered = false;
+    if (data?.checkout?.checkout) {
+      covered = true;
+      const { insurancePlan, insuranceType } = data.checkout.checkout;
+      covered = !(
+        [
+          InsurancePlan.Medicaid,
+          InsurancePlan.Other,
+          InsurancePlan.Cigna,
+        ].includes(insurancePlan) || insuranceType === InsuranceType.Hmo
+      );
+    }
+    return covered;
+  }, [data]);
+
   if (loading) return <Loading />;
 
   if (error) {
@@ -53,66 +78,86 @@ export const Checkout = () => {
   }
 
   return (
-    <Wrapper>
-      <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
-        <p className="mb-4 mt-4 font-md font-bold text-lg text-brand-berry">
-          <span className="capitalize">
-            {data?.checkout?.checkout?.name?.split(" ")[0]}
+    <Wrapper
+      partner={PARTNERS.optavia}
+      header={
+        <h2 className="text-lg sm:text-2xl text-white font-bold">Your plan.</h2>
+      }
+    >
+      <div className="flex flex-col max-w-lg bg-white rounded-xl gap-5">
+        <div className="border-b px-8 py-4">
+          <span className="text-primary-700 bg-primary-100 font-medium font-sm px-4 py-1 rounded-3xl">
+            2 out of {TOTAL_STEPS}
           </span>
-          , you&apos;ll lose over {weightLossValue} in 6 months with Alfie, the
-          virtual precision medicine clinic for people struggling with obesity.
-        </p>
+        </div>
 
-        <div className="flex flex-col md:flex-row justify-between md:items-center pb-4">
-          <div className="flex flex-col mb-5 md:mb-0">
-            <p className="text-gray-900 text-md font-bold mb-1">Your plan</p>
-            <span className="text-brand-berry text-2xl font-bold">
-              $120 monthly
-            </span>
-          </div>
+        <div className="px-4">
+          {insuranceCovered ? (
+            <InsuranceCovered
+              firstName={data?.checkout?.checkout?.name?.split(" ")[0]}
+              weightLossValue={weightLossValue}
+              checkoutId={checkoutId}
+            />
+          ) : (
+            <InsuranceNotCovered
+              weightLossValue={weightLossValue}
+              checkoutId={checkoutId}
+            />
+          )}
           <div className="flex flex-col">
-            <p className="text-gray-900 text-md font-bold mb-2">
-              Ready to be the best you?
-            </p>
+            <h3 className="text-xl text-secondary-500 font-bold mb-4">
+              What&apos;s Included:
+            </h3>
+            <FeatureSection
+              icon={
+                <div className="w-12 h-12 rounded-full bg-secondary-100 mr-4"></div>
+              }
+              title="Metabolic Profiling"
+              description="Lab tests and other measurements help us understand your metabolism and the scientific reasoning behind your weight gain to determine which treatment is right for you!"
+            />
+            <FeatureSection
+              icon={
+                <div className="w-12 h-12 rounded-full bg-secondary-100 mr-4"></div>
+              }
+              title="Doctor Prescribed Medication"
+              asterisk
+              description="Connect with one of our licensed providers and be prescribed the right combination of weight loss medications for you, if eligible."
+            />
+            <FeatureSection
+              icon={
+                <div className="w-12 h-12 rounded-full bg-secondary-100 mr-4"></div>
+              }
+              title="1:1 Accountability"
+              description="Alfie pairs you with a certified health coach and integrates with your smart devices to help your care team maximize your weight loss."
+            />
+          </div>
+          <div className="w-full">
             <Button
               onClick={() => {
-                router.push(`/signup/checkout/${checkoutId}/address`);
+                router.back();
               }}
               size="medium"
             >
-              Checkout
+              Back
             </Button>
           </div>
-        </div>
-
-        <div className="flex flex-col">
-          <h3 className="text-xl text-gray-800 font-bold mb-8">
-            What&apos;s Included
-          </h3>
-          <FeatureSection
-            icon={<div />}
-            title="Metabolic Profiling"
-            description="Lab tests and other measurements help us understand your metabolism and the scientific reasoning behind your weight gain to determine which treatment is right for you!"
-          />
-          <FeatureSection
-            icon={<div />}
-            title="Doctor Prescribed Medication"
-            asterisk
-            description="Connect with one of our licensed providers and be prescribed the right combination of weight loss medications for you, if eligible."
-          />
-          <FeatureSection
-            icon={<div />}
-            title="1:1 Accountability"
-            description="Alfie pairs you with a certified health coach and integrates with your smart devices to help your care team maximize your weight loss."
-          />
-        </div>
-        <div className="flex flex-col border-t border-gray-200">
-          <p className="text-center text-xs text-gray-400 pt-6">
-            * Your Alfie care team will work directly with your insurance to
-            obtain approval for medications and minimize any applicable copays.
-            Without commercial insurance approval, some medications, such as
-            GLP-1s, may cost over $1,000 per month.
-          </p>
+          <div className="flex flex-col">
+            <p className="text-center text-xs text-gray-400 pt-6">
+              * Depending on your insurance, you may have to pay applicable
+              copays for medications prescribed by Alfie Health providers.
+            </p>
+          </div>
+          <div className="flex flex-col">
+            <p className="text-center text-sm font-medium text-gray-400 py-6">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="text-brand-berry hover:text-brand-berry-tint-1 underline"
+              >
+                Click here to login.
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </Wrapper>
