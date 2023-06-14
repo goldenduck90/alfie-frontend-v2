@@ -97,16 +97,6 @@ export const gastroQuestions: QuestionProps<any>[] = [
     helperText: "Select one answer",
   },
   {
-    id: "burping",
-    question:
-      "Have you been bothered by BURPING during the past week? (Burping refers to bringing up air or gas from the stomach via the mouth, often associated with easing a bloated feeling.)",
-    Component: (props: MultiCheckboxQuestionProps) => (
-      <RadioGroupInput {...props} options={options} />
-    ),
-    validation: z.string().min(1, "At least one option is required"),
-    helperText: "Select one answer",
-  },
-  {
     id: "gas",
     question:
       "Have you been bothered by PASSING GAS OR FLATUS during the past week? (Passing gas or flatus refers to the release of air or gas from the bowel, often associated with easing a bloated feeling.)",
@@ -139,7 +129,7 @@ export const gastroQuestions: QuestionProps<any>[] = [
   {
     id: "looseStools",
     question:
-      "Have you been bothered by LOOSE STOOLS during the pst week? (If your stools (motions) have been alterately hard and loose, this question only refers to the extent you have been bothered by the stools being loose.)",
+      "Have you been bothered by LOOSE STOOLS during the pst week? (If your stools (motions) have been alternately hard and loose, this question only refers to the extent you have been bothered by the stools being loose.)",
     Component: (props: MultiCheckboxQuestionProps) => (
       <RadioGroupInput {...props} options={options} />
     ),
@@ -149,7 +139,7 @@ export const gastroQuestions: QuestionProps<any>[] = [
   {
     id: "hardStools",
     question:
-      "Have you been bothered by HARD STOOLS during the past week? (If your stools (motions) have been alterately hard and loose, this question only refers to the extent you have been bothered by the stools being hard.)",
+      "Have you been bothered by HARD STOOLS during the past week? (If your stools (motions) have been alternately hard and loose, this question only refers to the extent you have been bothered by the stools being hard.)",
     Component: (props: MultiCheckboxQuestionProps) => (
       <RadioGroupInput {...props} options={options} />
     ),
