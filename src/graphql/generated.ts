@@ -19,7 +19,7 @@ export type Scalars = {
 export type Address = {
   __typename?: 'Address';
   city: Scalars['String'];
-  country: Scalars['String'];
+  country?: Maybe<Scalars['String']>;
   line1: Scalars['String'];
   line2?: Maybe<Scalars['String']>;
   postalCode: Scalars['String'];
@@ -28,7 +28,7 @@ export type Address = {
 
 export type AddressInput = {
   city: Scalars['String'];
-  country: Scalars['String'];
+  country?: InputMaybe<Scalars['String']>;
   line1: Scalars['String'];
   line2?: InputMaybe<Scalars['String']>;
   postalCode: Scalars['String'];
@@ -74,11 +74,14 @@ export type Checkout = {
   email: Scalars['String'];
   gender: Gender;
   heightInInches: Scalars['Float'];
+  insurancePlan?: Maybe<InsurancePlan>;
+  insuranceType?: Maybe<InsuranceType>;
   name: Scalars['String'];
   pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
   sameAsShippingAddress: Scalars['Boolean'];
   shippingAddress: Address;
+  signupPartner?: Maybe<Partner>;
   state: Scalars['String'];
   stripeCheckoutId: Scalars['String'];
   stripeClientSecret: Scalars['String'];
@@ -124,17 +127,21 @@ export type CreateAppointmentInput = {
 };
 
 export type CreateCheckoutInput = {
+  address?: InputMaybe<AddressInput>;
   dateOfBirth: Scalars['DateTime'];
   email: Scalars['String'];
   gender: Gender;
   heightInInches: Scalars['Float'];
+  insurancePlan?: InputMaybe<InsurancePlan>;
+  insuranceType?: InputMaybe<InsuranceType>;
   name: Scalars['String'];
   pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
+  signupPartner?: InputMaybe<Partner>;
   state: Scalars['String'];
   textOptIn?: InputMaybe<Scalars['Boolean']>;
   weightInLbs: Scalars['Float'];
-  weightLossMotivatorV2: Array<Scalars['String']>;
+  weightLossMotivatorV2?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateCustomerInput = {
@@ -459,6 +466,30 @@ export type GoogleReverseGeoCodeResult = {
   geometry: GoogleReverseGeoCodeGeometryObject;
 };
 
+/** Insurance plans */
+export enum InsurancePlan {
+  Aetna = 'AETNA',
+  AnthemBlueCross = 'ANTHEM_BLUE_CROSS',
+  BlueCrossBlueShield = 'BLUE_CROSS_BLUE_SHIELD',
+  Cigna = 'CIGNA',
+  EmpireBluecrossBlueshield = 'EMPIRE_BLUECROSS_BLUESHIELD',
+  Humana = 'HUMANA',
+  Medicaid = 'MEDICAID',
+  Medicare = 'MEDICARE',
+  Other = 'OTHER',
+  PartnerDirect = 'PARTNER_DIRECT',
+  UnitedHealthcare = 'UNITED_HEALTHCARE'
+}
+
+/** Insurance types */
+export enum InsuranceType {
+  Epo = 'EPO',
+  GovernmentMedicaidTricareChip = 'GOVERNMENT_MEDICAID_TRICARE_CHIP',
+  Hmo = 'HMO',
+  Pos = 'POS',
+  Ppo = 'PPO'
+}
+
 export type LocationObject = {
   __typename?: 'LocationObject';
   lat: Scalars['Float'];
@@ -670,6 +701,11 @@ export type PartialUser = {
   name: Scalars['String'];
   role: Role;
 };
+
+/** Sign up partner */
+export enum Partner {
+  Optavia = 'OPTAVIA'
+}
 
 export type PharmacyLocationInput = {
   name: Scalars['String'];
@@ -1053,6 +1089,8 @@ export type User = {
   generatedSummary?: Maybe<Scalars['String']>;
   hasScale?: Maybe<Scalars['Boolean']>;
   heightInInches: Scalars['Float'];
+  insurancePlan?: Maybe<InsurancePlan>;
+  insuranceType?: Maybe<InsuranceType>;
   labOrderSent?: Maybe<Scalars['Boolean']>;
   meetingRoomUrl?: Maybe<Scalars['String']>;
   meetingUrl?: Maybe<Scalars['String']>;
@@ -1065,6 +1103,7 @@ export type User = {
   role: Role;
   score: Array<Score>;
   sendbirdChannelUrl?: Maybe<Scalars['String']>;
+  signupPartner?: Maybe<Partner>;
   stripeCustomerId: Scalars['String'];
   stripeSubscriptionId: Scalars['String'];
   subscriptionExpiresAt: Scalars['DateTime'];
