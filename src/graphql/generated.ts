@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  AnyScalar: any;
   DateTime: any;
 };
 
@@ -189,6 +190,8 @@ export type CreateTaskInput = {
   notifyWhenAssigned?: InputMaybe<Scalars['Boolean']>;
   /** Notify patient when the task becomes past due. Requires hoursTillDue to be set. */
   notifyWhenPastDue?: InputMaybe<Scalars['Boolean']>;
+  /** If set, the task will have answers that must conform to these questions. */
+  questions?: InputMaybe<Array<TaskQuestionsInput>>;
   type: TaskType;
 };
 
@@ -258,6 +261,8 @@ export type DocUploadInput = {
 
 export type EaAppointment = {
   __typename?: 'EAAppointment';
+  attendanceEmailSent: Scalars['Boolean'];
+  claimSubmitted: Scalars['Boolean'];
   eaAppointmentId: Scalars['String'];
   eaCustomer: EaCustomer;
   eaProvider: EaProvider;
@@ -265,6 +270,8 @@ export type EaAppointment = {
   end: Scalars['String'];
   location: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
+  patientAttended: Scalars['Boolean'];
+  providerAttended: Scalars['Boolean'];
   start: Scalars['String'];
 };
 
@@ -438,6 +445,7 @@ export type GetUserTasksInput = {
   completed?: InputMaybe<Scalars['Boolean']>;
   limit?: InputMaybe<Scalars['Float']>;
   offset?: InputMaybe<Scalars['Float']>;
+  taskType?: InputMaybe<TaskType>;
   userId?: InputMaybe<Scalars['String']>;
 };
 
@@ -464,6 +472,33 @@ export type GoogleReverseGeoCodeResult = {
   __typename?: 'GoogleReverseGeoCodeResult';
   formatted_address: Scalars['String'];
   geometry: GoogleReverseGeoCodeGeometryObject;
+};
+
+export type Insurance = {
+  __typename?: 'Insurance';
+  groupId: Scalars['String'];
+  groupName: Scalars['String'];
+  insuranceCompany: Scalars['String'];
+  memberId: Scalars['String'];
+  payor: Scalars['String'];
+  rxBin: Scalars['String'];
+  rxGroup: Scalars['String'];
+};
+
+export type InsuranceEligibilityInput = {
+  groupId: Scalars['String'];
+  groupName: Scalars['String'];
+  insuranceCompany: Scalars['String'];
+  memberId: Scalars['String'];
+  payor: Scalars['String'];
+  rxBin: Scalars['String'];
+  rxGroup: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type InsuranceEligibilityResponse = {
+  __typename?: 'InsuranceEligibilityResponse';
+  eligible: Scalars['Boolean'];
 };
 
 /** Insurance plans */
@@ -547,6 +582,7 @@ export type Mutation = {
   scorePatients: Score;
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
+  updateAppointmentAttended: MessageResponse;
   updateProviderProfile: EaProviderProfile;
   updateProviderSchedule: UpdateScheduleMessage;
   updateUserTask: UserTask;
@@ -669,6 +705,11 @@ export type MutationUpdateAppointmentArgs = {
 };
 
 
+export type MutationUpdateAppointmentAttendedArgs = {
+  eaAppointmentId: Scalars['String'];
+};
+
+
 export type MutationUpdateProviderProfileArgs = {
   eaProviderId: Scalars['String'];
   input: EaProviderProfileInput;
@@ -773,6 +814,7 @@ export type Query = {
   getProviderSchedule: ScheduleObject;
   getRole: RoleResponse;
   getUserById: User;
+  insuranceEligibility: InsuranceEligibilityResponse;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
@@ -836,6 +878,11 @@ export type QueryGetProviderScheduleArgs = {
 
 export type QueryGetUserByIdArgs = {
   userId: Scalars['String'];
+};
+
+
+export type QueryInsuranceEligibilityArgs = {
+  input: InsuranceEligibilityInput;
 };
 
 
@@ -944,9 +991,11 @@ export type Score = {
   calculated1hourPercent?: Maybe<Scalars['Float']>;
   calculated30minsPercent?: Maybe<Scalars['Float']>;
   calculatedPercentile?: Maybe<Scalars['Float']>;
+  currentScore?: Maybe<Scalars['Float']>;
   date?: Maybe<Scalars['DateTime']>;
   increased?: Maybe<Scalars['Boolean']>;
   increased1hour?: Maybe<Scalars['Boolean']>;
+  increased30Mins?: Maybe<Scalars['Boolean']>;
   increasedDiastolic?: Maybe<Scalars['Boolean']>;
   increasedSystolic?: Maybe<Scalars['Boolean']>;
   latest?: Maybe<Scalars['String']>;
@@ -1002,7 +1051,19 @@ export type Task = {
   notifyProviderWhenPastDue: Scalars['Boolean'];
   notifyWhenAssigned?: Maybe<Scalars['Boolean']>;
   notifyWhenPastDue: Scalars['Boolean'];
+  questions?: Maybe<Array<TaskQuestion>>;
   type: TaskType;
+};
+
+export type TaskQuestion = {
+  __typename?: 'TaskQuestion';
+  key: Scalars['String'];
+  type: AnswerType;
+};
+
+export type TaskQuestionsInput = {
+  key: Scalars['String'];
+  type: AnswerType;
 };
 
 /** The type of task */
@@ -1024,6 +1085,7 @@ export enum TaskType {
   ScheduleAppointment = 'SCHEDULE_APPOINTMENT',
   ScheduleHealthCoachAppointment = 'SCHEDULE_HEALTH_COACH_APPOINTMENT',
   Tefq = 'TEFQ',
+  Test = 'TEST',
   WaistLog = 'WAIST_LOG',
   WeightLog = 'WEIGHT_LOG'
 }
@@ -1089,6 +1151,7 @@ export type User = {
   generatedSummary?: Maybe<Scalars['String']>;
   hasScale?: Maybe<Scalars['Boolean']>;
   heightInInches: Scalars['Float'];
+  insurance?: Maybe<Insurance>;
   insurancePlan?: Maybe<InsurancePlan>;
   insuranceType?: Maybe<InsuranceType>;
   labOrderSent?: Maybe<Scalars['Boolean']>;
@@ -1117,13 +1180,13 @@ export type UserAnswer = {
   __typename?: 'UserAnswer';
   key: Scalars['String'];
   type: AnswerType;
-  value: Scalars['String'];
+  value?: Maybe<Scalars['AnyScalar']>;
 };
 
 export type UserAnswersInput = {
   key: Scalars['String'];
   type: AnswerType;
-  value: Scalars['String'];
+  value?: InputMaybe<Scalars['AnyScalar']>;
 };
 
 export type UserSendbirdChannel = {
@@ -1250,13 +1313,13 @@ export const UserTasksQueryDocument = gql`
  * });
  */
 export function useUserTasksQueryQuery(baseOptions?: Apollo.QueryHookOptions<UserTasksQueryQuery, UserTasksQueryQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
+}
 export function useUserTasksQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserTasksQueryQuery, UserTasksQueryQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
+}
 export type UserTasksQueryQueryHookResult = ReturnType<typeof useUserTasksQueryQuery>;
 export type UserTasksQueryLazyQueryHookResult = ReturnType<typeof useUserTasksQueryLazyQuery>;
 export type UserTasksQueryQueryResult = Apollo.QueryResult<UserTasksQueryQuery, UserTasksQueryQueryVariables>;
