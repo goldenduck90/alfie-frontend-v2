@@ -71,7 +71,13 @@ const Login = () => {
   const isSubmitting = formState.isSubmitting;
 
   return (
-    <Wrapper title="Welcome back!">
+    <Wrapper
+      header={
+        <h2 className="text-lg sm:text-2xl text-white font-bold">
+          {"Welcome back!"}
+        </h2>
+      }
+    >
       <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
         {!!formState?.errors?.root?.serverError && (
           <div className="text-red-500 text-sm text-center">
