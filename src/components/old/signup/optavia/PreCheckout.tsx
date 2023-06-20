@@ -39,11 +39,7 @@ const PreCheckout = () => {
       lastName: "",
       dateOfBirth: "",
       biologicalSex: "male",
-      streetAddress: "",
-      city: "",
       state: "",
-      zipCode: "",
-      apartmentUnit: "",
       phone: "",
       email: "",
       heightFeet: "",
@@ -66,10 +62,7 @@ const PreCheckout = () => {
             return differenceInYears(new Date(), new Date(value || "")) >= 18;
           }
         ),
-      streetAddress: Yup.string().required("Please enter your street address."),
-      city: Yup.string().required("Please enter your city."),
       state: Yup.string().required("Please select your state."),
-      zipCode: Yup.string().length(5).required("Please your zip code."),
       phone: Yup.string()
         .required("Please enter your phone number.")
         .matches(
@@ -108,11 +101,7 @@ const PreCheckout = () => {
         lastName,
         dateOfBirth,
         biologicalSex,
-        streetAddress,
-        apartmentUnit,
-        city,
         state,
-        zipCode,
         email,
         phone,
         heightFeet,
@@ -152,13 +141,6 @@ const PreCheckout = () => {
         weightInLbs: Number(weight),
         weightLossMotivatorV2: [],
         pastTries: pastTries,
-        address: {
-          line1: streetAddress,
-          line2: apartmentUnit,
-          city: city,
-          state: state,
-          postalCode: zipCode,
-        },
         insurancePlan,
         insuranceType,
         signupPartner: "OPTAVIA",

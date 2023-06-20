@@ -83,41 +83,9 @@ const ContactInformation = () => {
         <div className="flex flex-col md:flex-row gap-4 md:gap-16 w-full">
           <div className="flex flex-col w-64">
             <p className="text-primary-700 font-bold">
-              Street Address<span className="text-[red]">*</span>
-            </p>
-            <TextInput
-              name="streetAddress"
-              placeholder="123 Example Rd"
-              type="text"
-            />
-          </div>
-          <div className="flex flex-col w-40">
-            <p className="text-primary-700 font-bold">
-              City<span className="text-[red]">*</span>
-            </p>
-            <TextInput name="city" placeholder="Address city" type="text" />
-          </div>
-          <div className="flex flex-col w-40">
-            <p className="text-primary-700 font-bold">
               State<span className="text-[red]">*</span>
             </p>
             <SelectInput name="state" placeholder="State" options={States} />
-          </div>
-          <div className="flex flex-col w-40">
-            <p className="text-primary-700 font-bold">
-              Zip Code<span className="text-[red]">*</span>
-            </p>
-            <TextInput
-              name="zipCode"
-              placeholder="Address zip code"
-              type="text"
-            />
-          </div>
-        </div>
-        <div className="flex gap-16 w-full">
-          <div className="flex flex-col w-64">
-            <p className="text-primary-700 font-bold">Apartment/Unit</p>
-            <TextInput name="apartmentUnit" placeholder="" type="text" />
           </div>
         </div>
         <div className="flex gap-16 w-full">
