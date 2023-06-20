@@ -19,7 +19,7 @@ export const Checkbox = ({
   return (
     <div className="flex flex-row items-center space-y-1 form-check">
       <input
-        className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer"
+        className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer grow-0 shrink-0"
         type="checkbox"
         value={value}
         checked={value}

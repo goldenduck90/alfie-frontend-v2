@@ -25,18 +25,18 @@ const InsuranceNotCovered: FC<Props> = ({ weightLossValue, checkoutId }) => {
       <div className="flex flex-col p-4">
         <div>
           <span className="text-brand-berry text-2xl font-bold">
-            $99 monthly fee
+            $120 monthly fee
           </span>
         </div>
         <div className="w-64">
           <Button
             onClick={() => {
-              router.push(`/signup/checkout/${checkoutId}/address`);
+              router.push(`/signup/optavia/checkout/${checkoutId}/address`);
             }}
             size="medium"
             fullWidth
           >
-            Checkout
+            Subscribe
           </Button>
         </div>
       </div>
@@ -71,14 +71,14 @@ const InsuranceNotCovered: FC<Props> = ({ weightLossValue, checkoutId }) => {
           <p className="text-secondary-500 text-md mb-1">
             Ready to achieve your goals?
           </p>
-          <p className="text-brand-berry text-xl font-bold"> $99 / month</p>
+          <p className="text-brand-berry text-xl font-bold"> $120 / month</p>
           <Button
             onClick={() => {
-              router.push(`/signup/checkout/${checkoutId}/address`);
+              router.push(`/signup/optavia/checkout/${checkoutId}/address`);
             }}
             size="medium"
           >
-            Checkout
+            Subscribe
           </Button>
         </div>
       </div>
