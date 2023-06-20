@@ -1,7 +1,7 @@
 import React from "react";
 import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
 import { gql, useMutation } from "@apollo/client";
-import { Checkbox } from "@src/components/ui/Checkbox";
+import { Checkbox } from "@src/components/inputs/Checkbox";
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import { SelectInput } from "@src/components/inputs/SelectInput";
@@ -11,6 +11,8 @@ import * as Yup from "yup";
 import { parseError } from "@src/utils/parseError";
 import { Button } from "@src/components/ui/Button";
 import { useRouter } from "next/router";
+import { Loading } from "../../Loading";
+import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
 
 const createOrUpdateStripeSessionMutation = gql`
   mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
@@ -25,8 +27,9 @@ const createOrUpdateStripeSessionMutation = gql`
 export const CheckoutAddress = () => {
   const router = useRouter();
   const { id } = router.query;
+  const { loading, error, insuranceCovered } = useCheckoutQuery(id);
 
-  const [createOrUpdateStripeSession, data] = useMutation(
+  const [createOrUpdateStripeSession] = useMutation(
     createOrUpdateStripeSessionMutation
   );
 
@@ -63,13 +66,13 @@ export const CheckoutAddress = () => {
       try {
         const { data } = await createOrUpdateStripeSession({
           variables: {
-            input: values,
+            input: { ...values, insurance: insuranceCovered },
           },
         });
 
         const { checkout } = data.createOrUpdateStripeSession;
         resetForm();
-        router.push(`/signup/checkout/${checkout._id}/payment`);
+        router.push(`/signup/optavia/checkout/${checkout._id}/payment`);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
@@ -78,19 +81,20 @@ export const CheckoutAddress = () => {
   });
 
   if (!id) {
-    router.push("/signup");
+    router.push("/signup/optavia");
   }
+
+  if (error) {
+    router.push("/login");
+  }
+
+  if (loading) return <Loading />;
 
   // const { checkout, paymentLink } = data.checkout;
   const { submitForm, isSubmitting } = form;
 
   return (
-    <Wrapper
-      partner={PARTNERS.optavia}
-      header={
-        <h2 className="text-lg sm:text-2xl text-white font-bold">Your plan.</h2>
-      }
-    >
+    <Wrapper partner={PARTNERS.optavia}>
       <FormikProvider value={form}>
         <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
           <h1 className="pb-0 mb-0 mt-2 font-md font-bold text-2xl text-brand-berry">

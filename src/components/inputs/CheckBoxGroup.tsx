@@ -74,7 +74,7 @@ export const CheckboxGroup: FC<ICheckboxGroup> = ({
           >
             <input
               id={item}
-              className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer basis-5 grow-0 shrink-0 "
+              className="appearance-none h-5 w-5 border border-gray-300 rounded-sm bg-white checked:bg-brand-berry checked:border-brand-berry focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-3 cursor-pointer basis-5 grow-0 shrink-0"
               type="checkbox"
               checked={checked}
               value={checked}

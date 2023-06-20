@@ -33,7 +33,7 @@ const InsuranceCovered: FC<Props> = ({
         <div className="w-64">
           <Button
             onClick={() => {
-              router.push(`/signup/checkout/${checkoutId}/address`);
+              router.push(`/signup/optavia/checkout/${checkoutId}/address`);
             }}
             size="medium"
             fullWidth
@@ -78,7 +78,7 @@ const InsuranceCovered: FC<Props> = ({
           <p className="text-brand-berry text-xl font-bold">$69 one time fee</p>
           <Button
             onClick={() => {
-              router.push(`/signup/checkout/${checkoutId}/address`);
+              router.push(`/signup/optavia/checkout/${checkoutId}/address`);
             }}
             size="medium"
           >
