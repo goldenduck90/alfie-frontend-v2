@@ -99,7 +99,7 @@ export const PreCheckout = () => {
       try {
         const heightInInches =
           parseInt(heightFeet) * 12 + parseInt(heightInches);
-        const { data } = await createOrFindCheckout({
+        const { data, errors } = await createOrFindCheckout({
           variables: {
             input: {
               name,
@@ -119,6 +119,12 @@ export const PreCheckout = () => {
         });
 
         const { checkout } = data.createOrFindCheckout;
+        if (errors) {
+          setStatus({
+            error: errors.map(({ message }: { message: string }) => message).join(" ")
+          });
+          return;
+        }
         resetForm();
         router.push(`/signup/checkout/${checkout._id}`);
       } catch (err) {
@@ -224,7 +230,7 @@ export const PreCheckout = () => {
       },
       {
         component: WhatAlfieUse,
-        beforeNext({}, _, currentStepIndex) {
+        beforeNext({ }, _, currentStepIndex) {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },

@@ -14,6 +14,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { RenderProps } from "formik-wizard-form";
 
 ChartJS.register(
   CategoryScale,
@@ -48,7 +49,7 @@ export const options = {
   },
 };
 
-export const EmailCapture = () => {
+export const EmailCapture = (props: RenderProps) => {
   const fullName = localStorage.getItem("fullName") || "";
   const weight = localStorage.getItem("weight") || "";
 
@@ -158,6 +159,9 @@ export const EmailCapture = () => {
         securely to the provider and is needed for them to provide care and is
         never shared outside of Alfie Health.
       </p>
+      {props.status?.error &&
+        <p className="text-sm mt-4 text-red-600 text-center">{props.status?.error}</p>
+      }
     </div>
   );
 };
