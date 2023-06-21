@@ -163,7 +163,7 @@ const PreCheckout = () => {
       partner={PARTNERS.optavia}
       header={
         <h2 className="text-lg text-center sm:text-2xl text-white font-bold">
-          Achieve Lasting Results with the Power of Alfie and OPTA
+          Achieve Results with the Power of Alfie and OPTA
           <span className="font-normal">VIA</span>
         </h2>
       }
