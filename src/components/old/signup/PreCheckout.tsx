@@ -188,7 +188,7 @@ export const PreCheckout = () => {
       },
       {
         component: Testimonial,
-        beforeNext({ }, _, currentStepIndex) {
+        beforeNext({}, _, currentStepIndex) {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
