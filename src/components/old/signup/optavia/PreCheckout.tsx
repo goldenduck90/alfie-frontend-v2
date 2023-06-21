@@ -5,6 +5,7 @@ import { gql, useMutation } from "@apollo/client";
 import { useFormik, FormikProvider } from "formik";
 import * as Yup from "yup";
 import { differenceInYears } from "date-fns";
+import parsePhoneNumber, { isValidPhoneNumber } from "libphonenumber-js";
 
 import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
 import { Button } from "@src/components/ui/Button";
@@ -65,10 +66,9 @@ const PreCheckout = () => {
       state: Yup.string().required("Please select your state."),
       phone: Yup.string()
         .required("Please enter your phone number.")
-        .matches(
-          /^[0-9]{10}$|^[0-9]{3}-[0-9]{3}-[0-9]{4}$|^\([0-9]{3}\)[0-9]{3}-[0-9]{4}$/,
-          "Please enter a valid phone number"
-        ),
+        .test("phone", "Please enter valid phone number.", (value) => {
+          return isValidPhoneNumber(value ?? "", "US");
+        }),
       email: Yup.string()
         .email("Please enter a valid email address.")
         .required("Please enter your email address."),
