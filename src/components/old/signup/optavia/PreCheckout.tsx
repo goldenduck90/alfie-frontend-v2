@@ -146,8 +146,6 @@ const PreCheckout = () => {
         signupPartner: "OPTAVIA",
       };
 
-      console.log(input);
-
       const { data } = await createOrFindCheckout({
         variables: {
           input,
@@ -164,7 +162,7 @@ const PreCheckout = () => {
     <Wrapper
       partner={PARTNERS.optavia}
       header={
-        <h2 className="text-lg sm:text-2xl text-white font-bold">
+        <h2 className="text-lg text-center sm:text-2xl text-white font-bold">
           Achieve Lasting Results with the Power of Alfie and OPTA
           <span className="font-normal">VIA</span>
         </h2>
