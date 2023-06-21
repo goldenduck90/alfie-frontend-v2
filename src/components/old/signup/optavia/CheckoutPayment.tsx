@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
 import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
+import { Loading } from "../../Loading";
 
 import {
   PaymentElement,
@@ -54,6 +55,8 @@ export const CheckoutPayment = () => {
     }
     setLoading(false);
   };
+
+  if (loading) return <Loading />;
 
   return (
     <Wrapper
