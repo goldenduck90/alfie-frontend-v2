@@ -52,6 +52,7 @@
     "google-map-react": "^2.2.0",
     "graphql": "^16.5.0",
     "iron-session": "^6.3.1",
+    "libphonenumber-js": "^1.10.36",
     "next": "13.0.7",
     "next-http-proxy-middleware": "^1.2.5",
     "qs": "^6.11.0",

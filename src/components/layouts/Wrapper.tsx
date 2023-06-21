@@ -31,7 +31,7 @@ export const Wrapper: React.FC<Props> = ({ partner, header, children }) => {
 
   return (
     <div className="min-h-screen relative font-mulish">
-      <div className="absolute top-0 left-0 w-full h-1/3 bg-brand-berry z-[-1]" />
+      <div className="absolute top-0 left-0 w-full h-1/2 sm:h-1/3 bg-brand-berry z-[-1]" />
       <div className="absolute left-0 w-full p-4">
         <div className="my-4 sm:my-10 h-full flex flex-col items-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-5">
