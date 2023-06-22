@@ -1,7 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { Button } from "@src/components/ui/Button";
-import { Loading } from "../old/Loading";
+import { Loading } from "../../old/Loading";
 
 const generateMetriportConnectUrlMutation = gql`
   mutation GenerateMetriportConnectUrl($userId: String!) {
@@ -11,14 +11,13 @@ const generateMetriportConnectUrlMutation = gql`
   }
 `;
 
-export const ConnectWithings = () => {
+export const ConnectWithingsButton = () => {
   const { user } = useCurrentUserStore();
   const [generateMetriportConnectUrl, { loading, error }] = useMutation(
     generateMetriportConnectUrlMutation
   );
 
   const handleConnectClick = async () => {
-    console.log(user);
     if (user?._id) {
       const { data } = await generateMetriportConnectUrl({
         variables: { userId: user._id },
@@ -35,16 +34,15 @@ export const ConnectWithings = () => {
   };
 
   return (
-    <div>
-      <Button
-        disabled={loading || !!user?.hasScale}
-        onClick={handleConnectClick}
-      >
-        <span>{user?.hasScale ? "Connected" : "Connect"}</span>
-        <div className="absolute">{loading && <Loading size={24} />}</div>
-      </Button>
-    </div>
+    <Button
+      size="medium"
+      disabled={loading || !!user?.hasScale}
+      onClick={handleConnectClick}
+    >
+      <span>{user?.hasScale ? "Connected" : "Connect"}</span>
+      <div className="absolute">{loading && <Loading size={24} />}</div>
+    </Button>
   );
 };
 
-export default ConnectWithings;
+export default ConnectWithingsButton;

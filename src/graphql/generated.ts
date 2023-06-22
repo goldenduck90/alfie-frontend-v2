@@ -128,7 +128,6 @@ export type CreateAppointmentInput = {
 };
 
 export type CreateCheckoutInput = {
-  address?: InputMaybe<AddressInput>;
   dateOfBirth: Scalars['DateTime'];
   email: Scalars['String'];
   gender: Gender;
@@ -168,6 +167,7 @@ export type CreateLabOrderResponse = {
 export type CreateStripeCustomerInput = {
   _id: Scalars['String'];
   billing?: InputMaybe<AddressInput>;
+  insurance?: InputMaybe<Scalars['Boolean']>;
   sameAsShipping: Scalars['Boolean'];
   shipping: AddressInput;
 };
@@ -208,6 +208,10 @@ export type CreateUserInput = {
   gender: Gender;
   /** Height in inches. */
   heightInInches: Scalars['Float'];
+  insurancePlan?: InputMaybe<InsurancePlan>;
+  insuranceType?: InputMaybe<InsuranceType>;
+  /** If not provided, will be set when scale is activated. */
+  metriportUserId?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   /** If no password is provided, an email will be sent to create one. */
   password?: InputMaybe<Scalars['String']>;
@@ -216,8 +220,11 @@ export type CreateUserInput = {
   providerId?: InputMaybe<Scalars['String']>;
   /** If no role is provided, defaults to Patient. */
   role?: InputMaybe<Role>;
+  signupPartner?: InputMaybe<Partner>;
   /** If not provided, will be set after checkout. */
   stripeCustomerId?: InputMaybe<Scalars['String']>;
+  /** If not provided, will be set after checkout. */
+  stripePaymentIntentId?: InputMaybe<Scalars['String']>;
   /** If not provided, will be set after checkout. */
   stripeSubscriptionId?: InputMaybe<Scalars['String']>;
   /** When the user's subscription expires. If not provided, the subscription won't be active. */
@@ -577,6 +584,7 @@ export type Mutation = {
   forgotPassword: MessageResponse;
   generateMetriportConnectUrl: MetriportConnectResponse;
   login: LoginResponse;
+  recordScaleReading: User;
   requestSignedUrls: Array<SignedUrlResponse>;
   resetPassword: LoginResponse;
   scorePatients: Score;
@@ -677,6 +685,11 @@ export type MutationGenerateMetriportConnectUrlArgs = {
 
 export type MutationLoginArgs = {
   input: LoginInput;
+};
+
+
+export type MutationRecordScaleReadingArgs = {
+  input: ScaleReadingInput;
 };
 
 
@@ -947,6 +960,11 @@ export type RoleResponse = {
   role: Role;
 };
 
+export type ScaleReadingInput = {
+  metriportUserId: Scalars['String'];
+  weightLbs: Scalars['Float'];
+};
+
 export type Schedule = {
   __typename?: 'Schedule';
   friday: DailySchedule;
@@ -1070,6 +1088,7 @@ export type TaskQuestionsInput = {
 export enum TaskType {
   AdLibitum = 'AD_LIBITUM',
   BpLog = 'BP_LOG',
+  ConnectWithingsScale = 'CONNECT_WITHINGS_SCALE',
   DailyMetricsLog = 'DAILY_METRICS_LOG',
   FoodLog = 'FOOD_LOG',
   Gsrs = 'GSRS',
@@ -1168,7 +1187,8 @@ export type User = {
   sendbirdChannelUrl?: Maybe<Scalars['String']>;
   signupPartner?: Maybe<Partner>;
   stripeCustomerId: Scalars['String'];
-  stripeSubscriptionId: Scalars['String'];
+  stripePaymentIntentId?: Maybe<Scalars['String']>;
+  stripeSubscriptionId?: Maybe<Scalars['String']>;
   subscriptionExpiresAt: Scalars['DateTime'];
   textOptIn?: Maybe<Scalars['Boolean']>;
   timezone?: Maybe<Scalars['String']>;
@@ -1262,6 +1282,7 @@ export type UserTaskList = {
 export type Weight = {
   __typename?: 'Weight';
   date: Scalars['DateTime'];
+  scale?: Maybe<Scalars['Boolean']>;
   value: Scalars['Float'];
 };
 
@@ -1313,13 +1334,13 @@ export const UserTasksQueryDocument = gql`
  * });
  */
 export function useUserTasksQueryQuery(baseOptions?: Apollo.QueryHookOptions<UserTasksQueryQuery, UserTasksQueryQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
+      }
 export function useUserTasksQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserTasksQueryQuery, UserTasksQueryQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserTasksQueryQuery, UserTasksQueryQueryVariables>(UserTasksQueryDocument, options);
+        }
 export type UserTasksQueryQueryHookResult = ReturnType<typeof useUserTasksQueryQuery>;
 export type UserTasksQueryLazyQueryHookResult = ReturnType<typeof useUserTasksQueryLazyQuery>;
 export type UserTasksQueryQueryResult = Apollo.QueryResult<UserTasksQueryQuery, UserTasksQueryQueryVariables>;
