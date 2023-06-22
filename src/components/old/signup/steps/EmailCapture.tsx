@@ -14,7 +14,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { RenderProps } from "formik-wizard-form";
+import { FormikProps, FormikValues } from "formik";
 
 ChartJS.register(
   CategoryScale,
@@ -49,7 +49,9 @@ export const options = {
   },
 };
 
-export const EmailCapture = (props: RenderProps) => {
+export const EmailCapture = (props: FormikProps<FormikValues> & {
+  currentStepIndex: number;
+}) => {
   const fullName = localStorage.getItem("fullName") || "";
   const weight = localStorage.getItem("weight") || "";
 
