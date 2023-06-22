@@ -1,5 +1,6 @@
 import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
 import React, { useMemo } from "react";
+import { useField } from "formik";
 import { Checkbox } from "../../../inputs/Checkbox";
 import { IconInput } from "../../../inputs/IconInput";
 
@@ -14,7 +15,6 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { FormikProps, FormikValues } from "formik";
 
 ChartJS.register(
   CategoryScale,
@@ -49,9 +49,10 @@ export const options = {
   },
 };
 
-export const EmailCapture = (props: FormikProps<FormikValues> & {
-  currentStepIndex: number;
-}) => {
+export const EmailCapture = () => {
+  const [, { error: emailError }] = useField("email");
+  const [, { error: phoneError }] = useField("phone");
+
   const fullName = localStorage.getItem("fullName") || "";
   const weight = localStorage.getItem("weight") || "";
 
@@ -161,9 +162,11 @@ export const EmailCapture = (props: FormikProps<FormikValues> & {
         securely to the provider and is needed for them to provide care and is
         never shared outside of Alfie Health.
       </p>
-      {props.status?.error &&
-        <p className="text-sm mt-4 text-red-600 text-center">{props.status?.error}</p>
-      }
+      {(emailError || phoneError) && (
+        <p className="text-sm mt-4 text-red-600 text-center">
+          {emailError || phoneError}
+        </p>
+      )}
     </div>
   );
 };
