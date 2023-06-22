@@ -1,6 +1,5 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import { AvatarInitial } from '@src/components/ui/AvatarInitial';
-
 import { gql, useQuery } from '@apollo/client';
 import { CalendarIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
@@ -67,6 +66,15 @@ const GetUserById = gql`
         displayPercentile
         date
       }
+      files {
+        key
+        signedUrl
+        contentType
+        metadata {
+          key
+          value
+        }
+      }
     }
   }
 `;
@@ -123,7 +131,8 @@ export function IndividualPatientTabs() {
     },
   });
 
-  const patient = data?.getUserById;
+  const patient: User = data?.getUserById;
+  console.log('patient', patient);
 
   const patientTable = {
     'Full Name': patient?.name,
@@ -135,7 +144,14 @@ export function IndividualPatientTabs() {
       }`,
     'Height In Inches': patient?.heightInInches,
     Weight: patient?.weights?.[patient.weights.length - 1]?.value,
-    Attachments: 'No attachments',
+    Attachments:
+      patient?.files?.filter(({ signedUrl, contentType }) => signedUrl && contentType.includes("image")).length > 0 ? (
+        <div style={{ display: "flex", gap: 10, overflowY: "auto", padding: 6 }}>
+          {patient?.files?.map(({ signedUrl, key }) => (
+            <img src={signedUrl} alt={key} title={key} style={{ objectFit: "contain", maxHeight: 200 }} />
+          ))}
+        </div>
+      ) : "No Attachments",
   };
 
   const chartInformation: {
@@ -209,7 +225,7 @@ export function IndividualPatientTabs() {
           <GenerateSummary patient={patient} />
           <div className='w-full mt-6'>
             <p className='mb-6 text-xl font-bold'>Metabolic Profile</p>
-            <MetabolicChart chartData={patient?.classifications} />
+            <MetabolicChart chartData={patient?.classifications ?? undefined} />
           </div>
           <div className='flex items-center justify-between'>
             <p className='my-6 text-xl font-bold'>Other Details</p>
@@ -323,7 +339,7 @@ export function TableUserObject({
     <div className=''>
       <div className='min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300 bg-white'>
         {Object.keys(user).map((key) => {
-          if (typeof user[key] !== 'string' && !loading) {
+          if (!user[key] && !loading) {
             return null;
           }
           return (

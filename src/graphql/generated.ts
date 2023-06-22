@@ -382,6 +382,7 @@ export type File = {
   createdAt?: Maybe<Scalars['DateTime']>;
   key: Scalars['String'];
   metadata?: Maybe<Array<FileMetadata>>;
+  signedUrl: Scalars['String'];
   type: FileType;
   url: Scalars['String'];
   versionId?: Maybe<Scalars['String']>;
@@ -587,6 +588,7 @@ export type Mutation = {
   recordScaleReading: User;
   requestSignedUrls: Array<SignedUrlResponse>;
   resetPassword: LoginResponse;
+  runPostAppointmentJob: MessageResponse;
   scorePatients: Score;
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
@@ -1041,6 +1043,8 @@ export type SignedUrlRequest = {
   contentType: Scalars['String'];
   key: Scalars['String'];
   metadata?: InputMaybe<Array<FileMetadataInput>>;
+  requestType?: InputMaybe<Scalars['String']>;
+  versionId?: InputMaybe<Scalars['String']>;
 };
 
 export type SignedUrlResponse = {
