@@ -14,6 +14,9 @@ import { useCurrentUserStore } from "../../../hooks/useCurrentUser";
 import { useTaskCompletion } from "../../../hooks/useTaskCompletion";
 import { FileType } from "../../../graphql/generated";
 
+/** Maximum file size for image uploads. */
+const maxFileSize = Number(process.env.MAX_UPLOAD_SIZE) || 1e7; // bytes
+
 function createS3key({
   fileName,
   fileType,
@@ -79,6 +82,7 @@ export const IDVerificationModal = ({
   const [selectedInsuranceImage, setSelectedInsurance] = useState<Blob | null>(
     null
   );
+  const [error, setError] = useState<string | null>(null);
 
   const toBase64 = (file: Blob): Promise<any> => {
     if (!file) return new Promise((resolve) => resolve(false));
@@ -206,11 +210,10 @@ export const IDVerificationModal = ({
                   type: type,
                   contentType: file?.type,
                   ETag: uploadResponse.headers.get("etag") || "",
-                  url: `${
-                    url.split("?")[0]
-                  }?versionId=${uploadResponse.headers.get(
-                    "x-amz-version-id"
-                  )}`,
+                  url: `${url.split("?")[0]
+                    }?versionId=${uploadResponse.headers.get(
+                      "x-amz-version-id"
+                    )}`,
                   versionId: uploadResponse.headers.get("x-amz-version-id"),
                   createdAt: uploadResponse.headers.get("date"),
                 };
@@ -314,11 +317,17 @@ export const IDVerificationModal = ({
             control={control}
             name={step === 1 ? "idPhoto" : "insurancePhoto"}
             setSelectedImage={(file: Blob) => {
-              return step === 1
-                ? setSelectedId(file)
-                : step === 2 && file
-                ? setSelectedInsurance(file)
-                : null;
+              if (file.size > maxFileSize) {
+                setSelectedInsurance(null)
+                setError("File size limit: 10 MB.")
+              } else {
+                setError(null)
+                return step === 1
+                  ? setSelectedId(file)
+                  : step === 2 && file
+                    ? setSelectedInsurance(file)
+                    : null;
+              }
             }}
           />
           <div className="flex flex-col gap-y-3 items-center justify-center h-full">
@@ -349,6 +358,7 @@ export const IDVerificationModal = ({
             <p className="text-sm text-gray-500">
               Accepted file types are: png, jpg, pdf.
             </p>
+            {error && <p className="text-sm text-red-600">{error}</p>}
             <Button>Upload from computer</Button>
           </div>
         </div>
