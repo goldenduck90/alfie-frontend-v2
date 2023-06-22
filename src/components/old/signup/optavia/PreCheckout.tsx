@@ -5,7 +5,7 @@ import { gql, useMutation } from "@apollo/client";
 import { useFormik, FormikProvider } from "formik";
 import * as Yup from "yup";
 import { differenceInYears } from "date-fns";
-import parsePhoneNumber, { isValidPhoneNumber } from "libphonenumber-js";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
 import { Button } from "@src/components/ui/Button";
