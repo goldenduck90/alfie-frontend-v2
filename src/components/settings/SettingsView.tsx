@@ -9,7 +9,7 @@ import { NotificationsView } from "./NotificationView";
 import { PlanAndBillingView } from "./PlanAndBillingView";
 import { AvailabilityView } from "./AvailablityView";
 import { EmbeddedStripeView } from "./EmbeddedStripeView";
-import { ConnectWithings } from "./ConnectWithings";
+import { ConnectWithingsButton } from "./components/ConnectWithingsButton";
 
 export function SettingsView() {
   const router = useRouter();
@@ -91,7 +91,7 @@ export function SettingsView() {
         </Tabs.Content> */}
         {isPatient && (
           <Tabs.Content value="connect-withings" className="mt-6">
-            <ConnectWithings />
+            <ConnectWithingsButton />
           </Tabs.Content>
         )}
       </Tabs.Root>
