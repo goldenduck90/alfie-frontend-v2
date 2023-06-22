@@ -206,11 +206,10 @@ export const IDVerificationModal = ({
                   type: type,
                   contentType: file?.type,
                   ETag: uploadResponse.headers.get("etag") || "",
-                  url: `${
-                    url.split("?")[0]
-                  }?versionId=${uploadResponse.headers.get(
-                    "x-amz-version-id"
-                  )}`,
+                  url: `${url.split("?")[0]
+                    }?versionId=${uploadResponse.headers.get(
+                      "x-amz-version-id"
+                    )}`,
                   versionId: uploadResponse.headers.get("x-amz-version-id"),
                   createdAt: uploadResponse.headers.get("date"),
                 };
@@ -317,8 +316,8 @@ export const IDVerificationModal = ({
               return step === 1
                 ? setSelectedId(file)
                 : step === 2 && file
-                ? setSelectedInsurance(file)
-                : null;
+                  ? setSelectedInsurance(file)
+                  : null;
             }}
           />
           <div className="flex flex-col gap-y-3 items-center justify-center h-full">
