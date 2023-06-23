@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React from 'react';
 import { Layout } from "@src/components/layouts/Layout";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
@@ -181,10 +181,10 @@ function AppointmentDetails() {
                       </p>
                     </>
                   )}
-                  <a href={location} target="_blank" rel="noreferrer">
+                  <a href={location + "?appointmentId=" + eaAppointmentId} target="_blank" rel="noreferrer">
                     <Button
                       buttonType="accent"
-                      onClick={() => { window.open(location, "_blank") }}
+                      onClick={() => { window.open(location + "?appointmentId=" + eaAppointmentId, "_blank") }}
                       disabled={loading || !is15Before}
                     >
                       Join Video Call

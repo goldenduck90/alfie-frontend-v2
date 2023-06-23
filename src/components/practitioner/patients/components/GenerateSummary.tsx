@@ -1,8 +1,8 @@
 import { gql, useLazyQuery } from '@apollo/client';
 import { Button } from '@src/components/ui/Button';
-import { Patient } from '../../dashboard/Table';
+import { User } from "@src/graphql/generated";
 
-export function GenerateSummary({ patient }: { patient: Patient }) {
+export function GenerateSummary({ patient }: { patient: User }) {
   console.log('patient', patient)
   const query = gql`
     query getUser($userId: String!) {

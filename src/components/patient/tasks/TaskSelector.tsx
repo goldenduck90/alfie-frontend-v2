@@ -10,6 +10,7 @@ import {
 import { ScheduleAppointment } from "@src/components/modal/variants/schedule/Schedule";
 import { WaistMeasurement } from "@src/components/modal/variants/WaistMeasurement";
 import { WeightEntry } from "@src/components/modal/variants/WeightEntry";
+import { ConnectWithingsScale } from "@src/components/modal/variants/ConnectWithingsScale";
 import { Button } from "@src/components/ui/Button";
 import { TaskType } from "@src/graphql/generated";
 import Link from "next/link";
@@ -146,6 +147,12 @@ export const TaskSelector = ({
             description="We would like to know your habits and behaviours regarding eating and taking meals."
             onClick={() => router.push(`/questionnaire/${userTaskId}`)}
           />
+        </DialogModal>
+      );
+    case TaskType.ConnectWithingsScale:
+      return (
+        <DialogModal triggerAsChild trigger={trigger}>
+          <ConnectWithingsScale title="Connect Withings Scale" />
         </DialogModal>
       );
     default:

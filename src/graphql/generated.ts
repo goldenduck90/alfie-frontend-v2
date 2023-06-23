@@ -13,13 +13,14 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  AnyScalar: any;
   DateTime: any;
 };
 
 export type Address = {
   __typename?: 'Address';
   city: Scalars['String'];
-  country: Scalars['String'];
+  country?: Maybe<Scalars['String']>;
   line1: Scalars['String'];
   line2?: Maybe<Scalars['String']>;
   postalCode: Scalars['String'];
@@ -28,7 +29,7 @@ export type Address = {
 
 export type AddressInput = {
   city: Scalars['String'];
-  country: Scalars['String'];
+  country?: InputMaybe<Scalars['String']>;
   line1: Scalars['String'];
   line2?: InputMaybe<Scalars['String']>;
   postalCode: Scalars['String'];
@@ -74,20 +75,24 @@ export type Checkout = {
   email: Scalars['String'];
   gender: Gender;
   heightInInches: Scalars['Float'];
+  insurancePlan?: Maybe<InsurancePlan>;
+  insuranceType?: Maybe<InsuranceType>;
   name: Scalars['String'];
+  pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
   sameAsShippingAddress: Scalars['Boolean'];
   shippingAddress: Address;
+  signupPartner?: Maybe<Partner>;
   state: Scalars['String'];
   stripeCheckoutId: Scalars['String'];
   stripeClientSecret: Scalars['String'];
   stripeCustomerId: Scalars['String'];
-  stripePaymentIntentId: Scalars['String'];
+  stripeSetupIntentId: Scalars['String'];
   stripeSubscriptionId: Scalars['String'];
   textOptIn?: Maybe<Scalars['Boolean']>;
   user?: Maybe<User>;
   weightInLbs: Scalars['Float'];
-  weightLossMotivator: Scalars['String'];
+  weightLossMotivatorV2: Array<Scalars['String']>;
 };
 
 export type CheckoutResponse = {
@@ -105,10 +110,6 @@ export type Classification = {
   date: Scalars['DateTime'];
   displayPercentile?: Maybe<Scalars['String']>;
   percentile: Scalars['String'];
-};
-
-export type CompletePaymentIntentInput = {
-  paymentIntentId: Scalars['String'];
 };
 
 export type CompleteUserTaskInput = {
@@ -131,12 +132,16 @@ export type CreateCheckoutInput = {
   email: Scalars['String'];
   gender: Gender;
   heightInInches: Scalars['Float'];
+  insurancePlan?: InputMaybe<InsurancePlan>;
+  insuranceType?: InputMaybe<InsuranceType>;
   name: Scalars['String'];
+  pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
+  signupPartner?: InputMaybe<Partner>;
   state: Scalars['String'];
   textOptIn?: InputMaybe<Scalars['Boolean']>;
   weightInLbs: Scalars['Float'];
-  weightLossMotivator: Scalars['String'];
+  weightLossMotivatorV2?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateCustomerInput = {
@@ -162,6 +167,7 @@ export type CreateLabOrderResponse = {
 export type CreateStripeCustomerInput = {
   _id: Scalars['String'];
   billing?: InputMaybe<AddressInput>;
+  insurance?: InputMaybe<Scalars['Boolean']>;
   sameAsShipping: Scalars['Boolean'];
   shipping: AddressInput;
 };
@@ -184,6 +190,8 @@ export type CreateTaskInput = {
   notifyWhenAssigned?: InputMaybe<Scalars['Boolean']>;
   /** Notify patient when the task becomes past due. Requires hoursTillDue to be set. */
   notifyWhenPastDue?: InputMaybe<Scalars['Boolean']>;
+  /** If set, the task will have answers that must conform to these questions. */
+  questions?: InputMaybe<Array<TaskQuestionsInput>>;
   type: TaskType;
 };
 
@@ -200,6 +208,10 @@ export type CreateUserInput = {
   gender: Gender;
   /** Height in inches. */
   heightInInches: Scalars['Float'];
+  insurancePlan?: InputMaybe<InsurancePlan>;
+  insuranceType?: InputMaybe<InsuranceType>;
+  /** If not provided, will be set when scale is activated. */
+  metriportUserId?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   /** If no password is provided, an email will be sent to create one. */
   password?: InputMaybe<Scalars['String']>;
@@ -208,8 +220,11 @@ export type CreateUserInput = {
   providerId?: InputMaybe<Scalars['String']>;
   /** If no role is provided, defaults to Patient. */
   role?: InputMaybe<Role>;
+  signupPartner?: InputMaybe<Partner>;
   /** If not provided, will be set after checkout. */
   stripeCustomerId?: InputMaybe<Scalars['String']>;
+  /** If not provided, will be set after checkout. */
+  stripePaymentIntentId?: InputMaybe<Scalars['String']>;
   /** If not provided, will be set after checkout. */
   stripeSubscriptionId?: InputMaybe<Scalars['String']>;
   /** When the user's subscription expires. If not provided, the subscription won't be active. */
@@ -253,6 +268,8 @@ export type DocUploadInput = {
 
 export type EaAppointment = {
   __typename?: 'EAAppointment';
+  attendanceEmailSent: Scalars['Boolean'];
+  claimSubmitted: Scalars['Boolean'];
   eaAppointmentId: Scalars['String'];
   eaCustomer: EaCustomer;
   eaProvider: EaProvider;
@@ -260,6 +277,8 @@ export type EaAppointment = {
   end: Scalars['String'];
   location: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
+  patientAttended: Scalars['Boolean'];
+  providerAttended: Scalars['Boolean'];
   start: Scalars['String'];
 };
 
@@ -363,6 +382,7 @@ export type File = {
   createdAt?: Maybe<Scalars['DateTime']>;
   key: Scalars['String'];
   metadata?: Maybe<Array<FileMetadata>>;
+  signedUrl: Scalars['String'];
   type: FileType;
   url: Scalars['String'];
   versionId?: Maybe<Scalars['String']>;
@@ -433,6 +453,7 @@ export type GetUserTasksInput = {
   completed?: InputMaybe<Scalars['Boolean']>;
   limit?: InputMaybe<Scalars['Float']>;
   offset?: InputMaybe<Scalars['Float']>;
+  taskType?: InputMaybe<TaskType>;
   userId?: InputMaybe<Scalars['String']>;
 };
 
@@ -461,6 +482,57 @@ export type GoogleReverseGeoCodeResult = {
   geometry: GoogleReverseGeoCodeGeometryObject;
 };
 
+export type Insurance = {
+  __typename?: 'Insurance';
+  groupId: Scalars['String'];
+  groupName: Scalars['String'];
+  insuranceCompany: Scalars['String'];
+  memberId: Scalars['String'];
+  payor: Scalars['String'];
+  rxBin: Scalars['String'];
+  rxGroup: Scalars['String'];
+};
+
+export type InsuranceEligibilityInput = {
+  groupId: Scalars['String'];
+  groupName: Scalars['String'];
+  insuranceCompany: Scalars['String'];
+  memberId: Scalars['String'];
+  payor: Scalars['String'];
+  rxBin: Scalars['String'];
+  rxGroup: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type InsuranceEligibilityResponse = {
+  __typename?: 'InsuranceEligibilityResponse';
+  eligible: Scalars['Boolean'];
+};
+
+/** Insurance plans */
+export enum InsurancePlan {
+  Aetna = 'AETNA',
+  AnthemBlueCross = 'ANTHEM_BLUE_CROSS',
+  BlueCrossBlueShield = 'BLUE_CROSS_BLUE_SHIELD',
+  Cigna = 'CIGNA',
+  EmpireBluecrossBlueshield = 'EMPIRE_BLUECROSS_BLUESHIELD',
+  Humana = 'HUMANA',
+  Medicaid = 'MEDICAID',
+  Medicare = 'MEDICARE',
+  Other = 'OTHER',
+  PartnerDirect = 'PARTNER_DIRECT',
+  UnitedHealthcare = 'UNITED_HEALTHCARE'
+}
+
+/** Insurance types */
+export enum InsuranceType {
+  Epo = 'EPO',
+  GovernmentMedicaidTricareChip = 'GOVERNMENT_MEDICAID_TRICARE_CHIP',
+  Hmo = 'HMO',
+  Pos = 'POS',
+  Ppo = 'PPO'
+}
+
 export type LocationObject = {
   __typename?: 'LocationObject';
   lat: Scalars['Float'];
@@ -488,6 +560,11 @@ export type MessageResponse = {
   message: Scalars['String'];
 };
 
+export type MetriportConnectResponse = {
+  __typename?: 'MetriportConnectResponse';
+  url: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   archiveTask: UserTask;
@@ -496,7 +573,6 @@ export type Mutation = {
   bulkAssignTasksToUser: Array<UserTask>;
   cancelAppointment: MessageResponse;
   classifyPatients: User;
-  completePaymentIntent: MessageResponse;
   completeUpload: User;
   completeUserTask: UserTask;
   createAppointment: EaAppointment;
@@ -507,15 +583,18 @@ export type Mutation = {
   createTask: Task;
   createUser: User;
   forgotPassword: MessageResponse;
+  generateMetriportConnectUrl: MetriportConnectResponse;
   login: LoginResponse;
+  recordScaleReading: User;
   requestSignedUrls: Array<SignedUrlResponse>;
   resetPassword: LoginResponse;
+  runPostAppointmentJob: MessageResponse;
   scorePatients: Score;
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
+  updateAppointmentAttended: MessageResponse;
   updateProviderProfile: EaProviderProfile;
   updateProviderSchedule: UpdateScheduleMessage;
-  updateSubscription: MessageResponse;
   updateUserTask: UserTask;
   uploadDocument: AkuteDocument;
 };
@@ -548,11 +627,6 @@ export type MutationCancelAppointmentArgs = {
 
 export type MutationClassifyPatientsArgs = {
   userId: Scalars['String'];
-};
-
-
-export type MutationCompletePaymentIntentArgs = {
-  input: CompletePaymentIntentInput;
 };
 
 
@@ -606,8 +680,18 @@ export type MutationForgotPasswordArgs = {
 };
 
 
+export type MutationGenerateMetriportConnectUrlArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type MutationLoginArgs = {
   input: LoginInput;
+};
+
+
+export type MutationRecordScaleReadingArgs = {
+  input: ScaleReadingInput;
 };
 
 
@@ -636,6 +720,11 @@ export type MutationUpdateAppointmentArgs = {
 };
 
 
+export type MutationUpdateAppointmentAttendedArgs = {
+  eaAppointmentId: Scalars['String'];
+};
+
+
 export type MutationUpdateProviderProfileArgs = {
   eaProviderId: Scalars['String'];
   input: EaProviderProfileInput;
@@ -646,11 +735,6 @@ export type MutationUpdateProviderScheduleArgs = {
   eaProviderId: Scalars['String'];
   schedule: ScheduleInput;
   timezone: Scalars['String'];
-};
-
-
-export type MutationUpdateSubscriptionArgs = {
-  input: UpdateSubscriptionInput;
 };
 
 
@@ -673,6 +757,11 @@ export type PartialUser = {
   name: Scalars['String'];
   role: Role;
 };
+
+/** Sign up partner */
+export enum Partner {
+  Optavia = 'OPTAVIA'
+}
 
 export type PharmacyLocationInput = {
   name: Scalars['String'];
@@ -740,6 +829,7 @@ export type Query = {
   getProviderSchedule: ScheduleObject;
   getRole: RoleResponse;
   getUserById: User;
+  insuranceEligibility: InsuranceEligibilityResponse;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
@@ -806,6 +896,11 @@ export type QueryGetUserByIdArgs = {
 };
 
 
+export type QueryInsuranceEligibilityArgs = {
+  input: InsuranceEligibilityInput;
+};
+
+
 export type QueryPharmacyLocationsArgs = {
   input: PharmacyLocationInput;
 };
@@ -867,6 +962,11 @@ export type RoleResponse = {
   role: Role;
 };
 
+export type ScaleReadingInput = {
+  metriportUserId: Scalars['String'];
+  weightLbs: Scalars['Float'];
+};
+
 export type Schedule = {
   __typename?: 'Schedule';
   friday: DailySchedule;
@@ -911,9 +1011,11 @@ export type Score = {
   calculated1hourPercent?: Maybe<Scalars['Float']>;
   calculated30minsPercent?: Maybe<Scalars['Float']>;
   calculatedPercentile?: Maybe<Scalars['Float']>;
+  currentScore?: Maybe<Scalars['Float']>;
   date?: Maybe<Scalars['DateTime']>;
   increased?: Maybe<Scalars['Boolean']>;
   increased1hour?: Maybe<Scalars['Boolean']>;
+  increased30Mins?: Maybe<Scalars['Boolean']>;
   increasedDiastolic?: Maybe<Scalars['Boolean']>;
   increasedSystolic?: Maybe<Scalars['Boolean']>;
   latest?: Maybe<Scalars['String']>;
@@ -941,6 +1043,8 @@ export type SignedUrlRequest = {
   contentType: Scalars['String'];
   key: Scalars['String'];
   metadata?: InputMaybe<Array<FileMetadataInput>>;
+  requestType?: InputMaybe<Scalars['String']>;
+  versionId?: InputMaybe<Scalars['String']>;
 };
 
 export type SignedUrlResponse = {
@@ -969,13 +1073,26 @@ export type Task = {
   notifyProviderWhenPastDue: Scalars['Boolean'];
   notifyWhenAssigned?: Maybe<Scalars['Boolean']>;
   notifyWhenPastDue: Scalars['Boolean'];
+  questions?: Maybe<Array<TaskQuestion>>;
   type: TaskType;
+};
+
+export type TaskQuestion = {
+  __typename?: 'TaskQuestion';
+  key: Scalars['String'];
+  type: AnswerType;
+};
+
+export type TaskQuestionsInput = {
+  key: Scalars['String'];
+  type: AnswerType;
 };
 
 /** The type of task */
 export enum TaskType {
   AdLibitum = 'AD_LIBITUM',
   BpLog = 'BP_LOG',
+  ConnectWithingsScale = 'CONNECT_WITHINGS_SCALE',
   DailyMetricsLog = 'DAILY_METRICS_LOG',
   FoodLog = 'FOOD_LOG',
   Gsrs = 'GSRS',
@@ -991,6 +1108,7 @@ export enum TaskType {
   ScheduleAppointment = 'SCHEDULE_APPOINTMENT',
   ScheduleHealthCoachAppointment = 'SCHEDULE_HEALTH_COACH_APPOINTMENT',
   Tefq = 'TEFQ',
+  Test = 'TEST',
   WaistLog = 'WAIST_LOG',
   WeightLog = 'WEIGHT_LOG'
 }
@@ -1032,11 +1150,6 @@ export type UpdateScheduleMessage = {
   message: Scalars['String'];
 };
 
-export type UpdateSubscriptionInput = {
-  stripeSubscriptionId: Scalars['String'];
-  subscriptionExpiresAt: Scalars['DateTime'];
-};
-
 export type UpdateUserTaskInput = {
   lastNotifiedUserAt: Scalars['DateTime'];
 };
@@ -1059,10 +1172,15 @@ export type User = {
   files: Array<File>;
   gender: Gender;
   generatedSummary?: Maybe<Scalars['String']>;
+  hasScale?: Maybe<Scalars['Boolean']>;
   heightInInches: Scalars['Float'];
+  insurance?: Maybe<Insurance>;
+  insurancePlan?: Maybe<InsurancePlan>;
+  insuranceType?: Maybe<InsuranceType>;
   labOrderSent?: Maybe<Scalars['Boolean']>;
   meetingRoomUrl?: Maybe<Scalars['String']>;
   meetingUrl?: Maybe<Scalars['String']>;
+  metriportUserId?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   password: Scalars['String'];
   pharmacyLocation?: Maybe<Scalars['String']>;
@@ -1071,8 +1189,10 @@ export type User = {
   role: Role;
   score: Array<Score>;
   sendbirdChannelUrl?: Maybe<Scalars['String']>;
+  signupPartner?: Maybe<Partner>;
   stripeCustomerId: Scalars['String'];
-  stripeSubscriptionId: Scalars['String'];
+  stripePaymentIntentId?: Maybe<Scalars['String']>;
+  stripeSubscriptionId?: Maybe<Scalars['String']>;
   subscriptionExpiresAt: Scalars['DateTime'];
   textOptIn?: Maybe<Scalars['Boolean']>;
   timezone?: Maybe<Scalars['String']>;
@@ -1084,13 +1204,13 @@ export type UserAnswer = {
   __typename?: 'UserAnswer';
   key: Scalars['String'];
   type: AnswerType;
-  value: Scalars['String'];
+  value?: Maybe<Scalars['AnyScalar']>;
 };
 
 export type UserAnswersInput = {
   key: Scalars['String'];
   type: AnswerType;
-  value: Scalars['String'];
+  value?: InputMaybe<Scalars['AnyScalar']>;
 };
 
 export type UserSendbirdChannel = {
@@ -1166,6 +1286,7 @@ export type UserTaskList = {
 export type Weight = {
   __typename?: 'Weight';
   date: Scalars['DateTime'];
+  scale?: Maybe<Scalars['Boolean']>;
   value: Scalars['Float'];
 };
 

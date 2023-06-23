@@ -99,7 +99,7 @@ export const PreCheckout = () => {
       try {
         const heightInInches =
           parseInt(heightFeet) * 12 + parseInt(heightInches);
-        const { data } = await createOrFindCheckout({
+        const { data, errors } = await createOrFindCheckout({
           variables: {
             input: {
               name,
@@ -119,6 +119,12 @@ export const PreCheckout = () => {
         });
 
         const { checkout } = data.createOrFindCheckout;
+        if (errors) {
+          setStatus({
+            error: errors.map(({ message }: { message: string }) => message).join(" ")
+          });
+          return;
+        }
         resetForm();
         router.push(`/signup/checkout/${checkout._id}`);
       } catch (err) {
@@ -182,7 +188,7 @@ export const PreCheckout = () => {
       },
       {
         component: Testimonial,
-        beforeNext({ }, _, currentStepIndex) {
+        beforeNext({}, _, currentStepIndex) {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
@@ -313,7 +319,13 @@ export const PreCheckout = () => {
   } = preCheckoutForm;
 
   return (
-    <Wrapper title={FORM_TITLES[currentStepIndex + 1]}>
+    <Wrapper
+      header={
+        <h2 className="text-lg sm:text-2xl text-white font-bold">
+          {FORM_TITLES[currentStepIndex + 1]}
+        </h2>
+      }
+    >
       <FormikProvider value={preCheckoutForm}>
         <div className="flex flex-col max-w-xl bg-white rounded-xl gap-5">
           <div className="border-b px-8 py-4">

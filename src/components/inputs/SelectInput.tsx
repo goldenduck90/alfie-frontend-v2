@@ -21,7 +21,7 @@ export const SelectInput: FC<ISelectInput> = ({
   placeholder,
   options,
   disabled = false,
-  cache,
+  cache = false,
   onChange, // TODO: extend on when needed
 }) => {
   const [, { value, error }, { setError, setValue }] = useField(name);
@@ -38,7 +38,7 @@ export const SelectInput: FC<ISelectInput> = ({
   return (
     <>
       <div
-        className={`flex flex-row w-full rounded-2xl border overflow-hidden ${
+        className={`flex flex-row mt-1 w-full rounded-2xl border-2 overflow-hidden ${
           error ? "border-red-500" : "border-gray-300"
         }`}
       >
@@ -48,20 +48,17 @@ export const SelectInput: FC<ISelectInput> = ({
           defaultValue={value}
           onFocus={() => setError(undefined)}
           onChange={handleChange}
-          className="appearance-none w-full py-2 rounded-lg pl-3 focus:outline-none placeholder-gray-400 bg-white"
+          className="appearance-none w-full py-1 rounded-lg pl-3 focus:outline-none placeholder-gray-400 bg-white"
         >
           <option value="">{placeholder}</option>
           {options.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              selected={option?.selected ? true : false}
-            >
+            <option key={option.value} value={option.value}>
               {option.label || option.value}
             </option>
           ))}
         </select>
         <button
+          type="button"
           className="flex items-center px-2 text-brand-berry"
           onClick={() => selectRef.current?.focus()}
         >

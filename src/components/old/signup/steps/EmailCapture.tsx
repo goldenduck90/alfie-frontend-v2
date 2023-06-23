@@ -1,5 +1,6 @@
 import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
 import React, { useMemo } from "react";
+import { useField } from "formik";
 import { Checkbox } from "../../../inputs/Checkbox";
 import { IconInput } from "../../../inputs/IconInput";
 
@@ -49,6 +50,9 @@ export const options = {
 };
 
 export const EmailCapture = () => {
+  const [, { error: emailError }] = useField("email");
+  const [, { error: phoneError }] = useField("phone");
+
   const fullName = localStorage.getItem("fullName") || "";
   const weight = localStorage.getItem("weight") || "";
 
@@ -158,6 +162,11 @@ export const EmailCapture = () => {
         securely to the provider and is needed for them to provide care and is
         never shared outside of Alfie Health.
       </p>
+      {(emailError || phoneError) && (
+        <p className="text-sm mt-4 text-red-600 text-center">
+          {emailError || phoneError}
+        </p>
+      )}
     </div>
   );
 };

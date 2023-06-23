@@ -9,6 +9,7 @@ import { NotificationsView } from "./NotificationView";
 import { PlanAndBillingView } from "./PlanAndBillingView";
 import { AvailabilityView } from "./AvailablityView";
 import { EmbeddedStripeView } from "./EmbeddedStripeView";
+import { ConnectWithingsButton } from "./components/ConnectWithingsButton";
 
 export function SettingsView() {
   const router = useRouter();
@@ -59,6 +60,13 @@ export function SettingsView() {
                 Notifications
               </TabTitle>
             </Tabs.Trigger> */}
+            {isPatient && (
+              <Tabs.Trigger value="connect-withings">
+                <TabTitle active={activeTab === "connect-withings"}>
+                  Connect Your Withings Account
+                </TabTitle>
+              </Tabs.Trigger>
+            )}
           </Tabs.List>
         </div>
         <Tabs.Content value="account-details" className="mt-6">
@@ -81,6 +89,11 @@ export function SettingsView() {
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />
         </Tabs.Content> */}
+        {isPatient && (
+          <Tabs.Content value="connect-withings" className="mt-6">
+            <ConnectWithingsButton />
+          </Tabs.Content>
+        )}
       </Tabs.Root>
     </div>
   );
