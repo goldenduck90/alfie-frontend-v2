@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { Elements } from "@stripe/react-stripe-js";
@@ -48,6 +49,13 @@ export const StripeWrapper = ({ children }: { children: React.ReactNode }) => {
     }
   }, [error]);
 
+  const options = useMemo(
+    () => ({
+      clientSecret: data?.checkout?.checkout?.stripeClientSecret,
+    }),
+    [data]
+  );
+
   if (!id) {
     router.push("/signup");
   }
@@ -59,12 +67,7 @@ export const StripeWrapper = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <Elements
-      stripe={stripePromise}
-      options={{
-        clientSecret: data?.checkout?.checkout?.stripeClientSecret,
-      }}
-    >
+    <Elements stripe={stripePromise} options={options}>
       {children}
     </Elements>
   );
