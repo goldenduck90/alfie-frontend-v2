@@ -12,7 +12,6 @@ const getCheckoutQuery = gql`
         weightInLbs
         insurancePlan
         insuranceType
-        stripeClientSecret
       }
     }
   }
