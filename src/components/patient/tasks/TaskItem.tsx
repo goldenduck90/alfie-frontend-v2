@@ -132,6 +132,17 @@ export const TaskItem = ({
           subtitle:
             "Once all your tasks are completed, schedule an appointment.",
         };
+      case TaskType.NewPatientIntakeForm:
+        return {
+          duration: "5 minutes",
+          subtitle:
+            "Complete a basic medical form so that we can tailor our services to your needs.",
+        };
+      case TaskType.IdAndInsuranceUpload:
+        return {
+          duration: "2 minutes",
+          subtitle: "This will help us verify who you are.",
+        };
       default:
         return {
           duration: "10 minutes",
@@ -140,7 +151,7 @@ export const TaskItem = ({
         };
     }
   }, [type]);
-
+  console.log(type);
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 md:p-6">
       <div className="flex flex-col justify-between gap-y-3 md:flex-row  md:gap-x-2 ">
