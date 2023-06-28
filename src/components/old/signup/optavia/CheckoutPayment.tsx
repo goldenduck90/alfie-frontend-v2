@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
 import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
-import { Loading } from "../../Loading";
 
 import {
   PaymentElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+
 import * as Sentry from "@sentry/react";
 import { Button } from "@src/components/ui/Button";
 
@@ -16,8 +16,10 @@ export const CheckoutPayment = () => {
   const router = useRouter();
   const { id } = router.query;
   const [loading, setLoading] = useState(false);
+
   const stripe = useStripe();
   const elements = useElements();
+
   const { loading: checkoutLoading, insuranceCovered } = useCheckoutQuery(id);
 
   const handleSubmit = async () => {
@@ -31,7 +33,6 @@ export const CheckoutPayment = () => {
     }
 
     setLoading(true);
-
     const result = await stripe.confirmSetup({
       //`Elements` instance that was used to create the Payment Element
       elements,
@@ -55,8 +56,6 @@ export const CheckoutPayment = () => {
     }
     setLoading(false);
   };
-
-  if (loading) return <Loading />;
 
   return (
     <Wrapper

@@ -12,6 +12,7 @@ const getCheckoutQuery = gql`
         weightInLbs
         insurancePlan
         insuranceType
+        stripeClientSecret
       }
     }
   }
@@ -59,11 +60,17 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
     return covered;
   }, [data]);
 
+  const stripeClientSecret = useMemo(
+    () => data?.checkout?.checkout?.stripeClientSecret,
+    [data]
+  );
+
   return {
     data,
     loading,
     error,
     weightLossValue,
     insuranceCovered,
+    stripeClientSecret,
   };
 };
