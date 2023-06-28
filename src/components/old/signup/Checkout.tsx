@@ -55,7 +55,12 @@ export const Checkout = () => {
   return (
     <Wrapper>
       <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
-        <p className="mb-4 mt-4 font-md font-bold text-lg text-brand-berry">
+        <div className="bg-blue-100 border rounded-xl border-blue-500 text-blue-700 px-4 py-3" role="alert">
+          <p className="font-bold">Looking for insurance coverage?</p>
+          <p className="text-sm">Email us at <a href="mailto:patients@joinalfie.com" className="underline">patients@joinalfie.com</a> to sign up via insurance.</p>
+        </div>
+
+        <p className="mb-4 font-md font-bold text-lg text-brand-berry">
           <span className="capitalize">
             {data?.checkout?.checkout?.name?.split(" ")[0]}
           </span>
