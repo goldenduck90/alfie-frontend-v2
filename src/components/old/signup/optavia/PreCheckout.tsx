@@ -49,6 +49,7 @@ const PreCheckout = () => {
       pastTries: [],
       insurancePlan: "",
       insuranceType: "",
+      referrer: router.query?.health_coach,
     },
     validateOnChange: false,
     validationSchema: Yup.object({
@@ -110,6 +111,7 @@ const PreCheckout = () => {
         pastTries,
         insurancePlan,
         insuranceType,
+        referrer,
       } = values;
 
       const fullName = `${firstName} ${lastName}`;
@@ -144,6 +146,7 @@ const PreCheckout = () => {
         insurancePlan,
         insuranceType,
         signupPartner: "OPTAVIA",
+        referrer,
       };
 
       const { data } = await createOrFindCheckout({
