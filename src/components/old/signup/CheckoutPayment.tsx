@@ -24,7 +24,6 @@ export const CheckoutPayment = () => {
     }
 
     setLoading(true);
-
     const result = await stripe.confirmSetup({
       //`Elements` instance that was used to create the Payment Element
       elements,
