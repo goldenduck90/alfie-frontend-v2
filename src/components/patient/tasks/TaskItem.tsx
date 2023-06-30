@@ -130,7 +130,7 @@ export const TaskItem = ({
         return {
           duration: "1 minute",
           subtitle:
-            "Once all your tasks are completed, schedule an appointment.",
+            "Schedule an appointment after all tasks are completed and labs are sent.",
         };
       case TaskType.NewPatientIntakeForm:
         return {
