@@ -1,4 +1,5 @@
 import DailyIframe from "@daily-co/daily-js"
+import * as Sentry from "@sentry/react"
 import { Layout } from "@src/components/layouts/Layout"
 import { useUserSession } from "@src/hooks/useUserSession"
 import { useRouter } from "next/router"
@@ -24,11 +25,24 @@ const Call = () => {
       document.getElementById("call-frame") as any
     )
     callFrame.join({ url: `https://alfie.daily.co/${callId}` })
-      .then(() => updateAppointmentAttended({
-        variables: {
-          eaAppointmentId: appointmentId
+      .then(async (participants) => {
+        try {
+          await updateAppointmentAttended({
+            variables: {
+              eaAppointmentId: appointmentId
+            }
+          })
+        } catch (error) {
+          const errorLog = `Error marking patient as attended for appointment ${appointmentId}.`
+          console.log(errorLog)
+          Sentry.captureEvent({
+            exception: error as any,
+            message: errorLog,
+            level: "error",
+            contexts: { data: { participants } },
+          })
         }
-      }))
+      })
     callFrame.setUserName(String(session[0]?.user?.name))
   }, [callId, session])
 
