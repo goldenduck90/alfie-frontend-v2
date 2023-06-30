@@ -80,6 +80,7 @@ export type Checkout = {
   name: Scalars['String'];
   pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
+  referrer?: Maybe<Scalars['String']>;
   sameAsShippingAddress: Scalars['Boolean'];
   shippingAddress: Address;
   signupPartner?: Maybe<Partner>;
@@ -137,6 +138,7 @@ export type CreateCheckoutInput = {
   name: Scalars['String'];
   pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
+  referrer?: InputMaybe<Scalars['String']>;
   signupPartner?: InputMaybe<Partner>;
   state: Scalars['String'];
   textOptIn?: InputMaybe<Scalars['Boolean']>;
@@ -493,7 +495,14 @@ export type Insurance = {
   rxGroup: Scalars['String'];
 };
 
-export type InsuranceEligibilityInput = {
+export type InsuranceEligibilityResponse = {
+  __typename?: 'InsuranceEligibilityResponse';
+  eligible: Scalars['Boolean'];
+  reason?: Maybe<Scalars['String']>;
+  rectifiedInsurance?: Maybe<Insurance>;
+};
+
+export type InsuranceInput = {
   groupId: Scalars['String'];
   groupName: Scalars['String'];
   insuranceCompany: Scalars['String'];
@@ -501,12 +510,6 @@ export type InsuranceEligibilityInput = {
   payor: Scalars['String'];
   rxBin: Scalars['String'];
   rxGroup: Scalars['String'];
-  userId: Scalars['String'];
-};
-
-export type InsuranceEligibilityResponse = {
-  __typename?: 'InsuranceEligibilityResponse';
-  eligible: Scalars['Boolean'];
 };
 
 /** Insurance plans */
@@ -722,6 +725,7 @@ export type MutationUpdateAppointmentArgs = {
 
 export type MutationUpdateAppointmentAttendedArgs = {
   eaAppointmentId: Scalars['String'];
+  userId?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -797,6 +801,7 @@ export type Provider = {
   npi: Scalars['String'];
   numberOfPatients?: Maybe<Scalars['Int']>;
   password?: Maybe<Scalars['String']>;
+  providerCode: Scalars['String'];
   type: Scalars['String'];
 };
 
@@ -809,6 +814,7 @@ export type ProviderInput = {
   licensedStates: Array<Scalars['String']>;
   npi: Scalars['String'];
   numberOfPatients?: InputMaybe<Scalars['Int']>;
+  providerCode: Scalars['String'];
   type: Role;
 };
 
@@ -897,7 +903,8 @@ export type QueryGetUserByIdArgs = {
 
 
 export type QueryInsuranceEligibilityArgs = {
-  input: InsuranceEligibilityInput;
+  input: InsuranceInput;
+  userId: Scalars['String'];
 };
 
 
@@ -1108,7 +1115,6 @@ export enum TaskType {
   ScheduleAppointment = 'SCHEDULE_APPOINTMENT',
   ScheduleHealthCoachAppointment = 'SCHEDULE_HEALTH_COACH_APPOINTMENT',
   Tefq = 'TEFQ',
-  Test = 'TEST',
   WaistLog = 'WAIST_LOG',
   WeightLog = 'WEIGHT_LOG'
 }
