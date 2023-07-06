@@ -515,10 +515,12 @@ export type InsuranceInput = {
 /** Insurance plans */
 export enum InsurancePlan {
   Aetna = 'AETNA',
-  AnthemBlueCross = 'ANTHEM_BLUE_CROSS',
-  BlueCrossBlueShield = 'BLUE_CROSS_BLUE_SHIELD',
+  AnthemBcbs = 'ANTHEM_BCBS',
+  Bcbs = 'BCBS',
+  CarefirstBcbs = 'CAREFIRST_BCBS',
   Cigna = 'CIGNA',
-  EmpireBluecrossBlueshield = 'EMPIRE_BLUECROSS_BLUESHIELD',
+  EmpireBcbs = 'EMPIRE_BCBS',
+  HorizonBcbs = 'HORIZON_BCBS',
   Humana = 'HUMANA',
   Medicaid = 'MEDICAID',
   Medicare = 'MEDICARE',
