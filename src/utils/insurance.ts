@@ -1,21 +1,9 @@
 export const InsurancePlans = [
   { label: "Blue Cross Blue Shield", value: "BCBS" },
-  {
-    label: "Anthem Blue Cross Blue Shield",
-    value: "ANTHEM_BCBS",
-  },
-  {
-    label: "Empire Blue Cross Blue Shield",
-    value: "EMPIRE_BCBS",
-  },
-  {
-    label: "Carefirst Blue Cross Blue Shield",
-    value: "CAREFIRST_BCBS",
-  },
-  {
-    label: "Horizon Blue Cross Blue Shield",
-    value: "HORIZON_BCBS",
-  },
+  { label: "Anthem BCBS", value: "ANTHEM_BCBS" },
+  { label: "Empire BCBS", value: "EMPIRE_BCBS" },
+  { label: "Carefirst BCBS", value: "CAREFIRST_BCBS" },
+  { label: "Horizon BCBS", value: "HORIZON_BCBS" },
   { label: "Humana", value: "HUMANA" },
   { label: "Partner Direct", value: "PARTNER_DIRECT" },
   { label: "Aetna", value: "AETNA" },
