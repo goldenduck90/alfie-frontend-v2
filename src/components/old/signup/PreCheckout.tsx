@@ -1,5 +1,6 @@
 import { FormikProvider } from "formik";
 import * as Yup from "yup";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 import { Wrapper } from "../../layouts/Wrapper";
 
@@ -111,7 +112,7 @@ export const PreCheckout = () => {
               heightInInches,
               weightInLbs: Number(weight),
               textOptIn,
-              phone,
+              phone: `+1${phone.replace(/[^0-9]/g, "")}`,
               pastTries,
               // healthInsurance,
             },
@@ -121,7 +122,9 @@ export const PreCheckout = () => {
         const { checkout } = data.createOrFindCheckout;
         if (errors) {
           setStatus({
-            error: errors.map(({ message }: { message: string }) => message).join(" ")
+            error: errors
+              .map(({ message }: { message: string }) => message)
+              .join(" "),
           });
           return;
         }
@@ -230,7 +233,7 @@ export const PreCheckout = () => {
       },
       {
         component: WhatAlfieUse,
-        beforeNext({ }, _, currentStepIndex) {
+        beforeNext({}, _, currentStepIndex) {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
@@ -284,6 +287,11 @@ export const PreCheckout = () => {
           email: Yup.string()
             .email("Please enter a valid email address.")
             .required("Please enter your email address."),
+          phone: Yup.string()
+            .required("Please enter your phone number.")
+            .test("phone", "Please enter valid phone number.", (value) => {
+              return isValidPhoneNumber(value ?? "", "US");
+            }),
         }),
         beforeNext({ email, textOptIn, phone }, _, currentStepIndex) {
           localStorage.setItem("email", email);
