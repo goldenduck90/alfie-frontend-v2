@@ -1,16 +1,6 @@
 import React from "react";
-import { useFormikContext, useField } from "formik";
 import { SelectInput } from "@src/components/inputs/SelectInput";
 import { InsuranceTypes, InsurancePlans } from "@src/utils/insurance";
-
-const options = [
-  "Employer provided / Commercial (Aetna, United, BCBS, etc.)",
-  "Kaiser Permanente",
-  "Medicare or Medicare Advantage",
-  "Medicaid",
-  "None",
-  "Don’t know / unsure",
-];
 
 export const HealthInsurance: React.FC = () => {
   return (
