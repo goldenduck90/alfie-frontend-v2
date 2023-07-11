@@ -10,7 +10,12 @@ function Dashboard() {
 
   if (user?.role === Role.Patient) {
     return <PatientDashboard />;
-  } else if (user?.role === Role.Practitioner || user?.role === Role.Admin || user?.role === Role.HealthCoach) {
+  } else if (
+    user?.role === Role.Practitioner ||
+    user?.role === Role.Doctor ||
+    user?.role === Role.Admin ||
+    user?.role === Role.HealthCoach
+  ) {
     return <PractitionerDashboard />;
   }
   return null;
