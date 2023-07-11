@@ -210,10 +210,11 @@ export const IDVerificationModal = ({
                   type: type,
                   contentType: file?.type,
                   ETag: uploadResponse.headers.get("etag") || "",
-                  url: `${url.split("?")[0]
-                    }?versionId=${uploadResponse.headers.get(
-                      "x-amz-version-id"
-                    )}`,
+                  url: `${
+                    url.split("?")[0]
+                  }?versionId=${uploadResponse.headers.get(
+                    "x-amz-version-id"
+                  )}`,
                   versionId: uploadResponse.headers.get("x-amz-version-id"),
                   createdAt: uploadResponse.headers.get("date"),
                 };
@@ -283,6 +284,7 @@ export const IDVerificationModal = ({
 
       // End
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -318,15 +320,15 @@ export const IDVerificationModal = ({
             name={step === 1 ? "idPhoto" : "insurancePhoto"}
             setSelectedImage={(file: Blob) => {
               if (file.size > maxFileSize) {
-                setSelectedInsurance(null)
-                setError("File size limit: 10 MB.")
+                setSelectedInsurance(null);
+                setError("File size limit: 10 MB.");
               } else {
-                setError(null)
+                setError(null);
                 return step === 1
                   ? setSelectedId(file)
                   : step === 2 && file
-                    ? setSelectedInsurance(file)
-                    : null;
+                  ? setSelectedInsurance(file)
+                  : null;
               }
             }}
           />

@@ -17,6 +17,7 @@ export const ChannelListHeader = ({
       onSetQuery(value);
     }, 500);
     return () => clearTimeout(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
