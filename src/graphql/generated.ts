@@ -831,7 +831,7 @@ export type Query = {
   generateSummary: User;
   getAProvider: EaProviderProfile;
   getAllPatientsByHealthCoach: Array<User>;
-  getAllPatientsByPractitioner: Array<User>;
+  getAllPatientsByProvider: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
   getProviderSchedule: ScheduleObject;

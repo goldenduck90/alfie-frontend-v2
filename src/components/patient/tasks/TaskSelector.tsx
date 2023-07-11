@@ -111,6 +111,15 @@ export const TaskSelector = ({
           <ScheduleAppointment userTaskId={userTaskId} />
         </DialogModal>
       );
+    case TaskType.ScheduleHealthCoachAppointment:
+      return (
+        <DialogModal triggerAsChild trigger={trigger}>
+          <ScheduleAppointment
+            userTaskId={userTaskId}
+            healthCoach
+          />
+        </DialogModal>
+      );
     case TaskType.AdLibitum:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
