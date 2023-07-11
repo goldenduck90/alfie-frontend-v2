@@ -1,7 +1,7 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { useFormikWizard } from "formik-wizard-form";
 import { FormikProvider, useField } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../../../ui/Button";
 import {
   DialogLongBody,
@@ -138,6 +138,7 @@ export function ScheduleAppointment({
       eaCustomer: undefined,
       userId,
       eaCustomerName,
+      healthCoach: isHealthCoach,
     },
     onSubmit: async (values) => {
       try {
@@ -243,6 +244,15 @@ export function ScheduleAppointment({
       },
     ],
   });
+
+  useEffect(() => {
+    if (result.loading) return
+    if (!result.data) return
+    if (scheduleForm.values.healthCoach) return
+
+    const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach || healthCoach;
+    scheduleForm.setFieldValue("healthCoach", isHealthCoach);
+  }, [healthCoach, result.data, result.loading, scheduleForm])
 
   const setOpen = useDialogToggle();
 
