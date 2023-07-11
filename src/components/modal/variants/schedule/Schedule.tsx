@@ -115,7 +115,7 @@ export function ScheduleAppointment({
     result.data?.getRole?.role === Role.Doctor ||
     result.data?.getRole?.role === Role.HealthCoach;
 
-  const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach;
+  const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach || healthCoach;
 
   const [update] = useMutation(updateAppointmentMutation);
   const [create] = useMutation(createAppointmentMutation);
@@ -172,7 +172,7 @@ export function ScheduleAppointment({
                 ...(isProvider && {
                   userId: values.userId,
                 }),
-                ...((isHealthCoach || healthCoach) && {
+                ...(isHealthCoach && {
                   healthCoach: true,
                 }),
                 start: dayjs(values.start).format("YYYY-MM-DD H:mm"),
