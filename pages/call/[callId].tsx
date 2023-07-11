@@ -1,4 +1,5 @@
 import DailyIframe from "@daily-co/daily-js"
+import * as Sentry from "@sentry/react"
 import { Layout } from "@src/components/layouts/Layout"
 import { useUserSession } from "@src/hooks/useUserSession"
 import { useRouter } from "next/router"
@@ -14,23 +15,57 @@ const updateAppointmentAttendedMutation = gql`
 `;
 
 const Call = () => {
-  const session = useUserSession()
+  const session = useUserSession();
+  const userName = String(session[0]?.user?.name);
   const { callId, appointmentId } = useRouter().query as { callId: string, appointmentId: string };
   const [updateAppointmentAttended] = useMutation(updateAppointmentAttendedMutation);
 
   React.useEffect(() => {
-    //   DailyIframe.createFrame()
+    console.log(`Daily call: joining call ${callId}, appointment ${appointmentId} with username ${userName}`)
     const callFrame = DailyIframe.wrap(
       document.getElementById("call-frame") as any
     )
-    callFrame.join({ url: `https://alfie.daily.co/${callId}` })
-      .then(() => updateAppointmentAttended({
-        variables: {
-          eaAppointmentId: appointmentId
+    callFrame.on("joined-meeting", async (event) => {
+      console.log("Post-daily call join, reporting event.");
+
+      Sentry.captureMessage(
+        "Daily call joined.",
+        {
+          contexts: {
+            Information: {
+              appointmentId,
+              callId,
+              userName,
+              participants: event?.participants ?? "Unknown",
+            },
+          }
         }
-      }))
-    callFrame.setUserName(String(session[0]?.user?.name))
-  }, [callId, session])
+      );
+
+      try {
+        await updateAppointmentAttended({
+          variables: {
+            eaAppointmentId: appointmentId
+          }
+        })
+      } catch (error) {
+        const errorLog = `Error marking patient/provider as attended for appointment ${appointmentId}.`
+        console.log(errorLog)
+        Sentry.captureException(
+          error,
+          {
+            contexts: {
+              Information: { userName, message: errorLog }
+            },
+          }
+        );
+      }
+    });
+
+    callFrame.join({ url: `https://alfie.daily.co/${callId}` })
+
+    callFrame.setUserName(userName)
+  }, [callId, userName, appointmentId, updateAppointmentAttended]);
 
   return (
     <Layout

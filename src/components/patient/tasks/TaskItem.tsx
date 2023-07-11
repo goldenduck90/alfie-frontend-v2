@@ -63,6 +63,95 @@ export const TaskItem = ({
   const getQueryParamIdFromMeetingUrl = meetingLocation?.split("/").pop();
   const hasSubTasks = false; //Math.random() >= 0.8;
 
+  const taskMeta = useMemo(() => {
+    switch (type) {
+      case TaskType.AdLibitum:
+        return {
+          duration: "Fasting prior, 10 minutes",
+          subtitle: "This assesses your satiation so we can tailor your care.",
+        };
+      case TaskType.BpLog:
+        return {
+          duration: "1 minute",
+          subtitle: "Blood pressure is important for us to track your health.",
+        };
+      case TaskType.ScheduleHealthCoachAppointment:
+        return {
+          duration: "1 minute",
+          subtitle: "Schedule with your Health Guide to track your progress.",
+        };
+      case TaskType.Tefq:
+        return {
+          duration: "3 minutes",
+          subtitle:
+            "This tells us how you view food emotionally so we can tailor your care.",
+        };
+      case TaskType.MpFeeling:
+        return {
+          duration: "3 minutes",
+          subtitle:
+            "This tells us about your mental state so we can tailor your care.",
+        };
+      case TaskType.WeightLog:
+        return {
+          duration: "1 minute",
+          subtitle: "Log your weight so we can track your progress.",
+        };
+      case TaskType.Gsrs:
+        return {
+          duration: "3 minutes",
+          subtitle:
+            "This tells us any gut issues you may be having before or while on medication.",
+        };
+      case TaskType.WaistLog:
+        return {
+          duration: "1 minute",
+          subtitle:
+            "Waist measurements are important because BMI isn’t always a good metric.",
+        };
+      case TaskType.MpHunger:
+        return {
+          duration: "5 minutes",
+          subtitle: "This assesses your satiety so we can tailor your care.",
+        };
+      case TaskType.MpActivity:
+        return {
+          duration: "2 minutes",
+          subtitle:
+            "This assesses your basal metabolic rate so we can tailor your care.",
+        };
+      case TaskType.FoodLog:
+        return {
+          duration: "2 minutes",
+          subtitle:
+            "Log what you eat here every day so we can best understand your metabolism.",
+        };
+      case TaskType.ScheduleAppointment:
+        return {
+          duration: "1 minute",
+          subtitle:
+            "Schedule an appointment after all tasks are completed and labs are sent.",
+        };
+      case TaskType.NewPatientIntakeForm:
+        return {
+          duration: "5 minutes",
+          subtitle:
+            "Complete a basic medical form so that we can tailor our services to your needs.",
+        };
+      case TaskType.IdAndInsuranceUpload:
+        return {
+          duration: "2 minutes",
+          subtitle: "This will help us verify who you are.",
+        };
+      default:
+        return {
+          duration: "10 minutes",
+          subtitle:
+            "Complete a basic medical form so that we can tailor our services to your needs.",
+        };
+    }
+  }, [type]);
+  console.log(type);
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 md:p-6">
       <div className="flex flex-col justify-between gap-y-3 md:flex-row  md:gap-x-2 ">
@@ -72,10 +161,7 @@ export const TaskItem = ({
             <h3 className="text-gray-900 font-bold">
               {appointmentStartTime ? `Appointment with ${title}` : title}
             </h3>
-            <p className="text-gray-700">
-              Complete a basic medical form so that we can tailor our services
-              to your needs.
-            </p>
+            <p className="text-gray-700">{taskMeta.subtitle}</p>
           </div>
         </div>
         <div className="hidden md:flex">
@@ -83,7 +169,7 @@ export const TaskItem = ({
             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
             aria-hidden="true"
           />
-          <p>10 min</p>
+          <p>{taskMeta.duration}</p>
         </div>
 
         <div className="hidden md:flex">

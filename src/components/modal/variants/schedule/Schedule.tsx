@@ -96,6 +96,7 @@ export function ScheduleAppointment({
   userTaskId,
   onComplete,
   eaCustomerName,
+  healthCoach = false,
 }: {
   eaAppointmentId?: string;
   userId?: string;
@@ -105,6 +106,7 @@ export function ScheduleAppointment({
   userTaskId?: string;
   onComplete?: () => void;
   eaCustomerName?: string;
+  healthCoach?: boolean;
 }) {
   const result = useQuery(getRoleQuery);
   const isProvider =
@@ -112,6 +114,8 @@ export function ScheduleAppointment({
     result.data?.getRole?.role === Role.CareCoordinator ||
     result.data?.getRole?.role === Role.Doctor ||
     result.data?.getRole?.role === Role.HealthCoach;
+
+  const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach;
 
   const [update] = useMutation(updateAppointmentMutation);
   const [create] = useMutation(createAppointmentMutation);
@@ -167,6 +171,9 @@ export function ScheduleAppointment({
               input: {
                 ...(isProvider && {
                   userId: values.userId,
+                }),
+                ...((isHealthCoach || healthCoach) && {
+                  healthCoach: true,
                 }),
                 start: dayjs(values.start).format("YYYY-MM-DD H:mm"),
                 end: dayjs(values.end).format("YYYY-MM-DD H:mm"),
