@@ -69,7 +69,7 @@ export function AllPatientsTabs() {
             setGlobalFilter={setGlobalFilter}
           />
         ) : (
-          <PractitionerTable
+          <ProviderTable
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
           />
@@ -86,7 +86,7 @@ export function AllPatientsTabs() {
   );
 }
 
-export function PractitionerTable({
+export function ProviderTable({
   globalFilter,
   setGlobalFilter,
 }: {
@@ -96,7 +96,7 @@ export function PractitionerTable({
   const providerPatients = useGetAllPatientsByProvider();
 
   const providerTable = usePatientTable({
-    data: providerPatients.data?.getAllPatientsByPractitioner || [],
+    data: providerPatients.data?.getAllPatientsByProvider || [],
     globalFilter,
     setGlobalFilter,
   });
@@ -152,8 +152,9 @@ export function AllPatientsTable({
 
   return (
     <div className="max-h-[50vh]">
-      <p className="text-lg">{`${table?.getCoreRowModel().rows.length
-        } Patients`}</p>
+      <p className="text-lg">{`${
+        table?.getCoreRowModel().rows.length
+      } Patients`}</p>
       <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
         <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
           <thead>
@@ -165,9 +166,9 @@ export function AllPatientsTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </div>
                   </th>
                 ))}
@@ -204,8 +205,9 @@ export function AllPatientsTable({
                                   </div>
                                 )}
                                 <div
-                                  className={`${j === 0 ? "w-24" : "w-[60%]"
-                                    } mt-3 `}
+                                  className={`${
+                                    j === 0 ? "w-24" : "w-[60%]"
+                                  } mt-3 `}
                                 >
                                   <PlaceHolderLine />
                                 </div>

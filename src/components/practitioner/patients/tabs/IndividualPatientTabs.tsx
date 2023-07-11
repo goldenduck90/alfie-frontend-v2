@@ -1,3 +1,8 @@
+import React, { useMemo } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import dayjs from "dayjs";
+
 import * as Tabs from "@radix-ui/react-tabs";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 import { gql, useQuery } from "@apollo/client";
@@ -7,9 +12,6 @@ import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
 import { Button } from "@src/components/ui/Button";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { TaskType, User } from "@src/graphql/generated";
-import dayjs from "dayjs";
-import { useRouter } from "next/router";
-import React, { useMemo } from "react";
 import { BloodPressureChart } from "../components/BloodPressureChart";
 import { MedicalQuestionnaire } from "../components/MedicalQuestionnaire";
 import { PatientTasks } from "../components/PatientTasks";
@@ -155,7 +157,7 @@ export function IndividualPatientTabs() {
           style={{ display: "flex", gap: 10, overflowY: "auto", padding: 6 }}
         >
           {patient?.files?.map(({ signedUrl, key }) => (
-            <img
+            <Image
               src={signedUrl}
               alt={key}
               title={key}
