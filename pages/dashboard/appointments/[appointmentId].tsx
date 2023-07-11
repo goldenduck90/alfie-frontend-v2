@@ -244,6 +244,7 @@ function AppointmentDetails() {
                 end={end}
                 notes={notes}
                 eaCustomerName={eaCustomer?.name}
+                healthCoach={String(eaProvider?.id) === "118"}
                 onComplete={() => {
                   refetch();
                 }}
