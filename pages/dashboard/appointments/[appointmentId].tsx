@@ -81,7 +81,6 @@ function AppointmentDetails() {
   const isProvider = session[0]?.user?.role !== "Patient";
   const firstNameInitial = isProvider ? eaCustomer?.name?.charAt(0).toUpperCase() : eaProvider?.name?.charAt(0).toUpperCase();
   const startDate = dayjs(start);
-  const is15Before = startDate.diff(dayjs(), "minutes") <= 15;
   const hasStarted = dayjs().isAfter(startDate);
 
   return (
@@ -185,7 +184,7 @@ function AppointmentDetails() {
                     <Button
                       buttonType="accent"
                       onClick={() => { window.open(location + "?appointmentId=" + eaAppointmentId, "_blank") }}
-                      disabled={loading || !is15Before}
+                      disabled={loading}
                     >
                       Join Video Call
                     </Button>
