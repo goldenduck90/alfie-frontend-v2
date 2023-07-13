@@ -1,5 +1,5 @@
 import React from "react";
-import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
+import { Wrapper } from "@src/components/layouts/Wrapper";
 import { gql, useMutation } from "@apollo/client";
 import { Checkbox } from "@src/components/inputs/Checkbox";
 import { ArrowRightIcon } from "@heroicons/react/solid";
@@ -94,7 +94,7 @@ export const CheckoutAddress = () => {
   const { submitForm, isSubmitting } = form;
 
   return (
-    <Wrapper partner={PARTNERS.optavia}>
+    <Wrapper>
       <FormikProvider value={form}>
         <div className="flex flex-col max-w-md px-14 pt-14 pb-10 bg-white rounded-xl shadow-md gap-5">
           <h1 className="pb-0 mb-0 mt-2 font-md font-bold text-2xl text-brand-berry">

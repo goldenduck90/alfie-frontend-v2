@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { differenceInYears } from "date-fns";
 import { isValidPhoneNumber } from "libphonenumber-js";
 
-import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
+import { Wrapper } from "@src/components/layouts/Wrapper";
 import { Button } from "@src/components/ui/Button";
 
 import ContactInformation from "./sections/ContactInformation";
@@ -163,7 +163,6 @@ const PreCheckout = () => {
 
   return (
     <Wrapper
-      partner={PARTNERS.optavia}
       header={
         <h2 className="text-lg text-center sm:text-2xl text-white font-bold">
           Achieve Results with the Power of Alfie and OPTA

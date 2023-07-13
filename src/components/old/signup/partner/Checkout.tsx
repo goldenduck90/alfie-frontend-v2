@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
+import { Wrapper } from "@src/components/layouts/Wrapper";
 import { useRouter } from "next/router";
 import { FeatureSection } from "../../FeatureSection";
 import { Loading } from "../../Loading";
@@ -24,7 +24,6 @@ export const Checkout = () => {
 
   return (
     <Wrapper
-      partner={PARTNERS.optavia}
       header={
         <h2 className="text-lg sm:text-2xl text-white font-bold">Your plan.</h2>
       }
