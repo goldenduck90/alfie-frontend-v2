@@ -199,6 +199,7 @@ export function IndividualPatientTabs() {
       }
     }
   });
+  
   const weightChartInfo = chartInformation[TaskType.WeightLog];
 
   const activeTasks = taskData?.data?.getAllUserTasksByUser?.filter(

@@ -73,7 +73,6 @@ export function MetabolicChart({ chartData }: { chartData?: Classification[] }) 
   const data = Object.values(organizedClassifications).sort((a, b) =>
     dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1
   );
-  console.log(data, "data")
   return (
     <DashboardCard className="w-full md:max-w-[100%] md:min-w-max py-4">
       <div className="flex flex-col md:flex-row items-center justify-between gap-8">

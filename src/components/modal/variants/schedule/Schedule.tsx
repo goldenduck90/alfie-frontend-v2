@@ -249,7 +249,7 @@ export function ScheduleAppointment({
     if (result.loading) return
     if (!result.data) return
     if (scheduleForm.values.healthCoach) return
-
+    if(result.data?.getRole?.role === Role.Admin) return
     const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach || healthCoach;
     scheduleForm.setFieldValue("healthCoach", isHealthCoach);
   }, [healthCoach, result.data, result.loading, scheduleForm])
