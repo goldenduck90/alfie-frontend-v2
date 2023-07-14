@@ -83,7 +83,8 @@ export type Checkout = {
   referrer?: Maybe<Scalars['String']>;
   sameAsShippingAddress: Scalars['Boolean'];
   shippingAddress: Address;
-  signupPartner?: Maybe<Partner>;
+  signupPartner?: Maybe<SignupPartner>;
+  signupPartnerProvider?: Maybe<SignupPartnerProvider>;
   state: Scalars['String'];
   stripeCheckoutId: Scalars['String'];
   stripeClientSecret: Scalars['String'];
@@ -142,7 +143,8 @@ export type CreateCheckoutInput = {
   pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
   referrer?: InputMaybe<Scalars['String']>;
-  signupPartner?: InputMaybe<Partner>;
+  signupPartnerId?: InputMaybe<Scalars['String']>;
+  signupPartnerProviderId?: InputMaybe<Scalars['String']>;
   state: Scalars['String'];
   textOptIn?: InputMaybe<Scalars['Boolean']>;
   weightInLbs: Scalars['Float'];
@@ -225,7 +227,8 @@ export type CreateUserInput = {
   providerId?: InputMaybe<Scalars['String']>;
   /** If no role is provided, defaults to Patient. */
   role?: InputMaybe<Role>;
-  signupPartner?: InputMaybe<Partner>;
+  signupPartnerId?: InputMaybe<Scalars['String']>;
+  signupPartnerProviderId?: InputMaybe<Scalars['String']>;
   /** If not provided, will be set after checkout. */
   stripeCustomerId?: InputMaybe<Scalars['String']>;
   /** If not provided, will be set after checkout. */
@@ -768,11 +771,6 @@ export type PartialUser = {
   role: Role;
 };
 
-/** Sign up partner */
-export enum Partner {
-  Optavia = 'OPTAVIA'
-}
-
 export type PharmacyLocationInput = {
   name: Scalars['String'];
 };
@@ -862,7 +860,7 @@ export type Query = {
   getAllUserTasksByUser: Array<UserTask>;
   getProviderSchedule: ScheduleObject;
   getRole: RoleResponse;
-  getSignupPartnerByTitle: SignupPartner;
+  getSignupPartnerByTitle: SingupPartnerResponse;
   getSignupPartnerProviders: Array<SignupPartnerProvider>;
   getUserById: User;
   insuranceEligibility: InsuranceEligibilityResponse;
@@ -1103,7 +1101,7 @@ export type SignedUrlResponse = {
 export type SignupPartner = {
   __typename?: 'SignupPartner';
   _id: Scalars['String'];
-  logoUrl: Scalars['String'];
+  logoUrl?: Maybe<Scalars['String']>;
   title: Scalars['String'];
 };
 
@@ -1112,13 +1110,19 @@ export type SignupPartnerProvider = {
   _id: Scalars['String'];
   address: Scalars['String'];
   city: Scalars['String'];
-  faxNumber: Scalars['String'];
+  faxNumber?: Maybe<Scalars['String']>;
   npi: Scalars['String'];
   phone: Scalars['String'];
   signupPartner: SignupPartner;
   state: Scalars['String'];
   title: Scalars['String'];
   zipCode: Scalars['String'];
+};
+
+export type SingupPartnerResponse = {
+  __typename?: 'SingupPartnerResponse';
+  partner: SignupPartner;
+  partnerProviders?: Maybe<Array<SignupPartnerProvider>>;
 };
 
 export type SubscribeEmailInput = {
@@ -1256,7 +1260,8 @@ export type User = {
   role: Role;
   score: Array<Score>;
   sendbirdChannelUrl?: Maybe<Scalars['String']>;
-  signupPartner?: Maybe<Partner>;
+  signupPartner?: Maybe<SignupPartner>;
+  signupPartnerProvider?: Maybe<SignupPartnerProvider>;
   stripeCustomerId: Scalars['String'];
   stripePaymentIntentId?: Maybe<Scalars['String']>;
   stripeSubscriptionId?: Maybe<Scalars['String']>;

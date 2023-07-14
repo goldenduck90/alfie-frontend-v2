@@ -26,7 +26,7 @@ const createOrUpdateStripeSessionMutation = gql`
 
 export const CheckoutAddress = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { id, partner } = router.query;
   const { loading, error, insuranceCovered } = useCheckoutQuery(id);
 
   const [createOrUpdateStripeSession] = useMutation(
@@ -72,7 +72,7 @@ export const CheckoutAddress = () => {
 
         const { checkout } = data.createOrUpdateStripeSession;
         resetForm();
-        router.push(`/signup/optavia/checkout/${checkout._id}/payment`);
+        router.push(`/signup/${partner}/checkout/${checkout._id}/payment`);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });

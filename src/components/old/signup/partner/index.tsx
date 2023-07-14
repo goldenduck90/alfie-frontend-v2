@@ -8,9 +8,15 @@ import { Loading } from "../../Loading";
 const getSignupPartnerQuery = gql`
   query getSignupPartnerByTitle($title: String!) {
     getSignupPartnerByTitle(title: $title) {
-      _id
-      title
-      logoUrl
+      partner {
+        _id
+        title
+        logoUrl
+      }
+      partnerProviders {
+        _id
+        title
+      }
     }
   }
 `;
@@ -35,7 +41,10 @@ export function PartnerSignUpPage() {
   useEffect(() => {
     if (!fetching) {
       if (!error) {
-        setPartner(data.getSignupPartnerByTitle);
+        setPartner({
+          ...data.getSignupPartnerByTitle.partner,
+          providers: data.getSignupPartnerByTitle.partnerProviders,
+        });
         setLoading(false);
       } else router.push("/signup");
     }

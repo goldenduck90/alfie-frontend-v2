@@ -1,4 +1,4 @@
-import { CheckoutAddress } from "@src/components/old/signup/optavia/CheckoutAddress";
+import { CheckoutAddress } from "@src/components/old/signup/partner/CheckoutAddress";
 
 function CheckoutAddressPage() {
   return <CheckoutAddress />;
