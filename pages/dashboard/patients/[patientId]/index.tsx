@@ -42,6 +42,9 @@ const getPatientInfo = gql`
       meetingUrl
       labOrderSent
       bmi
+      signupPartner {
+        title
+      }
     }
   }
 `;

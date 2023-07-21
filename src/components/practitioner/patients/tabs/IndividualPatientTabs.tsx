@@ -168,6 +168,7 @@ export function IndividualPatientTabs() {
       ) : (
         "No Attachments"
       ),
+    "Signup Partner": patient?.signupPartner?.title ?? "N/A",
   };
 
   const chartInformation: {
@@ -199,7 +200,7 @@ export function IndividualPatientTabs() {
       }
     }
   });
-  
+
   const weightChartInfo = chartInformation[TaskType.WeightLog];
 
   const activeTasks = taskData?.data?.getAllUserTasksByUser?.filter(
