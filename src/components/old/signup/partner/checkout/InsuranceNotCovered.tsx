@@ -17,7 +17,7 @@ const InsuranceNotCovered: FC<Props> = ({ weightLossValue, checkoutId }) => {
         <br />
         <p>
           You can still sign up today to gain access to Alfie’s precision weight
-          management program and lose {weightLossValue} pounds within the next 6
+          management program and lose {weightLossValue} within the next 6
           months.
         </p>
       </div>
@@ -31,7 +31,9 @@ const InsuranceNotCovered: FC<Props> = ({ weightLossValue, checkoutId }) => {
         <div className="w-64">
           <Button
             onClick={() => {
-              router.push(`/signup/optavia/checkout/${checkoutId}/address`);
+              router.push(
+                `/signup/${router.query.partner}/checkout/${checkoutId}/address`
+              );
             }}
             size="medium"
             fullWidth
@@ -74,7 +76,9 @@ const InsuranceNotCovered: FC<Props> = ({ weightLossValue, checkoutId }) => {
           <p className="text-brand-berry text-xl font-bold"> $120 / month</p>
           <Button
             onClick={() => {
-              router.push(`/signup/optavia/checkout/${checkoutId}/address`);
+              router.push(
+                `/signup/${router.query.partner}/checkout/${checkoutId}/address`
+              );
             }}
             size="medium"
           >

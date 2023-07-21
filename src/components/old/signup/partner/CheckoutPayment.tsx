@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
+import { Wrapper } from "@src/components/layouts/Wrapper";
 import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
 
 import {
@@ -59,7 +59,6 @@ export const CheckoutPayment = () => {
 
   return (
     <Wrapper
-      partner={PARTNERS.optavia}
       header={
         <h2 className="text-lg sm:text-2xl text-white font-bold">Checkout</h2>
       }

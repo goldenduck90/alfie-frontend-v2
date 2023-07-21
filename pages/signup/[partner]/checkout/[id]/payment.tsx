@@ -1,5 +1,5 @@
-import { CheckoutPayment } from "@src/components/old/signup/optavia/CheckoutPayment";
-import { StripeWrapper } from "@src/components/old/signup/optavia/StripeWrapper";
+import { CheckoutPayment } from "@src/components/old/signup/partner/CheckoutPayment";
+import { StripeWrapper } from "@src/components/old/signup/partner/StripeWrapper";
 
 function CheckoutPaymentPage() {
   return (

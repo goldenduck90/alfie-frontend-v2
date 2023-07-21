@@ -12,6 +12,8 @@ import {
   Hydrate,
 } from "@tanstack/react-query";
 import { SeoHeader } from "@src/components/seo/SeoHeader";
+import { PartnerProvider } from "@src/context/PartnerContext";
+
 interface CustomAppProps extends AppProps {
   Component: AppProps["Component"] & {
     getLayout?: (page: React.ReactNode) => React.ReactNode;
@@ -36,9 +38,11 @@ export default function App({ Component, pageProps }: CustomAppProps) {
               <IntercomProvider
                 appId={process.env.REACT_APP_INTERCOM_APP_ID || ""}
               >
-                <SeoHeader />
-                {ComponentWithLayout}
-                <ShowNotification />
+                <PartnerProvider>
+                  <SeoHeader />
+                  {ComponentWithLayout}
+                  <ShowNotification />
+                </PartnerProvider>
               </IntercomProvider>
             </SessionProvider>
           </ApolloProvider>

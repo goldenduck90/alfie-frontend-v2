@@ -20,8 +20,7 @@ const InsuranceCovered: FC<Props> = ({
       <p className="p-4 font-md font-bold text-lg text-brand-berry">
         Great news {firstName}, your insurance likely covers Alfie Health’s
         program! Sign up today to gain access to Alfie’s precision weight
-        management program and lose {weightLossValue} pounds within the next 6
-        months.
+        management program and lose {weightLossValue} within the next 6 months.
       </p>
 
       <div className="flex flex-col p-4">
@@ -33,7 +32,9 @@ const InsuranceCovered: FC<Props> = ({
         <div className="w-64">
           <Button
             onClick={() => {
-              router.push(`/signup/optavia/checkout/${checkoutId}/address`);
+              router.push(
+                `/signup/${router.query.partner}/checkout/${checkoutId}/address`
+              );
             }}
             size="medium"
             fullWidth
@@ -78,7 +79,9 @@ const InsuranceCovered: FC<Props> = ({
           <p className="text-brand-berry text-xl font-bold">$69 one time fee</p>
           <Button
             onClick={() => {
-              router.push(`/signup/optavia/checkout/${checkoutId}/address`);
+              router.push(
+                `/signup/${router.query.partner}/checkout/${checkoutId}/address`
+              );
             }}
             size="medium"
           >

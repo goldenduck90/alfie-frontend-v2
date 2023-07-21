@@ -40,7 +40,7 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
     if (!data) return "15% of your current weight";
 
     const weightInLbs = parseInt(data.checkout.checkout.weightInLbs);
-    return `${weightInLbs * 0.15} pounds`;
+    return `${(weightInLbs * 0.15).toFixed(2)} pounds`;
   }, [data]);
 
   const insuranceCovered = useMemo(() => {
