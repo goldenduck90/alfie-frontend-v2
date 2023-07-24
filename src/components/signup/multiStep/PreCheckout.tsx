@@ -17,7 +17,7 @@ import { DateOfBirth } from "./steps/DateOfBirth";
 import { EmailCapture } from "./steps/EmailCapture";
 import { HealthInsurance } from "./steps/Insurance";
 
-import { useFormikWizard } from "formik-wizard-form";
+import { useFormikWizard, Step } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
 import { ValidStates } from "../../../utils/states";
 import { gql, useMutation } from "@apollo/client";
@@ -26,22 +26,8 @@ import { Gender } from "../../../graphql/generated";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "@src/components/ui/Button";
-
-const TOTAL_STEPS = 12;
-
-const FORM_TITLES: { [key: number]: string } = {
-  1: "Let’s start off with your details.",
-  2: "Let’s start off with your details.",
-  3: "Let’s start off with your details.",
-  4: "Let’s start off with your details.",
-  5: "A few more details about you.",
-  6: "Let’s start off with your details.",
-  7: "Let’s start off with your details.",
-  8: "Understanding your health",
-  9: "Understanding your health",
-  10: "Get started with Alfie today!",
-  11: "Insurance Coverage",
-};
+import { usePartnerContext } from "@src/context/PartnerContext";
+import { useMemo } from "react";
 
 const createOrFindCheckoutMutation = gql`
   mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
@@ -57,91 +43,36 @@ const createOrFindCheckoutMutation = gql`
 export const PreCheckout = () => {
   const router = useRouter();
   const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
+  const { partner } = usePartnerContext();
 
-  const preCheckoutForm = useFormikWizard({
-    initialValues: {
-      fullName: localStorage.getItem("fullName") || "",
-      location: localStorage.getItem("location") || "",
-      weightLossMotivator: "",
-      weightLossMotivatorV2: JSON.parse(
-        localStorage.getItem("weightLossMotivatorV2") ?? "[]"
-      ),
-      dateOfBirth:
-        localStorage.getItem("dateOfBirth") || format(new Date(), "yyyy-MM-dd"),
-      pastTries: JSON.parse(localStorage.getItem("pastTries") ?? "[]"),
-      biologicalSex: localStorage.getItem("biologicalSex") || "",
-      heightFeet: localStorage.getItem("heightFeet") || "",
-      heightInches: localStorage.getItem("heightInches") || "",
-      weight: localStorage.getItem("weight") || "",
-      email: localStorage.getItem("email") || "",
-      textOptIn: Boolean(localStorage.getItem("textOptIn")) || null,
-      phone: localStorage.getItem("phone") || "",
-      insurancePlan: localStorage.getItem("insurancePlan") || "",
-      insuranceType: localStorage.getItem("insuranceType") || "",
-    },
-    onSubmit: async (
-      {
-        fullName: name,
-        location: state,
-        weightLossMotivator,
-        weightLossMotivatorV2,
-        dateOfBirth,
-        pastTries,
-        biologicalSex,
-        heightFeet,
-        heightInches,
-        weight,
-        email,
-        textOptIn,
-        phone,
-        insurancePlan,
-        insuranceType,
-      },
-      { setStatus, resetForm }
-    ) => {
-      try {
-        const heightInInches =
-          parseInt(heightFeet) * 12 + parseInt(heightInches);
-        const { data, errors } = await createOrFindCheckout({
-          variables: {
-            input: {
-              name,
-              email,
-              weightLossMotivatorV2,
-              dateOfBirth,
-              gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
-              state,
-              heightInInches,
-              weightInLbs: Number(weight),
-              textOptIn,
-              phone: `+1${phone.replace(/[^0-9]/g, "")}`,
-              pastTries,
-              insurancePlan,
-              insuranceType,
-            },
-          },
-        });
+  const TOTAL_STEPS = useMemo(() => (partner ? 13 : 12), [partner]);
 
-        const { checkout } = data.createOrFindCheckout;
-        if (errors) {
-          setStatus({
-            error: errors
-              .map(({ message }: { message: string }) => message)
-              .join(" "),
-          });
-          return;
-        }
-        resetForm();
-        router.push(`/signup/checkout/${checkout._id}`);
-      } catch (err) {
-        const msg = parseError(err);
-        setStatus({ error: msg });
-      }
-    },
-    validateOnNext: true,
-    validateOnChange: false,
-    activeStepIndex: Number(localStorage.getItem("preCheckoutStep")) || 0,
-    steps: [
+  const FORM_TITLES: { [key: number]: string } = useMemo(() => {
+    const titles: { [key: number]: string } = {
+      1: "Let’s start off with your details.",
+      2: "Let’s start off with your details.",
+      3: "Let’s start off with your details.",
+      4: "Let’s start off with your details.",
+      5: "A few more details about you.",
+      6: "Let’s start off with your details.",
+      7: "Let’s start off with your details.",
+      8: "Understanding your health",
+      9: "Understanding your health",
+      10: "Get started with Alfie today!",
+    };
+
+    if (partner) {
+      titles[11] = "Signup Partner Provider";
+      titles[12] = "Insurance Coverage";
+    } else {
+      titles[11] = "Insurance Coverage";
+    }
+
+    return titles;
+  }, [partner]);
+
+  const FORM_STEPS: Step[] = useMemo(() => {
+    const steps: Step[] = [
       {
         component: FullName,
         validationSchema: Yup.object().shape({
@@ -304,7 +235,10 @@ export const PreCheckout = () => {
           return Promise.resolve();
         },
       },
-      {
+    ];
+
+    if (partner) {
+      steps.push({
         component: HealthInsurance,
         validationSchema: Yup.object().shape({
           insurancePlan: Yup.string().required("Please select an option."),
@@ -316,8 +250,111 @@ export const PreCheckout = () => {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
+      });
+    }
+
+    steps.push({
+      component: HealthInsurance,
+      validationSchema: Yup.object().shape({
+        insurancePlan: Yup.string().required("Please select an option."),
+        insuranceType: Yup.string().required("Please select an option."),
+      }),
+      beforeNext({ insurancePlan, insuranceType }, _, currentStepIndex) {
+        localStorage.setItem("insurancePlan", insurancePlan);
+        localStorage.setItem("insuranceType", insuranceType);
+        localStorage.setItem("preCheckoutStep", String(currentStepIndex));
+        return Promise.resolve();
       },
-    ],
+    });
+
+    return steps;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [partner]);
+
+  const preCheckoutForm = useFormikWizard({
+    initialValues: {
+      fullName: localStorage.getItem("fullName") || "",
+      location: localStorage.getItem("location") || "",
+      weightLossMotivator: "",
+      weightLossMotivatorV2: JSON.parse(
+        localStorage.getItem("weightLossMotivatorV2") ?? "[]"
+      ),
+      dateOfBirth:
+        localStorage.getItem("dateOfBirth") || format(new Date(), "yyyy-MM-dd"),
+      pastTries: JSON.parse(localStorage.getItem("pastTries") ?? "[]"),
+      biologicalSex: localStorage.getItem("biologicalSex") || "",
+      heightFeet: localStorage.getItem("heightFeet") || "",
+      heightInches: localStorage.getItem("heightInches") || "",
+      weight: localStorage.getItem("weight") || "",
+      email: localStorage.getItem("email") || "",
+      textOptIn: Boolean(localStorage.getItem("textOptIn")) || null,
+      phone: localStorage.getItem("phone") || "",
+      insurancePlan: localStorage.getItem("insurancePlan") || "",
+      insuranceType: localStorage.getItem("insuranceType") || "",
+    },
+    onSubmit: async (
+      {
+        fullName: name,
+        location: state,
+        weightLossMotivator,
+        weightLossMotivatorV2,
+        dateOfBirth,
+        pastTries,
+        biologicalSex,
+        heightFeet,
+        heightInches,
+        weight,
+        email,
+        textOptIn,
+        phone,
+        insurancePlan,
+        insuranceType,
+      },
+      { setStatus, resetForm }
+    ) => {
+      try {
+        const heightInInches =
+          parseInt(heightFeet) * 12 + parseInt(heightInches);
+        const { data, errors } = await createOrFindCheckout({
+          variables: {
+            input: {
+              name,
+              email,
+              weightLossMotivatorV2,
+              dateOfBirth,
+              gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
+              state,
+              heightInInches,
+              weightInLbs: Number(weight),
+              textOptIn,
+              phone: `+1${phone.replace(/[^0-9]/g, "")}`,
+              pastTries,
+              insurancePlan,
+              insuranceType,
+            },
+          },
+        });
+
+        const { checkout } = data.createOrFindCheckout;
+        if (errors) {
+          setStatus({
+            error: errors
+              .map(({ message }: { message: string }) => message)
+              .join(" "),
+          });
+          return;
+        }
+        resetForm();
+        router.push(`/signup/checkout/${checkout._id}`);
+      } catch (err) {
+        const msg = parseError(err);
+        setStatus({ error: msg });
+      }
+    },
+    validateOnNext: true,
+    validateOnChange: false,
+    activeStepIndex: Number(localStorage.getItem("preCheckoutStep")) || 0,
+    steps: FORM_STEPS,
   });
 
   const {

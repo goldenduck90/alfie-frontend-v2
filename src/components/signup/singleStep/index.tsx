@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
 import { usePartnerContext } from "@src/context/PartnerContext";
 import SingleStepPreCheckout from "./PreCheckout";
-import MultiStepPreCheckout from "../PreCheckout";
-import { Loading } from "../../Loading";
+import MultiStepPreCheckout from "./PreCheckout";
+import { Loading } from "../Loading";
 import { FlowType } from "@src/graphql/generated";
 
 const getSignupPartnerQuery = gql`

@@ -425,6 +425,12 @@ export enum FileType {
   PhotoId = 'PhotoId'
 }
 
+/** Signup flow type whether single step or multi step */
+export enum FlowType {
+  MultiStep = 'MultiStep',
+  SingleStep = 'SingleStep'
+}
+
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
@@ -1101,6 +1107,7 @@ export type SignedUrlResponse = {
 export type SignupPartner = {
   __typename?: 'SignupPartner';
   _id: Scalars['String'];
+  flowType: FlowType;
   logoUrl?: Maybe<Scalars['String']>;
   title: Scalars['String'];
 };
