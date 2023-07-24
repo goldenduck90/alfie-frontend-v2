@@ -34,12 +34,8 @@ export const ConnectWithingsButton = () => {
   };
 
   return (
-    <Button
-      size="medium"
-      disabled={loading || !!user?.hasScale}
-      onClick={handleConnectClick}
-    >
-      <span>{user?.hasScale ? "Connected" : "Connect"}</span>
+    <Button size="medium" disabled={loading} onClick={handleConnectClick}>
+      <span>Connect</span>
       <div className="absolute">{loading && <Loading size={24} />}</div>
     </Button>
   );
