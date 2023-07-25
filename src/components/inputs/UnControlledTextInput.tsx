@@ -1,4 +1,4 @@
-import { Loading } from "../old/Loading";
+import { Loading } from "../Loading";
 
 export interface ITextInput {
   name: string;

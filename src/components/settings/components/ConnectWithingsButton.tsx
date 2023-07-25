@@ -1,7 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { Button } from "@src/components/ui/Button";
-import { Loading } from "../../old/Loading";
+import { Loading } from "@src/components/Loading";
 
 const generateMetriportConnectUrlMutation = gql`
   mutation GenerateMetriportConnectUrl($userId: String!) {
