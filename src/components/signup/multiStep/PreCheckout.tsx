@@ -30,6 +30,8 @@ import { Button } from "@src/components/ui/Button";
 import { usePartnerContext } from "@src/context/PartnerContext";
 import { useMemo } from "react";
 
+import { CreateCheckoutInput } from "@src/graphql/generated";
+
 const createOrFindCheckoutMutation = gql`
   mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
     createOrFindCheckout(input: $input) {
@@ -43,8 +45,8 @@ const createOrFindCheckoutMutation = gql`
 
 export const PreCheckout = () => {
   const router = useRouter();
-  const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
   const { partner } = usePartnerContext();
+  const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
 
   const TOTAL_STEPS = useMemo(() => (partner ? 13 : 12), [partner]);
 
@@ -287,7 +289,7 @@ export const PreCheckout = () => {
       heightInches: localStorage.getItem("heightInches") || "",
       weight: localStorage.getItem("weight") || "",
       email: localStorage.getItem("email") || "",
-      textOptIn: Boolean(localStorage.getItem("textOptIn")) || null,
+      textOptIn: Boolean(localStorage.getItem("textOptIn")) || true,
       phone: localStorage.getItem("phone") || "",
       insurancePlan: localStorage.getItem("insurancePlan") || "",
       insuranceType: localStorage.getItem("insuranceType") || "",
@@ -318,25 +320,31 @@ export const PreCheckout = () => {
       try {
         const heightInInches =
           parseInt(heightFeet) * 12 + parseInt(heightInches);
+
+        const input: CreateCheckoutInput = {
+          name,
+          email,
+          weightLossMotivatorV2,
+          dateOfBirth,
+          gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
+          state,
+          heightInInches,
+          weightInLbs: Number(weight),
+          textOptIn,
+          phone: `+1${phone.replace(/[^0-9]/g, "")}`,
+          pastTries,
+          insurancePlan,
+          insuranceType,
+        };
+
+        if (partner) {
+          input.signupPartnerId = partner?._id;
+          input.signupPartnerProviderId = signupPartnerProvider;
+        }
+
         const { data, errors } = await createOrFindCheckout({
           variables: {
-            input: {
-              name,
-              email,
-              weightLossMotivatorV2,
-              dateOfBirth,
-              gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
-              state,
-              heightInInches,
-              weightInLbs: Number(weight),
-              textOptIn,
-              phone: `+1${phone.replace(/[^0-9]/g, "")}`,
-              pastTries,
-              insurancePlan,
-              insuranceType,
-              signupPartnerId: partner?._id,
-              signupPartnerProvider,
-            },
+            input,
           },
         });
 
