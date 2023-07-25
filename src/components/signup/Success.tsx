@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Wrapper } from "../../layouts/Wrapper";
 import Image from "next/image";
+import { Wrapper } from "../layouts/Wrapper";
 import { CheckCircleIcon } from "@heroicons/react/outline";
 
 export const Success = () => {

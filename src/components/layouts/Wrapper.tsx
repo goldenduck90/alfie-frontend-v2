@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import Image from "next/image";
 import { usePartnerContext } from "@src/context/PartnerContext";
 
-import Logo, { LogoColor } from "../old/Logo";
+import Logo, { LogoColor } from "../Logo";
 
 type Props = {
   header?: React.ReactNode;

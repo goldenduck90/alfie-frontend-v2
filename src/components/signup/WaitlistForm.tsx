@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { Wrapper } from "../../layouts/Wrapper";
-import { IconInput } from "../../inputs/IconInput";
+import { Wrapper } from "../layouts/Wrapper";
+import { IconInput } from "../inputs/IconInput";
 import { MailIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
-import { parseError } from "../../../utils/parseError";
-import { getStateByAbbreviation } from "../../../utils/states";
+import { parseError } from "../../utils/parseError";
+import { getStateByAbbreviation } from "../../utils/states";
 import { useRouter } from "next/router";
 import { Button } from "@src/components/ui/Button";
 

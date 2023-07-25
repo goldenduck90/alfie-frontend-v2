@@ -16,6 +16,7 @@ import { BMI } from "./steps/BMI";
 import { DateOfBirth } from "./steps/DateOfBirth";
 import { EmailCapture } from "./steps/EmailCapture";
 import { HealthInsurance } from "./steps/Insurance";
+import { PartnerProvider } from "./steps/PartnerProvider";
 
 import { useFormikWizard, Step } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
@@ -239,14 +240,13 @@ export const PreCheckout = () => {
 
     if (partner) {
       steps.push({
-        component: HealthInsurance,
-        validationSchema: Yup.object().shape({
-          insurancePlan: Yup.string().required("Please select an option."),
-          insuranceType: Yup.string().required("Please select an option."),
-        }),
-        beforeNext({ insurancePlan, insuranceType }, _, currentStepIndex) {
-          localStorage.setItem("insurancePlan", insurancePlan);
-          localStorage.setItem("insuranceType", insuranceType);
+        component: PartnerProvider,
+        validationSchema:
+          partner && partner.providers.length > 0
+            ? Yup.string().required("Please select referring provider.")
+            : Yup.string().optional(),
+        beforeNext({ signupPartnerProvider }, _, currentStepIndex) {
+          localStorage.setItem("signupPartnerProvider", signupPartnerProvider);
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
@@ -291,6 +291,8 @@ export const PreCheckout = () => {
       phone: localStorage.getItem("phone") || "",
       insurancePlan: localStorage.getItem("insurancePlan") || "",
       insuranceType: localStorage.getItem("insuranceType") || "",
+      signupPartnerProvider:
+        localStorage.getItem("signupPartnerProvider") || "",
     },
     onSubmit: async (
       {
@@ -309,6 +311,7 @@ export const PreCheckout = () => {
         phone,
         insurancePlan,
         insuranceType,
+        signupPartnerProvider,
       },
       { setStatus, resetForm }
     ) => {
@@ -331,6 +334,8 @@ export const PreCheckout = () => {
               pastTries,
               insurancePlan,
               insuranceType,
+              signupPartnerId: partner?._id,
+              signupPartnerProvider,
             },
           },
         });

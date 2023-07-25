@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
 import { usePartnerContext } from "@src/context/PartnerContext";
-import SingleStepPreCheckout from "./PreCheckout";
-import MultiStepPreCheckout from "../PreCheckout";
-import { Loading } from "../../Loading";
+import SingleStepPreCheckout from "./singleStep/PreCheckout";
+import MultiStepPreCheckout from "./multiStep/PreCheckout";
+import { Loading } from "../Loading";
 import { FlowType } from "@src/graphql/generated";
 
 const getSignupPartnerQuery = gql`
@@ -24,7 +24,7 @@ const getSignupPartnerQuery = gql`
   }
 `;
 
-export function PartnerSignUpPage() {
+export function PartnerSignUp() {
   const router = useRouter();
   const { partner: signupPartner, setPartner } = usePartnerContext();
   const [loading, setLoading] = useState(true);
@@ -48,7 +48,10 @@ export function PartnerSignUpPage() {
           providers: data.getSignupPartnerByTitle.partnerProviders,
         });
         setLoading(false);
-      } else router.push("/signup");
+      } else {
+        localStorage.removeItem("partner");
+        router.push("/signup");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetching, error]);
@@ -65,3 +68,5 @@ export function PartnerSignUpPage() {
     </>
   );
 }
+
+export default PartnerSignUp;
