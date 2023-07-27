@@ -1,7 +1,7 @@
+import { useField } from "formik";
 import { SelectInput } from "@src/components/inputs/SelectInput";
 import { InsuranceTypes, InsurancePlans } from "@src/utils/insurance";
-import { Checkbox } from "../../../inputs/Checkbox";
-import { useField } from "formik";
+import { Checkbox } from "@src/components/inputs/Checkbox";
 
 const InsuranceDetails = () => {
   const [, { value: skipInsurance }] = useField("skipInsurance");

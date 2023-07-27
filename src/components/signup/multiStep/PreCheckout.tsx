@@ -1,8 +1,12 @@
+import Link from "next/link";
+import { useMemo } from "react";
+import { useRouter } from "next/router";
 import { FormikProvider } from "formik";
 import * as Yup from "yup";
+
 import { isValidPhoneNumber } from "libphonenumber-js";
 
-import { Wrapper } from "../../layouts/Wrapper";
+import { Wrapper } from "@src/components/layouts/Wrapper";
 
 // Steps
 import { FullName } from "./steps/FullName";
@@ -20,17 +24,19 @@ import { PartnerProvider } from "./steps/PartnerProvider";
 
 import { useFormikWizard, Step } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
-import { ValidStates } from "../../../utils/states";
+import { ValidStates } from "@src/utils/states";
 import { gql, useMutation } from "@apollo/client";
-import { parseError } from "../../../utils/parseError";
-import { Gender } from "../../../graphql/generated";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { parseError } from "@src/utils/parseError";
+
 import { Button } from "@src/components/ui/Button";
 import { usePartnerContext } from "@src/context/PartnerContext";
-import { useMemo } from "react";
 
-import { CreateCheckoutInput } from "@src/graphql/generated";
+import {
+  Gender,
+  CreateCheckoutInput,
+  InsurancePlan,
+  InsuranceType,
+} from "@src/graphql/generated";
 
 const createOrFindCheckoutMutation = gql`
   mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
@@ -261,8 +267,20 @@ export const PreCheckout = () => {
     steps.push({
       component: HealthInsurance,
       validationSchema: Yup.object().shape({
-        insurancePlan: Yup.string().required("Please select an option."),
-        insuranceType: Yup.string().required("Please select an option."),
+        insurancePlan: Yup.string().when("skipInsurance", {
+          is: (skipInsurance: boolean) => skipInsurance,
+          then: Yup.string().optional(),
+          otherwise: Yup.string().required(
+            "Please select your insurance plan."
+          ),
+        }),
+        insuranceType: Yup.string().when("skipInsurance", {
+          is: (skipInsurance: boolean) => skipInsurance,
+          then: Yup.string().optional(),
+          otherwise: Yup.string().required(
+            "Please select your insurance type."
+          ),
+        }),
       }),
       beforeNext({ insurancePlan, insuranceType }, _, currentStepIndex) {
         localStorage.setItem("insurancePlan", insurancePlan);
@@ -294,6 +312,7 @@ export const PreCheckout = () => {
       email: localStorage.getItem("email") || "",
       textOptIn: Boolean(localStorage.getItem("textOptIn")) || true,
       phone: localStorage.getItem("phone") || "",
+      skipInsurance: Boolean(localStorage.getItem("skipInsurance")) || false,
       insurancePlan: localStorage.getItem("insurancePlan") || "",
       insuranceType: localStorage.getItem("insuranceType") || "",
       signupPartnerProvider:
@@ -314,6 +333,7 @@ export const PreCheckout = () => {
         email,
         textOptIn,
         phone,
+        skipInsurance,
         insurancePlan,
         insuranceType,
         signupPartnerProvider,
@@ -340,9 +360,19 @@ export const PreCheckout = () => {
           insuranceType,
         };
 
+        if (!skipInsurance) {
+          input.insurancePlan =
+            InsurancePlan[insurancePlan as keyof typeof InsurancePlan];
+          input.insuranceType =
+            InsuranceType[insuranceType as keyof typeof InsuranceType];
+        }
+
         if (partner) {
           input.signupPartnerId = partner?._id;
-          input.signupPartnerProviderId = signupPartnerProvider;
+
+          if (signupPartnerProvider.length > 0) {
+            input.signupPartnerProviderId = signupPartnerProvider;
+          }
         }
 
         const { data, errors } = await createOrFindCheckout({

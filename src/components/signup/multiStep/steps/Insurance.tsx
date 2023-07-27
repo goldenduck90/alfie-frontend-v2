@@ -1,8 +1,12 @@
 import React from "react";
+import { useField } from "formik";
 import { SelectInput } from "@src/components/inputs/SelectInput";
 import { InsuranceTypes, InsurancePlans } from "@src/utils/insurance";
+import { Checkbox } from "@src/components/inputs/Checkbox";
 
 export const HealthInsurance: React.FC = () => {
+  const [, { value: skipInsurance }] = useField("skipInsurance");
+
   return (
     <div className="px-8">
       <p className="mb-10 mt-4 font-md font-medium text-lg text-secondary-500">
@@ -18,26 +22,41 @@ export const HealthInsurance: React.FC = () => {
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col w-64">
-          <p className="text-primary-700 font-bold">
-            Insurance Plan<span className="text-[red]">*</span>
+          <p
+            className={`${
+              skipInsurance ? "text-gray-500" : "text-primary-700"
+            } font-bold`}
+          >
+            Insurance Plan
+            {!skipInsurance && <span className="text-[red]">*</span>}
           </p>
           <SelectInput
             name="insurancePlan"
             placeholder="Select"
+            disabled={skipInsurance}
             options={InsurancePlans}
           />
         </div>
 
         <div className="flex flex-col w-64">
-          <p className="text-primary-700 font-bold">
-            Plan Type<span className="text-[red]">*</span>
+          <p
+            className={`${
+              skipInsurance ? "text-gray-500" : "text-primary-700"
+            } font-bold`}
+          >
+            Plan Type
+            {!skipInsurance && <span className="text-[red]">*</span>}
           </p>
           <SelectInput
             name="insuranceType"
             placeholder="Select"
+            disabled={skipInsurance}
             options={InsuranceTypes}
           />
         </div>
+      </div>
+      <div className="mx-6 my-2">
+        <Checkbox name="skipInsurance" label="I don't have insurance" />
       </div>
 
       <div className="pb-2">
