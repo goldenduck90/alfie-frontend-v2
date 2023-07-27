@@ -1,4 +1,4 @@
-import { Ineligible } from "@src/components/old/signup/steps/Ineligible";
+import { Ineligible } from "@src/components/signup/Ineligible";
 
 function SignupIneligible() {
   return <Ineligible />;

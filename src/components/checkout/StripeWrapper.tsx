@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
-import { Loading } from "../../Loading";
+import { Loading } from "@src/components/Loading";
 
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {

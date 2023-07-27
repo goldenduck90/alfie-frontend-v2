@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
 import { usePartnerContext } from "@src/context/PartnerContext";
-import PreCheckout from "./PreCheckout";
-import { Loading } from "../../Loading";
+import SingleStepPreCheckout from "./singleStep/PreCheckout";
+import MultiStepPreCheckout from "./multiStep/PreCheckout";
+import { Loading } from "../Loading";
+import { FlowType } from "@src/graphql/generated";
 
 const getSignupPartnerQuery = gql`
   query getSignupPartnerByTitle($title: String!) {
@@ -12,6 +14,7 @@ const getSignupPartnerQuery = gql`
         _id
         title
         logoUrl
+        flowType
       }
       partnerProviders {
         _id
@@ -21,11 +24,10 @@ const getSignupPartnerQuery = gql`
   }
 `;
 
-export function PartnerSignUpPage() {
+export function PartnerSignUp() {
   const router = useRouter();
-  const { setPartner } = usePartnerContext();
+  const { partner: signupPartner, setPartner } = usePartnerContext();
   const [loading, setLoading] = useState(true);
-
   const { partner } = router.query;
 
   const {
@@ -46,10 +48,25 @@ export function PartnerSignUpPage() {
           providers: data.getSignupPartnerByTitle.partnerProviders,
         });
         setLoading(false);
-      } else router.push("/signup");
+      } else {
+        localStorage.removeItem("partner");
+        router.push("/signup");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetching, error]);
 
-  return <>{loading ? <Loading /> : <PreCheckout />}</>;
+  if (loading) return <Loading />;
+
+  return (
+    <>
+      {signupPartner?.flowType === FlowType.SingleStep ? (
+        <SingleStepPreCheckout />
+      ) : (
+        <MultiStepPreCheckout />
+      )}
+    </>
+  );
 }
+
+export default PartnerSignUp;

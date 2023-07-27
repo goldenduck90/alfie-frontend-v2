@@ -1,4 +1,4 @@
-import { WaitListForm } from "@src/components/old/signup/WaitlistForm";
+import { WaitListForm } from "@src/components/signup/WaitlistForm";
 
 function WaitList() {
   return <WaitListForm />;

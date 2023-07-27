@@ -1,4 +1,4 @@
-import { Checkout } from "@src/components/old/signup/Checkout";
+import { Checkout } from "@src/components/checkout/Checkout";
 
 function CheckoutPage() {
   return <Checkout />;

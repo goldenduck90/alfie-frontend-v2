@@ -1,7 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { Button } from "@src/components/ui/Button";
-import { Loading } from "../../old/Loading";
+import { Loading } from "@src/components/Loading";
 
 const generateMetriportConnectUrlMutation = gql`
   mutation GenerateMetriportConnectUrl($userId: String!) {
@@ -34,12 +34,8 @@ export const ConnectWithingsButton = () => {
   };
 
   return (
-    <Button
-      size="medium"
-      disabled={loading || !!user?.hasScale}
-      onClick={handleConnectClick}
-    >
-      <span>{user?.hasScale ? "Connected" : "Connect"}</span>
+    <Button size="medium" disabled={loading} onClick={handleConnectClick}>
+      <span>Connect</span>
       <div className="absolute">{loading && <Loading size={24} />}</div>
     </Button>
   );

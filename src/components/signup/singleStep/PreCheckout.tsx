@@ -124,8 +124,6 @@ const PreCheckout = () => {
         referrer,
       } = values;
 
-      console.log(values);
-
       const fullName = `${firstName} ${lastName}`;
 
       if (!ValidStates.includes(state)) {
@@ -170,7 +168,7 @@ const PreCheckout = () => {
       const { checkout } = data.createOrFindCheckout;
       console.log(checkout);
       resetForm();
-      router.push(`/signup/${router.query.partner}/checkout/${checkout._id}`);
+      router.push(`/signup/checkout/${checkout._id}`);
     },
   });
 

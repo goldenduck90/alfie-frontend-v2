@@ -11,7 +11,7 @@ import * as Yup from "yup";
 import { parseError } from "@src/utils/parseError";
 import { Button } from "@src/components/ui/Button";
 import { useRouter } from "next/router";
-import { Loading } from "../../Loading";
+import { Loading } from "@src/components/Loading";
 import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
 
 const createOrUpdateStripeSessionMutation = gql`
@@ -26,7 +26,7 @@ const createOrUpdateStripeSessionMutation = gql`
 
 export const CheckoutAddress = () => {
   const router = useRouter();
-  const { id, partner } = router.query;
+  const { id } = router.query;
   const { loading, error, insuranceCovered } = useCheckoutQuery(id);
 
   const [createOrUpdateStripeSession] = useMutation(
@@ -72,7 +72,7 @@ export const CheckoutAddress = () => {
 
         const { checkout } = data.createOrUpdateStripeSession;
         resetForm();
-        router.push(`/signup/${partner}/checkout/${checkout._id}/payment`);
+        router.push(`/signup/checkout/${checkout._id}/payment`);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
@@ -81,7 +81,7 @@ export const CheckoutAddress = () => {
   });
 
   if (!id) {
-    router.push("/signup/optavia");
+    router.push("/signup");
   }
 
   if (error) {
