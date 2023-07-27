@@ -1,4 +1,4 @@
-import { Checkout } from "@src/components/old/signup/optavia/Checkout";
+import { Checkout } from "@src/components/old/signup/partner/Checkout";
 
 function CheckoutPage() {
   return <Checkout />;

@@ -7,12 +7,15 @@ import * as Yup from "yup";
 import { differenceInYears } from "date-fns";
 import { isValidPhoneNumber } from "libphonenumber-js";
 
-import { Wrapper, PARTNERS } from "@src/components/layouts/Wrapper";
+import { Wrapper } from "@src/components/layouts/Wrapper";
 import { Button } from "@src/components/ui/Button";
 
 import ContactInformation from "./sections/ContactInformation";
 import PatientDetails from "./sections/PatientDetails";
 import InsuranceDetails from "./sections/InsuranceDetails";
+import PartnerDetails from "./sections/PartnerDetails";
+
+import { usePartnerContext } from "@src/context/PartnerContext";
 
 import { ValidStates } from "@src/utils/states";
 import { Gender } from "@src/graphql/generated";
@@ -32,6 +35,7 @@ const createOrFindCheckoutMutation = gql`
 
 const PreCheckout = () => {
   const router = useRouter();
+  const { partner } = usePartnerContext();
   const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
 
   const formik = useFormik({
@@ -49,6 +53,7 @@ const PreCheckout = () => {
       pastTries: [],
       insurancePlan: "",
       insuranceType: "",
+      signupPartnerProvider: "",
       referrer: router.query?.health_coach,
     },
     validateOnChange: false,
@@ -95,6 +100,10 @@ const PreCheckout = () => {
       insuranceType: Yup.string().required(
         "Please select your insurance type."
       ),
+      signupPartnerProvider:
+        partner && partner.providers.length > 0
+          ? Yup.string().required("Please select referring provider.")
+          : Yup.string().optional(),
     }),
     onSubmit: async (values, { resetForm }) => {
       const {
@@ -111,8 +120,11 @@ const PreCheckout = () => {
         pastTries,
         insurancePlan,
         insuranceType,
+        signupPartnerProvider,
         referrer,
       } = values;
+
+      console.log(values);
 
       const fullName = `${firstName} ${lastName}`;
 
@@ -145,7 +157,8 @@ const PreCheckout = () => {
         pastTries: pastTries,
         insurancePlan,
         insuranceType,
-        signupPartner: "OPTAVIA",
+        signupPartnerId: partner?._id,
+        signupPartnerProviderId: signupPartnerProvider,
         referrer,
       };
 
@@ -157,17 +170,15 @@ const PreCheckout = () => {
       const { checkout } = data.createOrFindCheckout;
       console.log(checkout);
       resetForm();
-      router.push(`/signup/optavia/checkout/${checkout._id}`);
+      router.push(`/signup/${router.query.partner}/checkout/${checkout._id}`);
     },
   });
 
   return (
     <Wrapper
-      partner={PARTNERS.optavia}
       header={
         <h2 className="text-lg text-center sm:text-2xl text-white font-bold">
-          Achieve Results with the Power of Alfie and OPTA
-          <span className="font-normal">VIA</span>
+          Achieve Results with the Power of Alfie and {partner?.title}
         </h2>
       }
     >
@@ -205,6 +216,9 @@ const PreCheckout = () => {
               <ContactInformation />
               <PatientDetails />
               <InsuranceDetails />
+              {partner && partner.providers.length > 0 && (
+                <PartnerDetails providers={partner?.providers} />
+              )}
             </div>
 
             <div className="pt-5 md:pt-10 pb-3 px-8 flex flex-row justify-end">
