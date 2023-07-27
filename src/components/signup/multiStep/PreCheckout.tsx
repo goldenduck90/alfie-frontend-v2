@@ -48,7 +48,10 @@ export const PreCheckout = () => {
   const { partner } = usePartnerContext();
   const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
 
-  const TOTAL_STEPS = useMemo(() => (partner ? 13 : 12), [partner]);
+  const TOTAL_STEPS = useMemo(
+    () => (partner && partner.providers.length > 0 ? 13 : 12),
+    [partner]
+  );
 
   const FORM_TITLES: { [key: number]: string } = useMemo(() => {
     const titles: { [key: number]: string } = {
@@ -64,7 +67,7 @@ export const PreCheckout = () => {
       10: "Get started with Alfie today!",
     };
 
-    if (partner) {
+    if (partner && partner.providers.length > 0) {
       titles[11] = "Signup Partner Provider";
       titles[12] = "Insurance Coverage";
     } else {
@@ -240,7 +243,7 @@ export const PreCheckout = () => {
       },
     ];
 
-    if (partner) {
+    if (partner && partner.providers.length > 0) {
       steps.push({
         component: PartnerProvider,
         validationSchema:

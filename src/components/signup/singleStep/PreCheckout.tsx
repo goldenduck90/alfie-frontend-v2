@@ -18,7 +18,12 @@ import PartnerDetails from "./sections/PartnerDetails";
 import { usePartnerContext } from "@src/context/PartnerContext";
 
 import { ValidStates } from "@src/utils/states";
-import { Gender } from "@src/graphql/generated";
+import {
+  Gender,
+  CreateCheckoutInput,
+  InsurancePlan,
+  InsuranceType,
+} from "@src/graphql/generated";
 
 const TOTAL_STEPS = 2;
 
@@ -51,6 +56,7 @@ const PreCheckout = () => {
       heightInches: "",
       weight: "",
       pastTries: [],
+      skipInsurance: false,
       insurancePlan: "",
       insuranceType: "",
       signupPartnerProvider: "",
@@ -94,12 +100,16 @@ const PreCheckout = () => {
         .of(Yup.string())
         .min(1, "Please select at least 1 option.")
         .required("Please select options."),
-      insurancePlan: Yup.string().required(
-        "Please select your insurance plan."
-      ),
-      insuranceType: Yup.string().required(
-        "Please select your insurance type."
-      ),
+      insurancePlan: Yup.string().when("skipInsurance", {
+        is: (skipInsurance: boolean) => skipInsurance,
+        then: Yup.string().optional(),
+        otherwise: Yup.string().required("Please select your insurance plan."),
+      }),
+      insuranceType: Yup.string().when("skipInsurance", {
+        is: (skipInsurance: boolean) => skipInsurance,
+        then: Yup.string().optional(),
+        otherwise: Yup.string().required("Please select your insurance type."),
+      }),
       signupPartnerProvider:
         partner && partner.providers.length > 0
           ? Yup.string().required("Please select referring provider.")
@@ -118,6 +128,7 @@ const PreCheckout = () => {
         heightInches,
         weight,
         pastTries,
+        skipInsurance,
         insurancePlan,
         insuranceType,
         signupPartnerProvider,
@@ -142,7 +153,7 @@ const PreCheckout = () => {
         return;
       }
 
-      const input = {
+      const input: CreateCheckoutInput = {
         name: fullName,
         email,
         dateOfBirth,
@@ -153,12 +164,23 @@ const PreCheckout = () => {
         weightInLbs: Number(weight),
         weightLossMotivatorV2: [],
         pastTries: pastTries,
-        insurancePlan,
-        insuranceType,
         signupPartnerId: partner?._id,
-        signupPartnerProviderId: signupPartnerProvider,
-        referrer,
       };
+
+      if (!skipInsurance) {
+        input.insurancePlan =
+          InsurancePlan[insurancePlan as keyof typeof InsurancePlan];
+        input.insuranceType =
+          InsuranceType[insuranceType as keyof typeof InsuranceType];
+      }
+
+      if (referrer && typeof referrer === "string") {
+        input.referrer = referrer;
+      }
+
+      if (signupPartnerProvider.length > 0) {
+        input.signupPartnerProviderId = signupPartnerProvider;
+      }
 
       const { data } = await createOrFindCheckout({
         variables: {

@@ -48,13 +48,17 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
     if (data?.checkout?.checkout) {
       covered = true;
       const { insurancePlan, insuranceType } = data.checkout.checkout;
-      covered = !(
-        [
-          InsurancePlan.Medicaid,
-          InsurancePlan.Other,
-          InsurancePlan.Cigna,
-        ].includes(insurancePlan) || insuranceType === InsuranceType.Hmo
-      );
+      if (insurancePlan && insuranceType) {
+        covered = !(
+          [
+            InsurancePlan.Medicaid,
+            InsurancePlan.Other,
+            InsurancePlan.Cigna,
+          ].includes(insurancePlan) || insuranceType === InsuranceType.Hmo
+        );
+      } else {
+        covered = false;
+      }
     }
     return covered;
   }, [data]);
