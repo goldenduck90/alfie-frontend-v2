@@ -1,4 +1,4 @@
-import { Success } from "@src/components/old/signup/Success";
+import { Success } from "@src/components/checkout/Success";
 
 function CheckoutSuccessPage() {
   return <Success />;

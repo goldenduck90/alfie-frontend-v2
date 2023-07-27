@@ -1,18 +1,29 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Wrapper } from "@src/components/layouts/Wrapper";
 import { useRouter } from "next/router";
-import { FeatureSection } from "../../FeatureSection";
-import { Loading } from "../../Loading";
+import { Wrapper } from "@src/components/layouts/Wrapper";
+import { FeatureSection } from "./FeatureSection";
+import { Loading } from "@src/components/Loading";
 import { Button } from "@src/components/ui/Button";
 import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
-import InsuranceCovered from "./checkout/InsuranceCovered";
-import InsuranceNotCovered from "./checkout/InsuranceNotCovered";
-
-const TOTAL_STEPS = 2;
+import InsuranceCovered from "./insurance/InsuranceCovered";
+import InsuranceNotCovered from "./insurance/InsuranceNotCovered";
+import { usePartnerContext } from "@src/context/PartnerContext";
+import { FlowType } from "@src/graphql/generated";
 
 export const Checkout = () => {
   const router = useRouter();
   const checkoutId = router.query.id;
+  const { partner } = usePartnerContext();
+
+  const [steps, setSteps] = useState(12); // Regular signup flow steps
+
+  useEffect(() => {
+    if (partner) {
+      setSteps(partner.flowType === FlowType.MultiStep ? 13 : 2);
+    }
+  }, [partner]);
+
   const { data, loading, error, weightLossValue, insuranceCovered } =
     useCheckoutQuery(checkoutId);
 
@@ -31,7 +42,7 @@ export const Checkout = () => {
       <div className="flex flex-col max-w-lg bg-white rounded-xl gap-5">
         <div className="border-b px-8 py-4">
           <span className="text-primary-700 bg-primary-100 font-medium font-sm px-4 py-1 rounded-3xl">
-            2 out of {TOTAL_STEPS}
+            {steps} out of {steps}
           </span>
         </div>
 

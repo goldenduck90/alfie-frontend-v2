@@ -1,10 +1,20 @@
-import { SignUpPage } from "@src/components/old/signup";
-import React from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+import RegularSignUp from "@src/components/signup/RegularSignUp";
 
-function SignUp() {
-  return <SignUpPage />;
+function RegularSignUpPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const partner = localStorage.getItem("partner");
+    if (partner) {
+      router.push(`/signup/${partner}`);
+    }
+  }, [router]);
+
+  return <RegularSignUp />;
 }
 
-SignUp.isAuthRequired = false;
+RegularSignUpPage.isAuthRequired = false;
 
-export default SignUp;
+export default RegularSignUpPage;

@@ -1,4 +1,4 @@
-import { CheckoutAddress } from "@src/components/old/signup/CheckoutAddress";
+import { CheckoutAddress } from "@src/components/checkout/CheckoutAddress";
 
 function CheckoutAddressPage() {
   return <CheckoutAddress />;

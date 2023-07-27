@@ -1,4 +1,4 @@
-import { Wrapper } from "../../../layouts/Wrapper";
+import { Wrapper } from "../layouts/Wrapper";
 
 export const Ineligible = () => {
   // sorry, based on your inputs you are ineligible for our medication-based weight loss program. Medications are approved for individuals with a BMI > 30 or a BMI > 27 with associated conditions.
