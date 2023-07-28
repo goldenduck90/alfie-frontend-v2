@@ -1,7 +1,7 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { useFormikWizard } from "formik-wizard-form";
 import { FormikProvider, useField } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../../../ui/Button";
 import {
   DialogLongBody,
@@ -96,6 +96,7 @@ export function ScheduleAppointment({
   userTaskId,
   onComplete,
   eaCustomerName,
+  healthCoach = false,
 }: {
   eaAppointmentId?: string;
   userId?: string;
@@ -105,6 +106,7 @@ export function ScheduleAppointment({
   userTaskId?: string;
   onComplete?: () => void;
   eaCustomerName?: string;
+  healthCoach?: boolean;
 }) {
   const result = useQuery(getRoleQuery);
   const isProvider =
@@ -112,6 +114,8 @@ export function ScheduleAppointment({
     result.data?.getRole?.role === Role.CareCoordinator ||
     result.data?.getRole?.role === Role.Doctor ||
     result.data?.getRole?.role === Role.HealthCoach;
+
+  const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach || healthCoach;
 
   const [update] = useMutation(updateAppointmentMutation);
   const [create] = useMutation(createAppointmentMutation);
@@ -134,6 +138,7 @@ export function ScheduleAppointment({
       eaCustomer: undefined,
       userId,
       eaCustomerName,
+      healthCoach: isHealthCoach,
     },
     onSubmit: async (values) => {
       try {
@@ -167,6 +172,9 @@ export function ScheduleAppointment({
               input: {
                 ...(isProvider && {
                   userId: values.userId,
+                }),
+                ...(isHealthCoach && {
+                  healthCoach: true,
                 }),
                 start: dayjs(values.start).format("YYYY-MM-DD H:mm"),
                 end: dayjs(values.end).format("YYYY-MM-DD H:mm"),
@@ -236,6 +244,15 @@ export function ScheduleAppointment({
       },
     ],
   });
+
+  useEffect(() => {
+    if (result.loading) return
+    if (!result.data) return
+    if (scheduleForm.values.healthCoach) return
+    if(result.data?.getRole?.role === Role.Admin) return
+    const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach || healthCoach;
+    scheduleForm.setFieldValue("healthCoach", isHealthCoach);
+  }, [healthCoach, result.data, result.loading, scheduleForm])
 
   const setOpen = useDialogToggle();
 

@@ -1,5 +1,5 @@
-import { CheckoutPayment } from "@src/components/old/signup/CheckoutPayment";
-import { StripeWrapper } from "@src/components/old/signup/StripeWrapper";
+import { CheckoutPayment } from "@src/components/checkout/CheckoutPayment";
+import { StripeWrapper } from "@src/components/checkout/StripeWrapper";
 
 function CheckoutPaymentPage() {
   return (

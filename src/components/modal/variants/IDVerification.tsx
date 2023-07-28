@@ -272,6 +272,7 @@ export const IDVerificationModal = ({
 
       // End
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

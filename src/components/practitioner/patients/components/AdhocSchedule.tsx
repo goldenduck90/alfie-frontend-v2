@@ -10,7 +10,9 @@ export function AdhocSchedule({ patient }: { patient: User }) {
         <h3 className="mb-6 text-xl font-bold">Schedule Appointment</h3>
         <DialogModal triggerAsChild trigger={
           <Button
-            onClick={() => { }}
+            onClick={() => {
+              console.log("clicked");
+             }}
           >
             Schedule
           </Button>

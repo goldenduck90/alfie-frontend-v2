@@ -1,32 +1,32 @@
 import React, { useCallback } from "react";
 import Image from "next/image";
+import { usePartnerContext } from "@src/context/PartnerContext";
 
-import Logo, { LogoColor } from "../old/Logo";
-import optaviaLogo from "@src/assets/optavia-logo.png";
-
-export enum PARTNERS {
-  optavia = "optavia",
-}
+import Logo, { LogoColor } from "../Logo";
 
 type Props = {
-  partner?: PARTNERS;
   header?: React.ReactNode;
   children: React.ReactNode;
 };
 
-export const Wrapper: React.FC<Props> = ({ partner, header, children }) => {
+export const Wrapper: React.FC<Props> = ({ header, children }) => {
+  const { partner } = usePartnerContext();
+
   const renderPartnerLogo = useCallback(() => {
-    switch (partner) {
-      case PARTNERS.optavia:
-        return (
-          <>
-            <span className="italic text-4xl	text-[#ABABAB]">+</span>
-            <Image src={optaviaLogo} alt="Optavia Logo" width={200} />
-          </>
-        );
-      default:
-        return null;
+    if (partner?.logoUrl) {
+      return (
+        <>
+          <span className="italic text-4xl	text-[#ABABAB]">+</span>
+          <Image
+            src={partner.logoUrl}
+            alt="Partner Logo"
+            width={200}
+            height={50}
+          />
+        </>
+      );
     }
+    return null;
   }, [partner]);
 
   return (

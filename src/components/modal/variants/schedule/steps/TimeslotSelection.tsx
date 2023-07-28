@@ -50,6 +50,7 @@ export const TimeslotSelection = () => {
   const [, { value: eaProvider }, { setValue: setProvider }] = useField("eaProvider");
   const [, { value: eaCustomer }, { setValue: setCustomer }] = useField("eaCustomer");
   const [, { value: eaAppointmentId }] = useField("eaAppointmentId");
+  const [, { value: healthCoach }] = useField("healthCoach");
   const [, { value: userId }] = useField("userId");
 
   const session = useUserStateContext();
@@ -62,6 +63,7 @@ export const TimeslotSelection = () => {
         timezone,
         selectedDate: dayjs(selectedDate).format("YYYY-MM-DD"),
         bypassNotice: isProvider ? true : false,
+        healthCoach,
         ...(eaAppointmentId && {
           appointmentId: eaAppointmentId,
         }),

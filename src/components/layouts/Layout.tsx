@@ -49,6 +49,10 @@ export const Layout = ({
       name: "Chat",
       href: "/dashboard/chat",
     },
+    {
+      name: "Health Metrics",
+      href: "/dashboard/health-metrics",
+    }
   ];
 
   const providerNavigation = [

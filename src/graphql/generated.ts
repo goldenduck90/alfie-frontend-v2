@@ -425,6 +425,12 @@ export enum FileType {
   PhotoId = 'PhotoId'
 }
 
+/** Signup flow type whether single step or multi step */
+export enum FlowType {
+  MultiStep = 'MultiStep',
+  SingleStep = 'SingleStep'
+}
+
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
@@ -1079,6 +1085,7 @@ export type SignedUrlResponse = {
 export type SignupPartner = {
   __typename?: 'SignupPartner';
   _id: Scalars['String'];
+  flowType: FlowType;
   logoUrl?: Maybe<Scalars['String']>;
   title: Scalars['String'];
 };
@@ -1354,6 +1361,20 @@ export type GetAppointmentsByMonthQueryQueryVariables = Exact<{
 
 export type GetAppointmentsByMonthQueryQuery = { __typename?: 'Query', appointmentsByMonth: Array<{ __typename?: 'EAAppointment', eaAppointmentId: string, notes?: string | null, location: string, start: string, end: string, eaCustomer: { __typename?: 'EACustomer', id: string, name: string, email: string }, eaProvider: { __typename?: 'EAProvider', id: string, name: string, email: string, type: Role } }> };
 
+export type CreateOrUpdateStripeSessionMutationVariables = Exact<{
+  input: CreateStripeCustomerInput;
+}>;
+
+
+export type CreateOrUpdateStripeSessionMutation = { __typename?: 'Mutation', createOrUpdateStripeSession: { __typename?: 'CheckoutResponse', checkout: { __typename?: 'Checkout', _id: string } } };
+
+export type GetCheckoutStripeSecretOctaviaQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetCheckoutStripeSecretOctaviaQuery = { __typename?: 'Query', checkout: { __typename?: 'CheckoutResponse', checkout: { __typename?: 'Checkout', _id: string, stripeClientSecret: string } } };
+
 export type RequestSignedUrlsMutationVariables = Exact<{
   requests: Array<SignedUrlRequest> | SignedUrlRequest;
 }>;
@@ -1393,48 +1414,6 @@ export type GetTimeslotsQueryQueryVariables = Exact<{
 
 
 export type GetTimeslotsQueryQuery = { __typename?: 'Query', timeslots: { __typename?: 'TimeslotsResponse', selectedDate: string, timezone: string, total: number, eaProvider: { __typename?: 'EAProvider', id: string, name: string, type: Role, email: string }, eaCustomer?: { __typename?: 'EACustomer', id: string, name: string, email: string } | null, timeslots: Array<{ __typename?: 'Timeslot', start: string, end: string }> } };
-
-export type GetCheckoutDetailsQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type GetCheckoutDetailsQuery = { __typename?: 'Query', checkout: { __typename?: 'CheckoutResponse', checkout: { __typename?: 'Checkout', _id: string, name: string, weightInLbs: number } } };
-
-export type CreateOrUpdateStripeSessionMutationVariables = Exact<{
-  input: CreateStripeCustomerInput;
-}>;
-
-
-export type CreateOrUpdateStripeSessionMutation = { __typename?: 'Mutation', createOrUpdateStripeSession: { __typename?: 'CheckoutResponse', checkout: { __typename?: 'Checkout', _id: string } } };
-
-export type CreateOrFindCheckoutMutationVariables = Exact<{
-  input: CreateCheckoutInput;
-}>;
-
-
-export type CreateOrFindCheckoutMutation = { __typename?: 'Mutation', createOrFindCheckout: { __typename?: 'CheckoutResponse', message?: string | null, checkout: { __typename?: 'Checkout', _id: string } } };
-
-export type GetCheckoutStripeSecretQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type GetCheckoutStripeSecretQuery = { __typename?: 'Query', checkout: { __typename?: 'CheckoutResponse', checkout: { __typename?: 'Checkout', _id: string, stripeClientSecret: string } } };
-
-export type SubscribeEmailMutationVariables = Exact<{
-  input: SubscribeEmailInput;
-}>;
-
-
-export type SubscribeEmailMutation = { __typename?: 'Mutation', subscribeEmail: { __typename?: 'MessageResponse', message: string } };
-
-export type GetCheckoutStripeSecretOctaviaQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type GetCheckoutStripeSecretOctaviaQuery = { __typename?: 'Query', checkout: { __typename?: 'CheckoutResponse', checkout: { __typename?: 'Checkout', _id: string, stripeClientSecret: string } } };
 
 export type UpcomingAppointmentsQueryQueryVariables = Exact<{
   input: UpcomingAppointmentsInput;
@@ -1544,6 +1523,27 @@ export type GenerateMetriportConnectUrlMutationVariables = Exact<{
 
 export type GenerateMetriportConnectUrlMutation = { __typename?: 'Mutation', generateMetriportConnectUrl: { __typename?: 'MetriportConnectResponse', url: string } };
 
+export type GetSignupPartnerByTitleQueryVariables = Exact<{
+  title: Scalars['String'];
+}>;
+
+
+export type GetSignupPartnerByTitleQuery = { __typename?: 'Query', getSignupPartnerByTitle: { __typename?: 'SingupPartnerResponse', partner: { __typename?: 'SignupPartner', _id: string, title: string, logoUrl?: string | null, flowType: FlowType }, partnerProviders?: Array<{ __typename?: 'SignupPartnerProvider', _id: string, title: string }> | null } };
+
+export type SubscribeEmailMutationVariables = Exact<{
+  input: SubscribeEmailInput;
+}>;
+
+
+export type SubscribeEmailMutation = { __typename?: 'Mutation', subscribeEmail: { __typename?: 'MessageResponse', message: string } };
+
+export type CreateOrFindCheckoutMutationVariables = Exact<{
+  input: CreateCheckoutInput;
+}>;
+
+
+export type CreateOrFindCheckoutMutation = { __typename?: 'Mutation', createOrFindCheckout: { __typename?: 'CheckoutResponse', message?: string | null, checkout: { __typename?: 'Checkout', _id: string } } };
+
 export type UploadDocumentMutationVariables = Exact<{
   input: DocUploadInput;
 }>;
@@ -1642,6 +1642,79 @@ export function useGetAppointmentsByMonthQueryLazyQuery(baseOptions?: Apollo.Laz
 export type GetAppointmentsByMonthQueryQueryHookResult = ReturnType<typeof useGetAppointmentsByMonthQueryQuery>;
 export type GetAppointmentsByMonthQueryLazyQueryHookResult = ReturnType<typeof useGetAppointmentsByMonthQueryLazyQuery>;
 export type GetAppointmentsByMonthQueryQueryResult = Apollo.QueryResult<GetAppointmentsByMonthQueryQuery, GetAppointmentsByMonthQueryQueryVariables>;
+export const CreateOrUpdateStripeSessionDocument = gql`
+    mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
+  createOrUpdateStripeSession(input: $input) {
+    checkout {
+      _id
+    }
+  }
+}
+    `;
+export type CreateOrUpdateStripeSessionMutationFn = Apollo.MutationFunction<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>;
+
+/**
+ * __useCreateOrUpdateStripeSessionMutation__
+ *
+ * To run a mutation, you first call `useCreateOrUpdateStripeSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrUpdateStripeSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrUpdateStripeSessionMutation, { data, loading, error }] = useCreateOrUpdateStripeSessionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateOrUpdateStripeSessionMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>(CreateOrUpdateStripeSessionDocument, options);
+      }
+export type CreateOrUpdateStripeSessionMutationHookResult = ReturnType<typeof useCreateOrUpdateStripeSessionMutation>;
+export type CreateOrUpdateStripeSessionMutationResult = Apollo.MutationResult<CreateOrUpdateStripeSessionMutation>;
+export type CreateOrUpdateStripeSessionMutationOptions = Apollo.BaseMutationOptions<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>;
+export const GetCheckoutStripeSecretOctaviaDocument = gql`
+    query GetCheckoutStripeSecretOctavia($id: String!) {
+  checkout(id: $id) {
+    checkout {
+      _id
+      stripeClientSecret
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCheckoutStripeSecretOctaviaQuery__
+ *
+ * To run a query within a React component, call `useGetCheckoutStripeSecretOctaviaQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCheckoutStripeSecretOctaviaQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCheckoutStripeSecretOctaviaQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCheckoutStripeSecretOctaviaQuery(baseOptions: Apollo.QueryHookOptions<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>(GetCheckoutStripeSecretOctaviaDocument, options);
+      }
+export function useGetCheckoutStripeSecretOctaviaLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>(GetCheckoutStripeSecretOctaviaDocument, options);
+        }
+export type GetCheckoutStripeSecretOctaviaQueryHookResult = ReturnType<typeof useGetCheckoutStripeSecretOctaviaQuery>;
+export type GetCheckoutStripeSecretOctaviaLazyQueryHookResult = ReturnType<typeof useGetCheckoutStripeSecretOctaviaLazyQuery>;
+export type GetCheckoutStripeSecretOctaviaQueryResult = Apollo.QueryResult<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>;
 export const RequestSignedUrlsDocument = gql`
     mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
   requestSignedUrls(requests: $requests) {
@@ -1861,225 +1934,6 @@ export function useGetTimeslotsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetTimeslotsQueryQueryHookResult = ReturnType<typeof useGetTimeslotsQueryQuery>;
 export type GetTimeslotsQueryLazyQueryHookResult = ReturnType<typeof useGetTimeslotsQueryLazyQuery>;
 export type GetTimeslotsQueryQueryResult = Apollo.QueryResult<GetTimeslotsQueryQuery, GetTimeslotsQueryQueryVariables>;
-export const GetCheckoutDetailsDocument = gql`
-    query GetCheckoutDetails($id: String!) {
-  checkout(id: $id) {
-    checkout {
-      _id
-      name
-      weightInLbs
-    }
-  }
-}
-    `;
-
-/**
- * __useGetCheckoutDetailsQuery__
- *
- * To run a query within a React component, call `useGetCheckoutDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCheckoutDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCheckoutDetailsQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetCheckoutDetailsQuery(baseOptions: Apollo.QueryHookOptions<GetCheckoutDetailsQuery, GetCheckoutDetailsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCheckoutDetailsQuery, GetCheckoutDetailsQueryVariables>(GetCheckoutDetailsDocument, options);
-      }
-export function useGetCheckoutDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCheckoutDetailsQuery, GetCheckoutDetailsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCheckoutDetailsQuery, GetCheckoutDetailsQueryVariables>(GetCheckoutDetailsDocument, options);
-        }
-export type GetCheckoutDetailsQueryHookResult = ReturnType<typeof useGetCheckoutDetailsQuery>;
-export type GetCheckoutDetailsLazyQueryHookResult = ReturnType<typeof useGetCheckoutDetailsLazyQuery>;
-export type GetCheckoutDetailsQueryResult = Apollo.QueryResult<GetCheckoutDetailsQuery, GetCheckoutDetailsQueryVariables>;
-export const CreateOrUpdateStripeSessionDocument = gql`
-    mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
-  createOrUpdateStripeSession(input: $input) {
-    checkout {
-      _id
-    }
-  }
-}
-    `;
-export type CreateOrUpdateStripeSessionMutationFn = Apollo.MutationFunction<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>;
-
-/**
- * __useCreateOrUpdateStripeSessionMutation__
- *
- * To run a mutation, you first call `useCreateOrUpdateStripeSessionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateOrUpdateStripeSessionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createOrUpdateStripeSessionMutation, { data, loading, error }] = useCreateOrUpdateStripeSessionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateOrUpdateStripeSessionMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>(CreateOrUpdateStripeSessionDocument, options);
-      }
-export type CreateOrUpdateStripeSessionMutationHookResult = ReturnType<typeof useCreateOrUpdateStripeSessionMutation>;
-export type CreateOrUpdateStripeSessionMutationResult = Apollo.MutationResult<CreateOrUpdateStripeSessionMutation>;
-export type CreateOrUpdateStripeSessionMutationOptions = Apollo.BaseMutationOptions<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>;
-export const CreateOrFindCheckoutDocument = gql`
-    mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
-  createOrFindCheckout(input: $input) {
-    message
-    checkout {
-      _id
-    }
-  }
-}
-    `;
-export type CreateOrFindCheckoutMutationFn = Apollo.MutationFunction<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>;
-
-/**
- * __useCreateOrFindCheckoutMutation__
- *
- * To run a mutation, you first call `useCreateOrFindCheckoutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateOrFindCheckoutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createOrFindCheckoutMutation, { data, loading, error }] = useCreateOrFindCheckoutMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateOrFindCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>(CreateOrFindCheckoutDocument, options);
-      }
-export type CreateOrFindCheckoutMutationHookResult = ReturnType<typeof useCreateOrFindCheckoutMutation>;
-export type CreateOrFindCheckoutMutationResult = Apollo.MutationResult<CreateOrFindCheckoutMutation>;
-export type CreateOrFindCheckoutMutationOptions = Apollo.BaseMutationOptions<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>;
-export const GetCheckoutStripeSecretDocument = gql`
-    query GetCheckoutStripeSecret($id: String!) {
-  checkout(id: $id) {
-    checkout {
-      _id
-      stripeClientSecret
-    }
-  }
-}
-    `;
-
-/**
- * __useGetCheckoutStripeSecretQuery__
- *
- * To run a query within a React component, call `useGetCheckoutStripeSecretQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCheckoutStripeSecretQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCheckoutStripeSecretQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetCheckoutStripeSecretQuery(baseOptions: Apollo.QueryHookOptions<GetCheckoutStripeSecretQuery, GetCheckoutStripeSecretQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCheckoutStripeSecretQuery, GetCheckoutStripeSecretQueryVariables>(GetCheckoutStripeSecretDocument, options);
-      }
-export function useGetCheckoutStripeSecretLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCheckoutStripeSecretQuery, GetCheckoutStripeSecretQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCheckoutStripeSecretQuery, GetCheckoutStripeSecretQueryVariables>(GetCheckoutStripeSecretDocument, options);
-        }
-export type GetCheckoutStripeSecretQueryHookResult = ReturnType<typeof useGetCheckoutStripeSecretQuery>;
-export type GetCheckoutStripeSecretLazyQueryHookResult = ReturnType<typeof useGetCheckoutStripeSecretLazyQuery>;
-export type GetCheckoutStripeSecretQueryResult = Apollo.QueryResult<GetCheckoutStripeSecretQuery, GetCheckoutStripeSecretQueryVariables>;
-export const SubscribeEmailDocument = gql`
-    mutation SubscribeEmail($input: SubscribeEmailInput!) {
-  subscribeEmail(input: $input) {
-    message
-  }
-}
-    `;
-export type SubscribeEmailMutationFn = Apollo.MutationFunction<SubscribeEmailMutation, SubscribeEmailMutationVariables>;
-
-/**
- * __useSubscribeEmailMutation__
- *
- * To run a mutation, you first call `useSubscribeEmailMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSubscribeEmailMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [subscribeEmailMutation, { data, loading, error }] = useSubscribeEmailMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useSubscribeEmailMutation(baseOptions?: Apollo.MutationHookOptions<SubscribeEmailMutation, SubscribeEmailMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SubscribeEmailMutation, SubscribeEmailMutationVariables>(SubscribeEmailDocument, options);
-      }
-export type SubscribeEmailMutationHookResult = ReturnType<typeof useSubscribeEmailMutation>;
-export type SubscribeEmailMutationResult = Apollo.MutationResult<SubscribeEmailMutation>;
-export type SubscribeEmailMutationOptions = Apollo.BaseMutationOptions<SubscribeEmailMutation, SubscribeEmailMutationVariables>;
-export const GetCheckoutStripeSecretOctaviaDocument = gql`
-    query GetCheckoutStripeSecretOctavia($id: String!) {
-  checkout(id: $id) {
-    checkout {
-      _id
-      stripeClientSecret
-    }
-  }
-}
-    `;
-
-/**
- * __useGetCheckoutStripeSecretOctaviaQuery__
- *
- * To run a query within a React component, call `useGetCheckoutStripeSecretOctaviaQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCheckoutStripeSecretOctaviaQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCheckoutStripeSecretOctaviaQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetCheckoutStripeSecretOctaviaQuery(baseOptions: Apollo.QueryHookOptions<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>(GetCheckoutStripeSecretOctaviaDocument, options);
-      }
-export function useGetCheckoutStripeSecretOctaviaLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>(GetCheckoutStripeSecretOctaviaDocument, options);
-        }
-export type GetCheckoutStripeSecretOctaviaQueryHookResult = ReturnType<typeof useGetCheckoutStripeSecretOctaviaQuery>;
-export type GetCheckoutStripeSecretOctaviaLazyQueryHookResult = ReturnType<typeof useGetCheckoutStripeSecretOctaviaLazyQuery>;
-export type GetCheckoutStripeSecretOctaviaQueryResult = Apollo.QueryResult<GetCheckoutStripeSecretOctaviaQuery, GetCheckoutStripeSecretOctaviaQueryVariables>;
 export const UpcomingAppointmentsQueryDocument = gql`
     query UpcomingAppointmentsQuery($input: UpcomingAppointmentsInput!) {
   upcomingAppointments(input: $input) {
@@ -2781,6 +2635,119 @@ export function useGenerateMetriportConnectUrlMutation(baseOptions?: Apollo.Muta
 export type GenerateMetriportConnectUrlMutationHookResult = ReturnType<typeof useGenerateMetriportConnectUrlMutation>;
 export type GenerateMetriportConnectUrlMutationResult = Apollo.MutationResult<GenerateMetriportConnectUrlMutation>;
 export type GenerateMetriportConnectUrlMutationOptions = Apollo.BaseMutationOptions<GenerateMetriportConnectUrlMutation, GenerateMetriportConnectUrlMutationVariables>;
+export const GetSignupPartnerByTitleDocument = gql`
+    query getSignupPartnerByTitle($title: String!) {
+  getSignupPartnerByTitle(title: $title) {
+    partner {
+      _id
+      title
+      logoUrl
+      flowType
+    }
+    partnerProviders {
+      _id
+      title
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSignupPartnerByTitleQuery__
+ *
+ * To run a query within a React component, call `useGetSignupPartnerByTitleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSignupPartnerByTitleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSignupPartnerByTitleQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useGetSignupPartnerByTitleQuery(baseOptions: Apollo.QueryHookOptions<GetSignupPartnerByTitleQuery, GetSignupPartnerByTitleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSignupPartnerByTitleQuery, GetSignupPartnerByTitleQueryVariables>(GetSignupPartnerByTitleDocument, options);
+      }
+export function useGetSignupPartnerByTitleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSignupPartnerByTitleQuery, GetSignupPartnerByTitleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSignupPartnerByTitleQuery, GetSignupPartnerByTitleQueryVariables>(GetSignupPartnerByTitleDocument, options);
+        }
+export type GetSignupPartnerByTitleQueryHookResult = ReturnType<typeof useGetSignupPartnerByTitleQuery>;
+export type GetSignupPartnerByTitleLazyQueryHookResult = ReturnType<typeof useGetSignupPartnerByTitleLazyQuery>;
+export type GetSignupPartnerByTitleQueryResult = Apollo.QueryResult<GetSignupPartnerByTitleQuery, GetSignupPartnerByTitleQueryVariables>;
+export const SubscribeEmailDocument = gql`
+    mutation SubscribeEmail($input: SubscribeEmailInput!) {
+  subscribeEmail(input: $input) {
+    message
+  }
+}
+    `;
+export type SubscribeEmailMutationFn = Apollo.MutationFunction<SubscribeEmailMutation, SubscribeEmailMutationVariables>;
+
+/**
+ * __useSubscribeEmailMutation__
+ *
+ * To run a mutation, you first call `useSubscribeEmailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubscribeEmailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [subscribeEmailMutation, { data, loading, error }] = useSubscribeEmailMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubscribeEmailMutation(baseOptions?: Apollo.MutationHookOptions<SubscribeEmailMutation, SubscribeEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubscribeEmailMutation, SubscribeEmailMutationVariables>(SubscribeEmailDocument, options);
+      }
+export type SubscribeEmailMutationHookResult = ReturnType<typeof useSubscribeEmailMutation>;
+export type SubscribeEmailMutationResult = Apollo.MutationResult<SubscribeEmailMutation>;
+export type SubscribeEmailMutationOptions = Apollo.BaseMutationOptions<SubscribeEmailMutation, SubscribeEmailMutationVariables>;
+export const CreateOrFindCheckoutDocument = gql`
+    mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
+  createOrFindCheckout(input: $input) {
+    message
+    checkout {
+      _id
+    }
+  }
+}
+    `;
+export type CreateOrFindCheckoutMutationFn = Apollo.MutationFunction<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>;
+
+/**
+ * __useCreateOrFindCheckoutMutation__
+ *
+ * To run a mutation, you first call `useCreateOrFindCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrFindCheckoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrFindCheckoutMutation, { data, loading, error }] = useCreateOrFindCheckoutMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateOrFindCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>(CreateOrFindCheckoutDocument, options);
+      }
+export type CreateOrFindCheckoutMutationHookResult = ReturnType<typeof useCreateOrFindCheckoutMutation>;
+export type CreateOrFindCheckoutMutationResult = Apollo.MutationResult<CreateOrFindCheckoutMutation>;
+export type CreateOrFindCheckoutMutationOptions = Apollo.BaseMutationOptions<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>;
 export const UploadDocumentDocument = gql`
     mutation UploadDocument($input: DocUploadInput!) {
   uploadDocument(input: $input) {

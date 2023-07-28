@@ -1,7 +1,7 @@
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import Script from "next/script";
 import React, { useEffect, useState } from "react";
-import { Billing } from "../old/oldpatient/billing/Billings";
+import { Billing } from "../billing/Billings";
 
 // TODO Work in progress
 export function EmbeddedStripeView() {
@@ -52,6 +52,7 @@ export function EmbeddedStripeView() {
         };
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

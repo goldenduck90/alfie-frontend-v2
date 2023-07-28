@@ -29,6 +29,7 @@ export const Chat = () => {
         title: "Chat Error",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendBirdError]);
 
   const handleDrawerToggle = () => setToggleChannelDrawer(!toggleChannelDrawer);
