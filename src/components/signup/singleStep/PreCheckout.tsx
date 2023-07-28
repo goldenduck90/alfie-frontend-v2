@@ -167,11 +167,12 @@ const PreCheckout = () => {
         signupPartnerId: partner?._id,
       };
 
-      if (!skipInsurance) {
-        input.insurancePlan =
-          InsurancePlan[insurancePlan as keyof typeof InsurancePlan];
-        input.insuranceType =
-          InsuranceType[insuranceType as keyof typeof InsuranceType];
+      if (skipInsurance) {
+        input.insurancePlan = null;
+        input.insuranceType = null;
+      } else {
+        input.insurancePlan = insurancePlan as InsurancePlan;
+        input.insuranceType = insuranceType as InsuranceType;
       }
 
       if (referrer && typeof referrer === "string") {

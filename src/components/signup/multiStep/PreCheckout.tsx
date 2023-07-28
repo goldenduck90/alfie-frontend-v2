@@ -282,7 +282,12 @@ export const PreCheckout = () => {
           ),
         }),
       }),
-      beforeNext({ insurancePlan, insuranceType }, _, currentStepIndex) {
+      beforeNext(
+        { skipInsurance, insurancePlan, insuranceType },
+        _,
+        currentStepIndex
+      ) {
+        localStorage.setItem("skipInsurance", skipInsurance);
         localStorage.setItem("insurancePlan", insurancePlan);
         localStorage.setItem("insuranceType", insuranceType);
         localStorage.setItem("preCheckoutStep", String(currentStepIndex));
@@ -312,7 +317,7 @@ export const PreCheckout = () => {
       email: localStorage.getItem("email") || "",
       textOptIn: Boolean(localStorage.getItem("textOptIn")) || true,
       phone: localStorage.getItem("phone") || "",
-      skipInsurance: Boolean(localStorage.getItem("skipInsurance")) || false,
+      skipInsurance: localStorage.getItem("skipInsurance") === "true",
       insurancePlan: localStorage.getItem("insurancePlan") || "",
       insuranceType: localStorage.getItem("insuranceType") || "",
       signupPartnerProvider:
@@ -360,11 +365,12 @@ export const PreCheckout = () => {
           insuranceType,
         };
 
-        if (!skipInsurance) {
-          input.insurancePlan =
-            InsurancePlan[insurancePlan as keyof typeof InsurancePlan];
-          input.insuranceType =
-            InsuranceType[insuranceType as keyof typeof InsuranceType];
+        if (skipInsurance) {
+          input.insurancePlan = null;
+          input.insuranceType = null;
+        } else {
+          input.insurancePlan = insurancePlan as InsurancePlan;
+          input.insuranceType = insuranceType as InsuranceType;
         }
 
         if (partner) {
@@ -374,6 +380,8 @@ export const PreCheckout = () => {
             input.signupPartnerProviderId = signupPartnerProvider;
           }
         }
+
+        console.log(insurancePlan, insuranceType);
 
         const { data, errors } = await createOrFindCheckout({
           variables: {

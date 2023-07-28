@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useField } from "formik";
 import { SelectInput } from "@src/components/inputs/SelectInput";
 import { InsuranceTypes, InsurancePlans } from "@src/utils/insurance";
@@ -6,6 +6,16 @@ import { Checkbox } from "@src/components/inputs/Checkbox";
 
 export const HealthInsurance: React.FC = () => {
   const [, { value: skipInsurance }] = useField("skipInsurance");
+  const [, , { setValue: setInsurancePlan }] = useField("insurancePlan");
+  const [, , { setValue: setInsuranceType }] = useField("insuranceType");
+
+  useEffect(() => {
+    if (!skipInsurance) {
+      setInsurancePlan("");
+      setInsuranceType("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skipInsurance]);
 
   return (
     <div className="px-8">
@@ -55,7 +65,7 @@ export const HealthInsurance: React.FC = () => {
           />
         </div>
       </div>
-      <div className="mx-6 my-2">
+      <div className="mx-2 my-2">
         <Checkbox name="skipInsurance" label="I don't have insurance" />
       </div>
 
