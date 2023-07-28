@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { Loading } from "../../Loading";
 
 const getCheckoutQuery = gql`
-  query GetCheckout($id: String!) {
+  query GetCheckoutStripeSecretOctavia($id: String!) {
     checkout(id: $id) {
       checkout {
         _id
@@ -41,7 +41,7 @@ export const StripeWrapper = ({ children }: { children: React.ReactNode }) => {
     if (error) {
       Sentry.captureException(new Error(error.message), {
         tags: {
-          query: "GetCheckout",
+          query: "GetCheckoutStripeSecretOctavia",
           component: "StripeWrapper",
         },
       });

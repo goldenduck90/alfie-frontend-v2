@@ -23,7 +23,7 @@ import { GenerateSummary } from '../components/GenerateSummary';
 import { PatientChat } from './PatientChat';
 
 const GetUserById = gql`
-  query getUser($userId: String!) {
+  query GetUser($userId: String!) {
     getUserById(userId: $userId) {
       _id
       textOptIn
@@ -63,7 +63,6 @@ const GetUserById = gql`
         classification
         calculatedPercentile
         percentile
-        displayPercentile
         date
       }
       files {

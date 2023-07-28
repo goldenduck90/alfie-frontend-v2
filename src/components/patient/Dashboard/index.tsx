@@ -1,8 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
 import { DashboardAppointments } from "./Appointments";
-import { BeforeAndAfter } from "./BeforeAndAfter";
-import { BodyMassIndex } from "./BodyMassIndex";
+// import { BeforeAndAfter } from "./BeforeAndAfter";
+// import { BodyMassIndex } from "./BodyMassIndex";
 import { Chart } from "./Chart";
 import { DashboardTaskList } from "./DashboardTaskList";
 import { YourWeight } from "./YourWeight";

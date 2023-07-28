@@ -23,6 +23,8 @@ import { metabolicQuestions } from './metabolicQuestions';
 import { QuestionContainer } from './QuestionContainer';
 import { threeFactorQuestions } from './threeFactorQuestions';
 import { client } from '@src/graphql';
+import { useUserSession } from '../../hooks/useUserSession';
+import { User } from '@sentry/react';
 
 interface FormState {
   formState: Record<string, any>;
@@ -73,13 +75,16 @@ const userTaskQuery = gql`
  */
 export function Question() {
   const { taskId } = useRouter().query as { taskId: string };
+
+  const [userSession] = useUserSession();
+  const user = userSession?.user;
+
   const { data, loading } = useQuery(userTaskQuery, {
     variables: {
       taskId,
     },
   });
 
-  //TODO: Specific loading pages or?
   if (loading)
     return (
       <QuestionnaireLayout title='Loading...'>
@@ -92,6 +97,7 @@ export function Question() {
       <QuestionnaireLayout title='Medical Questionnaire'>
         <div className='relative flex flex-col gap-y-3 items-center w-full'>
           <Questionnaire
+            user={user}
             taskId={taskId}
             allQuestions={medicalQuestions}
             formName='medical'
@@ -154,10 +160,12 @@ function Questionnaire({
   allQuestions,
   formName,
   taskId,
+  user,
 }: {
   allQuestions: QuestionProps<any>[];
   formName: string;
   taskId: string;
+  user?: User;
 }) {
   const [mutate] = useTaskCompletion();
   const router = useRouter();
@@ -217,14 +225,15 @@ function Questionnaire({
             .join(', '),
           hasSurgeries: data.surgeries?.hasSurgicalHistory,
           surgicalHistory: data.surgeries?.surgicalHistory,
-          hasRequiredLabs: String(data?.requiredLabs),
+          hasRequiredLabs: data?.requiredLabs ? "Yes" : "No",
+          requiredLabs: String(data?.requiredLabs || ""),
           weightLossAttemptTime: data?.weightLossAttemptTime,
           weightManagementMethods: data?.weightManagementMethods
             .map((wmm: string) => wmm)
             .join(', '),
         };
 
-        const converAnswersFromObjectV2 = (obj: any) => {
+        const convertAnswersFromObjectV2 = (obj: any) => {
           const answers = [];
           for (const key in obj) {
             answers.push({
@@ -235,7 +244,7 @@ function Questionnaire({
           }
           return answers;
         };
-        let answers = converAnswersFromObjectV2(newData);
+        let answers = convertAnswersFromObjectV2(newData);
         const input = {
           _id: taskId,
           answers,
@@ -293,8 +302,9 @@ function Questionnaire({
           {!!Component && (
             <Component
               control={control}
-              key={question?.id}
+              key={question.id}
               name={question.id}
+              user={user}
               register={register}
               question={question.question}
               validation={question.validation}

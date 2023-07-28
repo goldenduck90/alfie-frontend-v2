@@ -8,7 +8,7 @@ import { Loading } from "../Loading";
 import { Button } from "@src/components/ui/Button";
 
 const getCheckoutQuery = gql`
-  query GetCheckout($id: String!) {
+  query GetCheckoutDetails($id: String!) {
     checkout(id: $id) {
       checkout {
         _id

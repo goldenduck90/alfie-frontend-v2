@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { Loading } from "../Loading";
 
 const getCheckoutQuery = gql`
-  query GetCheckout($id: String!) {
+  query GetCheckoutStripeSecret($id: String!) {
     checkout(id: $id) {
       checkout {
         _id

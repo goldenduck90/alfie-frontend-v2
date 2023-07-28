@@ -1,19 +1,17 @@
 import React from "react";
-import { gql, useQuery } from "@apollo/client";
-
 import { CakeIcon } from "@heroicons/react/solid";
 import { PencilIcon } from "@heroicons/react/outline";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 
-export const BodyMassIndexQuery = gql`
-  query BodyMassIndex {
-    something
-    somethingElse
-  }
-`;
+// export const BodyMassIndexQuery = gql`
+//   query BodyMassIndex {
+//     something
+//     somethingElse
+//   }
+// `;
 
 export function BodyMassIndex() {
-  const { loading, data, error } = useQuery(BodyMassIndexQuery, {});
+  // const { loading, data, error } = useQuery(BodyMassIndexQuery, {});
 
   return (
     <DashboardCard

@@ -13,9 +13,8 @@ import {
 import { useCurrentUserStore } from "../../../hooks/useCurrentUser";
 import { useTaskCompletion } from "../../../hooks/useTaskCompletion";
 import { FileType } from "../../../graphql/generated";
-
-/** Maximum file size for image uploads. */
-const maxFileSize = Number(process.env.MAX_UPLOAD_SIZE) || 1e7; // bytes
+import { fileToBase64 } from "../../../utils/fileToBase64";
+import { InputFileField, maxFileSize } from "../../inputs/InputFileField";
 
 function createS3key({
   fileName,
@@ -84,28 +83,22 @@ export const IDVerificationModal = ({
   );
   const [error, setError] = useState<string | null>(null);
 
-  const toBase64 = (file: Blob): Promise<any> => {
-    if (!file) return new Promise((resolve) => resolve(false));
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64 = reader.result?.toString();
-        if (base64) {
-          resolve(base64);
-        } else {
-          reject(new Error("Unable to convert file to base64"));
-        }
-      };
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   useEffect(() => {
     if (!!fileInput) {
       setStep(2);
     }
   }, [fileInput]);
+
+  const { field: idField } = useController({
+    name: "idPhoto",
+    control,
+    defaultValue: null,
+  })
+  const { field: insuranceField } = useController({
+    name: "insurancePhoto",
+    control,
+    defaultValue: null,
+  })
 
   const onSubmitFiles = useCallback(
     async ({ insurancePhoto, idPhoto, _id }: any) => {
@@ -222,15 +215,11 @@ export const IDVerificationModal = ({
           )
         );
 
-        const idBase64 = await toBase64(idPhoto.file);
-        const insBase64 = await toBase64(insurancePhoto.file);
-        const [idImage, insuranceImage] = await Promise.all([
-          idBase64,
-          insBase64,
-        ]);
+        const idImage = await fileToBase64(idPhoto.file);
+        const insuranceImage = await fileToBase64(insurancePhoto.file);
 
         const idDocument: DocUploadInput = {
-          file: idImage.split(",").pop(),
+          file: idImage.split(",").pop()!,
           fileName: idPhoto.file.name,
           description: "personal id photo",
           patientId:
@@ -238,7 +227,7 @@ export const IDVerificationModal = ({
           tags: [""],
         };
         const insuranceIdDocument: DocUploadInput = {
-          file: insuranceImage.split(",").pop(),
+          file: insuranceImage.split(",").pop()!,
           fileName: insurancePhoto.file.name,
           description: "insurance id photo",
           patientId:
@@ -312,24 +301,28 @@ export const IDVerificationModal = ({
             </React.Fragment>
           )}
         </div>
-        <div className="relative w-full py-6 border rounded-md border-dashed border-blue-600 bg-primary-50 min-h-[276px] flex justify-center items-center">
-          <InputFileField
-            control={control}
-            name={step === 1 ? "idPhoto" : "insurancePhoto"}
-            setSelectedImage={(file: Blob) => {
-              if (file.size > maxFileSize) {
-                setSelectedInsurance(null)
-                setError("File size limit: 10 MB.")
+        <InputFileField
+          field={step === 1 ? idField : insuranceField}
+          multi={false}
+          error={error}
+          onUploadFile={(file) => {
+            if (file.size > maxFileSize) {
+              if (step === 1) {
+                setSelectedId(null);
               } else {
-                setError(null)
-                return step === 1
-                  ? setSelectedId(file)
-                  : step === 2 && file
-                    ? setSelectedInsurance(file)
-                    : null;
+                setSelectedInsurance(null);
               }
-            }}
-          />
+              setError("File size limit: 10 MB.");
+            } else {
+              setError(null);
+              return step === 1
+                ? setSelectedId(file)
+                : step === 2 && file
+                  ? setSelectedInsurance(file)
+                  : null;
+            }
+          }}
+        >
           <div className="flex flex-col gap-y-3 items-center justify-center h-full">
             <div className="p-2 rounded-full max-w-fit">
               {step === 1 && selectedIdImage ? (
@@ -361,7 +354,7 @@ export const IDVerificationModal = ({
             {error && <p className="text-sm text-red-600">{error}</p>}
             <Button>Upload from computer</Button>
           </div>
-        </div>
+        </InputFileField>
       </div>
       <div className="w-full flex justify-end items-center relative px-6 pt-6 gap-x-3">
         {step === 1 && (
@@ -389,44 +382,3 @@ export const IDVerificationModal = ({
     </div>
   );
 };
-
-function InputFileField({
-  name,
-  control,
-  setSelectedImage,
-}: {
-  name: string;
-  control: Control<any>;
-  setSelectedImage: any;
-}) {
-  const {
-    field: { onChange, value, ...inputProps },
-  } = useController({
-    name,
-    defaultValue: { name: "", file: null },
-    control,
-  });
-  return (
-    <input
-      {...inputProps}
-      value={value?.name || ""}
-      type="file"
-      className="absolute inset-0 opacity-0"
-      onChange={(e) => {
-        const droppedFile = e.target?.files?.[0];
-        if (
-          droppedFile &&
-          ["image/png", "image/jpeg", "application/pdf"].includes(
-            droppedFile.type
-          )
-        ) {
-          onChange({ value: droppedFile?.name, file: droppedFile });
-          if (setSelectedImage) {
-            setSelectedImage(droppedFile);
-          }
-        }
-      }}
-      accept="image/png, image/jpeg, application/pdf"
-    />
-  );
-}

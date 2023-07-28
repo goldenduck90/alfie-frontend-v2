@@ -5,9 +5,9 @@ import { TabTitle } from "@src/components/ui/tabs/TabTitle";
 import { useCheckRole } from "@src/hooks/useCheckRole";
 import { Role } from "@src/graphql/generated";
 import { AccountDetails } from "./AccountDetails";
-import { NotificationsView } from "./NotificationView";
-import { PlanAndBillingView } from "./PlanAndBillingView";
-import { AvailabilityView } from "./AvailablityView";
+// import { NotificationsView } from "./NotificationView";
+// import { PlanAndBillingView } from "./PlanAndBillingView";
+import { AvailabilityView } from "./AvailabilityView";
 import { EmbeddedStripeView } from "./EmbeddedStripeView";
 import { ConnectWithingsButton } from "./components/ConnectWithingsButton";
 
@@ -84,7 +84,7 @@ export function SettingsView() {
             <AvailabilityView />
           </Tabs.Content>
         )}
-        {/* 
+        {/*
         //TODO: Add back when ready
         <Tabs.Content value="notifications" className="mt-6">
           <NotificationsView />

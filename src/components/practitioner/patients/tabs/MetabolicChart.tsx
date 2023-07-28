@@ -49,9 +49,8 @@ export function MetabolicChart({ chartData }: { chartData?: Classification[] }) 
 
     //? calculated/ display/ then percentile
     const getPercentile = () => {
-      const percentile = !!classification?.displayPercentile
-        ? classification?.displayPercentile
-        : classification?.calculatedPercentile || classification?.percentile;
+      const percentile = classification?.calculatedPercentile
+        ?? classification?.percentile
 
       if (typeof percentile === "number") {
         return Math.round(percentile);

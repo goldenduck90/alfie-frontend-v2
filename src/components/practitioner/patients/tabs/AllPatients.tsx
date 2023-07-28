@@ -96,7 +96,7 @@ export function PractitionerTable({
   const providerPatients = useGetAllPatientsByProvider();
 
   const providerTable = usePatientTable({
-    data: providerPatients.data?.getAllPatientsByPractitioner || [],
+    data: providerPatients.data?.getAllPatientsByProvider || [],
     globalFilter,
     setGlobalFilter,
   });

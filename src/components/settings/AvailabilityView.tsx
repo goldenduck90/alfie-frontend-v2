@@ -11,11 +11,9 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { z } from "zod";
-import { GrayPlaceHolderBox } from "../GrayPlaceHolderBox";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import { TextField } from "../ui/TextField";
-import { DateOverrideModal } from "./components/DateOverrideModal";
 import { randomId } from "@src/utils/randomId";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
@@ -386,85 +384,6 @@ function DailyHoursLoad({ day }: { day: string }) {
           <PlusIcon className="h-5 w-5 text-gray-400" />
         </button>
       </div>
-    </div>
-  );
-}
-
-const getExceptions = gql`
-  query Exceptions($timezone: String!, $eaProviderId: String!) {
-    getProviderSchedule(timezone: $timezone, eaProviderId: $eaProviderId) {
-      exceptions {
-        date
-      }
-    }
-  }
-`;
-
-function OverrideView() {
-  const { user } = useCurrentUserStore();
-  const { data, loading } = useQuery(getExceptions, {
-    variables: {
-      timezone: dayjs.tz.guess(),
-      eaProviderId: (user as any)?.eaProviderId, // TO DO: pass in eaId from the above component
-    },
-  });
-
-  console.log({ data });
-  const loadItems = Array(2)
-    .fill("")
-    .map((_, i) => <DateOverrideLoad key={i} />);
-
-  return (
-    <div className="md:w-1/3 w-full md:border-l p-6">
-      {" "}
-      <p className="gray-900 font-bold pb-6">Add date overrides</p>
-      <DateOverrideModal trigger={<Button>Add a date override</Button>} />
-      {data?.map((item: any, i: number) => (
-        <DateOverride {...({} as any)} />
-      ))}
-      {loading && loadItems}
-      {!data && (
-        <GrayPlaceHolderBox
-          className="h-40 mt-6"
-          content="You currently have no overrides"
-        />
-      )}
-    </div>
-  );
-}
-
-function DateOverride({
-  date,
-  time,
-  onRemove,
-}: {
-  date: string;
-  time: string;
-  onRemove: () => void;
-}) {
-  return (
-    <div className="flex justify-between w-full border-b items-center py-4">
-      <div>
-        <p>{date || "unknown"}</p>
-        <p className="text-gray-400">{time || "unknown"}</p>
-      </div>
-      <button onClick={onRemove}>
-        <TrashIcon className="h-5 w-5 text-gray-400" />
-      </button>
-    </div>
-  );
-}
-
-function DateOverrideLoad() {
-  return (
-    <div className="flex justify-between w-full border-b items-center py-4">
-      <div className="w-1/2 items-center">
-        <hr className="h-2 w-full animate-pulse bg-gray-200 mb-3 rounded-sm" />
-        <hr className="h-2 w-1/2 animate-pulse bg-gray-200 rounded-sm" />
-      </div>
-      <button disabled>
-        <TrashIcon className="h-5 w-5 text-gray-400" />
-      </button>
     </div>
   );
 }
