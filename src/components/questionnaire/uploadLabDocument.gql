@@ -1,0 +1,11 @@
+mutation UploadLabDocument($file: String!, $fileName: String!, $patientId: String!) {
+  uploadDocument(input: {
+    file: $file
+    fileName: $fileName
+    description: "User lab order uploaded during medical questionnaire."
+    patientId: $patientId
+    tags: []
+  }) {
+    id
+  }
+}

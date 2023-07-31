@@ -1,8 +1,12 @@
+import Link from "next/link";
+import { useMemo } from "react";
+import { useRouter } from "next/router";
 import { FormikProvider } from "formik";
 import * as Yup from "yup";
+
 import { isValidPhoneNumber } from "libphonenumber-js";
 
-import { Wrapper } from "../../layouts/Wrapper";
+import { Wrapper } from "@src/components/layouts/Wrapper";
 
 // Steps
 import { FullName } from "./steps/FullName";
@@ -20,17 +24,19 @@ import { PartnerProvider } from "./steps/PartnerProvider";
 
 import { useFormikWizard, Step } from "formik-wizard-form";
 import { differenceInYears, format } from "date-fns";
-import { ValidStates } from "../../../utils/states";
+import { ValidStates } from "@src/utils/states";
 import { gql, useMutation } from "@apollo/client";
-import { parseError } from "../../../utils/parseError";
-import { Gender } from "../../../graphql/generated";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { parseError } from "@src/utils/parseError";
+
 import { Button } from "@src/components/ui/Button";
 import { usePartnerContext } from "@src/context/PartnerContext";
-import { useMemo } from "react";
 
-import { CreateCheckoutInput } from "@src/graphql/generated";
+import {
+  Gender,
+  CreateCheckoutInput,
+  InsurancePlan,
+  InsuranceType,
+} from "@src/graphql/generated";
 
 const createOrFindCheckoutMutation = gql`
   mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
@@ -48,7 +54,10 @@ export const PreCheckout = () => {
   const { partner } = usePartnerContext();
   const [createOrFindCheckout] = useMutation(createOrFindCheckoutMutation);
 
-  const TOTAL_STEPS = useMemo(() => (partner ? 13 : 12), [partner]);
+  const TOTAL_STEPS = useMemo(
+    () => (partner && partner.providers.length > 0 ? 13 : 12),
+    [partner]
+  );
 
   const FORM_TITLES: { [key: number]: string } = useMemo(() => {
     const titles: { [key: number]: string } = {
@@ -64,7 +73,7 @@ export const PreCheckout = () => {
       10: "Get started with Alfie today!",
     };
 
-    if (partner) {
+    if (partner && partner.providers.length > 0) {
       titles[11] = "Signup Partner Provider";
       titles[12] = "Insurance Coverage";
     } else {
@@ -240,7 +249,7 @@ export const PreCheckout = () => {
       },
     ];
 
-    if (partner) {
+    if (partner && partner.providers.length > 0) {
       steps.push({
         component: PartnerProvider,
         validationSchema:
@@ -258,10 +267,27 @@ export const PreCheckout = () => {
     steps.push({
       component: HealthInsurance,
       validationSchema: Yup.object().shape({
-        insurancePlan: Yup.string().required("Please select an option."),
-        insuranceType: Yup.string().required("Please select an option."),
+        insurancePlan: Yup.string().when("skipInsurance", {
+          is: (skipInsurance: boolean) => skipInsurance,
+          then: Yup.string().optional(),
+          otherwise: Yup.string().required(
+            "Please select your insurance plan."
+          ),
+        }),
+        insuranceType: Yup.string().when("skipInsurance", {
+          is: (skipInsurance: boolean) => skipInsurance,
+          then: Yup.string().optional(),
+          otherwise: Yup.string().required(
+            "Please select your insurance type."
+          ),
+        }),
       }),
-      beforeNext({ insurancePlan, insuranceType }, _, currentStepIndex) {
+      beforeNext(
+        { skipInsurance, insurancePlan, insuranceType },
+        _,
+        currentStepIndex
+      ) {
+        localStorage.setItem("skipInsurance", skipInsurance);
         localStorage.setItem("insurancePlan", insurancePlan);
         localStorage.setItem("insuranceType", insuranceType);
         localStorage.setItem("preCheckoutStep", String(currentStepIndex));
@@ -291,6 +317,7 @@ export const PreCheckout = () => {
       email: localStorage.getItem("email") || "",
       textOptIn: Boolean(localStorage.getItem("textOptIn")) || true,
       phone: localStorage.getItem("phone") || "",
+      skipInsurance: localStorage.getItem("skipInsurance") === "true",
       insurancePlan: localStorage.getItem("insurancePlan") || "",
       insuranceType: localStorage.getItem("insuranceType") || "",
       signupPartnerProvider:
@@ -311,6 +338,7 @@ export const PreCheckout = () => {
         email,
         textOptIn,
         phone,
+        skipInsurance,
         insurancePlan,
         insuranceType,
         signupPartnerProvider,
@@ -337,10 +365,23 @@ export const PreCheckout = () => {
           insuranceType,
         };
 
+        if (skipInsurance) {
+          input.insurancePlan = null;
+          input.insuranceType = null;
+        } else {
+          input.insurancePlan = insurancePlan as InsurancePlan;
+          input.insuranceType = insuranceType as InsuranceType;
+        }
+
         if (partner) {
           input.signupPartnerId = partner?._id;
-          input.signupPartnerProviderId = signupPartnerProvider;
+
+          if (signupPartnerProvider.length > 0) {
+            input.signupPartnerProviderId = signupPartnerProvider;
+          }
         }
+
+        console.log(insurancePlan, insuranceType);
 
         const { data, errors } = await createOrFindCheckout({
           variables: {

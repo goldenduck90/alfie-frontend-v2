@@ -1,11 +1,10 @@
-import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { DashboardPreviewItem } from "@src/components/ui/DashboardPreviewItem";
 
 import Link from "next/link";
 import React from "react";
-import { TaskType, UserTask } from "../../../graphql/generated";
+import { TaskType, useUserTasksQueryQuery } from "@src/graphql/generated";
 import { TaskSelector } from "../tasks/TaskSelector";
 
 import dayjs from "dayjs";
@@ -13,36 +12,14 @@ import calendar from "dayjs/plugin/calendar";
 import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 dayjs.extend(calendar);
 
-const userTasksQuery = gql`
-  query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
-    userTasks(
-      input: { limit: $limit, offset: $offset, completed: $completed }
-    ) {
-      total
-      userTasks {
-        _id
-        task {
-          _id
-          name
-          type
-          highPriority
-        }
-        dueAt
-        pastDue
-        createdAt
-      }
-    }
-  }
-`;
-
 export const DashboardTaskList = () => {
-  const { data, loading, error } = useQuery(userTasksQuery, {
+  const { data, loading, error } = useUserTasksQueryQuery({
     variables: {
       completed: false,
     },
   });
 
-  const filteredTasks = data?.userTasks?.userTasks.filter((task: any) => {
+  const filteredTasks = data?.userTasks?.userTasks?.filter((task) => {
     return (
       task?.task?.type === TaskType.WeightLog ||
       task?.task?.type === TaskType.NewPatientIntakeForm ||
@@ -50,7 +27,7 @@ export const DashboardTaskList = () => {
     );
   });
   const tasks =
-    filteredTasks?.length > 0 ? filteredTasks : data?.userTasks?.userTasks;
+    filteredTasks && filteredTasks.length > 0 ? filteredTasks : data?.userTasks?.userTasks;
 
   React.useEffect(() => {
     //? If there is an error with the query, we want to log it to Sentry
@@ -71,7 +48,7 @@ export const DashboardTaskList = () => {
   const resultItems = tasks
     // only show the first 2 tasks
     ?.slice(0, 1)
-    .map((item: UserTask, i: number) => (
+    .map((item, i: number) => (
       <TaskSelector
         type={item?.task?.type as TaskType}
         userTaskId={item._id}
@@ -100,8 +77,8 @@ export const DashboardTaskList = () => {
     >
       {error && <GrayPlaceHolderBox content={error?.message} />}
       {loading && loadItems}
-      {tasks?.length > 0 && resultItems}
-      {data?.userTasks.length === 0 && (
+      {tasks && tasks.length > 0 && resultItems}
+      {data?.userTasks?.userTasks?.length === 0 && (
         <GrayPlaceHolderBox content="You have no tasks to complete right now. We'll notify you when you do!" />
       )}
     </DashboardCard>

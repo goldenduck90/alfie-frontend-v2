@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { BellIcon, MailIcon } from "@heroicons/react/outline";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
 import { randomId } from "@src/utils/randomId";
@@ -38,36 +38,36 @@ const initialState: NotificationState = {
   },
 };
 
-const getNotificationSettings = gql`
-  query NotificationSettings {
-    notificationSettings {
-      chat {
-        push
-        email
-      }
-      subscriptionExpiring {
-        push
-        email
-      }
-      newTask {
-        push
-        email
-      }
-      overdueTask {
-        push
-        email
-      }
-      invoice {
-        push
-        email
-      }
-      appointmentChanged {
-        push
-        email
-      }
-    }
-  }
-`;
+// const getNotificationSettings = gql`
+//   query NotificationSettings {
+//     notificationSettings {
+//       chat {
+//         push
+//         email
+//       }
+//       subscriptionExpiring {
+//         push
+//         email
+//       }
+//       newTask {
+//         push
+//         email
+//       }
+//       overdueTask {
+//         push
+//         email
+//       }
+//       invoice {
+//         push
+//         email
+//       }
+//       appointmentChanged {
+//         push
+//         email
+//       }
+//     }
+//   }
+// `;
 
 const updateNotificationMutation = gql`
   mutation NotificationUpdate($input: ForgotPasswordInput!) {
@@ -95,11 +95,12 @@ export function useNotificationState() {
     },
   });
 
-  const { data, loading } = useQuery(getNotificationSettings, {});
+  // const { data, loading } = useQuery(getNotificationSettings, {});
 
-  const [state, setState] = useState(
-    data?.notificationSettings || initialState
-  );
+  // const [state, setState] = useState(
+  //   data?.notificationSettings || initialState
+  // );
+  const [state, setState] = useState(initialState);
   const setNotificationState = ({
     notificationType,
     key,
@@ -179,7 +180,7 @@ const weeklyNewsLetter: NotificationViewItem[] = [
         <ToggleSwitch
           label=""
           checked={true}
-          onCheckedChange={() => {}}
+          onCheckedChange={() => { }}
           name="phone"
         />
       </div>
@@ -198,7 +199,7 @@ const weeklyNewsLetter: NotificationViewItem[] = [
         <ToggleSwitch
           label=""
           checked={true}
-          onCheckedChange={() => {}}
+          onCheckedChange={() => { }}
           name="phone"
         />
       </div>
