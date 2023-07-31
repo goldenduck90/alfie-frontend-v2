@@ -7,6 +7,7 @@ query UserTasksQuery($limit: Float, $offset: Float, $completed: Boolean) {
         _id
         name
         type
+        highPriority
       }
       dueAt
       pastDue

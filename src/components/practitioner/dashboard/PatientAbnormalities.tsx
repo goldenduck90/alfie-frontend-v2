@@ -9,7 +9,7 @@ import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 
 export function PatientAbnormalities() {
   const { data, loading } = useGetAllPatientsByProvider();
-  // const patients: Patient[] = data?.getAllPatientsByPractitioner?.filter(
+  // const patients: Patient[] = data?.getAllPatientsByProvider?.filter(
   //   (patient: Patient) => patient.meetingUrl !== null
   // );
   const dataArr: any = [];

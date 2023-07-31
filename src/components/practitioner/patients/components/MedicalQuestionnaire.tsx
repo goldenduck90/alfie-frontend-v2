@@ -19,15 +19,15 @@ export function MedicalQuestionnaire({ taskData }: any) {
   return (
     <TableUserObject
       user={{
-        "Weight Loss Attempt": getTaskValueBasedOnKey("weightLossAttemptTime"),        
-        "Weight Management": getTaskValueBasedOnKey("weightManagementMethods"),        
-        Conditions: getTaskValueBasedOnKey("conditions"),        
-        "Previous Conditions": getTaskValueBasedOnKey("previousConditions"),        
-        Medications: getTaskValueBasedOnKey("medications"),        
-        "Surgical History": getTaskValueBasedOnKey("surgicalHistory"),        
-        "Use Pill Pack": getTaskValueBasedOnKey("usePillPack"),        
-        "Has Required Labs": getTaskValueBasedOnKey("hasRequiredLabs"),        
-        Pharmacy: getTaskValueBasedOnKey("pharmacyLocation"),        
+        "Weight Loss Attempt": getTaskValueBasedOnKey("weightLossAttemptTime"),
+        "Weight Management": getTaskValueBasedOnKey("weightManagementMethods"),
+        Conditions: getTaskValueBasedOnKey("conditions"),
+        "Previous Conditions": getTaskValueBasedOnKey("previousConditions"),
+        Medications: getTaskValueBasedOnKey("medications"),
+        "Surgical History": getTaskValueBasedOnKey("surgicalHistory"),
+        "Use Pill Pack": getTaskValueBasedOnKey("usePillPack"),
+        "Has Required Labs": getTaskValueBasedOnKey("hasRequiredLabs"),
+        Pharmacy: getTaskValueBasedOnKey("pharmacyLocation"),
       }}
     />
   );
