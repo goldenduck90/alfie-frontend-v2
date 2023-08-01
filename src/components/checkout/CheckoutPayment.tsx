@@ -71,9 +71,19 @@ export const CheckoutPayment = () => {
         <div className="flex flex-col  mb-5 md:mb-0">
           <p className="text-gray-900 text-md font-bold mb-1">Your plan</p>
           <span className="text-brand-berry text-2xl font-bold">
-            {insuranceCovered ? "$69 one-time onboarding fee" : "$120 monthly"}
+            {insuranceCovered ? "$0 onboarding fee" : "$120 monthly"}
           </span>
         </div>
+
+        {insuranceCovered && (
+          <div className="flex flex-col space-y-2">
+            <p className="text-gray-600">
+              {
+                "We don't charge an onboarding fee, but collect your card information in case of copays or other required payments. You will not be charged without receiving prior email notice."
+              }
+            </p>
+          </div>
+        )}
 
         <div className="flex flex-col space-y-4">
           <div className="flex flex-col space-y-2">
