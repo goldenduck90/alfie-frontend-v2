@@ -26,7 +26,7 @@ const InsuranceCovered: FC<Props> = ({
       <div className="flex flex-col p-4">
         <div>
           <span className="text-brand-berry text-2xl font-bold">
-            $69 one-time onboarding fee
+            $0 onboarding fee
           </span>
         </div>
         <div className="w-64">
@@ -55,7 +55,11 @@ const InsuranceCovered: FC<Props> = ({
           covered by your insurance, but are not billed through Alfie Health.
         </p>
         <br />
-        <p>Onboarding fee charged at sign-up. There are no monthly fees.</p>
+        <p>
+          {
+            "Credit card information collected for copays. There are no monthly fees outside of your insurance's required copays."
+          }
+        </p>
         <br />
         <p>
           We require that you are under the care of a primary care provider
@@ -76,7 +80,9 @@ const InsuranceCovered: FC<Props> = ({
           <p className="text-secondary-500 text-md mb-1">
             Ready to achieve your goals?
           </p>
-          <p className="text-brand-berry text-xl font-bold">$69 one time fee</p>
+          <p className="text-brand-berry text-xl font-bold">
+            $0 onboarding fee
+          </p>
           <Button
             onClick={() => {
               router.push(
