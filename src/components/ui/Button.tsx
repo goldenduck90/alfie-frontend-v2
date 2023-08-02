@@ -57,7 +57,7 @@ export const Button = React.forwardRef(
       primary:
         "bg-primary-500 text-white border-primary-500 hover:bg-primary-400 focus:border-primary-700",
       secondary:
-        "bg-white border-gray-400 text-gray-800 hover:bg-gray-100 focus:ring-gray-400",
+        "bg-white border-gray-400 text-gray-800 hover:bg-gray-100 focus:ring-gray-400 focus:ring-0",
       accent:
         "bg-white border-primary-500 text-primary-500 hover:border-primary-600 hover:text-primary-600 focus:border-primary-600",
       tertiary:
