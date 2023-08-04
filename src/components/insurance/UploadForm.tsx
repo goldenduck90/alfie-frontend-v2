@@ -5,9 +5,25 @@ import { useDropzone } from "react-dropzone";
 import { Button } from "@src/components/ui/Button";
 import { IconButton } from "../IconButton";
 import { TrashIcon } from "@heroicons/react/outline";
+import { Loading } from "../Loading";
 
-const UploadForm = () => {
-  const [files, setFiles] = useState([]);
+import { gql, useMutation } from "@apollo/client";
+import { createS3key } from "@src/utils/upload";
+
+const requestSignedUrlsMutation = gql`
+  mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
+    requestSignedUrls(requests: $requests) {
+      url
+      key
+    }
+  }
+`;
+
+const UploadForm = ({ name }: { name: string }) => {
+  const [requestSignedUrls] = useMutation(requestSignedUrlsMutation);
+
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
   const onDrop = useCallback((acceptedFiles: any) => {
     // Do something with the files
     setFiles(
@@ -42,11 +58,55 @@ const UploadForm = () => {
     setFiles(files.filter((f: any) => f.name !== file.name));
   };
 
+  const handleUploadClick = async () => {
+    setUploading(true);
+    try {
+      const insurancePhotoKey = createS3key({
+        fileName: "INSURANCE_CARD",
+        fileType: `${files[0].name.split(".").pop()}`,
+        folder: name.replace(" ", "_").toLowerCase(),
+      });
+      const uploadRequest = [
+        {
+          key: insurancePhotoKey,
+          metadata: [
+            {
+              key: "DOCUMENT_TYPE",
+              value: "INSURANCE_CARD",
+            },
+          ],
+          contentType: files[0].type,
+        },
+      ];
+
+      const { data } = await requestSignedUrls({
+        variables: {
+          requests: uploadRequest,
+        },
+      });
+
+      const { key, url } = data.requestSignedUrls[0];
+
+      const uploadResponse = await fetch(url, {
+        method: "PUT",
+        headers: {
+          ["Content-Type"]: files[0].type || "",
+        },
+        body: files[0],
+      });
+
+      console.log(uploadResponse);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setUploading(false);
+    }
+  };
   return (
     <div className="flex flex-col gap-4">
       <div
         {...getRootProps()}
-        className="w-full h-64 flex justify-center items-center border-2 border-dashed text-gray-500 p-4"
+        className="w-full h-64 flex justify-center items-center border-2 border-dashed text-gray-500 p-4 rounded-lg"
       >
         <input {...getInputProps()} />
         {files.length === 0 ? (
@@ -57,6 +117,7 @@ const UploadForm = () => {
               <div
                 key={file.name}
                 className="w-full h-60 relative rounded-lg overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
               >
                 <img
                   src={file.preview}
@@ -73,8 +134,13 @@ const UploadForm = () => {
         )}
       </div>
       <div className="w-full flex justify-center">
-        <Button type="submit" size="medium">
-          Upload
+        <Button
+          type="submit"
+          size="medium"
+          disabled={files.length === 0}
+          onClick={handleUploadClick}
+        >
+          {uploading ? <Loading size={20} /> : "Upload"}
         </Button>
       </div>
     </div>

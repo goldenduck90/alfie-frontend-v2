@@ -57,28 +57,6 @@ const ManualForm = () => {
                 />
               </div>
               <div className="flex flex-col w-full">
-                <p className={`"text-primary-700" font-bold`}>
-                  Group ID / Number
-                  <span className="text-[red]">*</span>
-                </p>
-                <TextInput
-                  name="groupId"
-                  placeholder="Your Group ID / Number"
-                  type="text"
-                />
-              </div>
-              <div className="flex flex-col w-full">
-                <p className={`"text-primary-700" font-bold`}>
-                  Member ID
-                  <span className="text-[red]">*</span>
-                </p>
-                <TextInput
-                  name="memberId"
-                  placeholder="Your Member ID"
-                  type="text"
-                />
-              </div>
-              <div className="flex flex-col w-full">
                 <div className="flex justify-center">
                   <Button type="submit" size="medium">
                     Submit

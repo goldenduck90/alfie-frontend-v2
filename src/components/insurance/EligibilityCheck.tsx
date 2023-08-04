@@ -10,13 +10,13 @@ import { FlowType } from "@src/graphql/generated";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
 import UploadForm from "./UploadForm";
 import ManualForm from "./ManualForm";
+import { Loading } from "../Loading";
 
 const EligibilityCheck = () => {
   const router = useRouter();
   const checkoutId = router.query.id;
   const { partner } = usePartnerContext();
-  const { data, loading, error, weightLossValue, insuranceCovered } =
-    useCheckoutQuery(checkoutId);
+  const { data, loading } = useCheckoutQuery(checkoutId);
 
   const [steps, setSteps] = useState(11); // Regular signup flow steps
   const [isManual, setIsManual] = useState(false);
@@ -26,6 +26,10 @@ const EligibilityCheck = () => {
       setSteps(partner.flowType === FlowType.MultiStep ? 12 : 2);
     }
   }, [partner]);
+
+  if (loading) return <Loading />;
+
+  console.log(data);
 
   return (
     <Wrapper
@@ -44,7 +48,11 @@ const EligibilityCheck = () => {
 
         <div className="px-4">
           <div className="my-4">
-            {isManual ? <ManualForm /> : <UploadForm />}
+            {isManual ? (
+              <ManualForm />
+            ) : (
+              <UploadForm name={data.checkout.checkout.name} />
+            )}
           </div>
 
           <div className="flex flex-col justify-center mt-16">
