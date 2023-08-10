@@ -12,18 +12,12 @@ import { Button } from "@src/components/ui/Button";
 
 import ContactInformation from "./sections/ContactInformation";
 import PatientDetails from "./sections/PatientDetails";
-import InsuranceDetails from "./sections/InsuranceDetails";
 import PartnerDetails from "./sections/PartnerDetails";
 
 import { usePartnerContext } from "@src/context/PartnerContext";
 
 import { ValidStates } from "@src/utils/states";
-import {
-  Gender,
-  CreateCheckoutInput,
-  InsurancePlan,
-  InsuranceType,
-} from "@src/graphql/generated";
+import { Gender, CreateCheckoutInput } from "@src/graphql/generated";
 
 const TOTAL_STEPS = 2;
 
@@ -57,8 +51,6 @@ const PreCheckout = () => {
       weight: "",
       pastTries: [],
       skipInsurance: false,
-      insurancePlan: "",
-      insuranceType: "",
       signupPartnerProvider: "",
       referrer: router.query?.health_coach,
     },
@@ -100,16 +92,6 @@ const PreCheckout = () => {
         .of(Yup.string())
         .min(1, "Please select at least 1 option.")
         .required("Please select options."),
-      insurancePlan: Yup.string().when("skipInsurance", {
-        is: (skipInsurance: boolean) => skipInsurance,
-        then: Yup.string().optional(),
-        otherwise: Yup.string().required("Please select your insurance plan."),
-      }),
-      insuranceType: Yup.string().when("skipInsurance", {
-        is: (skipInsurance: boolean) => skipInsurance,
-        then: Yup.string().optional(),
-        otherwise: Yup.string().required("Please select your insurance type."),
-      }),
       signupPartnerProvider:
         partner && partner.providers.length > 0
           ? Yup.string().required("Please select referring provider.")
@@ -128,9 +110,6 @@ const PreCheckout = () => {
         heightInches,
         weight,
         pastTries,
-        skipInsurance,
-        insurancePlan,
-        insuranceType,
         signupPartnerProvider,
         referrer,
       } = values;
@@ -166,14 +145,6 @@ const PreCheckout = () => {
         pastTries: pastTries,
         signupPartnerId: partner?._id,
       };
-
-      if (skipInsurance) {
-        input.insurancePlan = null;
-        input.insuranceType = null;
-      } else {
-        input.insurancePlan = insurancePlan as InsurancePlan;
-        input.insuranceType = insuranceType as InsuranceType;
-      }
 
       if (referrer && typeof referrer === "string") {
         input.referrer = referrer;
@@ -236,7 +207,6 @@ const PreCheckout = () => {
             <div className="flex flex-col gap-8 p-4">
               <ContactInformation />
               <PatientDetails />
-              <InsuranceDetails />
               {partner && partner.providers.length > 0 && (
                 <PartnerDetails providers={partner?.providers} />
               )}
