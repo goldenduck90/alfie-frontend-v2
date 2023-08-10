@@ -530,14 +530,6 @@ export type InsuranceEligibilityResponse = {
   rectifiedInsurance?: Maybe<Insurance>;
 };
 
-export type InsuranceFlowResponse = {
-  __typename?: 'InsuranceFlowResponse';
-  covered: InsuranceCoveredResponse;
-  eligible: InsuranceEligibilityResponse;
-  rectifiedInsurance?: Maybe<Insurance>;
-  stripeSubscriptionId?: Maybe<Scalars['String']>;
-};
-
 export type InsuranceInput = {
   groupId: Scalars['String'];
   groupName?: InputMaybe<Scalars['String']>;
@@ -655,7 +647,6 @@ export type Mutation = {
   forgotPassword: MessageResponse;
   generateMetriportConnectUrl: MetriportConnectResponse;
   insuranceEligibility: InsuranceEligibilityResponse;
-  insuranceFlow: InsuranceFlowResponse;
   insuranceTextract: InsuranceTextractResponse;
   internalBulkPatientReassign: Scalars['Boolean'];
   internalOpsCreateNewProvider: User;
@@ -766,15 +757,6 @@ export type MutationGenerateMetriportConnectUrlArgs = {
 export type MutationInsuranceEligibilityArgs = {
   cpid?: InputMaybe<Scalars['String']>;
   insurance: InsuranceInput;
-  userData: BasicUserInsuranceInfo;
-};
-
-
-export type MutationInsuranceFlowArgs = {
-  insurance: InsuranceInput;
-  insurancePlan: InsurancePlanValue;
-  insuranceType: InsuranceTypeValue;
-  signupPartnerTitle?: InputMaybe<Scalars['String']>;
   userData: BasicUserInsuranceInfo;
 };
 
@@ -1227,6 +1209,7 @@ export type SignupPartner = {
   _id: Scalars['String'];
   flowType: FlowType;
   logoUrl?: Maybe<Scalars['String']>;
+  stripePriceId?: Maybe<Scalars['String']>;
   title: Scalars['String'];
 };
 
