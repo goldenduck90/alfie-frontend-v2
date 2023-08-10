@@ -6,20 +6,77 @@ import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
 import { usePartnerContext } from "@src/context/PartnerContext";
 import { Button } from "@src/components/ui/Button";
 
-import { FlowType } from "@src/graphql/generated";
-import { ToggleSwitch } from "../ui/ToggleSwitch";
+import { FlowType, Insurance } from "@src/graphql/generated";
 import UploadForm from "./UploadForm";
 import ManualForm from "./ManualForm";
 import { Loading } from "../Loading";
 
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { createS3key } from "@src/utils/upload";
+
+const requestSignedUrlsMutation = gql`
+  mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
+    requestSignedUrls(requests: $requests) {
+      url
+      key
+    }
+  }
+`;
+
+const insuranceTextractMutation = gql`
+  mutation insuranceTextract($s3Key: String!, $userState: String) {
+    insuranceTextract(s3Key: $s3Key, userState: $userState) {
+      insuranceMatches {
+        memberId
+        insuranceCompany
+        payor
+        groupId
+        groupName
+        rxBIN
+        rxPCN
+        rxGroup
+      }
+      words
+      lines
+    }
+  }
+`;
+
+const insurancePlansQuery = gql`
+  query insurancePlans {
+    insurancePlans {
+      plans {
+        _id
+        name
+        value
+        types
+      }
+      types {
+        _id
+        name
+        type
+      }
+    }
+  }
+`;
+
 const EligibilityCheck = () => {
   const router = useRouter();
   const checkoutId = router.query.id;
+
+  const [requestSignedUrls] = useMutation(requestSignedUrlsMutation);
+  const [insuranceTextract] = useMutation(insuranceTextractMutation);
+
   const { partner } = usePartnerContext();
   const { data, loading } = useCheckoutQuery(checkoutId);
+  const { data: insurancePlans } = useQuery(insurancePlansQuery);
 
   const [steps, setSteps] = useState(11); // Regular signup flow steps
   const [isManual, setIsManual] = useState(false);
+  const [insuranceCardImage, setInsuranceCardImage] = useState<File | null>(
+    null
+  );
+  const [insurance, setInsurance] = useState<Insurance>();
 
   useEffect(() => {
     if (partner) {
@@ -29,7 +86,62 @@ const EligibilityCheck = () => {
 
   if (loading) return <Loading />;
 
-  console.log(data);
+  const handleInsuranceCardUpload = async () => {
+    const { checkout } = data;
+    try {
+      if (insuranceCardImage) {
+        const insurancePhotoKey = createS3key({
+          fileName: "INSURANCE_CARD",
+          fileType: `${insuranceCardImage.name.split(".").pop()}`,
+          folder: checkout.checkout.name.replace(" ", "_").toLowerCase(),
+        });
+        const uploadRequest = [
+          {
+            key: insurancePhotoKey,
+            metadata: [
+              {
+                key: "DOCUMENT_TYPE",
+                value: "INSURANCE_CARD",
+              },
+            ],
+            contentType: insuranceCardImage.type,
+          },
+        ];
+
+        const { data } = await requestSignedUrls({
+          variables: {
+            requests: uploadRequest,
+          },
+        });
+
+        const { key, url } = data.requestSignedUrls[0];
+
+        const uploadResponse = await fetch(url, {
+          method: "PUT",
+          headers: {
+            ["Content-Type"]: insuranceCardImage.type || "",
+          },
+          body: insuranceCardImage,
+        });
+
+        if (uploadResponse.ok) {
+          const { data } = await insuranceTextract({
+            variables: {
+              s3Key: key,
+              userState: checkout.checkout.state,
+            },
+          });
+          if (data.insuranceTextract.insuranceMatches.length > 0) {
+            setInsurance(data.insuranceTextract.insuranceMatches[0]);
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleInsuranceSubmit = async (insurance: Insurance) => {};
 
   return (
     <Wrapper
@@ -49,9 +161,18 @@ const EligibilityCheck = () => {
         <div className="px-4">
           <div className="my-4">
             {isManual ? (
-              <ManualForm />
+              <ManualForm
+                insurance={insurance}
+                plans={insurancePlans.insurancePlans.plans}
+                types={insurancePlans.insurancePlans.types}
+                onSubmit={handleInsuranceSubmit}
+              />
             ) : (
-              <UploadForm name={data.checkout.checkout.name} />
+              <UploadForm
+                insuranceCard={insuranceCardImage}
+                onInsuranceCardChange={setInsuranceCardImage}
+                onUpload={handleInsuranceCardUpload}
+              />
             )}
           </div>
 

@@ -51,6 +51,13 @@ export enum AnswerType {
   String = 'STRING'
 }
 
+export type BasicUserInsuranceInfo = {
+  address: AddressInput;
+  dateOfBirth: Scalars['DateTime'];
+  gender: Gender;
+  name: Scalars['String'];
+};
+
 export type BatchCreateOrUpdateProvidersInput = {
   providers: Array<ProviderInput>;
 };
@@ -501,13 +508,13 @@ export type GoogleReverseGeoCodeResult = {
 export type Insurance = {
   __typename?: 'Insurance';
   groupId: Scalars['String'];
-  groupName: Scalars['String'];
+  groupName?: Maybe<Scalars['String']>;
   insuranceCompany: Scalars['String'];
   memberId: Scalars['String'];
   payor: Scalars['String'];
-  rxBIN: Scalars['String'];
-  rxGroup: Scalars['String'];
-  rxPCN: Scalars['String'];
+  rxBIN?: Maybe<Scalars['String']>;
+  rxGroup?: Maybe<Scalars['String']>;
+  rxPCN?: Maybe<Scalars['String']>;
 };
 
 export type InsuranceCoveredResponse = {
@@ -523,15 +530,31 @@ export type InsuranceEligibilityResponse = {
   rectifiedInsurance?: Maybe<Insurance>;
 };
 
+export type InsuranceFlowResponse = {
+  __typename?: 'InsuranceFlowResponse';
+  covered: InsuranceCoveredResponse;
+  eligible: InsuranceEligibilityResponse;
+  rectifiedInsurance?: Maybe<Insurance>;
+  stripeSubscriptionId?: Maybe<Scalars['String']>;
+};
+
 export type InsuranceInput = {
   groupId: Scalars['String'];
-  groupName: Scalars['String'];
+  groupName?: InputMaybe<Scalars['String']>;
   insuranceCompany: Scalars['String'];
   memberId: Scalars['String'];
   payor: Scalars['String'];
-  rxBIN: Scalars['String'];
-  rxGroup: Scalars['String'];
-  rxPCN: Scalars['String'];
+  rxBIN?: InputMaybe<Scalars['String']>;
+  rxGroup?: InputMaybe<Scalars['String']>;
+  rxPCN?: InputMaybe<Scalars['String']>;
+};
+
+export type InsurancePlan = {
+  __typename?: 'InsurancePlan';
+  _id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  types: Array<InsuranceTypeValue>;
+  value: InsurancePlanValue;
 };
 
 /** An insurance plan enum value. */
@@ -551,11 +574,24 @@ export enum InsurancePlanValue {
   UnitedHealthcare = 'UnitedHealthcare'
 }
 
+export type InsurancePlansResponse = {
+  __typename?: 'InsurancePlansResponse';
+  plans: Array<InsurancePlan>;
+  types: Array<InsuranceType>;
+};
+
 export type InsuranceTextractResponse = {
   __typename?: 'InsuranceTextractResponse';
   insuranceMatches: Array<Insurance>;
   lines: Array<Scalars['String']>;
   words: Array<Scalars['String']>;
+};
+
+export type InsuranceType = {
+  __typename?: 'InsuranceType';
+  _id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  type: InsuranceTypeValue;
 };
 
 /** An insurance type enum value. */
@@ -618,6 +654,8 @@ export type Mutation = {
   createUser: User;
   forgotPassword: MessageResponse;
   generateMetriportConnectUrl: MetriportConnectResponse;
+  insuranceEligibility: InsuranceEligibilityResponse;
+  insuranceFlow: InsuranceFlowResponse;
   insuranceTextract: InsuranceTextractResponse;
   internalBulkPatientReassign: Scalars['Boolean'];
   internalOpsCreateNewProvider: User;
@@ -722,6 +760,22 @@ export type MutationForgotPasswordArgs = {
 
 export type MutationGenerateMetriportConnectUrlArgs = {
   userId: Scalars['String'];
+};
+
+
+export type MutationInsuranceEligibilityArgs = {
+  cpid?: InputMaybe<Scalars['String']>;
+  insurance: InsuranceInput;
+  userData: BasicUserInsuranceInfo;
+};
+
+
+export type MutationInsuranceFlowArgs = {
+  insurance: InsuranceInput;
+  insurancePlan: InsurancePlanValue;
+  insuranceType: InsuranceTypeValue;
+  signupPartnerTitle?: InputMaybe<Scalars['String']>;
+  userData: BasicUserInsuranceInfo;
 };
 
 
@@ -934,7 +988,7 @@ export type Query = {
   getSignupPartnerProviders: Array<SignupPartnerProvider>;
   getUserById: User;
   insuranceCovered: InsuranceCoveredResponse;
-  insuranceEligibility: InsuranceEligibilityResponse;
+  insurancePlans: InsurancePlansResponse;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
@@ -1014,12 +1068,7 @@ export type QueryGetUserByIdArgs = {
 export type QueryInsuranceCoveredArgs = {
   insurancePlan: InsurancePlanValue;
   insuranceType: InsuranceTypeValue;
-};
-
-
-export type QueryInsuranceEligibilityArgs = {
-  input: InsuranceInput;
-  userId: Scalars['String'];
+  userData: BasicUserInsuranceInfo;
 };
 
 
@@ -1474,6 +1523,19 @@ export type RequestSignedUrlsMutationVariables = Exact<{
 
 export type RequestSignedUrlsMutation = { __typename?: 'Mutation', requestSignedUrls: Array<{ __typename?: 'SignedUrlResponse', url: string, key: string }> };
 
+export type InsuranceTextractMutationVariables = Exact<{
+  s3Key: Scalars['String'];
+  userState?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insuranceMatches: Array<{ __typename?: 'Insurance', memberId: string, insuranceCompany: string, payor: string, groupId: string, groupName?: string | null, rxBIN?: string | null, rxPCN?: string | null, rxGroup?: string | null }> } };
+
+export type InsurancePlansQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InsurancePlansQuery = { __typename?: 'Query', insurancePlans: { __typename?: 'InsurancePlansResponse', plans: Array<{ __typename?: 'InsurancePlan', _id: string, name?: string | null, value: InsurancePlanValue, types: Array<InsuranceTypeValue> }>, types: Array<{ __typename?: 'InsuranceType', _id: string, name?: string | null, type: InsuranceTypeValue }> } };
+
 export type CompleteUploadFilesMutationVariables = Exact<{
   files: Array<FileInput> | FileInput;
 }>;
@@ -1841,6 +1903,95 @@ export function useRequestSignedUrlsMutation(baseOptions?: Apollo.MutationHookOp
 export type RequestSignedUrlsMutationHookResult = ReturnType<typeof useRequestSignedUrlsMutation>;
 export type RequestSignedUrlsMutationResult = Apollo.MutationResult<RequestSignedUrlsMutation>;
 export type RequestSignedUrlsMutationOptions = Apollo.BaseMutationOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;
+export const InsuranceTextractDocument = gql`
+    mutation insuranceTextract($s3Key: String!, $userState: String) {
+  insuranceTextract(s3Key: $s3Key, userState: $userState) {
+    insuranceMatches {
+      memberId
+      insuranceCompany
+      payor
+      groupId
+      groupName
+      rxBIN
+      rxPCN
+      rxGroup
+    }
+    words
+    lines
+  }
+}
+    `;
+export type InsuranceTextractMutationFn = Apollo.MutationFunction<InsuranceTextractMutation, InsuranceTextractMutationVariables>;
+
+/**
+ * __useInsuranceTextractMutation__
+ *
+ * To run a mutation, you first call `useInsuranceTextractMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInsuranceTextractMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [insuranceTextractMutation, { data, loading, error }] = useInsuranceTextractMutation({
+ *   variables: {
+ *      s3Key: // value for 's3Key'
+ *      userState: // value for 'userState'
+ *   },
+ * });
+ */
+export function useInsuranceTextractMutation(baseOptions?: Apollo.MutationHookOptions<InsuranceTextractMutation, InsuranceTextractMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InsuranceTextractMutation, InsuranceTextractMutationVariables>(InsuranceTextractDocument, options);
+      }
+export type InsuranceTextractMutationHookResult = ReturnType<typeof useInsuranceTextractMutation>;
+export type InsuranceTextractMutationResult = Apollo.MutationResult<InsuranceTextractMutation>;
+export type InsuranceTextractMutationOptions = Apollo.BaseMutationOptions<InsuranceTextractMutation, InsuranceTextractMutationVariables>;
+export const InsurancePlansDocument = gql`
+    query insurancePlans {
+  insurancePlans {
+    plans {
+      _id
+      name
+      value
+      types
+    }
+    types {
+      _id
+      name
+      type
+    }
+  }
+}
+    `;
+
+/**
+ * __useInsurancePlansQuery__
+ *
+ * To run a query within a React component, call `useInsurancePlansQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInsurancePlansQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInsurancePlansQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInsurancePlansQuery(baseOptions?: Apollo.QueryHookOptions<InsurancePlansQuery, InsurancePlansQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InsurancePlansQuery, InsurancePlansQueryVariables>(InsurancePlansDocument, options);
+      }
+export function useInsurancePlansLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InsurancePlansQuery, InsurancePlansQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InsurancePlansQuery, InsurancePlansQueryVariables>(InsurancePlansDocument, options);
+        }
+export type InsurancePlansQueryHookResult = ReturnType<typeof useInsurancePlansQuery>;
+export type InsurancePlansLazyQueryHookResult = ReturnType<typeof useInsurancePlansLazyQuery>;
+export type InsurancePlansQueryResult = Apollo.QueryResult<InsurancePlansQuery, InsurancePlansQueryVariables>;
 export const CompleteUploadFilesDocument = gql`
     mutation completeUploadFiles($files: [FileInput!]!) {
   completeUpload(files: $files) {

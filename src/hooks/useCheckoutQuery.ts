@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import * as Sentry from "@sentry/react";
 import { gql, useQuery } from "@apollo/client";
-import { InsuranceType, InsurancePlan } from "@src/graphql/generated";
 
 const getCheckoutQuery = gql`
   query GetCheckout($id: String!) {
@@ -9,6 +8,10 @@ const getCheckoutQuery = gql`
       checkout {
         _id
         name
+        dateOfBirth
+        gender
+        state
+        address
         weightInLbs
         insurancePlan
         insuranceType
@@ -49,13 +52,7 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
       covered = true;
       const { insurancePlan, insuranceType } = data.checkout.checkout;
       if (insurancePlan && insuranceType) {
-        covered = !(
-          [
-            InsurancePlan.Medicaid,
-            InsurancePlan.Other,
-            InsurancePlan.Cigna,
-          ].includes(insurancePlan) || insuranceType === InsuranceType.Hmo
-        );
+        covered = true;
       } else {
         covered = false;
       }
