@@ -45,13 +45,7 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
   const insuranceCovered = useMemo(() => {
     let covered = false;
     if (data?.checkout?.checkout) {
-      covered = true;
-      const { insurancePlan, insuranceType } = data.checkout.checkout;
-      if (insurancePlan && insuranceType) {
-        covered = true;
-      } else {
-        covered = false;
-      }
+      covered = data.checkout.checkout.insuranceCovered;
     }
     return covered;
   }, [data]);
