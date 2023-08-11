@@ -52,10 +52,10 @@ export enum AnswerType {
 }
 
 export type BasicUserInsuranceInfo = {
-  address: AddressInput;
   dateOfBirth: Scalars['DateTime'];
   gender: Gender;
   name: Scalars['String'];
+  state: Scalars['String'];
 };
 
 export type BatchCreateOrUpdateProvidersInput = {
@@ -83,11 +83,12 @@ export type Checkout = {
   _id: Scalars['String'];
   billingAddress: Address;
   checkedOut: Scalars['Boolean'];
-  covered: Scalars['Boolean'];
   dateOfBirth: Scalars['DateTime'];
   email: Scalars['String'];
   gender: Gender;
   heightInInches: Scalars['Float'];
+  insurance?: Maybe<Insurance>;
+  insuranceCovered?: Maybe<Scalars['Boolean']>;
   insurancePlan?: Maybe<InsurancePlanValue>;
   insuranceType?: Maybe<InsuranceTypeValue>;
   name: Scalars['String'];
@@ -145,8 +146,6 @@ export type CreateCheckoutInput = {
   email: Scalars['String'];
   gender: Gender;
   heightInInches: Scalars['Float'];
-  insurancePlan?: InputMaybe<InsurancePlanValue>;
-  insuranceType?: InputMaybe<InsuranceTypeValue>;
   name: Scalars['String'];
   pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
@@ -511,10 +510,23 @@ export type Insurance = {
   groupName?: Maybe<Scalars['String']>;
   insuranceCompany: Scalars['String'];
   memberId: Scalars['String'];
-  payor: Scalars['String'];
+  payor?: Maybe<Scalars['String']>;
   rxBIN?: Maybe<Scalars['String']>;
   rxGroup?: Maybe<Scalars['String']>;
   rxPCN?: Maybe<Scalars['String']>;
+};
+
+export type InsuranceCheckInput = {
+  checkoutId: Scalars['String'];
+  insurance: InsuranceInput;
+  insurancePlan: InsurancePlanValue;
+  insuranceType: InsuranceTypeValue;
+};
+
+export type InsuranceCheckResponse = {
+  __typename?: 'InsuranceCheckResponse';
+  covered: InsuranceCoveredResponse;
+  eligible: InsuranceEligibilityResponse;
 };
 
 export type InsuranceCoveredResponse = {
@@ -535,7 +547,7 @@ export type InsuranceInput = {
   groupName?: InputMaybe<Scalars['String']>;
   insuranceCompany: Scalars['String'];
   memberId: Scalars['String'];
-  payor: Scalars['String'];
+  payor?: InputMaybe<Scalars['String']>;
   rxBIN?: InputMaybe<Scalars['String']>;
   rxGroup?: InputMaybe<Scalars['String']>;
   rxPCN?: InputMaybe<Scalars['String']>;
@@ -646,7 +658,7 @@ export type Mutation = {
   createUser: User;
   forgotPassword: MessageResponse;
   generateMetriportConnectUrl: MetriportConnectResponse;
-  insuranceEligibility: InsuranceEligibilityResponse;
+  insuranceCheck: InsuranceCheckResponse;
   insuranceTextract: InsuranceTextractResponse;
   internalBulkPatientReassign: Scalars['Boolean'];
   internalOpsCreateNewProvider: User;
@@ -754,10 +766,8 @@ export type MutationGenerateMetriportConnectUrlArgs = {
 };
 
 
-export type MutationInsuranceEligibilityArgs = {
-  cpid?: InputMaybe<Scalars['String']>;
-  insurance: InsuranceInput;
-  userData: BasicUserInsuranceInfo;
+export type MutationInsuranceCheckArgs = {
+  input: InsuranceCheckInput;
 };
 
 
@@ -970,6 +980,8 @@ export type Query = {
   getSignupPartnerProviders: Array<SignupPartnerProvider>;
   getUserById: User;
   insuranceCovered: InsuranceCoveredResponse;
+  insuranceEligibility: InsuranceEligibilityResponse;
+  insuranceFlow: InsuranceCheckResponse;
   insurancePlans: InsurancePlansResponse;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
@@ -1048,6 +1060,22 @@ export type QueryGetUserByIdArgs = {
 
 
 export type QueryInsuranceCoveredArgs = {
+  insurancePlan: InsurancePlanValue;
+  insuranceType: InsuranceTypeValue;
+  userData: BasicUserInsuranceInfo;
+};
+
+
+export type QueryInsuranceEligibilityArgs = {
+  cpid?: InputMaybe<Scalars['String']>;
+  insurance: InsuranceInput;
+  userData: BasicUserInsuranceInfo;
+};
+
+
+export type QueryInsuranceFlowArgs = {
+  cpid?: InputMaybe<Scalars['String']>;
+  insurance: InsuranceInput;
   insurancePlan: InsurancePlanValue;
   insuranceType: InsuranceTypeValue;
   userData: BasicUserInsuranceInfo;
@@ -1508,16 +1536,23 @@ export type RequestSignedUrlsMutation = { __typename?: 'Mutation', requestSigned
 
 export type InsuranceTextractMutationVariables = Exact<{
   s3Key: Scalars['String'];
-  userState?: InputMaybe<Scalars['String']>;
+  userState: Scalars['String'];
 }>;
 
 
-export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insuranceMatches: Array<{ __typename?: 'Insurance', memberId: string, insuranceCompany: string, payor: string, groupId: string, groupName?: string | null, rxBIN?: string | null, rxPCN?: string | null, rxGroup?: string | null }> } };
+export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insuranceMatches: Array<{ __typename?: 'Insurance', memberId: string, insuranceCompany: string, payor?: string | null, groupId: string, groupName?: string | null, rxBIN?: string | null, rxPCN?: string | null, rxGroup?: string | null }> } };
 
 export type InsurancePlansQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InsurancePlansQuery = { __typename?: 'Query', insurancePlans: { __typename?: 'InsurancePlansResponse', plans: Array<{ __typename?: 'InsurancePlan', _id: string, name?: string | null, value: InsurancePlanValue, types: Array<InsuranceTypeValue> }>, types: Array<{ __typename?: 'InsuranceType', _id: string, name?: string | null, type: InsuranceTypeValue }> } };
+
+export type InsuranceCheckMutationVariables = Exact<{
+  input: InsuranceCheckInput;
+}>;
+
+
+export type InsuranceCheckMutation = { __typename?: 'Mutation', insuranceCheck: { __typename?: 'InsuranceCheckResponse', covered: { __typename?: 'InsuranceCoveredResponse', covered: boolean, reason?: string | null }, eligible: { __typename?: 'InsuranceEligibilityResponse', eligible: boolean, reason?: string | null } } };
 
 export type CompleteUploadFilesMutationVariables = Exact<{
   files: Array<FileInput> | FileInput;
@@ -1887,7 +1922,7 @@ export type RequestSignedUrlsMutationHookResult = ReturnType<typeof useRequestSi
 export type RequestSignedUrlsMutationResult = Apollo.MutationResult<RequestSignedUrlsMutation>;
 export type RequestSignedUrlsMutationOptions = Apollo.BaseMutationOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;
 export const InsuranceTextractDocument = gql`
-    mutation insuranceTextract($s3Key: String!, $userState: String) {
+    mutation insuranceTextract($s3Key: String!, $userState: String!) {
   insuranceTextract(s3Key: $s3Key, userState: $userState) {
     insuranceMatches {
       memberId
@@ -1975,6 +2010,46 @@ export function useInsurancePlansLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type InsurancePlansQueryHookResult = ReturnType<typeof useInsurancePlansQuery>;
 export type InsurancePlansLazyQueryHookResult = ReturnType<typeof useInsurancePlansLazyQuery>;
 export type InsurancePlansQueryResult = Apollo.QueryResult<InsurancePlansQuery, InsurancePlansQueryVariables>;
+export const InsuranceCheckDocument = gql`
+    mutation insuranceCheck($input: InsuranceCheckInput!) {
+  insuranceCheck(input: $input) {
+    covered {
+      covered
+      reason
+    }
+    eligible {
+      eligible
+      reason
+    }
+  }
+}
+    `;
+export type InsuranceCheckMutationFn = Apollo.MutationFunction<InsuranceCheckMutation, InsuranceCheckMutationVariables>;
+
+/**
+ * __useInsuranceCheckMutation__
+ *
+ * To run a mutation, you first call `useInsuranceCheckMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInsuranceCheckMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [insuranceCheckMutation, { data, loading, error }] = useInsuranceCheckMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useInsuranceCheckMutation(baseOptions?: Apollo.MutationHookOptions<InsuranceCheckMutation, InsuranceCheckMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InsuranceCheckMutation, InsuranceCheckMutationVariables>(InsuranceCheckDocument, options);
+      }
+export type InsuranceCheckMutationHookResult = ReturnType<typeof useInsuranceCheckMutation>;
+export type InsuranceCheckMutationResult = Apollo.MutationResult<InsuranceCheckMutation>;
+export type InsuranceCheckMutationOptions = Apollo.BaseMutationOptions<InsuranceCheckMutation, InsuranceCheckMutationVariables>;
 export const CompleteUploadFilesDocument = gql`
     mutation completeUploadFiles($files: [FileInput!]!) {
   completeUpload(files: $files) {

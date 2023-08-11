@@ -1,6 +1,6 @@
-import InsuranceCardUpload from "@src/components/insurance/EligibilityCheck";
-function InsuranceCardUploadPage() {
-  return <InsuranceCardUpload />;
+import InsuranceCheck from "@src/components/insurance/InsuranceCheck";
+function InsuranceCheckPage() {
+  return <InsuranceCheck />;
 }
-InsuranceCardUploadPage.isAuthRequired = false;
-export default InsuranceCardUploadPage;
+InsuranceCheckPage.isAuthRequired = false;
+export default InsuranceCheckPage;

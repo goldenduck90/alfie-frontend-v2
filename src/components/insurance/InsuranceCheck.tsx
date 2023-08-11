@@ -14,6 +14,9 @@ import { Loading } from "../Loading";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { createS3key } from "@src/utils/upload";
 
+import { randomId } from "@src/utils/randomId";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
+
 const requestSignedUrlsMutation = gql`
   mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
     requestSignedUrls(requests: $requests) {
@@ -24,7 +27,7 @@ const requestSignedUrlsMutation = gql`
 `;
 
 const insuranceTextractMutation = gql`
-  mutation insuranceTextract($s3Key: String!, $userState: String) {
+  mutation insuranceTextract($s3Key: String!, $userState: String!) {
     insuranceTextract(s3Key: $s3Key, userState: $userState) {
       insuranceMatches {
         memberId
@@ -60,14 +63,32 @@ const insurancePlansQuery = gql`
   }
 `;
 
-const EligibilityCheck = () => {
+const insuranceCheckMutation = gql`
+  mutation insuranceCheck($input: InsuranceCheckInput!) {
+    insuranceCheck(input: $input) {
+      covered {
+        covered
+        reason
+      }
+      eligible {
+        eligible
+        reason
+      }
+    }
+  }
+`;
+
+const InsuranceCheck = () => {
   const router = useRouter();
   const checkoutId = router.query.id;
 
   const [requestSignedUrls] = useMutation(requestSignedUrlsMutation);
   const [insuranceTextract] = useMutation(insuranceTextractMutation);
+  const [insuranceCheck] = useMutation(insuranceCheckMutation);
 
   const { partner } = usePartnerContext();
+  const { addNotification } = useNotificationStore();
+
   const { data, loading } = useCheckoutQuery(checkoutId);
   const { data: insurancePlans } = useQuery(insurancePlansQuery);
 
@@ -133,15 +154,47 @@ const EligibilityCheck = () => {
           });
           if (data.insuranceTextract.insuranceMatches.length > 0) {
             setInsurance(data.insuranceTextract.insuranceMatches[0]);
+            setIsManual(true);
           }
         }
       }
     } catch (err) {
-      console.log(err);
+      addNotification({
+        id: randomId(),
+        type: "error",
+        description: "please upload clear image or enter details manually",
+        title: "Unable to read insurance card",
+      });
     }
   };
 
-  const handleInsuranceSubmit = async (insurance: Insurance) => {};
+  const handleInsuranceSubmit = async (values: {
+    plan: string;
+    type: string;
+    groupId: string;
+    memberId: string;
+  }) => {
+    let insuranceObj = insurance;
+    if (!insurance) {
+      insuranceObj = {
+        insuranceCompany: values.plan,
+        groupId: values.groupId,
+        memberId: values.memberId,
+      };
+    }
+    const { data } = await insuranceCheck({
+      variables: {
+        input: {
+          checkoutId,
+          insurancePlan: values.plan,
+          insuranceType: values.type,
+          insurance: insuranceObj,
+        },
+      },
+    });
+
+    router.push(`/signup/checkout/${checkoutId}`);
+  };
 
   return (
     <Wrapper
@@ -223,4 +276,4 @@ const EligibilityCheck = () => {
   );
 };
 
-export default EligibilityCheck;
+export default InsuranceCheck;

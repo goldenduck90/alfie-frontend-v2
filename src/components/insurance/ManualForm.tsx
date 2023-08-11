@@ -1,12 +1,12 @@
+import { useEffect, useState } from "react";
+import { useFormik, FormikProvider } from "formik";
+
 import * as Yup from "yup";
 import { TextInput } from "@src/components/inputs/TextInput";
 import { SelectInput, OptionInput } from "@src/components/inputs/SelectInput";
 import { Button } from "@src/components/ui/Button";
+import { Loading } from "../Loading";
 
-import { useFormik, FormikProvider } from "formik";
-import { InsuranceTypes, InsurancePlans } from "@src/utils/insurance";
-
-import { useEffect, useState } from "react";
 import {
   Insurance,
   InsurancePlan,
@@ -17,10 +17,20 @@ type ManualFormProps = {
   insurance?: Insurance;
   plans: InsurancePlan[];
   types: InsuranceType[];
-  onSubmit: (insurance: Insurance) => Promise<void>;
+  onSubmit: ({
+    plan,
+    type,
+    groupId,
+    memberId,
+  }: {
+    plan: string;
+    type: string;
+    groupId: string;
+    memberId: string;
+  }) => Promise<void>;
 };
 
-const ManualForm = ({ insurance, plans, types }: ManualFormProps) => {
+const ManualForm = ({ insurance, plans, types, onSubmit }: ManualFormProps) => {
   const [planOptions, setPlanOptions] = useState<OptionInput[]>([]);
   const [typeOptions, setTypeOptions] = useState<OptionInput[]>([]);
 
@@ -41,10 +51,6 @@ const ManualForm = ({ insurance, plans, types }: ManualFormProps) => {
   }, [plans]);
 
   useEffect(() => {
-    console.log(insurance);
-  }, [insurance]);
-
-  useEffect(() => {
     const governmentType = types.find((type) => type.type === "Government");
     const sortedTypes = types
       .filter((type) => type.type !== "Government")
@@ -63,15 +69,15 @@ const ManualForm = ({ insurance, plans, types }: ManualFormProps) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      insurancePlan: insurance?.insuranceCompany,
-      insuranceType: insurance?.groupName,
-      groupId: insurance?.groupId,
-      memberId: insurance?.memberId,
+      plan: insurance?.insuranceCompany ?? "",
+      type: insurance?.groupName ?? "",
+      groupId: insurance?.groupId ?? "",
+      memberId: insurance?.memberId ?? "",
     },
     validateOnChange: false,
     validationSchema: Yup.object({
-      insurancePlan: Yup.string().test(
-        "insurancePlan",
+      plan: Yup.string().test(
+        "plan",
         "Please select your insurance plan.",
         (value) => {
           return planOptions
@@ -79,8 +85,8 @@ const ManualForm = ({ insurance, plans, types }: ManualFormProps) => {
             .includes(value ?? "");
         }
       ),
-      insuranceType: Yup.string().test(
-        "insuranceType",
+      type: Yup.string().test(
+        "type",
         "Please select your insurance type.",
         (value) => {
           return typeOptions
@@ -92,7 +98,7 @@ const ManualForm = ({ insurance, plans, types }: ManualFormProps) => {
       memberId: Yup.string().required("Member ID  is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      console.log({ ...insurance, ...values });
+      await onSubmit(values);
       resetForm();
     },
   });
@@ -109,7 +115,7 @@ const ManualForm = ({ insurance, plans, types }: ManualFormProps) => {
                   <span className="text-[red]">*</span>
                 </p>
                 <SelectInput
-                  name="insurancePlan"
+                  name="plan"
                   placeholder="Select"
                   options={planOptions}
                 />
@@ -120,7 +126,7 @@ const ManualForm = ({ insurance, plans, types }: ManualFormProps) => {
                   <span className="text-[red]">*</span>
                 </p>
                 <SelectInput
-                  name="insuranceType"
+                  name="type"
                   placeholder="Select"
                   options={typeOptions}
                 />
@@ -150,7 +156,7 @@ const ManualForm = ({ insurance, plans, types }: ManualFormProps) => {
               <div className="flex flex-col w-full">
                 <div className="flex justify-center">
                   <Button type="submit" size="medium">
-                    Submit
+                    {formik.isSubmitting ? <Loading size={20} /> : "Submit"}
                   </Button>
                 </div>
               </div>

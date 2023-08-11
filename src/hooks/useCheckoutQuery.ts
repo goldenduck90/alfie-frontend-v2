@@ -8,13 +8,9 @@ const getCheckoutQuery = gql`
       checkout {
         _id
         name
-        dateOfBirth
-        gender
         state
-        address
         weightInLbs
-        insurancePlan
-        insuranceType
+        insuranceCovered
       }
     }
   }
