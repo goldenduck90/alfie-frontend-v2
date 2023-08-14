@@ -42,13 +42,12 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
     return `${(weightInLbs * 0.15).toFixed(2)} pounds`;
   }, [data]);
 
-  const insuranceCovered = useMemo(() => {
-    let covered = false;
-    if (data?.checkout?.checkout) {
-      covered = data.checkout.checkout.insuranceCovered;
-    }
-    return covered;
-  }, [data]);
+  const insuranceCovered = useMemo(
+    () => data?.checkout.checkout.insuranceCovered ?? false,
+    [data]
+  );
+
+  console.log(data?.checkout.checkout.insuranceCovered, insuranceCovered);
 
   const stripeClientSecret = useMemo(
     () => data?.checkout?.checkout?.stripeClientSecret,

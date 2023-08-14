@@ -162,7 +162,7 @@ const PreCheckout = () => {
       const { checkout } = data.createOrFindCheckout;
       console.log(checkout);
       resetForm();
-      router.push(`/signup/checkout/${checkout._id}`);
+      router.push(`/signup/insurance/${checkout._id}`);
     },
   });
 
