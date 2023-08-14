@@ -47,8 +47,6 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
     [data]
   );
 
-  console.log(data?.checkout.checkout.insuranceCovered, insuranceCovered);
-
   const stripeClientSecret = useMemo(
     () => data?.checkout?.checkout?.stripeClientSecret,
     [data]
