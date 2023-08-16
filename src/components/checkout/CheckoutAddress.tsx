@@ -13,10 +13,24 @@ import { Button } from "@src/components/ui/Button";
 import { useRouter } from "next/router";
 import { Loading } from "@src/components/Loading";
 import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
+import { CheckoutAddressInput } from "@src/graphql/generated";
+
+import { randomId } from "@src/utils/randomId";
+import { useNotificationStore } from "@src/hooks/useNotificationStore";
 
 const createOrUpdateStripeSessionMutation = gql`
-  mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
+  mutation CreateOrUpdateStripeSession($input: CheckoutAddressInput!) {
     createOrUpdateStripeSession(input: $input) {
+      checkout {
+        _id
+      }
+    }
+  }
+`;
+
+const createInsuredUserFromCheckoutMutation = gql`
+  mutation createInsuredUserFromCheckout($input: CheckoutAddressInput!) {
+    createInsuredUserFromCheckout(input: $input) {
       checkout {
         _id
       }
@@ -28,14 +42,19 @@ export const CheckoutAddress = () => {
   const router = useRouter();
   const { id } = router.query;
   const { loading, error, insuranceCovered } = useCheckoutQuery(id);
+  const { addNotification } = useNotificationStore();
 
   const [createOrUpdateStripeSession] = useMutation(
     createOrUpdateStripeSessionMutation
   );
 
+  const [createInsuredUserFromCheckout] = useMutation(
+    createInsuredUserFromCheckoutMutation
+  );
+
   const form = useFormik({
     initialValues: {
-      _id: id,
+      _id: id as string,
       shipping: {
         line1: "",
         line2: "",
@@ -64,13 +83,21 @@ export const CheckoutAddress = () => {
     }),
     onSubmit: async (values, { resetForm, setStatus }) => {
       try {
-        const { data } = await createOrUpdateStripeSession({
-          variables: {
-            input: { ...values },
-          },
-        });
+        const input: CheckoutAddressInput = { ...values };
+        if (insuranceCovered) {
+          await createInsuredUserFromCheckout({
+            variables: {
+              input,
+            },
+          });
+        } else {
+          await createOrUpdateStripeSession({
+            variables: {
+              input,
+            },
+          });
+        }
 
-        const { checkout } = data.createOrUpdateStripeSession;
         resetForm();
 
         insuranceCovered
@@ -79,6 +106,12 @@ export const CheckoutAddress = () => {
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
+        addNotification({
+          id: randomId(),
+          type: "error",
+          description: msg,
+          title: "Error",
+        });
       }
     },
   });

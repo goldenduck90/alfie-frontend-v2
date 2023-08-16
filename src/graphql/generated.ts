@@ -111,6 +111,13 @@ export type Checkout = {
   weightLossMotivatorV2: Array<Scalars['String']>;
 };
 
+export type CheckoutAddressInput = {
+  _id: Scalars['String'];
+  billing?: InputMaybe<AddressInput>;
+  sameAsShipping: Scalars['Boolean'];
+  shipping: AddressInput;
+};
+
 export type CheckoutResponse = {
   __typename?: 'CheckoutResponse';
   checkout: Checkout;
@@ -178,14 +185,6 @@ export type CreateLabOrderResponse = {
   labOrderId: Scalars['String'];
 };
 
-export type CreateStripeCustomerInput = {
-  _id: Scalars['String'];
-  billing?: InputMaybe<AddressInput>;
-  insurance?: InputMaybe<Scalars['Boolean']>;
-  sameAsShipping: Scalars['Boolean'];
-  shipping: AddressInput;
-};
-
 export type CreateTaskInput = {
   /** If set to true, the task can be assigned multiple times to the same patient without the previously assigned task being completed. */
   canHaveMultiple?: InputMaybe<Scalars['Boolean']>;
@@ -222,6 +221,8 @@ export type CreateUserInput = {
   gender: Gender;
   /** Height in inches. */
   heightInInches: Scalars['Float'];
+  insurance?: InputMaybe<InsuranceInput>;
+  insuranceCovered?: InputMaybe<Scalars['Boolean']>;
   insurancePlan?: InputMaybe<InsurancePlanValue>;
   insuranceType?: InputMaybe<InsuranceTypeValue>;
   /** If not provided, will be set when scale is activated. */
@@ -651,6 +652,7 @@ export type Mutation = {
   completeUserTask: UserTask;
   createAppointment: EaAppointment;
   createCustomer: Scalars['String'];
+  createInsuredUserFromCheckout: CheckoutResponse;
   createLabOrder: CreateLabOrderResponse;
   createOrFindCheckout: CheckoutResponse;
   createOrUpdateStripeSession: CheckoutResponse;
@@ -731,6 +733,11 @@ export type MutationCreateCustomerArgs = {
 };
 
 
+export type MutationCreateInsuredUserFromCheckoutArgs = {
+  input: CheckoutAddressInput;
+};
+
+
 export type MutationCreateLabOrderArgs = {
   userId: Scalars['String'];
 };
@@ -742,7 +749,7 @@ export type MutationCreateOrFindCheckoutArgs = {
 
 
 export type MutationCreateOrUpdateStripeSessionArgs = {
-  input: CreateStripeCustomerInput;
+  input: CheckoutAddressInput;
 };
 
 
@@ -1383,6 +1390,7 @@ export type User = {
   hasScale?: Maybe<Scalars['Boolean']>;
   heightInInches: Scalars['Float'];
   insurance?: Maybe<Insurance>;
+  insuranceCovered?: Maybe<Scalars['Boolean']>;
   insurancePlan?: Maybe<InsurancePlanValue>;
   insuranceType?: Maybe<InsuranceTypeValue>;
   labOrderSent?: Maybe<Scalars['Boolean']>;
@@ -1514,11 +1522,18 @@ export type GetAppointmentsByMonthQueryQueryVariables = Exact<{
 export type GetAppointmentsByMonthQueryQuery = { __typename?: 'Query', appointmentsByMonth: Array<{ __typename?: 'EAAppointment', eaAppointmentId: string, notes?: string | null, location: string, start: string, end: string, eaCustomer: { __typename?: 'EACustomer', id: string, name: string, email: string }, eaProvider: { __typename?: 'EAProvider', id: string, name: string, email: string, type: Role } }> };
 
 export type CreateOrUpdateStripeSessionMutationVariables = Exact<{
-  input: CreateStripeCustomerInput;
+  input: CheckoutAddressInput;
 }>;
 
 
 export type CreateOrUpdateStripeSessionMutation = { __typename?: 'Mutation', createOrUpdateStripeSession: { __typename?: 'CheckoutResponse', checkout: { __typename?: 'Checkout', _id: string } } };
+
+export type CreateInsuredUserFromCheckoutMutationVariables = Exact<{
+  input: CheckoutAddressInput;
+}>;
+
+
+export type CreateInsuredUserFromCheckoutMutation = { __typename?: 'Mutation', createInsuredUserFromCheckout: { __typename?: 'CheckoutResponse', checkout: { __typename?: 'Checkout', _id: string } } };
 
 export type GetCheckoutStripeSecretOctaviaQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1815,7 +1830,7 @@ export type GetAppointmentsByMonthQueryQueryHookResult = ReturnType<typeof useGe
 export type GetAppointmentsByMonthQueryLazyQueryHookResult = ReturnType<typeof useGetAppointmentsByMonthQueryLazyQuery>;
 export type GetAppointmentsByMonthQueryQueryResult = Apollo.QueryResult<GetAppointmentsByMonthQueryQuery, GetAppointmentsByMonthQueryQueryVariables>;
 export const CreateOrUpdateStripeSessionDocument = gql`
-    mutation CreateOrUpdateStripeSession($input: CreateStripeCustomerInput!) {
+    mutation CreateOrUpdateStripeSession($input: CheckoutAddressInput!) {
   createOrUpdateStripeSession(input: $input) {
     checkout {
       _id
@@ -1849,6 +1864,41 @@ export function useCreateOrUpdateStripeSessionMutation(baseOptions?: Apollo.Muta
 export type CreateOrUpdateStripeSessionMutationHookResult = ReturnType<typeof useCreateOrUpdateStripeSessionMutation>;
 export type CreateOrUpdateStripeSessionMutationResult = Apollo.MutationResult<CreateOrUpdateStripeSessionMutation>;
 export type CreateOrUpdateStripeSessionMutationOptions = Apollo.BaseMutationOptions<CreateOrUpdateStripeSessionMutation, CreateOrUpdateStripeSessionMutationVariables>;
+export const CreateInsuredUserFromCheckoutDocument = gql`
+    mutation createInsuredUserFromCheckout($input: CheckoutAddressInput!) {
+  createInsuredUserFromCheckout(input: $input) {
+    checkout {
+      _id
+    }
+  }
+}
+    `;
+export type CreateInsuredUserFromCheckoutMutationFn = Apollo.MutationFunction<CreateInsuredUserFromCheckoutMutation, CreateInsuredUserFromCheckoutMutationVariables>;
+
+/**
+ * __useCreateInsuredUserFromCheckoutMutation__
+ *
+ * To run a mutation, you first call `useCreateInsuredUserFromCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInsuredUserFromCheckoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInsuredUserFromCheckoutMutation, { data, loading, error }] = useCreateInsuredUserFromCheckoutMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateInsuredUserFromCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<CreateInsuredUserFromCheckoutMutation, CreateInsuredUserFromCheckoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateInsuredUserFromCheckoutMutation, CreateInsuredUserFromCheckoutMutationVariables>(CreateInsuredUserFromCheckoutDocument, options);
+      }
+export type CreateInsuredUserFromCheckoutMutationHookResult = ReturnType<typeof useCreateInsuredUserFromCheckoutMutation>;
+export type CreateInsuredUserFromCheckoutMutationResult = Apollo.MutationResult<CreateInsuredUserFromCheckoutMutation>;
+export type CreateInsuredUserFromCheckoutMutationOptions = Apollo.BaseMutationOptions<CreateInsuredUserFromCheckoutMutation, CreateInsuredUserFromCheckoutMutationVariables>;
 export const GetCheckoutStripeSecretOctaviaDocument = gql`
     query GetCheckoutStripeSecretOctavia($id: String!) {
   checkout(id: $id) {
