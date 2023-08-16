@@ -14,7 +14,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
 import { randomId } from "@src/utils/randomId";
-import { gql, useMutation } from "@apollo/client";
+// import { gql, useMutation } from "@apollo/client";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 
 import dayjs from "dayjs";
@@ -25,30 +25,30 @@ dayjs.tz.setDefault(dayjs.tz.guess());
 
 type DateRange = Date | null | undefined | [Date | null, Date | null];
 
-const updateExceptionDate = gql`
-  mutation updateExceptions(
-    $timezone: String!
-    $eaProviderId: String!
-    $exceptions: DailyScheduleInput!
-  ) {
-    getProviderSchedule(
-      timezone: $timezone
-      eaProviderId: $eaProviderId
-      exceptions: $exceptions
-    ) {
-      exceptions {
-        date {
-          start
-          end
-          breaks {
-            start
-            end
-          }
-        }
-      }
-    }
-  }
-`;
+// const updateExceptionDate = gql`
+//   mutation updateExceptions(
+//     $timezone: String!
+//     $eaProviderId: String!
+//     $exceptions: DailyScheduleInput!
+//   ) {
+//     getProviderSchedule(
+//       timezone: $timezone
+//       eaProviderId: $eaProviderId
+//       exceptions: $exceptions
+//     ) {
+//       exceptions {
+//         date {
+//           start
+//           end
+//           breaks {
+//             start
+//             end
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
 
 const DateOverrideFormSchema = z.object({
   dateTitle: z.date(),
@@ -71,10 +71,10 @@ const DateOverrideFormSchema = z.object({
 type DateOverrideForm = z.infer<typeof DateOverrideFormSchema>;
 
 export function DateOverrideModal({ trigger }: { trigger: React.ReactNode }) {
-  const { user } = useCurrentUserStore();
+  // const { user } = useCurrentUserStore();
   const { addNotification } = useNotificationStore();
 
-  const [updateException, { loading }] = useMutation(updateExceptionDate);
+  // const [updateException, { loading }] = useMutation(updateExceptionDate);
 
   const {
     register,
@@ -121,13 +121,13 @@ export function DateOverrideModal({ trigger }: { trigger: React.ReactNode }) {
     console.log({ exceptions });
 
     try {
-      await updateException({
-        variables: {
-          eaProviderId: (user as any)?.eaProviderId,
-          timezone: dayjs.tz.guess(),
-          exceptions: JSON.stringify(exceptions),
-        },
-      });
+      // await updateException({
+      //   variables: {
+      //     eaProviderId: (user as any)?.eaProviderId,
+      //     timezone: dayjs.tz.guess(),
+      //     exceptions: JSON.stringify(exceptions),
+      //   },
+      // });
 
       addNotification({
         id: randomId(),

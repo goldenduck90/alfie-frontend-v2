@@ -1,11 +1,12 @@
 import { gql, useQuery } from "@apollo/client";
 import { DocumentIcon } from "@heroicons/react/outline";
 import { LocationMarkerIcon } from "@heroicons/react/solid";
+import { randomId } from "@src/utils/randomId";
 import GoogleMapReact from "google-map-react";
 import React, { useEffect, useState } from "react";
 import { Control, useController } from "react-hook-form";
 import { z } from "zod";
-import { Checkbox } from "../ui/Checkbox";
+import { Button } from "../ui/Button";
 import { TextField } from "../ui/TextField";
 import {
   MultiCheckboxFormQuestion,
@@ -16,6 +17,12 @@ import {
   RadioGroupInputProps,
   TextAreaInput,
 } from "./common";
+import { InputFileField, maxFileSize } from "../inputs/InputFileField";
+import { fileToBase64 } from "../../utils/fileToBase64";
+import { User, useUploadLabDocumentMutation } from "../../graphql/generated";
+import dayjs from "dayjs";
+import { useUserSession } from "../../hooks/useUserSession";
+import { useNotificationStore } from "../../hooks/useNotificationStore";
 
 const conditions = [
   "High blood pressure",
@@ -189,12 +196,30 @@ const requiredDocNames = [
   "Lipid Panel",
   "Comprehensive Metabolic Panel",
 ];
-function FinalSubmitMetabolic({ control }: { control: Control<any> }) {
+
+function FinalSubmitMetabolic({ user, control }: { control: Control<any>, user?: User }) {
+  const { addNotification } = useNotificationStore();
+
   const { field } = useController({
-    name: "requiredLabs",
+    name: "requiredLabs" as string,
     defaultValue: false,
     control,
   });
+
+  const [error, setError] = useState<string | null>(null);
+  const [uploadLabDocument] = useUploadLabDocumentMutation();
+
+  useEffect(() => {
+    if (field?.value) {
+      addNotification({
+        type: "success",
+        description: "Uploaded your lab documents successfully.",
+        id: randomId(),
+        title: "Lab Documents Uploaded",
+      });
+
+    }
+  }, [field?.value]);
 
   return (
     <div className="mx-auto max-w-[500px]">
@@ -221,7 +246,7 @@ function FinalSubmitMetabolic({ control }: { control: Control<any> }) {
         Labcorp:
         <span>
           <a
-            href={`https://www.labcorp.com/labs-and-appointment`}
+            href="https://www.labcorp.com/labs-and-appointment"
             className="text-blue-500"
           >
             {` https://www.labcorp.com/labs-and-appointment `}
@@ -229,22 +254,62 @@ function FinalSubmitMetabolic({ control }: { control: Control<any> }) {
         </span>
         Routine labs should be covered by your insurance.
       </p>
-      <div className="px-2 ">
-        <Checkbox
-          {...field}
-          ref={field.ref}
-          checked={field?.value}
-          label="I have already had the required labs done"
-        />
-      </div>
+      <InputFileField
+        field={field}
+        multi
+        getValue={async (file) => {
+          if (file.size > maxFileSize) {
+            setError("File size limit: 10 MB.");
+          } else {
+            setError(null);
+            try {
+              const base64Data = await fileToBase64(file, false);
+              const { errors, data } = await uploadLabDocument({
+                variables: {
+                  file: base64Data,
+                  fileName: `${dayjs().format("YYYY-MM-DD_HHmmss")}_${file.name}`,
+                  patientId: user?.akutePatientId ?? "",
+                },
+              });
+              if (errors) {
+                setError(errors.map((e) => e.message).join(" "));
+              } else {
+                setError(null);
+                const documentId = data?.uploadDocument?.id;
+                console.log(`Document uploaded: ${JSON.stringify(data)}`)
+                return documentId;
+              }
+            } catch (error) {
+              console.log("Error uploading lab document.", error);
+              setError("Error uploading lab document.");
+            }
+          }
+          return null;
+        }}
+      >
+        <div className="flex flex-col gap-y-3 items-center justify-center h-full">
+          <div className="p-2 rounded-full max-w-fit">
+            <DocumentIcon height={60} width={60} style={field.value ? { color: "#16a34a" } : undefined} />
+          </div>
+          <p className={`font-bold ${field.value ? 'text-green-600' : ''}`}>
+            {field.value ? "Labs uploaded" : "Upload your lab results"}
+          </p>
+          <p className="text-sm text-gray-500">
+            Accepted file types are: png, jpg, pdf.
+          </p>
+          <Button>{field.value ? "Choose different files" : "Upload from computer"}</Button>
+          {error && <p className="text-sm text-red-600">{error}</p>}
+        </div>
+      </InputFileField>
     </div>
   );
 }
+
 export const MapMarker = (props: any) => {
   return (
     <div className="w-8 h-8 rounded-full  flex justify-center items-center">
       <LocationMarkerIcon
-        onClick={() => props.onSelectOfMarker()}
+        onClick={() => props.onSelectMarker()}
         className="w-8 h-8 text-red-500"
       />
     </div>
@@ -312,7 +377,7 @@ function PillPackStep(props: any) {
       }
     }
   `;
-  const getAllpharmacyLocationsByName = useQuery(pharmacyLocations, {
+  const getAllPharmacyLocationsByName = useQuery(pharmacyLocations, {
     variables: {
       input: {
         name: pharmacyName,
@@ -321,12 +386,12 @@ function PillPackStep(props: any) {
   });
 
   function generatePharmacyMapMarkers() {
-    return getAllpharmacyLocationsByName?.data?.pharmacyLocations.map(
+    return getAllPharmacyLocationsByName?.data?.pharmacyLocations.map(
       (location: any) => {
         return (
           <MapMarker
             name="selectedPharmacy"
-            onSelectOfMarker={() => {
+            onSelectMarker={() => {
               console.log(location, "location");
               setSelectedMarker(location);
             }}

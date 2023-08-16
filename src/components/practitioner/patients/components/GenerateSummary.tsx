@@ -5,7 +5,7 @@ import { User } from "@src/graphql/generated";
 export function GenerateSummary({ patient }: { patient: User }) {
   console.log('patient', patient)
   const query = gql`
-    query getUser($userId: String!) {
+    query GetUserSummary($userId: String!) {
       generateSummary(userId: $userId) {
         generatedSummary
       }

@@ -1,25 +1,24 @@
 import React from "react";
-import { gql, useQuery } from "@apollo/client";
-
 import { UserIcon } from "@heroicons/react/outline";
 import { Button } from "@src/components/ui/Button";
 import { DashboardCard } from "@src/components/ui/DashboardCard";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 
-export const beforeAfterQuery = gql`
-  query BeforeAfterQuery {
-    before
-    after
-    between {
-      maybe
-    }
-  }
-`;
+// export const beforeAfterQuery = gql`
+//   query BeforeAfterQuery {
+//     before
+//     after
+//     between {
+//       maybe
+//     }
+//   }
+// `;
 
 export function BeforeAndAfter() {
-  const { loading, data, error } = useQuery(beforeAfterQuery, {
-    onError: (e) => console.log(e),
-  });
+  // const { loading, data, error } = useQuery(beforeAfterQuery, {
+  //   onError: (e) => console.log(e),
+  // });
+  const loading = false;
 
   return (
     <DashboardCard cardHeader={""} className="w-full">
