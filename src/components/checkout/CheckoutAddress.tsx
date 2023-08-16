@@ -66,13 +66,16 @@ export const CheckoutAddress = () => {
       try {
         const { data } = await createOrUpdateStripeSession({
           variables: {
-            input: { ...values, insurance: insuranceCovered },
+            input: { ...values },
           },
         });
 
         const { checkout } = data.createOrUpdateStripeSession;
         resetForm();
-        router.push(`/signup/checkout/${checkout._id}/payment`);
+
+        insuranceCovered
+          ? router.push(`/signup/checkout/success`)
+          : router.push(`/signup/checkout/${id}/payment`);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
@@ -180,11 +183,15 @@ export const CheckoutAddress = () => {
                 fullWidth
                 onClick={submitForm}
                 disabled={isSubmitting}
-                icon={<ArrowRightIcon className="w-4 h-4 ml-3" />}
+                icon={
+                  insuranceCovered ? null : (
+                    <ArrowRightIcon className="w-4 h-4 ml-3" />
+                  )
+                }
                 iconSide="right"
                 size="medium"
               >
-                Payment
+                {insuranceCovered ? "Complete Registration" : "Payment"}
               </Button>
             </div>
           </div>
