@@ -24,7 +24,7 @@ export function WeightEntry({
   const validationSchema = Yup.object({
     weight: weightValidationSchema(currentWeight)
   })
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, formState: { errors, isValid } } = useForm({
     defaultValues: {
       _id: taskId,
       weight: 0,
@@ -63,6 +63,8 @@ export function WeightEntry({
               rightIcon={<span className="pl-2 text-gray-400">lbs</span>}
               placeholder="120"
               fullWidth
+              helper={errors.weight?.message}
+              hasError={!isValid}
               inputSize="medium"
               type="number"
               {...register("weight", { valueAsNumber: true })}
