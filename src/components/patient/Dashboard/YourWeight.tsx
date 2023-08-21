@@ -73,6 +73,7 @@ export function YourWeight({ user }: { user: User }) {
                     <WeightEntry
                       title="Enter your weight"
                       taskId={getWeightTaskId()}
+                      currentWeight={currentWeight}
                     />
                   </DialogModal>
                 )}

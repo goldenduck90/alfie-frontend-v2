@@ -15,6 +15,7 @@ import PatientDetails from "./sections/PatientDetails";
 import PartnerDetails from "./sections/PartnerDetails";
 
 import { usePartnerContext } from "@src/context/PartnerContext";
+import weightValidationSchema from "@src/validations/weight";
 
 import { ValidStates } from "@src/utils/states";
 import { Gender, CreateCheckoutInput } from "@src/graphql/generated";
@@ -84,10 +85,7 @@ const PreCheckout = () => {
         .required("Please enter height.")
         .min(0, "Please enter a valid height.")
         .max(11, "Please enter a valid height."),
-      weight: Yup.number()
-        .required("Please enter weight.")
-        .min(70, "Please enter a valid weight.")
-        .max(800, "Please enter a valid weight."),
+      weight: weightValidationSchema(),
       pastTries: Yup.array()
         .of(Yup.string())
         .min(1, "Please select at least 1 option.")

@@ -29,6 +29,7 @@ import { parseError } from "@src/utils/parseError";
 
 import { Button } from "@src/components/ui/Button";
 import { usePartnerContext } from "@src/context/PartnerContext";
+import weightValidationSchema from "@src/validations/weight";
 
 import { Gender, CreateCheckoutInput } from "@src/graphql/generated";
 
@@ -197,10 +198,7 @@ export const PreCheckout = () => {
             .required("Please enter your height.")
             .min(0, "Please enter a valid height.")
             .max(11, "Please enter a valid height."),
-          weight: Yup.number()
-            .required("Please enter your weight.")
-            .min(70, "Please enter a valid weight.")
-            .max(800, "Please enter a valid weight."),
+          weight: weightValidationSchema()
         }),
         beforeNext({ heightFeet, heightInches, weight }, _, currentStepIndex) {
           // We need to calculate the users BMI and throw an ineligible error if they are not eligible for the program because their BMI is less than 27.

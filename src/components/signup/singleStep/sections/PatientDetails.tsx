@@ -54,16 +54,17 @@ const PatientDetails = () => {
               </span>
             )}
           </div>
-          <div className="flex flex-col w-32">
+          <div className="flex flex-col w-84">
             <p className="text-primary-700 font-bold">
               Your Weight<span className="text-[red]">*</span>
             </p>
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center w-32">
               <NumberInput
                 inputRef={weightRef}
                 name="weight"
                 placeholder="250"
-                type="tel"
+                type="number"
+                maxLength={3}
                 position="right"
                 showError={false}
               />

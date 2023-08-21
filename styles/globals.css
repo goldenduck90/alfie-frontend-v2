@@ -37,6 +37,15 @@ body {
   @apply notification-style bg-yellow-500;
 }
 
+/* number inpurt hide arrows */
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
 /* sign up date picker */
 input[type="date"]::-webkit-calendar-picker-indicator {
   background: transparent;
