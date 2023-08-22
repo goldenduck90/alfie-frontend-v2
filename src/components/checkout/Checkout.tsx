@@ -51,7 +51,6 @@ export const Checkout = () => {
             <InsuranceCovered
               firstName={data?.checkout?.checkout?.name?.split(" ")[0]}
               weightLossValue={weightLossValue}
-              checkoutId={checkoutId}
             />
           ) : (
             <InsuranceNotCovered
@@ -86,7 +85,7 @@ export const Checkout = () => {
               description="Alfie pairs you with a certified health coach and integrates with your smart devices to help your care team maximize your weight loss."
             />
           </div>
-          <div className="w-full">
+          <div className="w-full flex justify-between">
             <Button
               onClick={() => {
                 router.back();
@@ -95,6 +94,16 @@ export const Checkout = () => {
             >
               Back
             </Button>
+            {insuranceCovered && (
+              <Button
+                onClick={() => {
+                  router.push(`/signup/checkout/${checkoutId}/address/`);
+                }}
+                size="medium"
+              >
+                Next
+              </Button>
+            )}
           </div>
           <div className="flex flex-col">
             <p className="text-center text-xs text-gray-400 pt-6">

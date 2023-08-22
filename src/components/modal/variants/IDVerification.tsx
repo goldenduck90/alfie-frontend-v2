@@ -15,25 +15,7 @@ import { useTaskCompletion } from "../../../hooks/useTaskCompletion";
 import { FileType } from "../../../graphql/generated";
 import { fileToBase64 } from "../../../utils/fileToBase64";
 import { InputFileField, maxFileSize } from "../../inputs/InputFileField";
-
-function createS3key({
-  fileName,
-  fileType,
-  folder,
-  timestamp = false,
-}: {
-  fileName: string;
-  fileType: string;
-  folder: string;
-  timestamp?: boolean;
-}) {
-  let key = `${folder.replace(" ", "_")}/${fileName}`;
-  if (timestamp) {
-    key = `${key}-${Date.now()}`;
-  }
-
-  return `${key}.${fileType}`;
-}
+import { createS3key } from "@src/utils/upload";
 
 const requestSignedUrlsMutation = gql`
   mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
@@ -93,12 +75,12 @@ export const IDVerificationModal = ({
     name: "idPhoto",
     control,
     defaultValue: null,
-  })
+  });
   const { field: insuranceField } = useController({
     name: "insurancePhoto",
     control,
     defaultValue: null,
-  })
+  });
 
   const onSubmitFiles = useCallback(
     async ({ insurancePhoto, idPhoto, _id }: any) => {
@@ -203,10 +185,11 @@ export const IDVerificationModal = ({
                   type: type,
                   contentType: file?.type,
                   ETag: uploadResponse.headers.get("etag") || "",
-                  url: `${url.split("?")[0]
-                    }?versionId=${uploadResponse.headers.get(
-                      "x-amz-version-id"
-                    )}`,
+                  url: `${
+                    url.split("?")[0]
+                  }?versionId=${uploadResponse.headers.get(
+                    "x-amz-version-id"
+                  )}`,
                   versionId: uploadResponse.headers.get("x-amz-version-id"),
                   createdAt: uploadResponse.headers.get("date"),
                 };
@@ -319,8 +302,8 @@ export const IDVerificationModal = ({
               return step === 1
                 ? setSelectedId(file)
                 : step === 2 && file
-                  ? setSelectedInsurance(file)
-                  : null;
+                ? setSelectedInsurance(file)
+                : null;
             }
           }}
         >
