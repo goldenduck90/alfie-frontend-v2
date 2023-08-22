@@ -32,9 +32,9 @@ export const TaskItem = ({
     <div className="bg-white border border-gray-200 rounded-xl p-4 md:p-6 mb-4">
       <div className="flex flex-col justify-between gap-y-3 md:flex-row  md:gap-x-2 ">
         <div className="flex flex-shrink md:w-4/5">
-          <ChooseTaskIcon value={task.type} />
+          <ChooseTaskIcon value={task?.type} />
           <div className="w-full">
-            <h3 className="text-gray-900 font-bold">{task.name}</h3>
+            <h3 className="text-gray-900 font-bold">{task?.name}</h3>
             <p className="text-gray-700 pt-2">
               Complete a basic medical form so that we can tailor our services
               to your needs.

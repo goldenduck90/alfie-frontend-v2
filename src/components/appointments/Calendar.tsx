@@ -2,7 +2,6 @@ import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
-import Link from "next/link";
 import { AppointmentPreviewItem } from "../ui/AppointmentPreviewItem";
 import {
   CalendarIcon,
@@ -11,7 +10,7 @@ import {
 } from "@heroicons/react/outline";
 import { Line } from "../ui/Line";
 import { upcomingAppointmentsQuery } from "../patient/Dashboard/Appointments";
-import { useUserStateContext } from '@src/context/SessionContext';
+import { useUserStateContext } from "@src/context/SessionContext";
 
 // setup dayjs
 import dayjs from "dayjs";
@@ -19,14 +18,12 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
-import { useRouter } from "next/router";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isToday);
 dayjs.extend(isTomorrow);
 dayjs.tz.setDefault(dayjs.tz.guess());
-
 
 const getAppointmentsByMonthQuery = gql`
   query GetAppointmentsByMonthQuery($input: GetAppointmentsByMonthInput!) {
@@ -67,7 +64,7 @@ interface IMeeting {
     name: string;
     email: string;
     type: string;
-  }
+  };
 }
 
 export const CalendarView = () => {
@@ -76,22 +73,31 @@ export const CalendarView = () => {
   const isProvider = session[0]?.user?.role !== "Patient";
   const [reloaded, setReloaded] = useState(false);
 
-
-  const { loading, error, data, refetch: refetchAll } = useQuery(getAppointmentsByMonthQuery, {
+  const {
+    loading,
+    error,
+    data,
+    refetch: refetchAll,
+  } = useQuery(getAppointmentsByMonthQuery, {
     variables: {
       input: {
         timezone: dayjs.tz.guess(),
         month: dayjs().month() + 1,
-      }
+      },
     },
   });
 
-  const { loading: loadingUpcoming, data: upcomingData, error: upcomingError, refetch: refetchUpcoming } = useQuery(upcomingAppointmentsQuery, {
+  const {
+    loading: loadingUpcoming,
+    data: upcomingData,
+    error: upcomingError,
+    refetch: refetchUpcoming,
+  } = useQuery(upcomingAppointmentsQuery, {
     variables: {
       input: {
         timezone: dayjs.tz.guess(),
         selectedDate: dayjs(new Date()).format("YYYY-MM-DD H:mm"),
-      }
+      },
     },
   });
 
@@ -117,19 +123,20 @@ export const CalendarView = () => {
   }, [error, upcomingError]);
 
   const meetings: IMeeting[] = data?.appointmentsByMonth || [];
-  const meetingListBySelectedDate = meetings.filter(
-    (meeting) => {
-      const isSameDay = dayjs(meeting.start).isSame(value, "date")
+  const meetingListBySelectedDate = meetings.filter((meeting) => {
+    const isSameDay = dayjs(meeting.start).isSame(value, "date");
 
-      if (isSameDay) {
-        return true
-      }
-
-      return false
+    if (isSameDay) {
+      return true;
     }
-  );
 
-  const upcomingAppointment = upcomingData?.upcomingAppointments.length > 0 ? upcomingData?.upcomingAppointments[0] : undefined;
+    return false;
+  });
+
+  const upcomingAppointment =
+    upcomingData?.upcomingAppointments.length > 0
+      ? upcomingData?.upcomingAppointments[0]
+      : undefined;
   const lastMonth = dayjs(value).subtract(1, "month").set("date", 2);
   const nextMonth = dayjs(value).add(1, "month").set("date", 2);
 
@@ -141,14 +148,20 @@ export const CalendarView = () => {
           <div className="">
             <button
               className="p-2 border mr-2 rounded-xl"
-              disabled={(loading || loadingUpcoming) || lastMonth.year() < dayjs().year()}
+              disabled={
+                loading || loadingUpcoming || lastMonth.year() < dayjs().year()
+              }
               onClick={() => onChange(new Date(lastMonth.format("YYYY-MM-DD")))}
             >
               <ChevronLeftIcon className="h-5 w-5" id="backLabel" />
             </button>
             <button
               className="p-2 border rounded-xl"
-              disabled={(loading || loadingUpcoming) || nextMonth.year() > (dayjs().year() + 1)}
+              disabled={
+                loading ||
+                loadingUpcoming ||
+                nextMonth.year() > dayjs().year() + 1
+              }
               onClick={() => onChange(new Date(nextMonth.format("YYYY-MM-DD")))}
             >
               <ChevronRightIcon className="h-5 w-5" id="nextLabel" />
@@ -163,7 +176,7 @@ export const CalendarView = () => {
           tileDisabled={({ date }) => {
             if (loading || loadingUpcoming) return true;
 
-            const isSameMonth = dayjs(value).isSame(date, "month")
+            const isSameMonth = dayjs(value).isSame(date, "month");
             if (!isSameMonth) {
               return true;
             }
@@ -173,16 +186,15 @@ export const CalendarView = () => {
           tileContent={({ date, view }) =>
             // If a date in the month view has meetings, show a dot the meetings are found in the meetings array
             view === "month" &&
-              meetings.filter(
-                (meeting) => {
-                  const isSameDay = dayjs(meeting.start).isSame(date, "date")
+            meetings.filter((meeting) => {
+              const isSameDay = dayjs(meeting.start).isSame(date, "date");
 
-                  if (isSameDay) {
-                    return true
-                  }
+              if (isSameDay) {
+                return true;
+              }
 
-                  return false
-                }).length > 0 ? (
+              return false;
+            }).length > 0 ? (
               <div className="flex justify-center">
                 <div className="w-2 h-2 bg-red-400 absolute md:mt-2 rounded-full" />
               </div>
@@ -196,29 +208,44 @@ export const CalendarView = () => {
             <h2 className="font-semibold text-gray-900 pb-6">
               {dayjs(value).format("MMMM D, YYYY")}
             </h2>
-            {meetingListBySelectedDate.length > 0 ?
+            {meetingListBySelectedDate.length > 0 ? (
               meetingListBySelectedDate.map((meetingToShow, i) => (
-                <div className={(i + 1) === meetingListBySelectedDate.length ? "" : "mb-4"}>
+                <div
+                  className={
+                    i + 1 === meetingListBySelectedDate.length ? "" : "mb-4"
+                  }
+                >
                   <AppointmentPreviewItem
                     isLoading={loading}
-                    name={isProvider ? meetingToShow.eaCustomer?.name : meetingToShow.eaProvider?.name}
-                    providerTitle={isProvider ? "Patient" : meetingToShow.eaProvider?.type}
+                    name={
+                      isProvider
+                        ? meetingToShow.eaCustomer?.name
+                        : meetingToShow.eaProvider?.name
+                    }
+                    providerTitle={
+                      isProvider ? "Patient" : meetingToShow.eaProvider?.type
+                    }
                     renderDate={{
                       time: dayjs(meetingToShow.start).format("h:mm A"),
-                      date: dayjs(meetingToShow.start).isToday() ? "Today" : dayjs(meetingToShow.start).isTomorrow() ? "Tomorrow" : dayjs(meetingToShow.start).format("MM-DD-YYYY"),
+                      date: dayjs(meetingToShow.start).isToday()
+                        ? "Today"
+                        : dayjs(meetingToShow.start).isTomorrow()
+                        ? "Tomorrow"
+                        : dayjs(meetingToShow.start).format("MM-DD-YYYY"),
                     }}
                     appointmentId={meetingToShow.eaAppointmentId}
                   />
                 </div>
-              )) : (
-                <div className="flex flex-col items-center bg-gray-100 py-10">
-                  <CalendarIcon className="h-8 w-8" />
-                  <p className="text-gray-600 pt-5 max-w-[200px] text-center">
-                    You have no appointments scheduled for{" "}
-                    {dayjs(value).format("MMMM D, YYYY")}
-                  </p>
-                </div>
-              )}
+              ))
+            ) : (
+              <div className="flex flex-col items-center bg-gray-100 py-10">
+                <CalendarIcon className="h-8 w-8" />
+                <p className="text-gray-600 pt-5 max-w-[200px] text-center">
+                  You have no appointments scheduled for{" "}
+                  {dayjs(value).format("MMMM D, YYYY")}
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <div className="p-6 rounded-xl md:border bg-white">
@@ -230,11 +257,21 @@ export const CalendarView = () => {
             {upcomingData?.upcomingAppointments.length > 0 ? (
               <AppointmentPreviewItem
                 isLoading={loading}
-                name={isProvider ? upcomingAppointment.eaCustomer?.name : upcomingAppointment.eaProvider?.name}
-                providerTitle={isProvider ? "Patient" : upcomingAppointment.eaProvider?.type}
+                name={
+                  isProvider
+                    ? upcomingAppointment.eaCustomer?.name
+                    : upcomingAppointment.eaProvider?.name
+                }
+                providerTitle={
+                  isProvider ? "Patient" : upcomingAppointment.eaProvider?.type
+                }
                 renderDate={{
                   time: dayjs(upcomingAppointment.start).format("h:mm A"),
-                  date: dayjs(upcomingAppointment.start).isToday() ? "Today" : dayjs(upcomingAppointment.start).isTomorrow() ? "Tomorrow" : dayjs(upcomingAppointment.start).format("MM-DD-YYYY"),
+                  date: dayjs(upcomingAppointment.start).isToday()
+                    ? "Today"
+                    : dayjs(upcomingAppointment.start).isTomorrow()
+                    ? "Tomorrow"
+                    : dayjs(upcomingAppointment.start).format("MM-DD-YYYY"),
                 }}
                 appointmentId={upcomingAppointment.eaAppointmentId}
               />
