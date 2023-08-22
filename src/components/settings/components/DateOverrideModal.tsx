@@ -178,7 +178,7 @@ export function DateOverrideModal({ trigger }: { trigger: React.ReactNode }) {
               nextLabel={<ChevronRightIcon className="h-5 w-5" />}
               prevLabel={<ChevronLeftIcon className="h-5 w-5" />}
               onActiveStartDateChange={({ activeStartDate }) => {
-                setValue("dateTitle", activeStartDate);
+                activeStartDate && setValue("dateTitle", activeStartDate);
               }}
               onChange={(data: DateRange) => {
                 if ((data as [Date, Date])[1]) {

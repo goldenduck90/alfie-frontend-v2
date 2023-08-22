@@ -19,7 +19,6 @@ import { BiologicalSex } from "./steps/BiologicalSex";
 import { BMI } from "./steps/BMI";
 import { DateOfBirth } from "./steps/DateOfBirth";
 import { EmailCapture } from "./steps/EmailCapture";
-import { HealthInsurance } from "./steps/Insurance";
 import { PartnerProvider } from "./steps/PartnerProvider";
 
 import { useFormikWizard, Step } from "formik-wizard-form";
@@ -31,12 +30,7 @@ import { parseError } from "@src/utils/parseError";
 import { Button } from "@src/components/ui/Button";
 import { usePartnerContext } from "@src/context/PartnerContext";
 
-import {
-  Gender,
-  CreateCheckoutInput,
-  InsurancePlan,
-  InsuranceType,
-} from "@src/graphql/generated";
+import { Gender, CreateCheckoutInput } from "@src/graphql/generated";
 
 const createOrFindCheckoutMutation = gql`
   mutation CreateOrFindCheckout($input: CreateCheckoutInput!) {
@@ -75,9 +69,6 @@ export const PreCheckout = () => {
 
     if (partner && partner.providers.length > 0) {
       titles[11] = "Signup Partner Provider";
-      titles[12] = "Insurance Coverage";
-    } else {
-      titles[11] = "Insurance Coverage";
     }
 
     return titles;
@@ -264,37 +255,6 @@ export const PreCheckout = () => {
       });
     }
 
-    steps.push({
-      component: HealthInsurance,
-      validationSchema: Yup.object().shape({
-        insurancePlan: Yup.string().when("skipInsurance", {
-          is: (skipInsurance: boolean) => skipInsurance,
-          then: Yup.string().optional(),
-          otherwise: Yup.string().required(
-            "Please select your insurance plan."
-          ),
-        }),
-        insuranceType: Yup.string().when("skipInsurance", {
-          is: (skipInsurance: boolean) => skipInsurance,
-          then: Yup.string().optional(),
-          otherwise: Yup.string().required(
-            "Please select your insurance type."
-          ),
-        }),
-      }),
-      beforeNext(
-        { skipInsurance, insurancePlan, insuranceType },
-        _,
-        currentStepIndex
-      ) {
-        localStorage.setItem("skipInsurance", skipInsurance);
-        localStorage.setItem("insurancePlan", insurancePlan);
-        localStorage.setItem("insuranceType", insuranceType);
-        localStorage.setItem("preCheckoutStep", String(currentStepIndex));
-        return Promise.resolve();
-      },
-    });
-
     return steps;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [partner]);
@@ -317,9 +277,6 @@ export const PreCheckout = () => {
       email: localStorage.getItem("email") || "",
       textOptIn: Boolean(localStorage.getItem("textOptIn")) || true,
       phone: localStorage.getItem("phone") || "",
-      skipInsurance: localStorage.getItem("skipInsurance") === "true",
-      insurancePlan: localStorage.getItem("insurancePlan") || "",
-      insuranceType: localStorage.getItem("insuranceType") || "",
       signupPartnerProvider:
         localStorage.getItem("signupPartnerProvider") || "",
     },
@@ -327,7 +284,6 @@ export const PreCheckout = () => {
       {
         fullName: name,
         location: state,
-        weightLossMotivator,
         weightLossMotivatorV2,
         dateOfBirth,
         pastTries,
@@ -338,9 +294,6 @@ export const PreCheckout = () => {
         email,
         textOptIn,
         phone,
-        skipInsurance,
-        insurancePlan,
-        insuranceType,
         signupPartnerProvider,
       },
       { setStatus, resetForm }
@@ -361,17 +314,7 @@ export const PreCheckout = () => {
           textOptIn,
           phone: `+1${phone.replace(/[^0-9]/g, "")}`,
           pastTries,
-          insurancePlan,
-          insuranceType,
         };
-
-        if (skipInsurance) {
-          input.insurancePlan = null;
-          input.insuranceType = null;
-        } else {
-          input.insurancePlan = insurancePlan as InsurancePlan;
-          input.insuranceType = insuranceType as InsuranceType;
-        }
 
         if (partner) {
           input.signupPartnerId = partner?._id;
@@ -380,8 +323,6 @@ export const PreCheckout = () => {
             input.signupPartnerProviderId = signupPartnerProvider;
           }
         }
-
-        console.log(insurancePlan, insuranceType);
 
         const { data, errors } = await createOrFindCheckout({
           variables: {
@@ -399,7 +340,7 @@ export const PreCheckout = () => {
           return;
         }
         resetForm();
-        router.push(`/signup/checkout/${checkout._id}`);
+        router.push(`/signup/insurance/${checkout._id}`);
       } catch (err) {
         const msg = parseError(err);
         setStatus({ error: msg });
