@@ -4,7 +4,7 @@ import * as RadixSwitch from "@radix-ui/react-switch";
 interface ToggleSwitchProps {
   label: string | JSX.Element;
   checked: boolean;
-  onCheckedChange: () => void;
+  onCheckedChange: (checked: boolean) => void;
   defaultChecked?: boolean;
   disabled?: boolean;
   labelRight?: string | JSX.Element;
