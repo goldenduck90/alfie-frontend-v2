@@ -115,21 +115,23 @@ export function ScheduleAppointment({
     result.data?.getRole?.role === Role.Doctor ||
     result.data?.getRole?.role === Role.HealthCoach;
 
-  const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach || healthCoach;
+  const isHealthCoach =
+    result.data?.getRole?.role === Role.HealthCoach || healthCoach;
 
   const [update] = useMutation(updateAppointmentMutation);
   const [create] = useMutation(createAppointmentMutation);
   const { addNotification } = useNotificationStore();
 
   const [confirmed, setConfirmed] = useState(false);
+
   const scheduleForm = useFormikWizard({
     initialValues: {
       reschedule: true,
       eaAppointmentId,
       selectedDate: start
         ? dayjs(
-          `${dayjs(start).format("YYYY-MM-DD")} ${dayjs().format("H:mm")}`
-        )
+            `${dayjs(start).format("YYYY-MM-DD")} ${dayjs().format("H:mm")}`
+          )
         : dayjs(),
       start: start,
       end: end,
@@ -246,13 +248,15 @@ export function ScheduleAppointment({
   });
 
   useEffect(() => {
-    if (result.loading) return
-    if (!result.data) return
-    if (scheduleForm.values.healthCoach) return
-    if(result.data?.getRole?.role === Role.Admin) return
-    const isHealthCoach = result.data?.getRole?.role === Role.HealthCoach || healthCoach;
+    if (result.loading) return;
+    if (!result.data) return;
+    if (scheduleForm.values.healthCoach) return;
+    if (result.data?.getRole?.role === Role.Admin) return;
+    const isHealthCoach =
+      result.data?.getRole?.role === Role.HealthCoach || healthCoach;
     scheduleForm.setFieldValue("healthCoach", isHealthCoach);
-  }, [healthCoach, result.data, result.loading, scheduleForm])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [healthCoach, result.data, result.loading]);
 
   const setOpen = useDialogToggle();
 
@@ -333,8 +337,8 @@ export function ScheduleAppointment({
               {currentStepIndex === 0
                 ? "Next"
                 : currentStepIndex === 1
-                  ? "Confirm"
-                  : "Done"}
+                ? "Confirm"
+                : "Done"}
             </Button>
           </div>
         </>
