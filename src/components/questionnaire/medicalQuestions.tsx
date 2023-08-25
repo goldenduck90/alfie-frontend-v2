@@ -53,6 +53,89 @@ const previousconditions = [
   "If Female: Breastfeeding or plan on breastfeeding up to 6 months from now",
   "None of the above",
 ];
+const medications = [
+  {
+    id: "antidepressants",
+    name: "Tricyclic antidepressants",
+    medicines: [
+      "Amitriptyline",
+      "Desipramine",
+      "Doxepin",
+      "Imipramine",
+      "Nortriptyline",
+      "Trazodone",
+    ],
+  },
+  {
+    id: "corticosteroids",
+    name: "Corticosteroids",
+    medicines: ["Cortisone", "Prednisolone", "Prednisone"],
+  },
+  { id: "antihistamines", name: "Antihistamines" },
+  { id: "antipsychotics", name: "Antipsychotics" },
+  { id: "anticonvulsants", name: "Anticonvulsants" },
+  {
+    id: "ssris",
+    name: "SSRIs",
+    medicines: [
+      "Citalopram",
+      "Escitalopram",
+      "Fluoxetine",
+      "Fluvoxamine",
+      "Paroxetine",
+      "Sertraline",
+    ],
+  },
+  {
+    id: "snris",
+    name: "SNRIs",
+    medicines: ["Desvenlafaxine", "Duloxetine", "Venlafaxine"],
+  },
+  {
+    id: "maois",
+    name: "MAOIs",
+    medicines: ["Isocarboxazid", "Phenelzine", "Tranylcypromine"],
+  },
+  { id: "insulin", name: "Insulin" },
+  { id: "sulfonylureas", name: "Sulfonylureas" },
+  { id: "opiates", name: "Opiates (including Methadone or Buprenorphine)" },
+  { id: "benzodiazepines", name: "Benzodiazepines" },
+  { id: "barbiturates", name: "Barbiturates" },
+  { id: "anticoagulants", name: "Anticoagulants / Blood Thinners" },
+  {
+    id: "beta-blockers",
+    name: "Beta-Blockers",
+    medicines: [
+      "Acebutolol",
+      "Atenolol",
+      "Metoprolol",
+      "Propranolol",
+      "Timolol",
+    ],
+  },
+  {
+    id: "alpha-blockers",
+    name: "Alpha-Blockers",
+    medicines: ["Clonidine", "Prazosin"],
+  },
+  {
+    id: "arbs",
+    name: "ARBs",
+    medicines: [
+      "Irbesartan",
+      "Losartan",
+      "Olmesartan",
+      "Telmisartan",
+      "Valsartan",
+    ],
+  },
+  {
+    id: "ace-inhibitors",
+    name: "ACE inhibitors",
+    medicines: ["Enalapril", "Lisinopril", "Perindopril", "Ramipril"],
+  },
+  { id: "ccbs", name: "CCBs", medicines: ["Amlodipine", "Diltiazem"] },
+];
 
 export const medicalQuestions: QuestionProps<any>[] = [
   {
@@ -177,6 +260,21 @@ export const medicalQuestions: QuestionProps<any>[] = [
     helperText: "Type your answer",
   },
   {
+    id: "medications",
+    question:
+      "Are you currently taking any of the following medications on a daily basis?",
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <React.Fragment>
+        <MultiCheckboxFormQuestion
+          {...props}
+          multiple={true}
+          options={medications.map((m) => ({ key: m.id, value: m.name }))}
+        />
+      </React.Fragment>
+    ),
+    helperText: "Select all that apply",
+  },
+  {
     id: "usePillPack",
     question: "Would you like to use PillPack?",
     Component: (props: any) => PillPackStep(props),
@@ -190,6 +288,25 @@ export const medicalQuestions: QuestionProps<any>[] = [
   },
 ];
 
+export const medicationQuestionnairs: QuestionProps<any>[] = medications
+  .filter((m) => m.medicines?.length)
+  .map((m) => ({
+    id: m.id,
+    question: `You selected ${m.name}. Which one of these do you take?`,
+    Component: (props: MultiCheckboxQuestionProps) => (
+      <React.Fragment>
+        <MultiCheckboxFormQuestion
+          {...props}
+          name={`medicines.${props.name}`}
+          multiple={true}
+          options={m.medicines || []}
+        />
+      </React.Fragment>
+    ),
+    helperText: "Select all that apply",
+    parent_id: "medications",
+  }));
+
 const requiredDocNames = [
   "TSH",
   "Hb1Ac",
@@ -197,7 +314,13 @@ const requiredDocNames = [
   "Comprehensive Metabolic Panel",
 ];
 
-function FinalSubmitMetabolic({ user, control }: { control: Control<any>, user?: User }) {
+function FinalSubmitMetabolic({
+  user,
+  control,
+}: {
+  control: Control<any>;
+  user?: User;
+}) {
   const { addNotification } = useNotificationStore();
 
   const { field } = useController({
@@ -217,7 +340,6 @@ function FinalSubmitMetabolic({ user, control }: { control: Control<any>, user?:
         id: randomId(),
         title: "Lab Documents Uploaded",
       });
-
     }
   }, [field?.value]);
 
@@ -267,7 +389,9 @@ function FinalSubmitMetabolic({ user, control }: { control: Control<any>, user?:
               const { errors, data } = await uploadLabDocument({
                 variables: {
                   file: base64Data,
-                  fileName: `${dayjs().format("YYYY-MM-DD_HHmmss")}_${file.name}`,
+                  fileName: `${dayjs().format("YYYY-MM-DD_HHmmss")}_${
+                    file.name
+                  }`,
                   patientId: user?.akutePatientId ?? "",
                 },
               });
@@ -276,7 +400,7 @@ function FinalSubmitMetabolic({ user, control }: { control: Control<any>, user?:
               } else {
                 setError(null);
                 const documentId = data?.uploadDocument?.id;
-                console.log(`Document uploaded: ${JSON.stringify(data)}`)
+                console.log(`Document uploaded: ${JSON.stringify(data)}`);
                 return documentId;
               }
             } catch (error) {
@@ -289,15 +413,21 @@ function FinalSubmitMetabolic({ user, control }: { control: Control<any>, user?:
       >
         <div className="flex flex-col gap-y-3 items-center justify-center h-full">
           <div className="p-2 rounded-full max-w-fit">
-            <DocumentIcon height={60} width={60} style={field.value ? { color: "#16a34a" } : undefined} />
+            <DocumentIcon
+              height={60}
+              width={60}
+              style={field.value ? { color: "#16a34a" } : undefined}
+            />
           </div>
-          <p className={`font-bold ${field.value ? 'text-green-600' : ''}`}>
+          <p className={`font-bold ${field.value ? "text-green-600" : ""}`}>
             {field.value ? "Labs uploaded" : "Upload your lab results"}
           </p>
           <p className="text-sm text-gray-500">
             Accepted file types are: png, jpg, pdf.
           </p>
-          <Button>{field.value ? "Choose different files" : "Upload from computer"}</Button>
+          <Button>
+            {field.value ? "Choose different files" : "Upload from computer"}
+          </Button>
           {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
       </InputFileField>

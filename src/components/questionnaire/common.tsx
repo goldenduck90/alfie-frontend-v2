@@ -38,8 +38,13 @@ export interface QuestionComponentProps {
 
 export interface SingleFormQuestionProps extends QuestionComponentProps {}
 
+export interface CheckboxOptionProps {
+  key: string;
+  value: string;
+}
+
 export interface MultiCheckboxQuestionProps extends QuestionComponentProps {
-  options: string[];
+  options: string[] | CheckboxOptionProps[];
   multiple?: boolean;
 }
 
@@ -55,6 +60,7 @@ export interface QuestionProps<T extends React.FC<QuestionComponentProps>> {
   helperText: string;
   validation?: z.ZodType<any, any>;
   Component: T;
+  parent_id?: string;
 }
 
 export function SingleFormQuestion({
@@ -137,23 +143,24 @@ export function MultiCheckboxFormQuestion({
     <React.Fragment>
       <label className="text font-bold text-center pb-4">{question}</label>
       {options?.map((option, idx) => {
-        const checked = field?.value?.includes(option);
+        const optionKey = typeof option === 'string' ? option : option.key;
+        const checked = field?.value?.includes(optionKey);
         const handleChange = (checked: boolean) => {
           if (checked) {
             if (multiple) {
-              field.onChange([...field.value, option]);
+              field.onChange([...field.value, optionKey]);
             } else {
-              field.onChange([option]);
+              field.onChange([optionKey]);
             }
           } else {
-            field.onChange(field.value.filter((v: string) => v !== option));
+            field.onChange(field.value.filter((v: string) => v !== optionKey));
           }
         };
 
         return (
           <fieldset
-            key={option}
-            id={option}
+            key={optionKey}
+            id={optionKey}
             className={`flex gap-3 items-center w-full`}
             onClick={() => {
               handleChange(!checked);
@@ -172,13 +179,13 @@ export function MultiCheckboxFormQuestion({
                   field.ref(ref);
                 }}
                 onChange={handleChange}
-                checked={field?.value?.includes(option)}
+                checked={field?.value?.includes(optionKey)}
               />
               <label
-                htmlFor={`${option}-${idx}`}
+                htmlFor={`${optionKey}-${idx}`}
                 className="text-left pl-4 pointer-events-none"
               >
-                {option}
+                {typeof option === 'string' ? option : option.value}
               </label>
             </div>
           </fieldset>
