@@ -7,7 +7,7 @@ import {
   valueToAnswerType,
 } from '@src/hooks/useTaskCompletion';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { create, useStore } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -18,7 +18,7 @@ import {
 import { Button } from '../ui/Button';
 import { QuestionProps } from './common';
 import { gastroQuestions } from './gastroQuestions';
-import { medicalQuestions } from './medicalQuestions';
+import { medicalQuestions, medicationQuestionnairs } from './medicalQuestions';
 import { metabolicQuestions } from './metabolicQuestions';
 import { QuestionContainer } from './QuestionContainer';
 import { threeFactorQuestions } from './threeFactorQuestions';
@@ -170,6 +170,7 @@ function Questionnaire({
   const [mutate] = useTaskCompletion();
   const router = useRouter();
   const store = useProgressContext();
+  const [questions, setQuestions] = useState<QuestionProps<any>[]>(allQuestions);
   const { setMax, current, setCurrent } = useStore(store, (state: any) => ({
     setMax: state.setMax,
     setCurrent: state.setCurrent,
@@ -177,8 +178,12 @@ function Questionnaire({
   }));
 
   useEffect(() => {
-    setMax(allQuestions.length);
-  }, [allQuestions, setMax, setCurrent]);
+    setMax(questions.length);
+  }, [questions.length, setMax, setCurrent]);
+
+  useEffect(() => {
+    setQuestions(allQuestions);
+  }, [allQuestions.length, setQuestions])
 
   const boundForm = createPersistedFormState(formName);
   const onSubmit = boundForm((state: any) => ({
@@ -194,9 +199,9 @@ function Questionnaire({
     reset(getStoredForm(formName));
   }, [formName, reset, taskId]);
 
-  const question = allQuestions?.[current];
+  const question = questions?.[current];
   const Component = question?.Component;
-  const endQuestion = current + 1 === allQuestions?.length;
+  const endQuestion = current + 1 === questions?.length;
   console.log(question, 'QUESTION');
   /**
    * All Final Task should be submitted here.
@@ -325,7 +330,13 @@ function Questionnaire({
                   if (!!valid) {
                     handleSubmit((value) => {
                       console.log(value, 'valuessssss');
-                      onSubmit.setFormState(value);
+                      if (formName === 'medical' && question?.id === 'medications') {
+                        const subSteps = medicationQuestionnairs.filter(m =>  value.medications?.includes(m.id));
+                        const newSteps = [...medicalQuestions];
+                        newSteps.splice(current + 1, 0, ...subSteps);
+                        setQuestions(newSteps);
+                      }
+                      // onSubmit.setFormState(value);
                       router.push(
                         `/questionnaire/${router?.query?.taskId}?step=${current + 1
                         }`

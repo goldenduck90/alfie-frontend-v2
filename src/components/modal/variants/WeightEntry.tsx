@@ -2,8 +2,6 @@ import * as RadixDialog from "@radix-ui/react-dialog";
 import { TextField } from "@src/components/ui/TextField";
 import { Button } from "../../ui/Button";
 import { DialogLongBody, DialogLongHeader, useDialogToggle } from "../Dialog";
-import { gql, useMutation } from "@apollo/client";
-import { useState } from "react";
 import {
   useTaskCompletion,
   createAnswersFromObject,
@@ -17,6 +15,7 @@ export function WeightEntry({
 }: {
   title: string;
   taskId: string;
+  currentWeight?: number;
 }) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
