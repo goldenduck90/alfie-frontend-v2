@@ -300,6 +300,7 @@ export const medicationQuestionnairs: QuestionProps<any>[] = medications
           name={`medicines.${props.name}`}
           multiple={true}
           options={m.medicines || []}
+          hasOtherOption
         />
       </React.Fragment>
     ),
