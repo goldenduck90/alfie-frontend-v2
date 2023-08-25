@@ -21,6 +21,7 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
     variables: {
       id: checkoutId,
     },
+    fetchPolicy: "no-cache",
   });
 
   useEffect(() => {
