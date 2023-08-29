@@ -41,7 +41,7 @@ const PreCheckout = () => {
     initialValues: {
       firstName: "",
       lastName: "",
-      dateOfBirth: "",
+      dateOfBirth: new Date().toLocaleDateString(),
       biologicalSex: "male",
       state: "",
       phone: "",
