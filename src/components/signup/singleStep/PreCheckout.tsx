@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { gql, useMutation } from "@apollo/client";
 import { useFormik, FormikProvider } from "formik";
 import * as Yup from "yup";
-import { differenceInYears } from "date-fns";
+import { differenceInYears, format } from "date-fns";
 import { isValidPhoneNumber } from "libphonenumber-js";
 
 import { Wrapper } from "@src/components/layouts/Wrapper";
@@ -135,7 +135,7 @@ const PreCheckout = () => {
       const input: CreateCheckoutInput = {
         name: fullName,
         email,
-        dateOfBirth,
+        dateOfBirth: format(new Date(dateOfBirth), "yyyy-MM-dd"),
         gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
         state: state,
         phone: `+1${phone.replace(/[^0-9]/g, "")}`,

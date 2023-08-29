@@ -149,7 +149,7 @@ export const PreCheckout = () => {
             ),
         }),
         beforeNext({ dateOfBirth }, _, currentStepIndex) {
-          localStorage.setItem("dateOfBirth", dateOfBirth);
+          localStorage.setItem("dateOfBirth", dateOfBirth.toLocaleDateString());
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
@@ -268,7 +268,7 @@ export const PreCheckout = () => {
         localStorage.getItem("weightLossMotivatorV2") ?? "[]"
       ),
       dateOfBirth:
-        localStorage.getItem("dateOfBirth") || format(new Date(), "yyyy-MM-dd"),
+        localStorage.getItem("dateOfBirth") || new Date().toLocaleDateString(),
       pastTries: JSON.parse(localStorage.getItem("pastTries") ?? "[]"),
       biologicalSex: localStorage.getItem("biologicalSex") || "",
       heightFeet: localStorage.getItem("heightFeet") || "",
@@ -306,7 +306,7 @@ export const PreCheckout = () => {
           name,
           email,
           weightLossMotivatorV2,
-          dateOfBirth,
+          dateOfBirth: format(new Date(dateOfBirth), "yyyy-MM-dd"),
           gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
           state,
           heightInInches,
@@ -315,6 +315,7 @@ export const PreCheckout = () => {
           phone: `+1${phone.replace(/[^0-9]/g, "")}`,
           pastTries,
         };
+        console.log(input);
 
         if (partner) {
           input.signupPartnerId = partner?._id;
