@@ -18,7 +18,7 @@ import {
 import { Button } from '../ui/Button';
 import { QuestionProps } from './common';
 import { gastroQuestions } from './gastroQuestions';
-import { medicalQuestions, medicationQuestionnairs } from './medicalQuestions';
+import { medicalQuestions, medicationQuestionnairs, medications } from './medicalQuestions';
 import { metabolicQuestions } from './metabolicQuestions';
 import { QuestionContainer } from './QuestionContainer';
 import { threeFactorQuestions } from './threeFactorQuestions';
@@ -215,6 +215,12 @@ function Questionnaire({
     console.log(data, "DATA")
     try {
       if (data?.allergies) {
+        const userMedications: any = {};
+        data.medications
+          ?.map((m: string) => medications.find((md) => md.id === m)?.id)
+          .forEach((m: string) => {
+            userMedications[m] = [];
+          });
         const newData = {
           allergies: data?.allergies
             .map((a: { value: string }) => a.value)
@@ -228,6 +234,7 @@ function Questionnaire({
           previousConditions: data?.previousConditions
             .map((pc: string) => pc)
             .join(', '),
+          medications: { ...userMedications, ...data.medicines },
           hasSurgeries: data.surgeries?.hasSurgicalHistory,
           surgicalHistory: data.surgeries?.surgicalHistory,
           hasRequiredLabs: data?.requiredLabs ? "Yes" : "No",
