@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -136,7 +137,6 @@ export function IndividualPatientTabs() {
   });
 
   const patient: User = data?.getUserById;
-  console.log("patient", patient);
 
   const patientImages =
     patient?.files?.filter(
@@ -160,8 +160,9 @@ export function IndividualPatientTabs() {
         <div
           style={{ display: "flex", gap: 10, overflowY: "auto", padding: 6 }}
         >
-          {patientImages.map(({ signedUrl, key }) => (
-            <Image
+          {patientImages.map(({ signedUrl, key }, idx) => (
+            <img
+              key={idx}
               src={signedUrl}
               alt={key}
               title={key}
@@ -375,7 +376,7 @@ export function TableUserObject({
                   <PlaceHolderLine hasTopMargin />
                 </div>
               ) : (
-                <p className="text-gray-600">{user[key]}</p>
+                <div className="text-gray-600">{user[key]}</div>
               )}
             </div>
           );

@@ -5,6 +5,19 @@ import React from "react";
 import { ChooseTaskIcon } from "../ChooseTaskIcon";
 import { PlaceHolderLine } from "./PlaceHolderLine";
 
+// setup dayjs
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import isToday from "dayjs/plugin/isToday";
+import isTomorrow from "dayjs/plugin/isTomorrow";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isToday);
+dayjs.extend(isTomorrow);
+dayjs.tz.setDefault(dayjs.tz.guess());
+
 export interface DashboardPreviewItemProps {
   title: string;
   subtitle?: string;
@@ -41,9 +54,11 @@ export const DashboardPreviewItem = React.forwardRef(
           <div className="flex">
             {!icon && !renderIcon && (
               <div
-                className={`flex mr-4 rounded-full ${placeHolderIcon === "user" ? "bg-lime-100" : "bg-brand-peachy"
-                  } w-10 h-10 items-center justify-center min-w-[40px] ${isLoading ? "animate-pulse" : ""
-                  }`}
+                className={`flex mr-4 rounded-full ${
+                  placeHolderIcon === "user" ? "bg-lime-100" : "bg-brand-peachy"
+                } w-10 h-10 items-center justify-center min-w-[40px] ${
+                  isLoading ? "animate-pulse" : ""
+                }`}
               >
                 {placeHolderIcon === "user" ? (
                   <UserIcon className="h-6 w-6 text-lime-700" />
@@ -94,7 +109,9 @@ export const DashboardPreviewItem = React.forwardRef(
                   <p className="text-sm">{renderDate.date}</p>
                 )}
                 {renderDate?.time && (
-                  <p className="text-gray-500 text-sm">{renderDate.time}</p>
+                  <p className="text-gray-500 text-sm">{`${
+                    renderDate.time
+                  } (${dayjs().format("z")})`}</p>
                 )}
                 {!renderDate?.date && !renderDate?.time && (
                   <p className="text-gray-500 text-sm">No time set</p>

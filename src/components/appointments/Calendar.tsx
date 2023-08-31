@@ -2,7 +2,6 @@ import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
-import Link from "next/link";
 import { AppointmentPreviewItem } from "../ui/AppointmentPreviewItem";
 import {
   CalendarIcon,
@@ -19,7 +18,6 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
-import { useRouter } from "next/router";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
