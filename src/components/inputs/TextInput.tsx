@@ -3,7 +3,7 @@ import { ChangeEventHandler, FC } from "react";
 import { useCachedState } from "../../hooks/useCachedState";
 import { Loading } from "../Loading";
 
-export interface ITextInput {
+export interface ITextInput extends React.HTMLAttributes<HTMLInputElement> {
   name: string;
   placeholder: string;
   type?:
@@ -28,6 +28,7 @@ export const TextInput: FC<ITextInput> = ({
   cache = false,
   callbackForValue,
   loading = false,
+  ...inputProps
 }) => {
   const [, { value, error }, { setValue, setError }] = useField(name);
   const [, setCachedValue] = useCachedState(name, value, cache);
@@ -40,15 +41,20 @@ export const TextInput: FC<ITextInput> = ({
       callbackForValue(e.target.value);
     }
     setValue(e.target.value);
+    inputProps.onChange && inputProps.onChange(e);
   };
 
   return (
     <div className="flex flex-col">
       <div className="relative mt-1 rounded-md shadow-sm">
         <input
+          {...inputProps}
           disabled={disabled}
           type={type}
-          onFocus={() => setError(undefined)}
+          onFocus={(e) => {
+            setError(undefined);
+            inputProps.onFocus && inputProps.onFocus(e);
+          }}
           onChange={handleChange}
           value={value}
           placeholder={placeholder}

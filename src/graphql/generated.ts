@@ -36,6 +36,19 @@ export type AddressInput = {
   state: Scalars['String'];
 };
 
+export type AddressQuery = {
+  input: Scalars['String'];
+  location?: InputMaybe<Scalars['String']>;
+  radius?: InputMaybe<Scalars['String']>;
+  types?: InputMaybe<Scalars['String']>;
+};
+
+export type AddressSuggestion = {
+  __typename?: 'AddressSuggestion';
+  address?: Maybe<Scalars['String']>;
+  placeId?: Maybe<Scalars['String']>;
+};
+
 export type AkuteDocument = {
   __typename?: 'AkuteDocument';
   id: Scalars['String'];
@@ -969,6 +982,8 @@ export type ProviderModifyInput = {
 
 export type Query = {
   __typename?: 'Query';
+  addressDetail: Address;
+  addressSuggestions: Array<AddressSuggestion>;
   allUserTasks: UserTaskList;
   allUserTasksByUserId?: Maybe<Array<UserTask>>;
   appointment: EaAppointment;
@@ -1002,6 +1017,16 @@ export type Query = {
   userTask: UserTask;
   userTasks: UserTaskList;
   users: Array<User>;
+};
+
+
+export type QueryAddressDetailArgs = {
+  placeId: Scalars['String'];
+};
+
+
+export type QueryAddressSuggestionsArgs = {
+  query: AddressQuery;
 };
 
 
@@ -1723,6 +1748,20 @@ export type CreateOrFindCheckoutMutationVariables = Exact<{
 
 
 export type CreateOrFindCheckoutMutation = { __typename?: 'Mutation', createOrFindCheckout: { __typename?: 'CheckoutResponse', message?: string | null, checkout: { __typename?: 'Checkout', _id: string } } };
+
+export type GetAddressSuggestionsQueryVariables = Exact<{
+  query: AddressQuery;
+}>;
+
+
+export type GetAddressSuggestionsQuery = { __typename?: 'Query', addressSuggestions: Array<{ __typename?: 'AddressSuggestion', placeId?: string | null, address?: string | null }> };
+
+export type GetAddressDetailsQueryVariables = Exact<{
+  place_id: Scalars['String'];
+}>;
+
+
+export type GetAddressDetailsQuery = { __typename?: 'Query', addressDetail: { __typename?: 'Address', line1: string, line2?: string | null, country?: string | null, state: string, postalCode: string, city: string } };
 
 export type GetSignupPartnerByTitleQueryVariables = Exact<{
   title: Scalars['String'];
@@ -3055,6 +3094,82 @@ export function useCreateOrFindCheckoutMutation(baseOptions?: Apollo.MutationHoo
 export type CreateOrFindCheckoutMutationHookResult = ReturnType<typeof useCreateOrFindCheckoutMutation>;
 export type CreateOrFindCheckoutMutationResult = Apollo.MutationResult<CreateOrFindCheckoutMutation>;
 export type CreateOrFindCheckoutMutationOptions = Apollo.BaseMutationOptions<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>;
+export const GetAddressSuggestionsDocument = gql`
+    query GetAddressSuggestions($query: AddressQuery!) {
+  addressSuggestions(query: $query) {
+    placeId
+    address
+  }
+}
+    `;
+
+/**
+ * __useGetAddressSuggestionsQuery__
+ *
+ * To run a query within a React component, call `useGetAddressSuggestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAddressSuggestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAddressSuggestionsQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useGetAddressSuggestionsQuery(baseOptions: Apollo.QueryHookOptions<GetAddressSuggestionsQuery, GetAddressSuggestionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAddressSuggestionsQuery, GetAddressSuggestionsQueryVariables>(GetAddressSuggestionsDocument, options);
+      }
+export function useGetAddressSuggestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAddressSuggestionsQuery, GetAddressSuggestionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAddressSuggestionsQuery, GetAddressSuggestionsQueryVariables>(GetAddressSuggestionsDocument, options);
+        }
+export type GetAddressSuggestionsQueryHookResult = ReturnType<typeof useGetAddressSuggestionsQuery>;
+export type GetAddressSuggestionsLazyQueryHookResult = ReturnType<typeof useGetAddressSuggestionsLazyQuery>;
+export type GetAddressSuggestionsQueryResult = Apollo.QueryResult<GetAddressSuggestionsQuery, GetAddressSuggestionsQueryVariables>;
+export const GetAddressDetailsDocument = gql`
+    query GetAddressDetails($place_id: String!) {
+  addressDetail(placeId: $place_id) {
+    line1
+    line2
+    country
+    state
+    postalCode
+    city
+  }
+}
+    `;
+
+/**
+ * __useGetAddressDetailsQuery__
+ *
+ * To run a query within a React component, call `useGetAddressDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAddressDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAddressDetailsQuery({
+ *   variables: {
+ *      place_id: // value for 'place_id'
+ *   },
+ * });
+ */
+export function useGetAddressDetailsQuery(baseOptions: Apollo.QueryHookOptions<GetAddressDetailsQuery, GetAddressDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAddressDetailsQuery, GetAddressDetailsQueryVariables>(GetAddressDetailsDocument, options);
+      }
+export function useGetAddressDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAddressDetailsQuery, GetAddressDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAddressDetailsQuery, GetAddressDetailsQueryVariables>(GetAddressDetailsDocument, options);
+        }
+export type GetAddressDetailsQueryHookResult = ReturnType<typeof useGetAddressDetailsQuery>;
+export type GetAddressDetailsLazyQueryHookResult = ReturnType<typeof useGetAddressDetailsLazyQuery>;
+export type GetAddressDetailsQueryResult = Apollo.QueryResult<GetAddressDetailsQuery, GetAddressDetailsQueryVariables>;
 export const GetSignupPartnerByTitleDocument = gql`
     query getSignupPartnerByTitle($title: String!) {
   getSignupPartnerByTitle(title: $title) {
