@@ -4,12 +4,10 @@ import { gql, useMutation } from "@apollo/client";
 import { Checkbox } from "@src/components/inputs/Checkbox";
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import { FormikProvider, useFormik } from "formik";
-import { SelectInput } from "@src/components/inputs/SelectInput";
-import { States } from "@src/utils/states";
-import { TextInput } from "@src/components/inputs/TextInput";
 import * as Yup from "yup";
 import { parseError } from "@src/utils/parseError";
 import { Button } from "@src/components/ui/Button";
+import { AddressForm } from "@src/components/ui/AddressForm";
 import { useRouter } from "next/router";
 import { Loading } from "@src/components/Loading";
 import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
@@ -143,30 +141,7 @@ export const CheckoutAddress = () => {
           <div className="flex flex-col space-y-4">
             <div className="flex flex-col space-y-2">
               <h2 className="font-bold text-lg">Shipping Address</h2>
-              <div className="flex flex-col">
-                <div className="pb-2">
-                  <TextInput name="shipping.line1" placeholder="Address 1" />
-                </div>
-                <div className="pb-2">
-                  <TextInput name="shipping.line2" placeholder="Address 2" />
-                </div>
-                <div className="pb-3">
-                  <TextInput name="shipping.city" placeholder="City" />
-                </div>
-                <div className="pb-2">
-                  <SelectInput
-                    name="shipping.state"
-                    placeholder="State..."
-                    options={States}
-                  />
-                </div>
-                <div className="pb-2">
-                  <TextInput
-                    name="shipping.postalCode"
-                    placeholder="Postal Code"
-                  />
-                </div>
-              </div>
+              <AddressForm formName="shipping" values={form.values.shipping} />
             </div>
           </div>
 
@@ -182,32 +157,7 @@ export const CheckoutAddress = () => {
                 </div>
               </div>
               {!form.values.sameAsShipping && (
-                <>
-                  <div className="flex flex-col">
-                    <div className="pb-2">
-                      <TextInput name="billing.line1" placeholder="Address 1" />
-                    </div>
-                    <div className="pb-2">
-                      <TextInput name="billing.line2" placeholder="Address 2" />
-                    </div>
-                    <div className="pb-3">
-                      <TextInput name="billing.city" placeholder="City" />
-                    </div>
-                    <div className="pb-2">
-                      <SelectInput
-                        name="billing.state"
-                        placeholder="State..."
-                        options={States}
-                      />
-                    </div>
-                    <div className="pb-2">
-                      <TextInput
-                        name="billing.postalCode"
-                        placeholder="Postal Code"
-                      />
-                    </div>
-                  </div>
-                </>
+                <AddressForm formName="billing" values={form.values.billing} />
               )}
             </div>
 
