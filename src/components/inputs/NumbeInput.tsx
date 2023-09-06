@@ -14,6 +14,8 @@ export interface INumberInput {
   maxLength?: number;
   nextFieldRef?: RefObject<HTMLInputElement>;
   cache?: boolean;
+  min?: number;
+  max?: number;
 }
 
 export const NumberInput: FC<INumberInput> = ({
@@ -28,6 +30,8 @@ export const NumberInput: FC<INumberInput> = ({
   maxLength = 0,
   nextFieldRef,
   cache,
+  min,
+  max
 }) => {
   const [, { value, error }, { setValue, setError }] = useField(name);
   const [, setCachedValue] = useCachedState(name, value, cache);
@@ -70,6 +74,8 @@ export const NumberInput: FC<INumberInput> = ({
           }}
           onChange={onChange}
           disabled={disabled}
+          min={min}
+          max={max}
         />
         {position === "right" && addonText && (
           <span className="flex items-center px-3 text-gray-500 bg-gray-200 whitespace-nowrap">
