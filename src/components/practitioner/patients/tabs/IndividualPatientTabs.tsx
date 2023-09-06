@@ -375,17 +375,6 @@ export function TableUserObject({
                 <div className="w-1/4 h-6 flex items-center">
                   <PlaceHolderLine hasTopMargin />
                 </div>
-              ) : typeof user[key] === "object" ? (
-                <p className="text-gray-600">
-                  {Object.keys(user[key]).map((subKey) => (
-                    <p className="text-gray-600">
-                      <strong>{subKey}:</strong>{" "}
-                      {Array.isArray(user[key][subKey])
-                        ? user[key][subKey]?.join(", ")
-                        : user[key][subKey]?.toString()}
-                    </p>
-                  ))}
-                </p>
               ) : (
                 <div className="text-gray-600">{user[key]}</div>
               )}
