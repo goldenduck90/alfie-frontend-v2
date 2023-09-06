@@ -1,3 +1,4 @@
+import { medications } from "@src/components/questionnaire/medicalQuestions";
 import { TableUserObject } from "../tabs/IndividualPatientTabs";
 import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 
@@ -14,7 +15,23 @@ export function MedicalQuestionnaire({ taskData }: any) {
   }
   console.log(taskAnswers, "taskAnswers");
   function getTaskValueBasedOnKey(key: string) {
-    return taskAnswers?.find((answer: any) => answer.key === key)?.value;
+    const answer = taskAnswers?.find(
+      (answer: any) => answer.key === key
+    )?.value;
+    if (key === "medications" && typeof answer === "object") {
+      const medicationAnswer: any = {};
+      Object.keys(answer).map((mId) => {
+        const medication = medications.find((m) => m.id === mId);
+        if (medication) {
+          medicationAnswer[medication.name] = answer[mId];
+        }
+      });
+
+      console.log("medication answer:", medicationAnswer);
+      return medicationAnswer;
+    }
+
+    return answer;
   }
   return (
     <TableUserObject

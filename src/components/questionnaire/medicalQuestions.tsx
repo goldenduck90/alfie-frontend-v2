@@ -53,7 +53,7 @@ const previousconditions = [
   "If Female: Breastfeeding or plan on breastfeeding up to 6 months from now",
   "None of the above",
 ];
-const medications = [
+export const medications = [
   {
     id: "antidepressants",
     name: "Tricyclic antidepressants",

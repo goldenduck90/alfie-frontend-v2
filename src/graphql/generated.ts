@@ -61,6 +61,7 @@ export enum AnswerType {
   Date = 'DATE',
   File = 'FILE',
   Number = 'NUMBER',
+  Object = 'OBJECT',
   String = 'STRING'
 }
 
@@ -671,6 +672,7 @@ export type Mutation = {
   createOrUpdateStripeSession: CheckoutResponse;
   createTask: Task;
   createUser: User;
+  createUserFromCheckout: Scalars['String'];
   forgotPassword: MessageResponse;
   generateMetriportConnectUrl: MetriportConnectResponse;
   insuranceCheck: InsuranceCheckResponse;
@@ -773,6 +775,11 @@ export type MutationCreateTaskArgs = {
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+export type MutationCreateUserFromCheckoutArgs = {
+  checkoutId: Scalars['String'];
 };
 
 
