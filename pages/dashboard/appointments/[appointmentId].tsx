@@ -50,6 +50,7 @@ export const appointmentDetailQuery = gql`
         name
         email
       }
+      userId
     }
   }
 `;
@@ -76,6 +77,7 @@ function AppointmentDetails() {
     notes,
     eaProvider,
     eaCustomer,
+    userId,
   } = data?.appointment || {};
 
   const isProvider = session[0]?.user?.role !== "Patient";
@@ -242,6 +244,7 @@ function AppointmentDetails() {
                 start={start}
                 end={end}
                 notes={notes}
+                userId={isProvider ? userId : undefined}
                 eaCustomerName={eaCustomer?.name}
                 healthCoach={String(eaProvider?.id) === "118"}
                 onComplete={() => {
