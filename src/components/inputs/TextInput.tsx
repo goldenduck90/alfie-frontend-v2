@@ -19,6 +19,7 @@ export interface ITextInput extends React.HTMLAttributes<HTMLInputElement> {
   cache?: boolean;
   callbackForValue?: (value: string) => void;
   loading?: boolean;
+  autoComplete?: string;
 }
 export const TextInput: FC<ITextInput> = ({
   name,
@@ -28,6 +29,7 @@ export const TextInput: FC<ITextInput> = ({
   cache = false,
   callbackForValue,
   loading = false,
+  autoComplete,
   ...inputProps
 }) => {
   const [, { value, error }, { setValue, setError }] = useField(name);
@@ -61,6 +63,7 @@ export const TextInput: FC<ITextInput> = ({
           className={`${
             error ? "border-red-500" : "border-gray-300"
           }  w-full px-3 py-1 appearance-none rounded-2xl border-2`}
+          autoComplete={autoComplete}
         />
         <div className="pointer-events-none absolute in set-y-0 right-0 flex items-center pr-3">
           {loading && <Loading size={20} />}
