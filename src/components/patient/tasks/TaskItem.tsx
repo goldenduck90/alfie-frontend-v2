@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { format, isToday, isTomorrow, formatDistance } from "date-fns";
 import Link from "next/link";
 import { Button } from "../../ui/Button";
@@ -23,6 +23,8 @@ export const TaskItem = ({
   appointmentStartTime,
   meetingLocation,
   providerType,
+  valid,
+  helperText,
 }: {
   id: string;
   type: TaskType;
@@ -34,13 +36,15 @@ export const TaskItem = ({
   appointmentStartTime?: string;
   meetingLocation?: string;
   providerType?: string;
+  valid?: boolean;
+  helperText?: string;
 }) => {
   const formattedTime = useMemo(() => {
     if (dueAt && !pastDue) {
       return `Due in ${formatDistance(new Date(dueAt), new Date())}`;
     } else if (dueAt && pastDue) {
       return `Due ${formatDistance(new Date(dueAt), new Date())} ago`;
-    } else {
+    } else if (createdAt) {
       return `Assigned ${formatDistance(new Date(createdAt), new Date())} ago`;
     }
   }, [dueAt, pastDue, createdAt]);
@@ -151,7 +155,11 @@ export const TaskItem = ({
         };
     }
   }, [type]);
-  console.log(type);
+
+  const timeDuration = appointmentStartTime
+    ? `${formatAppointmentStartTime} | ${providerType}`
+    : formattedTime;
+
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 md:p-6">
       <div className="flex flex-col justify-between gap-y-3 md:flex-row  md:gap-x-2 ">
@@ -165,23 +173,27 @@ export const TaskItem = ({
           </div>
         </div>
         <div className="hidden md:flex">
-          <ClockIcon
-            className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-            aria-hidden="true"
-          />
-          <p>{taskMeta.duration}</p>
+          {taskMeta.duration && valid ? (
+            <>
+              <ClockIcon
+                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                aria-hidden="true"
+              />
+              <p>{taskMeta.duration}</p>
+            </>
+          ) : null}
         </div>
 
         <div className="hidden md:flex">
-          <CalendarIcon
-            className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-            aria-hidden="true"
-          />
-          <p>
-            {appointmentStartTime
-              ? `${formatAppointmentStartTime} | ${providerType}`
-              : formattedTime}
-          </p>
+          {timeDuration ? (
+            <>
+              <CalendarIcon
+                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                aria-hidden="true"
+              />
+              <p>{timeDuration}</p>
+            </>
+          ) : null}
         </div>
         <div className="hidden md:flex">
           {hasSubTasks ? (
@@ -190,7 +202,20 @@ export const TaskItem = ({
               completed
             </div>
           ) : (
-            <TaskSelector type={type} userTaskId={id} createdAt={createdAt} />
+            <TaskSelector
+              type={type}
+              userTaskId={id}
+              createdAt={createdAt}
+              trigger={
+                <Button
+                  buttonType="primary"
+                  disabled={!valid}
+                  tooltipText={helperText}
+                >
+                  {actionText}
+                </Button>
+              }
+            />
           )}
         </div>
       </div>
