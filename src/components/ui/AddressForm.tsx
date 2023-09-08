@@ -53,18 +53,6 @@ const formatAddress = (address: AddressInput): AddressQuery => {
     parts.push(address.line2);
   }
 
-  if (address.city) {
-    parts.push(address.city);
-  }
-
-  if (address.state) {
-    parts.push(address.state);
-  }
-
-  if (address.postalCode) {
-    parts.push(address.postalCode);
-  }
-
   return {
     input: parts.join(", "),
   };

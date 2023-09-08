@@ -546,6 +546,7 @@ export type InsuranceCheckResponse = {
 
 export type InsuranceCoveredResponse = {
   __typename?: 'InsuranceCoveredResponse';
+  comingSoon: Scalars['Boolean'];
   covered: Scalars['Boolean'];
   reason?: Maybe<Scalars['String']>;
 };
@@ -1439,7 +1440,7 @@ export type User = {
   sendbirdChannelUrl?: Maybe<Scalars['String']>;
   signupPartner?: Maybe<SignupPartner>;
   signupPartnerProvider?: Maybe<SignupPartnerProvider>;
-  stripeCustomerId: Scalars['String'];
+  stripeCustomerId?: Maybe<Scalars['String']>;
   stripePaymentIntentId?: Maybe<Scalars['String']>;
   stripeSubscriptionId?: Maybe<Scalars['String']>;
   subscriptionExpiresAt: Scalars['DateTime'];
@@ -1667,7 +1668,7 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', _id: string, textOptIn?: boolean | null, meetingRoomUrl?: string | null, generatedSummary?: string | null, name: string, email: string, phone: string, role: Role, dateOfBirth: any, weightGoal?: number | null, gender: Gender, heightInInches: number, akutePatientId?: string | null, stripeCustomerId: string, stripeSubscriptionId?: string | null, eaCustomerId?: string | null, eaHealthCoachId?: string | null, subscriptionExpiresAt: any, pharmacyLocation?: string | null, meetingUrl?: string | null, labOrderSent?: boolean | null, bmi?: number | null, address: { __typename?: 'Address', line1: string, line2?: string | null, city: string, state: string, postalCode: string, country?: string | null }, weights: Array<{ __typename?: 'Weight', value: number, date: any }>, classifications?: Array<{ __typename?: 'Classification', classification: string, calculatedPercentile?: number | null, percentile: number, date: any }> | null, files: Array<{ __typename?: 'File', key: string, signedUrl: string, contentType: string, metadata?: Array<{ __typename?: 'FileMetadata', key: string, value: string }> | null }> } };
+export type GetUserQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', _id: string, textOptIn?: boolean | null, meetingRoomUrl?: string | null, generatedSummary?: string | null, name: string, email: string, phone: string, role: Role, dateOfBirth: any, weightGoal?: number | null, gender: Gender, heightInInches: number, akutePatientId?: string | null, stripeCustomerId?: string | null, stripeSubscriptionId?: string | null, eaCustomerId?: string | null, eaHealthCoachId?: string | null, subscriptionExpiresAt: any, pharmacyLocation?: string | null, meetingUrl?: string | null, labOrderSent?: boolean | null, bmi?: number | null, address: { __typename?: 'Address', line1: string, line2?: string | null, city: string, state: string, postalCode: string, country?: string | null }, weights: Array<{ __typename?: 'Weight', value: number, date: any }>, classifications?: Array<{ __typename?: 'Classification', classification: string, calculatedPercentile?: number | null, percentile: number, date: any }> | null, files: Array<{ __typename?: 'File', key: string, signedUrl: string, contentType: string, metadata?: Array<{ __typename?: 'FileMetadata', key: string, value: string }> | null }>, signupPartner?: { __typename?: 'SignupPartner', title: string } | null } };
 
 export type GetAllUserTasksByUserQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -2551,6 +2552,9 @@ export const GetUserDocument = gql`
         key
         value
       }
+    }
+    signupPartner {
+      title
     }
   }
 }
