@@ -28,8 +28,8 @@ export function ConnectWithingsScale({ title }: Props) {
           <p className="text-sm mb-2">
             Once you have downloaded the Withings app and connected your scale
             to WiFi, click below to connect your scale to your Alfie Health
-            account. If you have received your scale within 5 business days of
-            signing up, please contact support@joinalfie.com
+            account. If you have not received your scale within 5 business days
+            of signing up, please contact support@joinalfie.com
           </p>
         </div>
       </DialogLongBody>
