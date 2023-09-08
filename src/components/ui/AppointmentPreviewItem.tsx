@@ -3,19 +3,7 @@ import { UserIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { Button } from "./Button";
 import { PlaceHolderLine } from "./PlaceHolderLine";
-
-// setup dayjs
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import isToday from "dayjs/plugin/isToday";
-import isTomorrow from "dayjs/plugin/isTomorrow";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(isToday);
-dayjs.extend(isTomorrow);
-dayjs.tz.setDefault(dayjs.tz.guess());
+import moment from "moment-timezone";
 
 export interface AppointmentPreviewItemProps {
   name?: string;
@@ -74,7 +62,9 @@ export function AppointmentPreviewItem({
           <div className="flex w-full justify-between">
             <div>{renderDate?.date}</div>
             <div className="text-gray-400">
-              {`${renderDate?.time} (${dayjs().format("z")})`}
+              {`${renderDate?.time} (${moment
+                .tz(moment.tz.guess())
+                .zoneAbbr()})`}
             </div>
           </div>
         )}

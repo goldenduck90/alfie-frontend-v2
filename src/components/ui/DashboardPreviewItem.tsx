@@ -4,19 +4,7 @@ import { TaskType } from "@src/graphql/generated";
 import React from "react";
 import { ChooseTaskIcon } from "../ChooseTaskIcon";
 import { PlaceHolderLine } from "./PlaceHolderLine";
-
-// setup dayjs
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import isToday from "dayjs/plugin/isToday";
-import isTomorrow from "dayjs/plugin/isTomorrow";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(isToday);
-dayjs.extend(isTomorrow);
-dayjs.tz.setDefault(dayjs.tz.guess());
+import moment from "moment-timezone";
 
 export interface DashboardPreviewItemProps {
   title: string;
@@ -111,7 +99,7 @@ export const DashboardPreviewItem = React.forwardRef(
                 {renderDate?.time && (
                   <p className="text-gray-500 text-sm">{`${
                     renderDate.time
-                  } (${dayjs().format("z")})`}</p>
+                  } (${moment.tz(moment.tz.guess()).zoneAbbr()})`}</p>
                 )}
                 {!renderDate?.date && !renderDate?.time && (
                   <p className="text-gray-500 text-sm">No time set</p>

@@ -15,13 +15,8 @@ import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import { TextField } from "../ui/TextField";
 import { randomId } from "@src/utils/randomId";
-import dayjs from "dayjs";
-import timezone from "dayjs/plugin/timezone";
-import advanced from "dayjs/plugin/advancedFormat";
 
-dayjs.extend(timezone);
-dayjs.extend(advanced);
-dayjs.tz.setDefault(dayjs.tz.guess());
+import moment from "moment-timezone";
 
 export type Time = {
   start: string;
@@ -146,16 +141,21 @@ type AvailabilityForm = z.infer<typeof AvailabilityFormSchema>;
 
 export function AvailabilityView() {
   const { user } = useCurrentUserStore();
-  const eaId = (user as any).eaProviderId ? (user as any).eaProviderId : user?.eaHealthCoachId
+  const eaId = (user as any).eaProviderId
+    ? (user as any).eaProviderId
+    : user?.eaHealthCoachId;
 
   const [updateAvailability, { loading: updateLoading, error: updateError }] =
     useMutation(updateProviderSchedule, {
-      refetchQueries: [{
-        query: getProviderSchedule, variables: {
-          eaProviderId: eaId,
-          timezone: dayjs.tz.guess()
-        }
-      }],
+      refetchQueries: [
+        {
+          query: getProviderSchedule,
+          variables: {
+            eaProviderId: eaId,
+            timezone: moment.tz.guess(),
+          },
+        },
+      ],
       awaitRefetchQueries: true,
     });
 
@@ -163,7 +163,7 @@ export function AvailabilityView() {
   const { data, loading } = useQuery(getProviderSchedule, {
     variables: {
       eaProviderId: eaId,
-      timezone: dayjs.tz.guess(),
+      timezone: moment.tz.guess(),
     },
   });
 
@@ -205,7 +205,7 @@ export function AvailabilityView() {
       await updateAvailability({
         variables: {
           eaProviderId: eaId,
-          timezone: dayjs.tz.guess(),
+          timezone: moment.tz.guess(),
           schedule: updatedData,
         },
       });
@@ -254,9 +254,7 @@ export function AvailabilityView() {
       </p>
       <p className="pb-2">
         You are currently in timezone:{" "}
-        <b>
-          {dayjs().format("z")} ({dayjs.tz.guess()})
-        </b>
+        <b>{moment.tz(moment.tz.guess()).zoneAbbr()}</b>
       </p>
       <p className="pb-6">
         <b>For Example:</b> 9:00 AM = 09:00, 5:00 PM = 17:00.

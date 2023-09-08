@@ -1,11 +1,13 @@
+import moment from "moment-timezone";
+
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
-import dayjs from "dayjs";
 import { DialogModal } from "../modal/Dialog";
 import { ChangeEmailModal } from "../modal/settings/ChangeEmailModal";
 import { ChangeNameModal } from "../modal/settings/ChangeNameModal";
 import { ChangePasswordModal } from "../modal/settings/ChangePasswordModal";
 import { Button } from "../ui/Button";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
+
 import {
   TableViewRow,
   TableEntryInline,
@@ -103,7 +105,7 @@ export function AccountDetails() {
               right: (
                 <div className="flex justify-between md:justify-start items-center gap-x-3">
                   <div className="text-sm text-gray-600">
-                    GMT {dayjs().format("Z")}
+                    {moment.tz.guess()}
                   </div>
                   {/* <ToggleSwitch
                     label=""
