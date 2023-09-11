@@ -4,7 +4,7 @@ import { TaskType } from "@src/graphql/generated";
 import React from "react";
 import { ChooseTaskIcon } from "../ChooseTaskIcon";
 import { PlaceHolderLine } from "./PlaceHolderLine";
-import moment from "moment-timezone";
+import { getTimeZone, TZ_FORMAT } from "@src/utils/timezone";
 
 export interface DashboardPreviewItemProps {
   title: string;
@@ -99,7 +99,7 @@ export const DashboardPreviewItem = React.forwardRef(
                 {renderDate?.time && (
                   <p className="text-gray-500 text-sm">{`${
                     renderDate.time
-                  } (${moment.tz(moment.tz.guess()).zoneAbbr()})`}</p>
+                  } (${getTimeZone(TZ_FORMAT.SHORT)})`}</p>
                 )}
                 {!renderDate?.date && !renderDate?.time && (
                   <p className="text-gray-500 text-sm">No time set</p>

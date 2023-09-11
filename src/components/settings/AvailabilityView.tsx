@@ -15,8 +15,7 @@ import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import { TextField } from "../ui/TextField";
 import { randomId } from "@src/utils/randomId";
-
-import moment from "moment-timezone";
+import { getTimeZone, TZ_FORMAT } from "@src/utils/timezone";
 
 export type Time = {
   start: string;
@@ -152,7 +151,7 @@ export function AvailabilityView() {
           query: getProviderSchedule,
           variables: {
             eaProviderId: eaId,
-            timezone: moment.tz.guess(),
+            timezone: getTimeZone(TZ_FORMAT.FULL),
           },
         },
       ],
@@ -163,7 +162,7 @@ export function AvailabilityView() {
   const { data, loading } = useQuery(getProviderSchedule, {
     variables: {
       eaProviderId: eaId,
-      timezone: moment.tz.guess(),
+      timezone: getTimeZone(TZ_FORMAT.FULL),
     },
   });
 
@@ -205,7 +204,7 @@ export function AvailabilityView() {
       await updateAvailability({
         variables: {
           eaProviderId: eaId,
-          timezone: moment.tz.guess(),
+          timezone: getTimeZone(TZ_FORMAT.FULL),
           schedule: updatedData,
         },
       });
@@ -253,8 +252,7 @@ export function AvailabilityView() {
         timezone you are in.
       </p>
       <p className="pb-2">
-        You are currently in timezone:{" "}
-        <b>{moment.tz(moment.tz.guess()).zoneAbbr()}</b>
+        You are currently in timezone: <b>{getTimeZone(TZ_FORMAT.SHORT)}</b>
       </p>
       <p className="pb-6">
         <b>For Example:</b> 9:00 AM = 09:00, 5:00 PM = 17:00.

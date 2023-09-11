@@ -1,5 +1,4 @@
-import moment from "moment-timezone";
-
+import { getTimeZone, TZ_FORMAT } from "@src/utils/timezone";
 import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { DialogModal } from "../modal/Dialog";
 import { ChangeEmailModal } from "../modal/settings/ChangeEmailModal";
@@ -105,7 +104,7 @@ export function AccountDetails() {
               right: (
                 <div className="flex justify-between md:justify-start items-center gap-x-3">
                   <div className="text-sm text-gray-600">
-                    {moment.tz.guess()}
+                    {getTimeZone(TZ_FORMAT.FULL)}
                   </div>
                   {/* <ToggleSwitch
                     label=""
@@ -120,6 +119,7 @@ export function AccountDetails() {
           ]}
         />
       </div>
+      c
     </div>
   );
 }
