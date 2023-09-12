@@ -2,12 +2,14 @@ import React from "react";
 
 export function Line({
   color,
-  marginY,
+  margin,
   className,
+  vertical = false,
 }: {
   color: "light" | "medium" | "heavy" | "DARK";
-  marginY?: "small" | "medium" | "large";
+  margin?: "small" | "medium" | "large";
   className?: string;
+  vertical?: boolean;
 }) {
   const colors = {
     light: "bg-prim-100",
@@ -15,14 +17,14 @@ export function Line({
     heavy: "bg-prim-400",
     DARK: "bg-prim-900",
   };
-  const margin = {
-    small: "my-2",
-    medium: "my-4",
-    large: "my-5",
+  const marginClass = {
+    small: vertical ? "mx-2" : "my-2",
+    medium: vertical ? "mx-4" : "my-4",
+    large: vertical ? "mx-5" : "my-5",
   };
-  const createClass = `h-[1px] ${color ? colors[color] : ""} ${
-    marginY ? margin[marginY] : ""
-  } ${className}`;
+  const createClass = `${vertical ? "w-[1px] h-full" : "h-[1px]"} ${
+    color ? colors[color] : ""
+  } ${margin ? marginClass[margin] : ""} ${className ? className : ""}`;
 
   return <hr className={createClass} />;
 }

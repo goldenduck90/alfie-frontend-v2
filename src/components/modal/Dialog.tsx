@@ -82,7 +82,7 @@ export function DialogModal({
         </RadixDialog.Trigger>
         <RadixDialog.Portal>
           <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-40 z-[99]" />
-          <RadixDialog.Content className="bg-white bottom-0 right-0 left-0 h-fit fixed  md:inset-[unset] md:top-1/2 md:left-1/2  md:-translate-x-[50%] md:-translate-y-[50%] md:max-w-fit md:max-h-1/2 shadow-md py-4 md:py-6 rounded-md gap-y-3 z-[100] flex flex-col justify-end overflow-y-auto max-h-[90%]">
+          <RadixDialog.Content className="bg-white bottom-0 right-0 left-0 h-fit fixed  md:inset-[unset] md:top-1/2 md:left-1/2  md:-translate-x-[50%] md:-translate-y-[50%] md:max-w-fit md:max-h-1/2 shadow-md py-4 md:py-6 rounded-md gap-y-3 z-[100] flex flex-col overflow-y-auto max-h-[90%]">
             {children}
           </RadixDialog.Content>
         </RadixDialog.Portal>
@@ -93,22 +93,39 @@ export function DialogModal({
 
 DialogModal.Title = function Title({
   children,
+  showClose = false,
 }: {
   children: React.ReactNode;
+  showClose?: boolean;
 }) {
   return (
-    <RadixDialog.Title className="text-center font-bold whitespace-nowrap">
-      {children}
-    </RadixDialog.Title>
+    <div>
+      <RadixDialog.Title className="text-center font-bold whitespace-nowrap">
+        {children}
+      </RadixDialog.Title>
+      {showClose && (
+        <RadixDialog.Close className="absolute right-6 top-6" asChild>
+          <button>
+            <XIcon className="w-5 h-5" />
+          </button>
+        </RadixDialog.Close>
+      )}
+    </div>
   );
 };
 DialogModal.Description = function Description({
   children,
+  className,
 }: {
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <RadixDialog.Description className="text-center text-[#475569] text-sm mb-6">
+    <RadixDialog.Description
+      className={
+        className ? className : "text-center text-[#475569] text-sm mb-6"
+      }
+    >
       {children}
     </RadixDialog.Description>
   );

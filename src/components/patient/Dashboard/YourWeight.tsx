@@ -90,7 +90,7 @@ export function YourWeight({ user }: { user: User }) {
     >
       {user?.weightGoal && (
         <>
-          <Line color="light" marginY="large" />
+          <Line color="light" margin="large" />
           <div className="flex flex-row">
             <span className="mr-2 mt-[2px]">
               <TargetIcon />
