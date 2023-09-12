@@ -145,7 +145,9 @@ export function IndividualPatientTabs() {
 
   const patientTable = {
     "Full Name": patient?.name,
-    "Date of Birth": dayjs(patient?.dateOfBirth).format("MM/DD/YYYY"),
+    "Date of Birth": dayjs(patient?.dateOfBirth, { utc: true }).format(
+      "MM/DD/YYYY"
+    ),
     "Email Address": patient?.email,
     "Phone Number": patient?.phone,
     "Address": `${patient?.address?.line1 || ""}, ${
