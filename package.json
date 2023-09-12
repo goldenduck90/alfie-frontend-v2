@@ -48,7 +48,6 @@
     "iron-session": "^6.3.1",
     "libphonenumber-js": "^1.10.36",
     "lodash": "^4.17.21",
-    "moment": "^2.29.4",
     "next": "13.0.7",
     "next-http-proxy-middleware": "^1.2.5",
     "qs": "^6.11.0",
