@@ -1,6 +1,6 @@
 const FIXED_HOLIDAYS = {
   "1/1": "New Year's Day", // 1st January
-  "6/19": "Juneteenth", // 19th June
+  "6/19": "Juneteenth National Independence Day ", // 19th June
   "7/4": "Independence Day", // 4th July
   "11/11": "Veterans Day", // 11st November
   "12/25": "Christmas Day", // 25th December
