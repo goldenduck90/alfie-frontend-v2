@@ -27,7 +27,7 @@ export function DateOfBirthCell({
 }) {
   const dob = useMemo(() => {
     const date = new Date(info.getValue());
-    return dayjs(date).format("MM.DD.YYYY");
+    return dayjs(date, { utc: true }).format("MM.DD.YYYY");
   }, [info]);
 
   return <div className="px-2">{dob || ""}</div>;
