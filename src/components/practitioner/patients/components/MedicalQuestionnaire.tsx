@@ -13,7 +13,7 @@ export function MedicalQuestionnaire({ taskData }: any) {
   if (error) {
     return <GrayPlaceHolderBox content={error.message} />;
   }
-  console.log(taskAnswers, "taskAnswers");
+
   function getTaskValueBasedOnKey(key: string) {
     const answer = taskAnswers?.find(
       (answer: any) => answer.key === key
@@ -27,7 +27,6 @@ export function MedicalQuestionnaire({ taskData }: any) {
         }
       });
 
-      console.log("medication answer:", medicationAnswer);
       return medicationAnswer;
     }
 

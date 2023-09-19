@@ -121,7 +121,7 @@ export default function NavUser() {
             <div className="flex flex-col w-full items-start">
               {renderUserItems}
             </div>
-            <Line color="light" marginY="small" />
+            <Line color="light" margin="small" />
             <DropdownItem label="Logout" onClick={() => logout.mutate()} />
           </>
         </DropdownMenu>
