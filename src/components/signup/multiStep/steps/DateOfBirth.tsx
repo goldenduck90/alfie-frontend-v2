@@ -1,6 +1,6 @@
 import { CalendarIcon } from "@heroicons/react/solid";
 import React from "react";
-import { IconInput } from "../../../inputs/IconInput";
+import { DateInput } from "@src/components/inputs/DateInput";
 
 export const DateOfBirth = () => {
   return (
@@ -16,11 +16,11 @@ export const DateOfBirth = () => {
       </div>
 
       <div className="pb-2">
-        <IconInput
+        <DateInput
           name="dateOfBirth"
           placeholder="MM/DD/YYYY"
-          type="date"
           icon={<CalendarIcon className="h-5 w-5 text-brand-berry" />}
+          maxDate={new Date()}
         />
       </div>
     </div>

@@ -5,6 +5,7 @@ import { SelectInput } from "@src/components/inputs/SelectInput";
 import { CalendarIcon } from "@heroicons/react/solid";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { States } from "@src/utils/states";
+import { DateInput } from "@src/components/inputs/DateInput";
 
 const ContactInformation = () => {
   const [, , { setValue: setBiologicalSexValue }] = useField("biologicalSex");
@@ -42,11 +43,11 @@ const ContactInformation = () => {
             <p className="text-primary-700 font-bold">
               Date of Birth<span className="text-[red]">*</span>
             </p>
-            <IconInput
+            <DateInput
               name="dateOfBirth"
               placeholder="MM/DD/YYYY"
-              type="date"
               icon={<CalendarIcon className="h-5 w-5 text-brand-berry" />}
+              maxDate={new Date()}
             />
           </div>
           <div className="flex flex-col  w-64">
