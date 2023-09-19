@@ -45,7 +45,7 @@ export const ChannelHeader = ({
           height={32}
           width={32}
         />
-        <p className="font-bold text-lg pl-2">{members}</p>
+        <p className="font-bold text-lg pl-2">{isPatientRole ? "Alfie Patient Chat" : members}</p>
       </div>
     </div>
   );
