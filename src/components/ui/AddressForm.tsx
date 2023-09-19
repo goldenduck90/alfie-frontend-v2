@@ -53,18 +53,6 @@ const formatAddress = (address: AddressInput): AddressQuery => {
     parts.push(address.line2);
   }
 
-  if (address.city) {
-    parts.push(address.city);
-  }
-
-  if (address.state) {
-    parts.push(address.state);
-  }
-
-  if (address.postalCode) {
-    parts.push(address.postalCode);
-  }
-
   return {
     input: parts.join(", "),
   };
@@ -118,7 +106,6 @@ export const AddressForm: React.FunctionComponent<AddressFormProps> = ({
   };
 
   useEffect(() => {
-    console.log(details);
     if (details) {
       setValue(details.addressDetail);
     }
@@ -136,13 +123,22 @@ export const AddressForm: React.FunctionComponent<AddressFormProps> = ({
           }))}
           onSelectSuggestion={handleSelectSuggestion}
           loading={loading}
+          autoComplete="new-password"
         />
       </div>
       <div className="pb-2">
-        <TextInput name={`${prefix}line2`} placeholder="Address 2" />
+        <TextInput
+          name={`${prefix}line2`}
+          placeholder="Address 2"
+          autoComplete="new-password"
+        />
       </div>
       <div className="pb-3">
-        <TextInput name={`${prefix}city`} placeholder="City" />
+        <TextInput
+          name={`${prefix}city`}
+          placeholder="City"
+          autoComplete="new-password"
+        />
       </div>
       <div className="pb-2">
         <SelectInput
@@ -152,7 +148,11 @@ export const AddressForm: React.FunctionComponent<AddressFormProps> = ({
         />
       </div>
       <div className="pb-2">
-        <TextInput name={`${prefix}postalCode`} placeholder="Postal Code" />
+        <TextInput
+          name={`${prefix}postalCode`}
+          placeholder="Postal Code"
+          autoComplete="new-password"
+        />
       </div>
     </div>
   );
