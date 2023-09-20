@@ -42,7 +42,7 @@ const GET_ADDRESS_DETAIL = gql`
   }
 `;
 
-const formatAddress = (address: AddressInput): AddressQuery => {
+const formatAddress = (address: AddressInput): AddressQuery | null => {
   const parts: string[] = [];
 
   if (address.line1) {
@@ -53,9 +53,9 @@ const formatAddress = (address: AddressInput): AddressQuery => {
     parts.push(address.line2);
   }
 
-  return {
-    input: parts.join(", "),
-  };
+  const input = parts.join(", ");
+
+  return address.line1.length >= 3 ? { input } : null;
 };
 
 export const AddressForm: React.FunctionComponent<AddressFormProps> = ({
@@ -87,6 +87,8 @@ export const AddressForm: React.FunctionComponent<AddressFormProps> = ({
       const query = formatAddress(values);
       if (query) {
         debouncedGetAddressSuggestions(query);
+      } else {
+        setSuggestions([]);
       }
     }
   }, [values]);
