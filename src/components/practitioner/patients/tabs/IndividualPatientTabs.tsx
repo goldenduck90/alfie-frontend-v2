@@ -45,7 +45,6 @@ const GetUserById = gql`
         postalCode
         country
       }
-      weightGoal
       weights {
         value
         date
@@ -150,9 +149,11 @@ export function IndividualPatientTabs() {
     ),
     "Email Address": patient?.email,
     "Phone Number": patient?.phone,
-    "Address": `${patient?.address?.line1 || ""}, ${(patient?.address?.line2 && ",") || ""
-      } ${patient?.address?.city}, ${patient?.address?.state}, ${patient?.address?.postalCode
-      }`,
+    "Address": `${patient?.address?.line1 || ""}, ${
+      (patient?.address?.line2 && ",") || ""
+    } ${patient?.address?.city}, ${patient?.address?.state}, ${
+      patient?.address?.postalCode
+    }`,
     "Height In Inches": patient?.heightInInches,
     "Weight": patient?.weights?.[patient.weights.length - 1]?.value,
     "Attachments":
@@ -410,8 +411,9 @@ function TabTitle({
   return (
     <Tabs.Trigger
       value={value}
-      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
-        }`}
+      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${
+        active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
+      }`}
     >
       {children}
     </Tabs.Trigger>
