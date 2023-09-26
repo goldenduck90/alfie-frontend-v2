@@ -13,7 +13,6 @@ const getPatientInfo = gql`
       phone
       role
       dateOfBirth
-      weightGoal
       weights {
         value
         date

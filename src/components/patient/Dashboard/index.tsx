@@ -12,7 +12,6 @@ const getWeight = gql`
         value
         date
       }
-      weightGoal
     }
   }
 `;
