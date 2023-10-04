@@ -24,6 +24,7 @@ import { MetabolicChart } from "./MetabolicChart";
 import { AdhocSchedule } from "../components/AdhocSchedule";
 import { GenerateSummary } from "../components/GenerateSummary";
 import { PatientChat } from "./PatientChat";
+import { nameToInitials } from "@src/utils/nameToInitials";
 
 const GetUserById = gql`
   query GetUser($userId: String!) {
@@ -313,18 +314,10 @@ function TableInformationHeader({
   loading?: boolean;
   activeTasks: number;
 }) {
-  const initials = useMemo(() => {
-    if (!user?.name) return "";
-    const splitName = user?.name?.split(" ");
-    const firstInitial = splitName?.[0].charAt(0);
-    const lastInitial = splitName[splitName.length - 1].charAt(0);
-    return `${firstInitial || ""}${lastInitial || ""}`;
-  }, [user]);
-
   return (
     <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
       <div className="flex gap-3 items-center">
-        <AvatarInitial size="xl" index={0} text={initials} />
+        <AvatarInitial size="xl" index={0} text={nameToInitials(user?.name)} />
         {loading ? (
           <div className="h-7 w-56 mt-2">
             <PlaceHolderLine hasTopMargin />

@@ -3,19 +3,15 @@ import { CellContext } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { AvatarInitial } from "../AvatarInitial";
+import { nameToInitials } from "@src/utils/nameToInitials";
 
 export function NameCell({ info }: { info: CellContext<Patient, string> }) {
-  const initials = useMemo(() => {
-    const splitName = info.getValue().split(" ");
-    const firstInitial = splitName[0].charAt(0);
-    const lastInitial = splitName[splitName.length - 1].charAt(0);
-    return `${firstInitial || ""}${lastInitial || ""}`;
-  }, [info]);
+  const name = useMemo(() => info.getValue(), [info]);
 
   return (
     <div className="px-2 flex gap-x-2 items-center">
-      <AvatarInitial text={initials} index={info.row.index} />
-      <p className="capitalize">{info.getValue()}</p>
+      <AvatarInitial text={nameToInitials(name)} index={info.row.index} />
+      <p className="capitalize">{name}</p>
     </div>
   );
 }
