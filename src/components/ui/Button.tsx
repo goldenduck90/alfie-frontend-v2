@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { ButtonHTMLAttributes } from "react";
+import { Tooltip, PlacesType } from "react-tooltip";
+import { v4 as uuidv4 } from "uuid";
 
 type ButtonStyleType =
   | "primary"
@@ -29,6 +31,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   ) => void;
   fullWidth?: boolean;
   disabled?: boolean;
+  tooltipText?: string;
+  tooltipPlace?: PlacesType;
 }
 
 export const Button = React.forwardRef(
@@ -41,11 +45,14 @@ export const Button = React.forwardRef(
       fullWidth,
       icon,
       iconSide,
+      tooltipText,
+      tooltipPlace = "top-end",
       onClick,
       ...additionalProps
     }: ButtonProps,
     ref: React.ForwardedRef<ButtonRef>
   ): JSX.Element => {
+    const uniqueId = uuidv4();
     const buttonSize = {
       small: "h-8",
       medium: "h-10",
@@ -93,17 +100,29 @@ export const Button = React.forwardRef(
     );
 
     return (
-      <button
-        className={`${buttonFoundation} ${chooseStyle} ${showFullWidth} `}
-        disabled={disabled}
-        ref={ref as React.Ref<any>}
-        onClick={onClick}
-        {...additionalProps}
-      >
-        {showLeftSideIcon && renderIcon("l")}
-        {children}
-        {showRightSideIcon && renderIcon("r")}
-      </button>
+      <div data-tooltip-id={uniqueId} className="h-fit">
+        <button
+          className={`${buttonFoundation} ${chooseStyle} ${showFullWidth} `}
+          disabled={disabled}
+          ref={ref as React.Ref<any>}
+          onClick={onClick}
+          {...additionalProps}
+        >
+          {showLeftSideIcon && renderIcon("l")}
+          {children}
+          {showRightSideIcon && renderIcon("r")}
+        </button>
+
+        {tooltipText && (
+          <Tooltip
+            id={uniqueId}
+            className="max-w-md rounded-md"
+            place={tooltipPlace}
+          >
+            {tooltipText}
+          </Tooltip>
+        )}
+      </div>
     );
   }
 );

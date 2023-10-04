@@ -54,6 +54,20 @@ export type AkuteDocument = {
   id: Scalars['String'];
 };
 
+export type Alert = {
+  __typename?: 'Alert';
+  _id: Scalars['String'];
+  acknowledgedAt?: Maybe<Scalars['DateTime']>;
+  description: Scalars['String'];
+  medical: Scalars['Boolean'];
+  notifiedAt?: Maybe<Scalars['DateTime']>;
+  provider: Provider;
+  severity: SeverityType;
+  task: Task;
+  title: Scalars['String'];
+  user: User;
+};
+
 /** The type of answer */
 export enum AnswerType {
   Array = 'ARRAY',
@@ -64,13 +78,6 @@ export enum AnswerType {
   Object = 'OBJECT',
   String = 'STRING'
 }
-
-export type BasicUserInsuranceInfo = {
-  dateOfBirth: Scalars['DateTime'];
-  gender: Gender;
-  name: Scalars['String'];
-  state: Scalars['String'];
-};
 
 export type BatchCreateOrUpdateProvidersInput = {
   providers: Array<ProviderInput>;
@@ -534,6 +541,7 @@ export type Insurance = {
 
 export type InsuranceCheckInput = {
   checkoutId: Scalars['String'];
+  covered: Scalars['Boolean'];
   insurance: InsuranceInput;
   insurancePlan: InsurancePlanValue;
   insuranceType: InsuranceTypeValue;
@@ -541,7 +549,6 @@ export type InsuranceCheckInput = {
 
 export type InsuranceCheckResponse = {
   __typename?: 'InsuranceCheckResponse';
-  covered: InsuranceCoveredResponse;
   eligible: InsuranceEligibilityResponse;
 };
 
@@ -1001,6 +1008,7 @@ export type Query = {
   checkout: CheckoutResponse;
   generateSummary: User;
   getAProvider: EaProviderProfile;
+  getAlerts: Array<Alert>;
   getAllPatientsByHealthCoach: Array<User>;
   getAllPatientsByProvider: Array<User>;
   getAllTasks: Array<Task>;
@@ -1012,7 +1020,6 @@ export type Query = {
   getUserById: User;
   insuranceCovered: InsuranceCoveredResponse;
   insuranceEligibility: InsuranceEligibilityResponse;
-  insuranceFlow: InsuranceCheckResponse;
   insurancePlans: InsurancePlansResponse;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
@@ -1022,6 +1029,7 @@ export type Query = {
   timeslots: TimeslotsResponse;
   upcomingAppointments: Array<EaAppointment>;
   user: User;
+  userScheduleAppointmentTask: UserAppointmentEligibility;
   userSendbirdChannel: Array<UserSendbirdChannel>;
   userTask: UserTask;
   userTasks: UserTaskList;
@@ -1101,25 +1109,18 @@ export type QueryGetUserByIdArgs = {
 
 
 export type QueryInsuranceCoveredArgs = {
+  checkoutId: Scalars['String'];
   insurancePlan: InsurancePlanValue;
   insuranceType: InsuranceTypeValue;
-  userData: BasicUserInsuranceInfo;
 };
 
 
 export type QueryInsuranceEligibilityArgs = {
-  cpid?: InputMaybe<Scalars['String']>;
-  insurance: InsuranceInput;
-  userData: BasicUserInsuranceInfo;
-};
-
-
-export type QueryInsuranceFlowArgs = {
+  checkoutId: Scalars['String'];
   cpid?: InputMaybe<Scalars['String']>;
   insurance: InsuranceInput;
   insurancePlan: InsurancePlanValue;
   insuranceType: InsuranceTypeValue;
-  userData: BasicUserInsuranceInfo;
 };
 
 
@@ -1258,6 +1259,14 @@ export type Score = {
   scoreSystolic?: Maybe<Scalars['Float']>;
   task?: Maybe<Scalars['String']>;
 };
+
+/** Alert severity type. */
+export enum SeverityType {
+  Extreme = 'EXTREME',
+  High = 'HIGH',
+  Low = 'LOW',
+  Medium = 'MEDIUM'
+}
 
 export type SignedUrlRequest = {
   contentType: Scalars['String'];
@@ -1463,6 +1472,13 @@ export type UserAnswersInput = {
   value?: InputMaybe<Scalars['AnyScalar']>;
 };
 
+export type UserAppointmentEligibility = {
+  __typename?: 'UserAppointmentEligibility';
+  completedRequiredTasks?: Maybe<Scalars['Boolean']>;
+  daysLeft?: Maybe<Scalars['Float']>;
+  task?: Maybe<UserTask>;
+};
+
 export type UserSendbirdChannel = {
   __typename?: 'UserSendbirdChannel';
   channel_url: Scalars['String'];
@@ -1590,6 +1606,15 @@ export type InsuranceTextractMutationVariables = Exact<{
 
 export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insuranceMatches: Array<{ __typename?: 'Insurance', memberId: string, insuranceCompany: string, payor?: string | null, groupId: string, groupName?: string | null, rxBIN?: string | null, rxPCN?: string | null, rxGroup?: string | null }> } };
 
+export type InsuranceCoveredQueryVariables = Exact<{
+  checkoutId: Scalars['String'];
+  insuranceType: InsuranceTypeValue;
+  insurancePlan: InsurancePlanValue;
+}>;
+
+
+export type InsuranceCoveredQuery = { __typename?: 'Query', insuranceCovered: { __typename?: 'InsuranceCoveredResponse', covered: boolean, comingSoon: boolean } };
+
 export type InsurancePlansQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1600,7 +1625,7 @@ export type InsuranceCheckMutationVariables = Exact<{
 }>;
 
 
-export type InsuranceCheckMutation = { __typename?: 'Mutation', insuranceCheck: { __typename?: 'InsuranceCheckResponse', covered: { __typename?: 'InsuranceCoveredResponse', covered: boolean, reason?: string | null }, eligible: { __typename?: 'InsuranceEligibilityResponse', eligible: boolean, reason?: string | null } } };
+export type InsuranceCheckMutation = { __typename?: 'Mutation', insuranceCheck: { __typename?: 'InsuranceCheckResponse', eligible: { __typename?: 'InsuranceEligibilityResponse', eligible: boolean, reason?: string | null } } };
 
 export type CompleteUploadFilesMutationVariables = Exact<{
   files: Array<FileInput> | FileInput;
@@ -1655,6 +1680,16 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', weights: Array<{ __typename?: 'Weight', value: number, date: any }> } };
+
+export type GetUserCompletedAppointmentTasksInMonthQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserCompletedAppointmentTasksInMonthQuery = { __typename?: 'Query', userScheduleAppointmentTask: { __typename?: 'UserAppointmentEligibility', daysLeft?: number | null, completedRequiredTasks?: boolean | null, task?: { __typename?: 'UserTask', completed: boolean, completedAt?: any | null } | null } };
+
+export type GetAlertsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAlertsQuery = { __typename?: 'Query', getAlerts: Array<{ __typename?: 'Alert', _id: string, title: string, description: string, severity: SeverityType, medical: boolean, user: { __typename?: 'User', _id: string, name: string, email: string } }> };
 
 export type GetUserSummaryQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -2063,6 +2098,48 @@ export function useInsuranceTextractMutation(baseOptions?: Apollo.MutationHookOp
 export type InsuranceTextractMutationHookResult = ReturnType<typeof useInsuranceTextractMutation>;
 export type InsuranceTextractMutationResult = Apollo.MutationResult<InsuranceTextractMutation>;
 export type InsuranceTextractMutationOptions = Apollo.BaseMutationOptions<InsuranceTextractMutation, InsuranceTextractMutationVariables>;
+export const InsuranceCoveredDocument = gql`
+    query InsuranceCovered($checkoutId: String!, $insuranceType: InsuranceTypeValue!, $insurancePlan: InsurancePlanValue!) {
+  insuranceCovered(
+    checkoutId: $checkoutId
+    insuranceType: $insuranceType
+    insurancePlan: $insurancePlan
+  ) {
+    covered
+    comingSoon
+  }
+}
+    `;
+
+/**
+ * __useInsuranceCoveredQuery__
+ *
+ * To run a query within a React component, call `useInsuranceCoveredQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInsuranceCoveredQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInsuranceCoveredQuery({
+ *   variables: {
+ *      checkoutId: // value for 'checkoutId'
+ *      insuranceType: // value for 'insuranceType'
+ *      insurancePlan: // value for 'insurancePlan'
+ *   },
+ * });
+ */
+export function useInsuranceCoveredQuery(baseOptions: Apollo.QueryHookOptions<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>(InsuranceCoveredDocument, options);
+      }
+export function useInsuranceCoveredLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>(InsuranceCoveredDocument, options);
+        }
+export type InsuranceCoveredQueryHookResult = ReturnType<typeof useInsuranceCoveredQuery>;
+export type InsuranceCoveredLazyQueryHookResult = ReturnType<typeof useInsuranceCoveredLazyQuery>;
+export type InsuranceCoveredQueryResult = Apollo.QueryResult<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>;
 export const InsurancePlansDocument = gql`
     query insurancePlans {
   insurancePlans {
@@ -2110,10 +2187,6 @@ export type InsurancePlansQueryResult = Apollo.QueryResult<InsurancePlansQuery, 
 export const InsuranceCheckDocument = gql`
     mutation insuranceCheck($input: InsuranceCheckInput!) {
   insuranceCheck(input: $input) {
-    covered {
-      covered
-      reason
-    }
     eligible {
       eligible
       reason
@@ -2465,6 +2538,88 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const GetUserCompletedAppointmentTasksInMonthDocument = gql`
+    query GetUserCompletedAppointmentTasksInMonth {
+  userScheduleAppointmentTask {
+    daysLeft
+    task {
+      completed
+      completedAt
+    }
+    completedRequiredTasks
+  }
+}
+    `;
+
+/**
+ * __useGetUserCompletedAppointmentTasksInMonthQuery__
+ *
+ * To run a query within a React component, call `useGetUserCompletedAppointmentTasksInMonthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserCompletedAppointmentTasksInMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserCompletedAppointmentTasksInMonthQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserCompletedAppointmentTasksInMonthQuery(baseOptions?: Apollo.QueryHookOptions<GetUserCompletedAppointmentTasksInMonthQuery, GetUserCompletedAppointmentTasksInMonthQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserCompletedAppointmentTasksInMonthQuery, GetUserCompletedAppointmentTasksInMonthQueryVariables>(GetUserCompletedAppointmentTasksInMonthDocument, options);
+      }
+export function useGetUserCompletedAppointmentTasksInMonthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserCompletedAppointmentTasksInMonthQuery, GetUserCompletedAppointmentTasksInMonthQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserCompletedAppointmentTasksInMonthQuery, GetUserCompletedAppointmentTasksInMonthQueryVariables>(GetUserCompletedAppointmentTasksInMonthDocument, options);
+        }
+export type GetUserCompletedAppointmentTasksInMonthQueryHookResult = ReturnType<typeof useGetUserCompletedAppointmentTasksInMonthQuery>;
+export type GetUserCompletedAppointmentTasksInMonthLazyQueryHookResult = ReturnType<typeof useGetUserCompletedAppointmentTasksInMonthLazyQuery>;
+export type GetUserCompletedAppointmentTasksInMonthQueryResult = Apollo.QueryResult<GetUserCompletedAppointmentTasksInMonthQuery, GetUserCompletedAppointmentTasksInMonthQueryVariables>;
+export const GetAlertsDocument = gql`
+    query getAlerts {
+  getAlerts {
+    _id
+    title
+    description
+    severity
+    medical
+    user {
+      _id
+      name
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAlertsQuery__
+ *
+ * To run a query within a React component, call `useGetAlertsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAlertsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAlertsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAlertsQuery(baseOptions?: Apollo.QueryHookOptions<GetAlertsQuery, GetAlertsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAlertsQuery, GetAlertsQueryVariables>(GetAlertsDocument, options);
+      }
+export function useGetAlertsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAlertsQuery, GetAlertsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAlertsQuery, GetAlertsQueryVariables>(GetAlertsDocument, options);
+        }
+export type GetAlertsQueryHookResult = ReturnType<typeof useGetAlertsQuery>;
+export type GetAlertsLazyQueryHookResult = ReturnType<typeof useGetAlertsLazyQuery>;
+export type GetAlertsQueryResult = Apollo.QueryResult<GetAlertsQuery, GetAlertsQueryVariables>;
 export const GetUserSummaryDocument = gql`
     query GetUserSummary($userId: String!) {
   generateSummary(userId: $userId) {
