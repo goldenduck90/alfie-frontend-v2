@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Layout } from "@src/components/layouts/Layout";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
@@ -13,10 +13,11 @@ import { CalendarIcon, ChatIcon } from "@heroicons/react/outline";
 import { Button } from "@src/components/ui/Button";
 import Image from "next/image";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
-import { useUserStateContext } from '@src/context/SessionContext';
-import { ScheduleAppointment } from '@src/components/modal/variants/schedule/Schedule';
-import { DialogModal } from '@src/components/modal/Dialog';
-import { CancelConfirmation } from '@src/components/modal/variants/schedule/CancelConfirmation';
+import { useUserStateContext } from "@src/context/SessionContext";
+import { ScheduleAppointment } from "@src/components/modal/variants/schedule/Schedule";
+import { DialogModal } from "@src/components/modal/Dialog";
+import { CancelConfirmation } from "@src/components/modal/variants/schedule/CancelConfirmation";
+import { getTimeZone, TZ_FORMAT } from "@src/utils/timezone";
 
 // setup dayjs
 import dayjs from "dayjs";
@@ -81,14 +82,22 @@ function AppointmentDetails() {
   } = data?.appointment || {};
 
   const isProvider = session[0]?.user?.role !== "Patient";
-  const firstNameInitial = isProvider ? eaCustomer?.name?.charAt(0).toUpperCase() : eaProvider?.name?.charAt(0).toUpperCase();
+  const firstNameInitial = isProvider
+    ? eaCustomer?.name?.charAt(0).toUpperCase()
+    : eaProvider?.name?.charAt(0).toUpperCase();
   const startDate = dayjs(start);
   const hasStarted = dayjs().isAfter(startDate);
 
   return (
     <Layout
       title="Appointment Details"
-      subtitle={loading ? "Loading Details..." : `Online appointment scheduled with ${isProvider ? eaCustomer?.name : eaProvider?.name}.`}
+      subtitle={
+        loading
+          ? "Loading Details..."
+          : `Online appointment scheduled with ${
+              isProvider ? eaCustomer?.name : eaProvider?.name
+            }.`
+      }
       hasBackButton={true}
     >
       <div className="flex flex-col md:flex-row md:gap-6 bg-white md:bg-transparent border md:border-none p-4 md:p-0 rounded-xl">
@@ -151,8 +160,13 @@ function AppointmentDetails() {
                     </div>
                   ) : (
                     <h2>
-                      {startDate.isToday() ? `Today @ ${startDate.format("h:mm A")}` : startDate.isTomorrow() ? `Tomorrow @ ${startDate.format("h:mm A")}` : startDate.format("MM-DD-YYYY @ h:mm A")} -{" "}
-                      {dayjs(end).format("h:mm A")}
+                      {startDate.isToday()
+                        ? `Today @ ${startDate.format("h:mm A")}`
+                        : startDate.isTomorrow()
+                        ? `Tomorrow @ ${startDate.format("h:mm A")}`
+                        : startDate.format("MM-DD-YYYY @ h:mm A")}{" "}
+                      - {dayjs(end).format("h:mm A")}{" "}
+                      {`(${getTimeZone(TZ_FORMAT.SHORT)})`}
                     </h2>
                   )}
                   {loading ? (
@@ -182,10 +196,19 @@ function AppointmentDetails() {
                       </p>
                     </>
                   )}
-                  <a href={location + "?appointmentId=" + eaAppointmentId} target="_blank" rel="noreferrer">
+                  <a
+                    href={location + "?appointmentId=" + eaAppointmentId}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <Button
                       buttonType="accent"
-                      onClick={() => { window.open(location + "?appointmentId=" + eaAppointmentId, "_blank") }}
+                      onClick={() => {
+                        window.open(
+                          location + "?appointmentId=" + eaAppointmentId,
+                          "_blank"
+                        );
+                      }}
                       disabled={loading}
                     >
                       Join Video Call
@@ -215,15 +238,18 @@ function AppointmentDetails() {
             </div>
           </div>
           <div className="bg-gray-50 md:-m-6 p-4 md:mt-2 flex justify-end gap-2 border-t rounded-b-xl">
-            <DialogModal triggerAsChild trigger={
-              <Button
-                disabled={loading || hasStarted}
-                buttonType="urgent"
-                onClick={() => { }}
-              >
-                Cancel this visit
-              </Button>
-            }>
+            <DialogModal
+              triggerAsChild
+              trigger={
+                <Button
+                  disabled={loading || hasStarted}
+                  buttonType="urgent"
+                  onClick={() => {}}
+                >
+                  Cancel this visit
+                </Button>
+              }
+            >
               <CancelConfirmation
                 eaAppointmentId={eaAppointmentId}
                 eaProvider={eaProvider}
@@ -232,13 +258,14 @@ function AppointmentDetails() {
                 end={end}
               />
             </DialogModal>
-            <DialogModal triggerAsChild trigger={
-              <Button
-                disabled={loading || hasStarted}
-                onClick={() => { }}>
-                Reschedule
-              </Button>
-            }>
+            <DialogModal
+              triggerAsChild
+              trigger={
+                <Button disabled={loading || hasStarted} onClick={() => {}}>
+                  Reschedule
+                </Button>
+              }
+            >
               <ScheduleAppointment
                 eaAppointmentId={eaAppointmentId}
                 start={start}

@@ -5,11 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "via.placeholder.com",
-      },
-      {
-        protocol: "https",
-        hostname: "alfie-signup-partners.s3.amazonaws.com",
+        hostname: "**",
       },
     ],
   },
