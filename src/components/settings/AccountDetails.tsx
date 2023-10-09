@@ -119,7 +119,6 @@ export function AccountDetails() {
           ]}
         />
       </div>
-      c
     </div>
   );
 }
