@@ -36,11 +36,12 @@ export const Chat = () => {
 
   const queries = useMemo(() => {
     if (query.length === 0) {
-      return undefined;
+      return { channelListQuery: { includeEmpty: true } };
     } else {
       return {
         channelListQuery: {
           nicknameContainsFilter: query,
+          includeEmpty: true,
         },
       };
     }

@@ -14,7 +14,8 @@ function Dashboard() {
     user?.role === Role.Practitioner ||
     user?.role === Role.Doctor ||
     user?.role === Role.Admin ||
-    user?.role === Role.HealthCoach
+    user?.role === Role.HealthCoach ||
+    user?.role === Role.CareCoordinator
   ) {
     return <PractitionerDashboard />;
   }

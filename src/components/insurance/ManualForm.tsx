@@ -13,6 +13,13 @@ import {
   InsuranceType,
 } from "@src/graphql/generated";
 
+type InsruanceFormInputTypes = {
+  plan: string;
+  type: string;
+  groupId: string;
+  memberId: string;
+};
+
 type ManualFormProps = {
   insurance?: Insurance;
   plans: InsurancePlan[];
@@ -22,12 +29,7 @@ type ManualFormProps = {
     type,
     groupId,
     memberId,
-  }: {
-    plan: string;
-    type: string;
-    groupId: string;
-    memberId: string;
-  }) => Promise<void>;
+  }: InsruanceFormInputTypes) => Promise<void>;
 };
 
 const ManualForm = ({ insurance, plans, types, onSubmit }: ManualFormProps) => {

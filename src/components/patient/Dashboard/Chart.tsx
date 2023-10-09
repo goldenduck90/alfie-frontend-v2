@@ -47,7 +47,7 @@ export function Chart({ user }: { user: User }) {
               ticks={ticks}
             />
             <YAxis
-              domain={[(user?.weightGoal as number) - 10, "auto"]}
+              domain={[0, "auto"]}
               type="number"
               dataKey={"value"}
               axisLine={false}
@@ -77,39 +77,6 @@ export function Chart({ user }: { user: User }) {
                 );
               }}
             />
-
-            {user?.weightGoal && (
-              <ReferenceLine
-                y={user?.weightGoal as number}
-                stroke="#E99298"
-                label={(props) => {
-                  return (
-                    <svg
-                      {...props}
-                      className="p-1 rounded-full bg-brand-peachy-shade"
-                    >
-                      <rect
-                        x={10}
-                        y={props?.viewBox?.y - 13}
-                        rx="8"
-                        ry="6"
-                        width={60}
-                        height={25}
-                        fill={"#E99298"}
-                      />
-                      <text
-                        x={25}
-                        y={props?.viewBox?.y + 4}
-                        className="text-sm text-white p-1 rounded-full bg-brand-peachy-shade"
-                        fill="white"
-                      >
-                        Goal
-                      </text>
-                    </svg>
-                  );
-                }}
-              />
-            )}
           </LineChart>
         </ResponsiveContainer>
       </div>

@@ -11,7 +11,7 @@ import UploadForm from "./UploadForm";
 import ManualForm from "./ManualForm";
 import { Loading } from "../Loading";
 
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { createS3key } from "@src/utils/upload";
 
 import { randomId } from "@src/utils/randomId";
@@ -45,6 +45,23 @@ const insuranceTextractMutation = gql`
   }
 `;
 
+const insuranceCoveredQuery = gql`
+  query InsuranceCovered(
+    $checkoutId: String!
+    $insuranceType: InsuranceTypeValue!
+    $insurancePlan: InsurancePlanValue!
+  ) {
+    insuranceCovered(
+      checkoutId: $checkoutId
+      insuranceType: $insuranceType
+      insurancePlan: $insurancePlan
+    ) {
+      covered
+      comingSoon
+    }
+  }
+`;
+
 const insurancePlansQuery = gql`
   query insurancePlans {
     insurancePlans {
@@ -66,10 +83,6 @@ const insurancePlansQuery = gql`
 const insuranceCheckMutation = gql`
   mutation insuranceCheck($input: InsuranceCheckInput!) {
     insuranceCheck(input: $input) {
-      covered {
-        covered
-        reason
-      }
       eligible {
         eligible
         reason
@@ -85,6 +98,7 @@ const InsuranceCheck = () => {
   const [requestSignedUrls] = useMutation(requestSignedUrlsMutation);
   const [insuranceTextract] = useMutation(insuranceTextractMutation);
   const [insuranceCheck] = useMutation(insuranceCheckMutation);
+  const [insuranceCovered] = useLazyQuery(insuranceCoveredQuery);
 
   const { partner } = usePartnerContext();
   const { addNotification } = useNotificationStore();
@@ -174,24 +188,40 @@ const InsuranceCheck = () => {
     groupId: string;
     memberId: string;
   }) => {
-    let insuranceObj = insurance;
-    if (!insurance) {
-      insuranceObj = {
-        insuranceCompany: values.plan,
-        groupId: values.groupId,
-        memberId: values.memberId,
-      };
-    }
-    const { data } = await insuranceCheck({
+    // Check insurance is covered
+    const {
+      data: { insuranceCovered: coveredData },
+    } = await insuranceCovered({
       variables: {
-        input: {
-          checkoutId,
-          insurancePlan: values.plan,
-          insuranceType: values.type,
-          insurance: insuranceObj,
-        },
+        checkoutId,
+        insurancePlan: values.plan,
+        insuranceType: values.type,
       },
     });
+
+    const covered: boolean = coveredData.covered || coveredData.comingSoon;
+    if (covered) {
+      // The insurance has covered, and not checking the eligibility
+      let insuranceObj = insurance;
+      if (!insurance) {
+        insuranceObj = {
+          insuranceCompany: values.plan,
+          groupId: values.groupId,
+          memberId: values.memberId,
+        };
+      }
+      await insuranceCheck({
+        variables: {
+          input: {
+            checkoutId,
+            insurancePlan: values.plan,
+            insuranceType: values.type,
+            insurance: insuranceObj,
+            covered,
+          },
+        },
+      });
+    }
 
     router.push(`/signup/checkout/${checkoutId}`);
   };

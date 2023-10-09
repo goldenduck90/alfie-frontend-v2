@@ -46,6 +46,7 @@ export const SelectInput: FC<ISelectInput> = ({
           ref={selectRef}
           disabled={disabled}
           defaultValue={value}
+          value={value}
           onFocus={() => setError(undefined)}
           onChange={handleChange}
           className="appearance-none w-full py-1 rounded-lg pl-3 focus:outline-none placeholder-gray-400 bg-white"

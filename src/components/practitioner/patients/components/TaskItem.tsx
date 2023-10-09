@@ -1,10 +1,12 @@
 import React from "react";
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
+import { CheckCircleIcon, XCircleIcon, EyeIcon } from "@heroicons/react/solid";
 import { CalendarIcon, ClockIcon } from "@heroicons/react/outline";
 import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
-import { Task, TaskType } from "@src/graphql/generated";
+import { Task, TaskType, UserAnswer } from "@src/graphql/generated";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
+import { TaskAnswers } from "./TaskAnswers";
+
 dayjs.extend(LocalizedFormat);
 
 export const TaskItem = ({
@@ -15,6 +17,7 @@ export const TaskItem = ({
   _id,
   type,
   completedAt,
+  answers,
 }: {
   task: Task;
   _id: string;
@@ -23,18 +26,47 @@ export const TaskItem = ({
   dueAt: Date;
   completed?: boolean;
   completedAt?: Date;
+  answers: UserAnswer[];
 }) => {
   const formattedDueAt = completedAt
     ? dayjs(completedAt).format("ll")
     : dayjs(dueAt).format("ll");
 
+  const TaskStatus: React.FC = () => {
+    return completed ? (
+      <div className="max-sm:flex-col sm:gap-3 flex items-center justify-center">
+        <div className="text-green-500 flex">
+          <CheckCircleIcon className="h-5 w-5 mt-[2px] mr-1" />
+          Completed
+        </div>
+        {answers.length > 0 ? (
+          <TaskAnswers
+            trigger={
+              <div className="text-blue-800 flex whitespace-nowrap cursor-pointer">
+                <EyeIcon className="w-5 h-5 mt-[2px] mr-1 fill-current" />
+                View Answers
+              </div>
+            }
+            task={task}
+            answers={answers}
+          />
+        ) : null}
+      </div>
+    ) : (
+      <div className="text-red-500 flex">
+        <XCircleIcon className="h-5 w-5 mt-[2px] mr-1" />
+        Not Completed
+      </div>
+    );
+  };
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 md:p-6 mb-4">
       <div className="flex flex-col justify-between gap-y-3 md:flex-row  md:gap-x-2 ">
         <div className="flex flex-shrink md:w-4/5">
-          <ChooseTaskIcon value={task.type} />
+          <ChooseTaskIcon value={task?.type} />
           <div className="w-full">
-            <h3 className="text-gray-900 font-bold">{task.name}</h3>
+            <h3 className="text-gray-900 font-bold">{task?.name}</h3>
             <p className="text-gray-700 pt-2">
               Complete a basic medical form so that we can tailor our services
               to your needs.
@@ -62,18 +94,8 @@ export const TaskItem = ({
           </div>
         </div>
 
-        <div className="hidden md:flex">
-          {completed ? (
-            <div className="text-green-500 flex">
-              <CheckCircleIcon className="h-5 w-5 mt-[2px] mr-1" />
-              Completed
-            </div>
-          ) : (
-            <div className="text-red-500 flex">
-              <XCircleIcon className="h-5 w-5 mt-[2px] mr-1" />
-              Not Completed
-            </div>
-          )}
+        <div className="hidden md:flex justify-center items-center">
+          <TaskStatus />
         </div>
       </div>
 
@@ -85,17 +107,7 @@ export const TaskItem = ({
           />
           <p>{formattedDueAt}</p>
         </div>
-        {completed ? (
-          <div className="text-green-500 flex">
-            <CheckCircleIcon className="h-5 w-5 mt-[2px] mr-1" />
-            Completed
-          </div>
-        ) : (
-          <div className="text-red-500 flex">
-            <XCircleIcon className="h-5 w-5 mt-[2px] mr-1" />
-            Not Completed
-          </div>
-        )}
+        <TaskStatus />
       </div>
     </div>
   );

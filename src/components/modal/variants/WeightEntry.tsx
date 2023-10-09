@@ -7,21 +7,29 @@ import {
   createAnswersFromObject,
 } from "@src/hooks/useTaskCompletion";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { CalculatorIcon } from "@heroicons/react/outline";
+import weightValidationSchema from "@src/validations/weight";
 
 export function WeightEntry({
   title,
   taskId,
+  currentWeight,
 }: {
   title: string;
   taskId: string;
   currentWeight?: number;
 }) {
-  const { register, handleSubmit } = useForm({
+  const validationSchema = Yup.object({
+    weight: weightValidationSchema(currentWeight)
+  })
+  const { register, handleSubmit, formState: { errors, isValid } } = useForm({
     defaultValues: {
       _id: taskId,
       weight: 0,
     },
+    resolver: yupResolver(validationSchema)
   });
   const setOpen = useDialogToggle();
   const [mutate] = useTaskCompletion(() => setOpen(false));
@@ -49,12 +57,14 @@ export function WeightEntry({
       />
       <DialogLongBody>
         <div className="flex flex-col gap-y-2 w-full">
-          <p className="font-bold text-sm">How much do you currently weigh?</p>
+          <p className="font-bold text-sm">How much do you currently weight?</p>
           <div className="flex gap-x-3 justify-between items-center">
             <TextField
               rightIcon={<span className="pl-2 text-gray-400">lbs</span>}
               placeholder="120"
               fullWidth
+              helper={errors.weight?.message}
+              hasError={!isValid}
               inputSize="medium"
               type="number"
               {...register("weight", { valueAsNumber: true })}

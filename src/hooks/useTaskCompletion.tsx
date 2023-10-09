@@ -101,6 +101,8 @@ export function valueToAnswerType(value: unknown) {
       return AnswerType.String;
     case 'number':
       return AnswerType.Number;
+    case 'object':
+      return AnswerType.Object;
     default:
       return AnswerType.String;
   }

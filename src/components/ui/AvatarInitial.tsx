@@ -22,11 +22,14 @@ export function AvatarInitial({
   };
   const color = bgColors[index % bgColors.length];
 
+  console.log(text);
+  const nameInitials = text;
+
   return (
     <div
       className={`${avatarSize[size]} rounded-full flex justify-center items-center ${color}`}
     >
-      <p className="uppercase">{text}</p>
+      <p className="uppercase">{nameInitials}</p>
     </div>
   );
 }

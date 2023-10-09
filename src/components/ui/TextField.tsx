@@ -68,7 +68,7 @@ export const TextField = React.forwardRef(
           />
           {rightIcon && <div className="pr-3 pl-1">{rightIcon}</div>}
         </div>
-        {helper && <div>{helper}</div>}
+        {helper && <div className={`text-sm mt-1 ${hasError && "text-red-600"}`}>{helper}</div>}
       </div>
     );
   }

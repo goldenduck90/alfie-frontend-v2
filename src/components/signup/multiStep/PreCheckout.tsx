@@ -29,6 +29,7 @@ import { parseError } from "@src/utils/parseError";
 
 import { Button } from "@src/components/ui/Button";
 import { usePartnerContext } from "@src/context/PartnerContext";
+import weightValidationSchema from "@src/validations/weight";
 
 import { Gender, CreateCheckoutInput } from "@src/graphql/generated";
 
@@ -149,7 +150,7 @@ export const PreCheckout = () => {
             ),
         }),
         beforeNext({ dateOfBirth }, _, currentStepIndex) {
-          localStorage.setItem("dateOfBirth", dateOfBirth);
+          localStorage.setItem("dateOfBirth", dateOfBirth.toLocaleDateString());
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
@@ -197,10 +198,7 @@ export const PreCheckout = () => {
             .required("Please enter your height.")
             .min(0, "Please enter a valid height.")
             .max(11, "Please enter a valid height."),
-          weight: Yup.number()
-            .required("Please enter your weight.")
-            .min(70, "Please enter a valid weight.")
-            .max(800, "Please enter a valid weight."),
+          weight: weightValidationSchema()
         }),
         beforeNext({ heightFeet, heightInches, weight }, _, currentStepIndex) {
           // We need to calculate the users BMI and throw an ineligible error if they are not eligible for the program because their BMI is less than 27.
@@ -268,7 +266,7 @@ export const PreCheckout = () => {
         localStorage.getItem("weightLossMotivatorV2") ?? "[]"
       ),
       dateOfBirth:
-        localStorage.getItem("dateOfBirth") || format(new Date(), "yyyy-MM-dd"),
+        localStorage.getItem("dateOfBirth") || new Date().toLocaleDateString(),
       pastTries: JSON.parse(localStorage.getItem("pastTries") ?? "[]"),
       biologicalSex: localStorage.getItem("biologicalSex") || "",
       heightFeet: localStorage.getItem("heightFeet") || "",
@@ -306,7 +304,7 @@ export const PreCheckout = () => {
           name,
           email,
           weightLossMotivatorV2,
-          dateOfBirth,
+          dateOfBirth: format(new Date(dateOfBirth), "yyyy-MM-dd"),
           gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
           state,
           heightInInches,
@@ -315,6 +313,7 @@ export const PreCheckout = () => {
           phone: `+1${phone.replace(/[^0-9]/g, "")}`,
           pastTries,
         };
+        console.log(input);
 
         if (partner) {
           input.signupPartnerId = partner?._id;

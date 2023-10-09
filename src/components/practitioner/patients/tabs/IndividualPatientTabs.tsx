@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -23,6 +24,7 @@ import { MetabolicChart } from "./MetabolicChart";
 import { AdhocSchedule } from "../components/AdhocSchedule";
 import { GenerateSummary } from "../components/GenerateSummary";
 import { PatientChat } from "./PatientChat";
+import { nameToInitials } from "@src/utils/nameToInitials";
 
 const GetUserById = gql`
   query GetUser($userId: String!) {
@@ -44,7 +46,6 @@ const GetUserById = gql`
         postalCode
         country
       }
-      weightGoal
       weights {
         value
         date
@@ -75,6 +76,9 @@ const GetUserById = gql`
           key
           value
         }
+      }
+      signupPartner {
+        title
       }
     }
   }
@@ -133,21 +137,24 @@ export function IndividualPatientTabs() {
   });
 
   const patient: User = data?.getUserById;
-  console.log("patient", patient);
 
-  const patientImages = patient?.files?.filter(
-    ({ signedUrl, contentType }) =>
-      signedUrl && contentType.includes("image")
-  ) ?? []
+  const patientImages =
+    patient?.files?.filter(
+      ({ signedUrl, contentType }) => signedUrl && contentType.includes("image")
+    ) ?? [];
 
   const patientTable = {
     "Full Name": patient?.name,
-    "Date of Birth": dayjs(patient?.dateOfBirth).format("MM/DD/YYYY"),
+    "Date of Birth": dayjs(patient?.dateOfBirth, { utc: true }).format(
+      "MM/DD/YYYY"
+    ),
     "Email Address": patient?.email,
     "Phone Number": patient?.phone,
-    "Address": `${patient?.address?.line1 || ""}, ${(patient?.address?.line2 && ",") || ""
-      } ${patient?.address?.city}, ${patient?.address?.state}, ${patient?.address?.postalCode
-      }`,
+    "Address": `${patient?.address?.line1 || ""}, ${
+      (patient?.address?.line2 && ",") || ""
+    } ${patient?.address?.city}, ${patient?.address?.state}, ${
+      patient?.address?.postalCode
+    }`,
     "Height In Inches": patient?.heightInInches,
     "Weight": patient?.weights?.[patient.weights.length - 1]?.value,
     "Attachments":
@@ -155,8 +162,9 @@ export function IndividualPatientTabs() {
         <div
           style={{ display: "flex", gap: 10, overflowY: "auto", padding: 6 }}
         >
-          {patientImages.map(({ signedUrl, key }) => (
-            <Image
+          {patientImages.map(({ signedUrl, key }, idx) => (
+            <img
+              key={idx}
               src={signedUrl}
               alt={key}
               title={key}
@@ -306,18 +314,10 @@ function TableInformationHeader({
   loading?: boolean;
   activeTasks: number;
 }) {
-  const initials = useMemo(() => {
-    if (!user?.name) return "";
-    const splitName = user?.name?.split(" ");
-    const firstInitial = splitName?.[0].charAt(0);
-    const lastInitial = splitName[splitName.length - 1].charAt(0);
-    return `${firstInitial || ""}${lastInitial || ""}`;
-  }, [user]);
-
   return (
     <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
       <div className="flex gap-3 items-center">
-        <AvatarInitial size="xl" index={0} text={initials} />
+        <AvatarInitial size="xl" index={0} text={nameToInitials(user?.name)} />
         {loading ? (
           <div className="h-7 w-56 mt-2">
             <PlaceHolderLine hasTopMargin />
@@ -369,8 +369,20 @@ export function TableUserObject({
                 <div className="w-1/4 h-6 flex items-center">
                   <PlaceHolderLine hasTopMargin />
                 </div>
+              ) : typeof user[key] !== "object" ||
+                React.isValidElement(user[key]) ? (
+                <div className="text-gray-600">{user[key]}</div>
               ) : (
-                <p className="text-gray-600">{user[key]}</p>
+                <p className="text-gray-600">
+                  {Object.keys(user[key]).map((subKey) => (
+                    <p className="text-gray-600">
+                      <strong>{subKey}:</strong>{" "}
+                      {Array.isArray(user[key][subKey])
+                        ? user[key][subKey]?.join(", ")
+                        : user[key][subKey]?.toString()}
+                    </p>
+                  ))}
+                </p>
               )}
             </div>
           );
@@ -392,8 +404,9 @@ function TabTitle({
   return (
     <Tabs.Trigger
       value={value}
-      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
-        }`}
+      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${
+        active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
+      }`}
     >
       {children}
     </Tabs.Trigger>

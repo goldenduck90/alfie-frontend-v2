@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import {
   Control,
+  ControllerRenderProps,
   useController,
   useFieldArray,
   useForm,
@@ -46,6 +47,7 @@ export interface CheckboxOptionProps {
 export interface MultiCheckboxQuestionProps extends QuestionComponentProps {
   options: string[] | CheckboxOptionProps[];
   multiple?: boolean;
+  hasOtherOption?: boolean;
 }
 
 export interface MultiTextInputProps extends QuestionComponentProps {}
@@ -107,6 +109,56 @@ export function SingleFormQuestion({
   );
 }
 
+export function CheckboxOption({
+  field,
+  option,
+  onChange,
+  children,
+}: {
+  children?: React.ReactNode;
+  field: ControllerRenderProps<any, string>;
+  option: string | CheckboxOptionProps;
+  onChange?: (checked: boolean) => void;
+}) {
+  const optionKey = typeof option === "string" ? option : option.key;
+  const checked = field?.value?.includes(optionKey);
+
+  return (
+    <fieldset
+      key={optionKey}
+      id={optionKey}
+      className={`flex gap-3 items-center w-full`}
+      onClick={() => {
+        onChange && onChange(!checked);
+      }}
+    >
+      <div
+        className={`h-[56px] flex items-center px-6 border rounded-md w-full cursor-pointer ${
+          checked
+            ? "border-primary-500 bg-primary-50"
+            : "bg-gray-100 border-gray-100 "
+        }`}
+      >
+        <Checkbox
+          {...field}
+          ref={(ref) => {
+            field.ref(ref);
+          }}
+          onChange={onChange}
+          checked={field?.value?.includes(optionKey)}
+        />
+        <label
+          htmlFor={optionKey}
+          className="text-left pl-4 pointer-events-none"
+        >
+          {typeof option === "string" ? option : option.value}
+        </label>
+      </div>
+      {children}
+    </fieldset>
+  );
+}
+
 export function MultiCheckboxFormQuestion({
   name,
   question,
@@ -114,6 +166,7 @@ export function MultiCheckboxFormQuestion({
   validation,
   options,
   multiple = true,
+  hasOtherOption = false,
 }: MultiCheckboxQuestionProps) {
   const {
     field,
@@ -139,58 +192,42 @@ export function MultiCheckboxFormQuestion({
     },
   });
 
+  const handleChange = (checked: boolean | string, option: string) => {
+    if (checked) {
+      if (multiple) {
+        field.onChange([...field.value, option]);
+      } else {
+        field.onChange([option]);
+      }
+    } else {
+      field.onChange(field.value.filter((v: string) => v !== option));
+    }
+  };
+
   return (
     <React.Fragment>
       <label className="text font-bold text-center pb-4">{question}</label>
       {options?.map((option, idx) => {
-        const optionKey = typeof option === 'string' ? option : option.key;
-        const checked = field?.value?.includes(optionKey);
-        const handleChange = (checked: boolean) => {
-          if (checked) {
-            if (multiple) {
-              field.onChange([...field.value, optionKey]);
-            } else {
-              field.onChange([optionKey]);
-            }
-          } else {
-            field.onChange(field.value.filter((v: string) => v !== optionKey));
-          }
-        };
-
+        const optionKey = typeof option === "string" ? option : option.key;
         return (
-          <fieldset
-            key={optionKey}
-            id={optionKey}
-            className={`flex gap-3 items-center w-full`}
-            onClick={() => {
-              handleChange(!checked);
-            }}
-          >
-            <div
-              className={`h-[56px] flex items-center px-6 border rounded-md w-full cursor-pointer ${
-                checked
-                  ? "border-primary-500 bg-primary-50"
-                  : "bg-gray-100 border-gray-100 "
-              }`}
-            >
-              <Checkbox
-                {...field}
-                ref={(ref) => {
-                  field.ref(ref);
-                }}
-                onChange={handleChange}
-                checked={field?.value?.includes(optionKey)}
-              />
-              <label
-                htmlFor={`${optionKey}-${idx}`}
-                className="text-left pl-4 pointer-events-none"
-              >
-                {typeof option === 'string' ? option : option.value}
-              </label>
-            </div>
-          </fieldset>
+          <CheckboxOption
+            key={`${optionKey}-${idx}`}
+            field={field}
+            option={option}
+            onChange={(c) => handleChange(c, optionKey)}
+          />
         );
       })}
+      {hasOtherOption && (
+        <CheckboxOption
+          field={field}
+          option="Other"
+          key={`${name}-other-option`}
+          onChange={(c) => handleChange(c, "Other")}
+        >
+          {/* Add input field to fill out custom choice */}
+        </CheckboxOption>
+      )}
       {invalid && <p>{errors?.[name]?.message as string}</p>}
     </React.Fragment>
   );
@@ -223,10 +260,9 @@ export function MultipleTextInput({
   });
 
   useEffect(() => {
-    console.log("fields", fields)
+    console.log("fields", fields);
     if (fields?.length === 0) {
       append(" ");
-
     }
   }, [fields, append]);
 

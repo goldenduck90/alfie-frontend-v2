@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { useEffect } from "react";
-import { UserTask } from "../../../graphql/generated";
+import {
+  TaskType,
+  UserAppointmentEligibility,
+  UserTask,
+} from "../../../graphql/generated";
 import { TaskItem } from "./TaskItem";
 import { LoadingTaskItem } from "./LoadingTaskItems";
 import { ToggleGroup } from "@src/components/ui/ToggleGroup";
@@ -30,17 +34,38 @@ const userTasksQuery = gql`
   }
 `;
 
+const userAppointmentTaskCompletionQuery = gql`
+  query GetUserCompletedAppointmentTasksInMonth {
+    userScheduleAppointmentTask {
+      daysLeft
+      task {
+        completed
+        completedAt
+      }
+      completedRequiredTasks
+    }
+  }
+`;
+
 export const TasksPage = () => {
   const [taskFilter, setTaskFilter] = React.useState<"Active" | "Completed">(
     "Active"
   );
 
-  const { data, error, loading } = useQuery(userTasksQuery, {
+  const { data, error, loading } = useQuery<{
+    userTasks: {
+      userTasks: UserTask[];
+    };
+  }>(userTasksQuery, {
     variables: {
       limit: 100,
       completed: taskFilter === "Completed",
     },
   });
+
+  const { data: userEligibility } = useQuery<{
+    userScheduleAppointmentTask: UserAppointmentEligibility;
+  }>(userAppointmentTaskCompletionQuery);
 
   useEffect(() => {
     // If there is an error with the query, we want to log it to Sentry
@@ -73,6 +98,61 @@ export const TasksPage = () => {
     },
   ];
 
+  const userAppointmentEligibility =
+    userEligibility?.userScheduleAppointmentTask;
+
+  const userTasks = useMemo(() => {
+    if (!loading && !error) {
+      const userTaskList = data?.userTasks?.userTasks || [];
+      const scheduleAppointmentTaskExists = userTaskList.some(
+        ({ task }) => task?.type === TaskType.ScheduleAppointment
+      );
+
+      if (
+        !scheduleAppointmentTaskExists &&
+        userAppointmentEligibility?.daysLeft &&
+        userAppointmentEligibility?.daysLeft > 0
+      ) {
+        // If "Schedule Appointment" is not in the server data, add it to the list
+        return [
+          {
+            _id: "schedule-appointment-placeholder",
+            task: {
+              name: "Schedule Appointment",
+              type: TaskType.ScheduleAppointment,
+            },
+          } as UserTask,
+          ...userTaskList,
+        ];
+      } else {
+        // Sort the tasks array to move "Schedule Appointment" to the front
+        return userTaskList.slice().sort((a, b) => {
+          if (a.task?.type === TaskType.ScheduleAppointment) {
+            return -1; // Move "Schedule Appointment" to the front
+          } else if (b.task?.type === TaskType.ScheduleAppointment) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+      }
+    }
+    // If loading or an error occurred, return an empty array or handle the error
+    return [];
+  }, [loading, error, data, userAppointmentEligibility]);
+
+  const scheduleAppointmentHelperText = useMemo(() => {
+    if (!userAppointmentEligibility) {
+      return "";
+    }
+    const { daysLeft, completedRequiredTasks } = userAppointmentEligibility;
+    if (!completedRequiredTasks) {
+      return "Please complete all the other tasks assigned to you before you schedule an appointment with your clinician";
+    } else if (daysLeft && daysLeft > 0) {
+      return `You will be able to schedule this appointment in ${daysLeft} days. If you need to see a doctor urgently please message in the chat for an adhoc appointment.`;
+    }
+  }, [userAppointmentEligibility]);
+
   return (
     <div>
       {error && (
@@ -91,20 +171,28 @@ export const TasksPage = () => {
           <h2 className="text-xl md:text-2xl font-bold font-mulish">
             {taskFilter} tasks
           </h2>
-          {data?.userTasks?.userTasks.map((userTask: UserTask, i: number) => (
-            <div className="pt-6" key={i}>
-              <TaskItem
-                key={userTask._id}
-                id={userTask._id}
-                type={(userTask?.task?.type || "") as any}
-                title={userTask?.task?.name || ""}
-                createdAt={userTask.createdAt}
-                dueAt={userTask.dueAt}
-                pastDue={userTask.pastDue}
-                actionText="Complete"
-              />
-            </div>
-          ))}
+          {userTasks.map((userTask: UserTask, i: number) => {
+            const validUserTask =
+              userTask._id !== "schedule-appointment-placeholder";
+            return (
+              <div className="pt-6" key={i}>
+                <TaskItem
+                  key={userTask._id}
+                  id={userTask._id}
+                  type={(userTask?.task?.type || "") as any}
+                  title={userTask?.task?.name || ""}
+                  createdAt={userTask.createdAt}
+                  dueAt={userTask.dueAt}
+                  pastDue={userTask.pastDue}
+                  actionText="Complete"
+                  valid={validUserTask}
+                  helperText={
+                    !validUserTask ? scheduleAppointmentHelperText : ""
+                  }
+                />
+              </div>
+            );
+          })}
           {loading &&
             Array(6)
               .fill("")

@@ -21,7 +21,6 @@ query Me {
     phone
     role
     dateOfBirth
-    weightGoal
     weights {
       value
       date

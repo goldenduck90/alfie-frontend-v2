@@ -53,7 +53,7 @@ const previousconditions = [
   "If Female: Breastfeeding or plan on breastfeeding up to 6 months from now",
   "None of the above",
 ];
-const medications = [
+export const medications = [
   {
     id: "antidepressants",
     name: "Tricyclic antidepressants",
@@ -300,6 +300,7 @@ export const medicationQuestionnairs: QuestionProps<any>[] = medications
           name={`medicines.${props.name}`}
           multiple={true}
           options={m.medicines || []}
+          hasOtherOption
         />
       </React.Fragment>
     ),

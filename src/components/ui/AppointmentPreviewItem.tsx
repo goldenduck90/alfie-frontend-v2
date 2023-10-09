@@ -3,6 +3,7 @@ import { UserIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { Button } from "./Button";
 import { PlaceHolderLine } from "./PlaceHolderLine";
+import { getTimeZone, TZ_FORMAT } from "@src/utils/timezone";
 
 export interface AppointmentPreviewItemProps {
   name?: string;
@@ -60,7 +61,9 @@ export function AppointmentPreviewItem({
         ) : (
           <div className="flex w-full justify-between">
             <div>{renderDate?.date}</div>
-            <div className="text-gray-400">{renderDate?.time}</div>
+            <div className="text-gray-400">
+              {`${renderDate?.time} (${getTimeZone(TZ_FORMAT.SHORT)})`}
+            </div>
           </div>
         )}
       </div>

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { gql, useMutation } from "@apollo/client";
 import { useFormik, FormikProvider } from "formik";
 import * as Yup from "yup";
-import { differenceInYears } from "date-fns";
+import { differenceInYears, format } from "date-fns";
 import { isValidPhoneNumber } from "libphonenumber-js";
 
 import { Wrapper } from "@src/components/layouts/Wrapper";
@@ -15,6 +15,7 @@ import PatientDetails from "./sections/PatientDetails";
 import PartnerDetails from "./sections/PartnerDetails";
 
 import { usePartnerContext } from "@src/context/PartnerContext";
+import weightValidationSchema from "@src/validations/weight";
 
 import { ValidStates } from "@src/utils/states";
 import { Gender, CreateCheckoutInput } from "@src/graphql/generated";
@@ -41,7 +42,7 @@ const PreCheckout = () => {
     initialValues: {
       firstName: "",
       lastName: "",
-      dateOfBirth: "",
+      dateOfBirth: new Date().toLocaleDateString(),
       biologicalSex: "male",
       state: "",
       phone: "",
@@ -84,10 +85,7 @@ const PreCheckout = () => {
         .required("Please enter height.")
         .min(0, "Please enter a valid height.")
         .max(11, "Please enter a valid height."),
-      weight: Yup.number()
-        .required("Please enter weight.")
-        .min(70, "Please enter a valid weight.")
-        .max(800, "Please enter a valid weight."),
+      weight: weightValidationSchema(),
       pastTries: Yup.array()
         .of(Yup.string())
         .min(1, "Please select at least 1 option.")
@@ -135,7 +133,7 @@ const PreCheckout = () => {
       const input: CreateCheckoutInput = {
         name: fullName,
         email,
-        dateOfBirth,
+        dateOfBirth: format(new Date(dateOfBirth), "yyyy-MM-dd"),
         gender: biologicalSex === "male" ? Gender.Male : Gender.Female,
         state: state,
         phone: `+1${phone.replace(/[^0-9]/g, "")}`,

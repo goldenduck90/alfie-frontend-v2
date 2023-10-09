@@ -27,7 +27,9 @@ export const DashboardTaskList = () => {
     );
   });
   const tasks =
-    filteredTasks && filteredTasks.length > 0 ? filteredTasks : data?.userTasks?.userTasks;
+    filteredTasks && filteredTasks.length > 0
+      ? filteredTasks
+      : data?.userTasks?.userTasks;
 
   React.useEffect(() => {
     //? If there is an error with the query, we want to log it to Sentry
