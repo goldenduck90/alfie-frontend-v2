@@ -1,107 +1,78 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { useFormik, FormikProvider } from "formik";
-
 import * as Yup from "yup";
 import { TextInput } from "@src/components/inputs/TextInput";
-import { SelectInput, OptionInput } from "@src/components/inputs/SelectInput";
+import { SelectInput } from "@src/components/inputs/SelectInput";
 import { Button } from "@src/components/ui/Button";
 import { Loading } from "../Loading";
-
 import {
   Insurance,
-  InsurancePlan,
   InsuranceType,
 } from "@src/graphql/generated";
 
-type InsruanceFormInputTypes = {
-  plan: string;
-  type: string;
-  groupId: string;
-  memberId: string;
-};
-
 type ManualFormProps = {
-  insurance?: Insurance;
-  plans: InsurancePlan[];
-  types: InsuranceType[];
+  insuranceId: string;
+  type: InsuranceType;
+  memberId: string;
+  groupId: string;
+  insurances: Insurance[];
   onSubmit: ({
-    plan,
+    insuranceId,
     type,
     groupId,
     memberId,
-  }: InsruanceFormInputTypes) => Promise<void>;
+  }: {
+    insuranceId: string;
+    type: InsuranceType;
+    groupId: string;
+    memberId: string;
+  }) => Promise<boolean>;
 };
 
-const ManualForm = ({ insurance, plans, types, onSubmit }: ManualFormProps) => {
-  const [planOptions, setPlanOptions] = useState<OptionInput[]>([]);
-  const [typeOptions, setTypeOptions] = useState<OptionInput[]>([]);
-
-  useEffect(() => {
-    const otherPlan = plans.find((plan) => plan.value === "Other");
-    const sortedPlans = plans
-      .filter((plan) => plan.value !== "Other")
-      .sort((a, b) => a.value.localeCompare(b.value));
-    if (otherPlan) {
-      sortedPlans.push(otherPlan);
-    }
-    setPlanOptions(
-      sortedPlans.map((plan) => ({
-        label: plan.name ?? "",
-        value: plan.value,
-      }))
-    );
-  }, [plans]);
-
-  useEffect(() => {
-    const governmentType = types.find((type) => type.type === "Government");
-    const sortedTypes = types
-      .filter((type) => type.type !== "Government")
-      .sort((a, b) => a.type.localeCompare(b.type));
-    if (governmentType) {
-      sortedTypes.push(governmentType);
-    }
-    setTypeOptions(
-      sortedTypes.map((type) => ({
-        label: type.name ?? "",
-        value: type.type,
-      }))
-    );
-  }, [types]);
-
+const ManualForm = ({ insurances, insuranceId, type, groupId, memberId, onSubmit }: ManualFormProps) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      plan: insurance?.insuranceCompany ?? "",
-      type: insurance?.groupName ?? "",
-      groupId: insurance?.groupId ?? "",
-      memberId: insurance?.memberId ?? "",
+      insuranceId,
+      type,
+      groupId,
+      memberId,
     },
     validateOnChange: false,
     validationSchema: Yup.object({
-      plan: Yup.string().test(
-        "plan",
+      insuranceId: Yup.string().test(
+        "insuranceId",
         "Please select your insurance plan.",
         (value) => {
-          return planOptions
-            .map((option) => option.value)
-            .includes(value ?? "");
+          return insurances
+            .map((i) => i._id)
+            .includes(value || "");
         }
       ),
       type: Yup.string().test(
         "type",
         "Please select your insurance type.",
         (value) => {
-          return typeOptions
-            .map((option) => option.value)
-            .includes(value ?? "");
+          if (!value) return false;
+          const _type: InsuranceType = InsuranceType[value as keyof typeof InsuranceType];
+          return Object.values(InsuranceType)
+            .includes(_type);
         }
       ),
       groupId: Yup.string().required("Group ID / Number is required"),
       memberId: Yup.string().required("Member ID  is required"),
     }),
-    onSubmit: async (values, { resetForm }) => {
-      await onSubmit(values);
-      resetForm();
+    onSubmit: async ({ insuranceId, type, groupId, memberId }, { resetForm }) => {
+      const result = await onSubmit({
+        insuranceId,
+        type,
+        memberId,
+        groupId,
+      });
+
+      if (result) {
+        resetForm();
+      }
     },
   });
 
@@ -117,9 +88,13 @@ const ManualForm = ({ insurance, plans, types, onSubmit }: ManualFormProps) => {
                   <span className="text-[red]">*</span>
                 </p>
                 <SelectInput
-                  name="plan"
-                  placeholder="Select"
-                  options={planOptions}
+                  name="insuranceId"
+                  placeholder="Select Plan"
+                  options={insurances.map((i) => ({
+                    value: i._id,
+                    label: i.name,
+                    selected: formik.values.insuranceId === i._id,
+                  }))}
                 />
               </div>
               <div className="flex flex-col w-full">
@@ -129,8 +104,12 @@ const ManualForm = ({ insurance, plans, types, onSubmit }: ManualFormProps) => {
                 </p>
                 <SelectInput
                   name="type"
-                  placeholder="Select"
-                  options={typeOptions}
+                  placeholder="Select Type"
+                  options={Object.values(InsuranceType).map((t) => ({
+                    value: t,
+                    label: t,
+                    selected: formik.values.type === t,
+                  }))}
                 />
               </div>
               <div className="flex flex-col w-full">
