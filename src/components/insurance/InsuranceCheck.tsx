@@ -195,8 +195,9 @@ const InsuranceCheck = () => {
     });
 
 
-    if (data?.insuranceCheck.errors) {
-      setErrors(data.insuranceCheck.errors);
+    const _errors = data?.insuranceCheck.errors
+    if (_errors && _errors.length > 0) {
+      setErrors(_errors);
       return false;
     } else {
       router.push(`/signup/checkout/${checkoutId}`);
