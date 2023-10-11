@@ -54,9 +54,9 @@ const ManualForm = ({ insurances, insuranceId, type, groupId, memberId, onSubmit
         "Please select your insurance type.",
         (value) => {
           if (!value) return false;
-          const _type: InsuranceType = InsuranceType[value as keyof typeof InsuranceType];
-          return Object.values(InsuranceType)
-            .includes(_type);
+
+          const isValueInEnum = Object.values(InsuranceType).includes(value as InsuranceType);
+          return isValueInEnum;
         }
       ),
       groupId: Yup.string().required("Group ID / Number is required"),
