@@ -9,6 +9,9 @@ const InsuranceCovered: FC<Props> = ({ firstName, weightLossValue }) => {
   return (
     <>
       <p className="p-4 font-md font-bold text-lg text-brand-berry">
+        Alfie Health accepts your insurance!
+      </p>
+      <p className="p-4 font-md font-bold text-lg text-brand-berry">
         {`${firstName}, sign up today to gain access to Alfie’s precision weight
         management program and lose ${weightLossValue} pounds within the next 6
         months.`}
