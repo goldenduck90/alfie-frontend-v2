@@ -58,6 +58,7 @@ export type Alert = {
   __typename?: 'Alert';
   _id: Scalars['String'];
   acknowledgedAt?: Maybe<Scalars['DateTime']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
   description: Scalars['String'];
   medical: Scalars['Boolean'];
   notifiedAt?: Maybe<Scalars['DateTime']>;
@@ -65,6 +66,7 @@ export type Alert = {
   severity: SeverityType;
   task: Task;
   title: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
 };
 
@@ -554,8 +556,8 @@ export type InsuranceCheckResponse = {
 
 export type InsuranceCoveredResponse = {
   __typename?: 'InsuranceCoveredResponse';
-  comingSoon: Scalars['Boolean'];
-  covered: Scalars['Boolean'];
+  comingSoon?: Maybe<Scalars['Boolean']>;
+  covered?: Maybe<Scalars['Boolean']>;
   reason?: Maybe<Scalars['String']>;
 };
 
@@ -1009,6 +1011,7 @@ export type Query = {
   generateSummary: User;
   getAProvider: EaProviderProfile;
   getAlerts: Array<Alert>;
+  getAlertsByPatient: Array<Alert>;
   getAllPatientsByHealthCoach: Array<User>;
   getAllPatientsByProvider: Array<User>;
   getAllTasks: Array<Task>;
@@ -1079,6 +1082,11 @@ export type QueryGenerateSummaryArgs = {
 
 export type QueryGetAProviderArgs = {
   eaProviderId: Scalars['String'];
+};
+
+
+export type QueryGetAlertsByPatientArgs = {
+  patientId: Scalars['String'];
 };
 
 
@@ -1188,6 +1196,7 @@ export type RoleResponse = {
 
 export type ScaleReadingInput = {
   metriportUserId: Scalars['String'];
+  time?: InputMaybe<Scalars['DateTime']>;
   weightLbs: Scalars['Float'];
 };
 
@@ -1613,7 +1622,7 @@ export type InsuranceCoveredQueryVariables = Exact<{
 }>;
 
 
-export type InsuranceCoveredQuery = { __typename?: 'Query', insuranceCovered: { __typename?: 'InsuranceCoveredResponse', covered: boolean, comingSoon: boolean } };
+export type InsuranceCoveredQuery = { __typename?: 'Query', insuranceCovered: { __typename?: 'InsuranceCoveredResponse', covered?: boolean | null, comingSoon?: boolean | null } };
 
 export type InsurancePlansQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1711,6 +1720,13 @@ export type GetAllUserTasksByUserQueryVariables = Exact<{
 
 
 export type GetAllUserTasksByUserQuery = { __typename?: 'Query', getAllUserTasksByUser: Array<{ __typename?: 'UserTask', _id: string, archived?: boolean | null, completed: boolean, dueAt?: any | null, pastDue?: boolean | null, completedAt?: any | null, createdAt?: any | null, updatedAt?: any | null, providerEmail?: string | null, task?: { __typename?: 'Task', _id: string, name?: string | null, type: TaskType, daysTillDue?: number | null, interval?: number | null } | null, answers?: Array<{ __typename?: 'UserAnswer', key: string, value?: any | null, type: AnswerType }> | null }> };
+
+export type GetAlertsByPatientQueryVariables = Exact<{
+  patientId: Scalars['String'];
+}>;
+
+
+export type GetAlertsByPatientQuery = { __typename?: 'Query', getAlertsByPatient: Array<{ __typename?: 'Alert', _id: string, title: string, description: string, severity: SeverityType, medical: boolean, acknowledgedAt?: any | null, notifiedAt?: any | null, createdAt?: any | null, user: { __typename?: 'User', _id: string, name: string, email: string }, task: { __typename?: 'Task', _id: string, type: TaskType } }> };
 
 export type UserSendbirdChannelQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -2795,6 +2811,57 @@ export function useGetAllUserTasksByUserLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetAllUserTasksByUserQueryHookResult = ReturnType<typeof useGetAllUserTasksByUserQuery>;
 export type GetAllUserTasksByUserLazyQueryHookResult = ReturnType<typeof useGetAllUserTasksByUserLazyQuery>;
 export type GetAllUserTasksByUserQueryResult = Apollo.QueryResult<GetAllUserTasksByUserQuery, GetAllUserTasksByUserQueryVariables>;
+export const GetAlertsByPatientDocument = gql`
+    query getAlertsByPatient($patientId: String!) {
+  getAlertsByPatient(patientId: $patientId) {
+    _id
+    title
+    description
+    severity
+    medical
+    acknowledgedAt
+    notifiedAt
+    createdAt
+    user {
+      _id
+      name
+      email
+    }
+    task {
+      _id
+      type
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAlertsByPatientQuery__
+ *
+ * To run a query within a React component, call `useGetAlertsByPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAlertsByPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAlertsByPatientQuery({
+ *   variables: {
+ *      patientId: // value for 'patientId'
+ *   },
+ * });
+ */
+export function useGetAlertsByPatientQuery(baseOptions: Apollo.QueryHookOptions<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>(GetAlertsByPatientDocument, options);
+      }
+export function useGetAlertsByPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>(GetAlertsByPatientDocument, options);
+        }
+export type GetAlertsByPatientQueryHookResult = ReturnType<typeof useGetAlertsByPatientQuery>;
+export type GetAlertsByPatientLazyQueryHookResult = ReturnType<typeof useGetAlertsByPatientLazyQuery>;
+export type GetAlertsByPatientQueryResult = Apollo.QueryResult<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>;
 export const UserSendbirdChannelDocument = gql`
     query UserSendbirdChannel($userId: String!) {
   userSendbirdChannel(userId: $userId) {
