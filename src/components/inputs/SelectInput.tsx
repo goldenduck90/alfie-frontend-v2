@@ -16,6 +16,7 @@ export interface ISelectInput {
   cache?: boolean;
   onChange?: (value: string) => void;
 }
+
 export const SelectInput: FC<ISelectInput> = ({
   name,
   placeholder,
@@ -38,9 +39,8 @@ export const SelectInput: FC<ISelectInput> = ({
   return (
     <>
       <div
-        className={`flex flex-row mt-1 w-full rounded-2xl border-2 overflow-hidden ${
-          error ? "border-red-500" : "border-gray-300"
-        }`}
+        className={`flex flex-row mt-1 w-full rounded-2xl border-2 overflow-hidden ${error ? "border-red-500" : "border-gray-300"
+          }`}
       >
         <select
           ref={selectRef}

@@ -6,16 +6,17 @@ import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
 import { usePartnerContext } from "@src/context/PartnerContext";
 import { Button } from "@src/components/ui/Button";
 
-import { FlowType, Insurance } from "@src/graphql/generated";
+import { FlowType, InsuranceCheckMutation, InsuranceCheckMutationVariables, InsuranceTextractMutation, InsuranceTextractMutationVariables, InsuranceType, InsurancesQuery, InsurancesQueryVariables } from "@src/graphql/generated";
 import UploadForm from "./UploadForm";
 import ManualForm from "./ManualForm";
 import { Loading } from "../Loading";
 
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { createS3key } from "@src/utils/upload";
 
 import { randomId } from "@src/utils/randomId";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import { set } from "lodash";
 
 const requestSignedUrlsMutation = gql`
   mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
@@ -27,17 +28,13 @@ const requestSignedUrlsMutation = gql`
 `;
 
 const insuranceTextractMutation = gql`
-  mutation insuranceTextract($s3Key: String!, $userState: String!) {
-    insuranceTextract(s3Key: $s3Key, userState: $userState) {
-      insuranceMatches {
+  mutation insuranceTextract($s3Key: String!) {
+    insuranceTextract(s3Key: $s3Key) {
+      insurance {
+        company
+        type
         memberId
-        insuranceCompany
-        payor
         groupId
-        groupName
-        rxBIN
-        rxPCN
-        rxGroup
       }
       words
       lines
@@ -45,37 +42,11 @@ const insuranceTextractMutation = gql`
   }
 `;
 
-const insuranceCoveredQuery = gql`
-  query InsuranceCovered(
-    $checkoutId: String!
-    $insuranceType: InsuranceTypeValue!
-    $insurancePlan: InsurancePlanValue!
-  ) {
-    insuranceCovered(
-      checkoutId: $checkoutId
-      insuranceType: $insuranceType
-      insurancePlan: $insurancePlan
-    ) {
-      covered
-      comingSoon
-    }
-  }
-`;
-
-const insurancePlansQuery = gql`
-  query insurancePlans {
-    insurancePlans {
-      plans {
-        _id
-        name
-        value
-        types
-      }
-      types {
-        _id
-        name
-        type
-      }
+const insuranceQuery = gql`
+  query insurances {
+    insurances {
+      _id
+      name
     }
   }
 `;
@@ -83,35 +54,38 @@ const insurancePlansQuery = gql`
 const insuranceCheckMutation = gql`
   mutation insuranceCheck($input: InsuranceCheckInput!) {
     insuranceCheck(input: $input) {
-      eligible {
-        eligible
-        reason
-      }
+      status
+      eligible
+      errors
     }
   }
 `;
 
 const InsuranceCheck = () => {
   const router = useRouter();
-  const checkoutId = router.query.id;
+  const checkoutId = String(router.query.id);
 
   const [requestSignedUrls] = useMutation(requestSignedUrlsMutation);
-  const [insuranceTextract] = useMutation(insuranceTextractMutation);
-  const [insuranceCheck] = useMutation(insuranceCheckMutation);
-  const [insuranceCovered] = useLazyQuery(insuranceCoveredQuery);
+  const [insuranceTextract] = useMutation<InsuranceTextractMutation, InsuranceTextractMutationVariables>(insuranceTextractMutation);
+  const [insuranceCheck] = useMutation<InsuranceCheckMutation, InsuranceCheckMutationVariables>(insuranceCheckMutation);
 
   const { partner } = usePartnerContext();
   const { addNotification } = useNotificationStore();
 
   const { data, loading } = useCheckoutQuery(checkoutId);
-  const { data: insurancePlans } = useQuery(insurancePlansQuery);
+  const { data: insData } = useQuery<InsurancesQuery, InsurancesQueryVariables>(insuranceQuery);
 
   const [steps, setSteps] = useState(11); // Regular signup flow steps
   const [isManual, setIsManual] = useState(false);
   const [insuranceCardImage, setInsuranceCardImage] = useState<File | null>(
     null
   );
-  const [insurance, setInsurance] = useState<Insurance>();
+
+  const [dInsuranceId, setInsuranceId] = useState<string>("");
+  const [dType, setType] = useState<InsuranceType>(InsuranceType.Ppo);
+  const [dMemberId, setMemberId] = useState<string>("");
+  const [dGroupId, setGroupId] = useState<string>("");
+  const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
     if (partner) {
@@ -163,11 +137,22 @@ const InsuranceCheck = () => {
           const { data } = await insuranceTextract({
             variables: {
               s3Key: key,
-              userState: checkout.checkout.state,
             },
           });
-          if (data.insuranceTextract.insuranceMatches.length > 0) {
-            setInsurance(data.insuranceTextract.insuranceMatches[0]);
+
+          if (data?.insuranceTextract.insurance) {
+            const parsedInsurance = data.insuranceTextract.insurance
+
+            // find insurance ID from list
+            if (parsedInsurance.company) {
+              const insuranceId = insData?.insurances.find((i) => i.name === parsedInsurance.company)?._id
+              if (insuranceId) setInsuranceId(insuranceId)
+            }
+
+            if (parsedInsurance.type) setType(parsedInsurance.type)
+            if (parsedInsurance.memberId) setMemberId(parsedInsurance.memberId)
+            if (parsedInsurance.groupId) setGroupId(parsedInsurance.groupId)
+
             setIsManual(true);
           }
         }
@@ -182,48 +167,41 @@ const InsuranceCheck = () => {
     }
   };
 
-  const handleInsuranceSubmit = async (values: {
-    plan: string;
-    type: string;
-    groupId: string;
+  const handleInsuranceSubmit = async ({
+    insuranceId,
+    memberId,
+    groupId,
+    type,
+  }: {
+    insuranceId: string;
     memberId: string;
+    groupId: string;
+    type: InsuranceType;
   }) => {
-    // Check insurance is covered
-    const {
-      data: { insuranceCovered: coveredData },
-    } = await insuranceCovered({
+    setErrors([]);
+
+    const { data } = await insuranceCheck({
       variables: {
-        checkoutId,
-        insurancePlan: values.plan,
-        insuranceType: values.type,
+        input: {
+          checkoutId,
+          insurance: {
+            insurance: insuranceId,
+            memberId,
+            groupId,
+            type,
+          }
+        },
       },
     });
 
-    const covered: boolean = coveredData.covered || coveredData.comingSoon;
-    if (covered) {
-      // The insurance has covered, and not checking the eligibility
-      let insuranceObj = insurance;
-      if (!insurance) {
-        insuranceObj = {
-          insuranceCompany: values.plan,
-          groupId: values.groupId,
-          memberId: values.memberId,
-        };
-      }
-      await insuranceCheck({
-        variables: {
-          input: {
-            checkoutId,
-            insurancePlan: values.plan,
-            insuranceType: values.type,
-            insurance: insuranceObj,
-            covered,
-          },
-        },
-      });
-    }
 
-    router.push(`/signup/checkout/${checkoutId}`);
+    if (data?.insuranceCheck.errors) {
+      setErrors(data.insuranceCheck.errors);
+      return false;
+    } else {
+      router.push(`/signup/checkout/${checkoutId}`);
+      return true;
+    }
   };
 
   return (
@@ -241,13 +219,31 @@ const InsuranceCheck = () => {
           </span>
         </div>
 
+        {errors.length > 0 ? (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mx-6 rounded relative" role="alert">
+            <div>
+              <strong className="font-bold">Error Processing Insurance!</strong>
+              <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                <svg className="fill-current h-6 w-6 text-red-500" onClick={() => setErrors([])} role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" /></svg>
+              </span>
+            </div>
+            <div className="ml-4 mt-2">
+              <ul className="list-disc">
+                {errors.map((e) => <li>{e}</li>)}
+              </ul>
+            </div>
+          </div>
+        ) : null}
+
         <div className="px-4">
           <div className="my-4">
             {isManual ? (
               <ManualForm
-                insurance={insurance}
-                plans={insurancePlans.insurancePlans.plans}
-                types={insurancePlans.insurancePlans.types}
+                insurances={insData?.insurances || []}
+                insuranceId={dInsuranceId}
+                type={dType}
+                groupId={dGroupId}
+                memberId={dMemberId}
                 onSubmit={handleInsuranceSubmit}
               />
             ) : (
@@ -259,7 +255,7 @@ const InsuranceCheck = () => {
             )}
           </div>
 
-          <div className="flex flex-col justify-center mt-16">
+          <div className="flex flex-col justify-center items-center mt-12">
             <Button
               onClick={() => {
                 setIsManual(!isManual);
