@@ -997,6 +997,7 @@ export type ProviderModifyInput = {
 
 export type Query = {
   __typename?: 'Query';
+  acknowledgeAlert: Array<Alert>;
   addressDetail: Address;
   addressSuggestions: Array<AddressSuggestion>;
   allUserTasks: UserTaskList;
@@ -1011,6 +1012,7 @@ export type Query = {
   getAlertsByPatient: Array<Alert>;
   getAllPatientsByHealthCoach: Array<User>;
   getAllPatientsByProvider: Array<User>;
+  getAllPatientsWithAlerts: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
   getProviderSchedule: ScheduleObject;
@@ -1032,6 +1034,11 @@ export type Query = {
   userTask: UserTask;
   userTasks: UserTaskList;
   users: Array<User>;
+};
+
+
+export type QueryAcknowledgeAlertArgs = {
+  alertId: Scalars['String'];
 };
 
 
