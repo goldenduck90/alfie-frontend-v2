@@ -112,6 +112,7 @@ export type Checkout = {
   name: Scalars['String'];
   pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
+  provider?: Maybe<Provider>;
   referrer?: Maybe<Scalars['String']>;
   sameAsShippingAddress: Scalars['Boolean'];
   shippingAddress: Address;
@@ -528,6 +529,23 @@ export type Insurance = {
   states?: Maybe<Array<InsuranceState>>;
 };
 
+export type InsuranceAddress = {
+  __typename?: 'InsuranceAddress';
+  address1: Scalars['String'];
+  address2?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  postalCode: Scalars['String'];
+  state: Scalars['String'];
+};
+
+export type InsuranceAddressInput = {
+  address1: Scalars['String'];
+  address2?: InputMaybe<Scalars['String']>;
+  city: Scalars['String'];
+  postalCode: Scalars['String'];
+  state: Scalars['String'];
+};
+
 export type InsuranceCheckInput = {
   checkoutId: Scalars['String'];
   insurance: InsuranceDetailsInput;
@@ -535,20 +553,24 @@ export type InsuranceCheckInput = {
 
 export type InsuranceCheckResponse = {
   __typename?: 'InsuranceCheckResponse';
+  dependents?: Maybe<Array<InsurancePerson>>;
   eligible: Scalars['Boolean'];
   errors?: Maybe<Array<Scalars['String']>>;
   payor?: Maybe<InsurancePayor>;
+  primary?: Maybe<InsurancePerson>;
+  provider?: Maybe<Provider>;
   status: InsuranceStatus;
 };
 
 export type InsuranceDetails = {
   __typename?: 'InsuranceDetails';
+  dependents?: Maybe<Array<InsurancePerson>>;
   groupId: Scalars['String'];
-  groupName?: Maybe<Scalars['String']>;
   insurance: Insurance;
   memberId: Scalars['String'];
   payorId?: Maybe<Scalars['String']>;
   payorName?: Maybe<Scalars['String']>;
+  primary: InsurancePerson;
   rxBIN?: Maybe<Scalars['String']>;
   rxGroup?: Maybe<Scalars['String']>;
   rxPCN?: Maybe<Scalars['String']>;
@@ -557,16 +579,17 @@ export type InsuranceDetails = {
 };
 
 export type InsuranceDetailsInput = {
+  dependents?: InputMaybe<Array<InsurancePersonInput>>;
   groupId: Scalars['String'];
   groupName?: InputMaybe<Scalars['String']>;
-  insurance: Scalars['String'];
+  insuranceId: Scalars['String'];
   memberId: Scalars['String'];
   payorId?: InputMaybe<Scalars['String']>;
   payorName?: InputMaybe<Scalars['String']>;
+  primary?: InputMaybe<InsurancePersonInput>;
   rxBIN?: InputMaybe<Scalars['String']>;
   rxGroup?: InputMaybe<Scalars['String']>;
   rxPCN?: InputMaybe<Scalars['String']>;
-  status?: InputMaybe<InsuranceStatus>;
   type: InsuranceType;
 };
 
@@ -576,11 +599,34 @@ export type InsurancePayor = {
   payorName: Scalars['String'];
 };
 
+export type InsurancePerson = {
+  __typename?: 'InsurancePerson';
+  address?: Maybe<InsuranceAddress>;
+  dateOfBirth?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  gender?: Maybe<Scalars['String']>;
+  insuredIndicator?: Maybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  relationToSubscriber?: Maybe<Scalars['String']>;
+  relationToSubscriberCode?: Maybe<Scalars['String']>;
+};
+
+export type InsurancePersonInput = {
+  address?: InputMaybe<InsuranceAddressInput>;
+  dateOfBirth?: InputMaybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  gender?: InputMaybe<Scalars['String']>;
+  insuredIndicator?: InputMaybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  relationToSubscriber?: InputMaybe<Scalars['String']>;
+  relationToSubscriberCode?: InputMaybe<Scalars['String']>;
+};
+
 export type InsuranceState = {
   __typename?: 'InsuranceState';
   cpid: Scalars['String'];
   npi: Scalars['String'];
-  providers?: Maybe<Array<Provider>>;
+  providers: Array<Scalars['String']>;
   state: Scalars['String'];
   status: InsuranceStatus;
   types: Array<InsuranceType>;
