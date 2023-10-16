@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 
 import * as Tabs from "@radix-ui/react-tabs";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { CalendarIcon } from "@heroicons/react/outline";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
@@ -462,6 +462,15 @@ const getAlertsByPatient = gql`
   }
 `;
 
+const acknowledgeAlertMutation = gql`
+  mutation acknowledgeAlert($input: AcknowledgeAlertInput!) {
+    acknowledgeAlert(input: $input) {
+      _id
+      acknowledgedAt
+    }
+  }
+`;
+
 const SEVERITY_ORDER = [
   SeverityType.Low,
   SeverityType.Medium,
@@ -477,45 +486,52 @@ function PatientAlerts() {
     variables: { patientId },
   });
   const [activeTab, setActiveTab] = useState(ALERT_TABS[0]);
+
+  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [medicalAlerts, setMedicalAlerts] = useState<Alert[]>([]);
   const [administrativeAlerts, setAdministrativeAlerts] = useState<Alert[]>([]);
+
+  const [acknowledgeAlert] = useMutation(acknowledgeAlertMutation);
+
+  const handleAcknowledgeClick = async (alert: Alert) => {
+    const { data } = await acknowledgeAlert({
+      variables: { input: { id: alert._id } },
+    });
+
+    const { _id, acknowledgedAt } = data.acknowledgeAlert;
+    setAlerts([
+      ...alerts.map((alert) =>
+        alert._id === _id ? { ...alert, acknowledgedAt } : alert
+      ),
+    ]);
+  };
 
   useEffect(() => {
     if (loading) return;
 
     if (error) {
-      setMedicalAlerts([]);
-      setAdministrativeAlerts([]);
+      setAlerts([]);
     } else {
-      const alerts: Alert[] = data.getAlertsByPatient;
-
-      const sortedBySeverity = [...alerts].sort(
-        (a, b) =>
-          SEVERITY_ORDER.indexOf(b.severity) -
-          SEVERITY_ORDER.indexOf(a.severity)
-      );
-
-      const outstanding: Alert[] = sortedBySeverity.filter(
-        (alert) => !alert.acknowledgedAt
-      );
-
-      const acknowledged: Alert[] = sortedBySeverity.filter(
-        (alert) => alert.acknowledgedAt
-      );
-
-      const medical = [
-        ...outstanding.filter((alert) => alert.medical),
-        ...acknowledged.filter((alert) => alert.medical),
-      ];
-      const administrative = [
-        ...outstanding.filter((alert) => !alert.medical),
-        ...acknowledged.filter((alert) => !alert.medical),
-      ];
-
-      setMedicalAlerts(medical);
-      setAdministrativeAlerts(administrative);
+      setAlerts(data.getAlertsByPatient);
     }
   }, [data, loading, error]);
+
+  useEffect(() => {
+    const sorted = [...alerts].sort(
+      (a, b) =>
+        SEVERITY_ORDER.indexOf(b.severity) - SEVERITY_ORDER.indexOf(a.severity)
+    );
+
+    const outstanding = sorted.filter((alert) => !alert.acknowledgedAt);
+    const acknowledged = sorted.filter((alert) => alert.acknowledgedAt);
+
+    setMedicalAlerts(
+      [...outstanding, ...acknowledged].filter((alert) => alert.medical)
+    );
+    setAdministrativeAlerts(
+      [...outstanding, ...acknowledged].filter((alert) => !alert.medical)
+    );
+  }, [alerts]);
 
   return (
     <div className="mt-6 flex flex-col gap-y-3 w-full">
@@ -534,12 +550,20 @@ function PatientAlerts() {
         </div>
         <Tabs.Content value={ALERT_TABS[0]} className="mt-6">
           {medicalAlerts.map((alert) => (
-            <AlertItem key={alert._id} alert={alert} />
+            <AlertItem
+              key={alert._id}
+              alert={alert}
+              onAcknowledgeAlert={handleAcknowledgeClick}
+            />
           ))}
         </Tabs.Content>
         <Tabs.Content value={ALERT_TABS[1]} className="mt-6">
           {administrativeAlerts.map((alert) => (
-            <AlertItem key={alert._id} alert={alert} />
+            <AlertItem
+              key={alert._id}
+              alert={alert}
+              onAcknowledgeAlert={handleAcknowledgeClick}
+            />
           ))}
         </Tabs.Content>
       </Tabs.Root>
@@ -571,7 +595,13 @@ const SeverityBadge = ({ severity }: { severity: SeverityType }) => {
   );
 };
 
-function AlertItem({ alert }: { alert: Alert }) {
+function AlertItem({
+  alert,
+  onAcknowledgeAlert,
+}: {
+  alert: Alert;
+  onAcknowledgeAlert: (alert: Alert) => Promise<void>;
+}) {
   const router = useRouter();
   const { patientId } = router.query;
 
@@ -608,7 +638,12 @@ function AlertItem({ alert }: { alert: Alert }) {
           </div>
         ) : (
           <React.Fragment>
-            <Button buttonType="secondary">Acknowledge</Button>
+            <Button
+              buttonType="secondary"
+              onClick={() => onAcknowledgeAlert(alert)}
+            >
+              Acknowledge
+            </Button>
             <Button
               onClick={() => {
                 router.push(`/dashboard/patients/${patientId}?tab=Chat`);
