@@ -185,7 +185,7 @@ const InsuranceCheck = () => {
         input: {
           checkoutId,
           insurance: {
-            insurance: insuranceId,
+            insuranceId,
             memberId,
             groupId,
             type,
