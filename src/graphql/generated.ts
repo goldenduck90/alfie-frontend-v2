@@ -546,9 +546,14 @@ export type InsuranceAddressInput = {
   state: Scalars['String'];
 };
 
-export type InsuranceCheckInput = {
+export type InsuranceCheckByCheckoutInput = {
   checkoutId: Scalars['String'];
   insurance: InsuranceDetailsInput;
+};
+
+export type InsuranceCheckByUserInput = {
+  insurance: InsuranceDetailsInput;
+  userId: Scalars['String'];
 };
 
 export type InsuranceCheckResponse = {
@@ -716,7 +721,8 @@ export type Mutation = {
   createUserFromCheckout: Scalars['String'];
   forgotPassword: MessageResponse;
   generateMetriportConnectUrl: MetriportConnectResponse;
-  insuranceCheck: InsuranceCheckResponse;
+  insuranceCheckByCheckout: InsuranceCheckResponse;
+  insuranceCheckByUser: InsuranceCheckResponse;
   insuranceTextract: InsuranceTextractResponse;
   internalBulkPatientReassign: Scalars['Boolean'];
   internalOpsCreateNewProvider: User;
@@ -834,8 +840,13 @@ export type MutationGenerateMetriportConnectUrlArgs = {
 };
 
 
-export type MutationInsuranceCheckArgs = {
-  input: InsuranceCheckInput;
+export type MutationInsuranceCheckByCheckoutArgs = {
+  input: InsuranceCheckByCheckoutInput;
+};
+
+
+export type MutationInsuranceCheckByUserArgs = {
+  input: InsuranceCheckByUserInput;
 };
 
 
@@ -1621,12 +1632,12 @@ export type InsurancesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InsurancesQuery = { __typename?: 'Query', insurances: Array<{ __typename?: 'Insurance', _id: string, name: string }> };
 
-export type InsuranceCheckMutationVariables = Exact<{
-  input: InsuranceCheckInput;
+export type InsuranceCheckByCheckoutMutationVariables = Exact<{
+  input: InsuranceCheckByCheckoutInput;
 }>;
 
 
-export type InsuranceCheckMutation = { __typename?: 'Mutation', insuranceCheck: { __typename?: 'InsuranceCheckResponse', status: InsuranceStatus, eligible: boolean, errors?: Array<string> | null } };
+export type InsuranceCheckByCheckoutMutation = { __typename?: 'Mutation', insuranceCheckByCheckout: { __typename?: 'InsuranceCheckResponse', status: InsuranceStatus, eligible: boolean, errors?: Array<string> | null } };
 
 export type CompleteUploadFilesMutationVariables = Exact<{
   files: Array<FileInput> | FileInput;
@@ -2129,41 +2140,41 @@ export function useInsurancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type InsurancesQueryHookResult = ReturnType<typeof useInsurancesQuery>;
 export type InsurancesLazyQueryHookResult = ReturnType<typeof useInsurancesLazyQuery>;
 export type InsurancesQueryResult = Apollo.QueryResult<InsurancesQuery, InsurancesQueryVariables>;
-export const InsuranceCheckDocument = gql`
-    mutation insuranceCheck($input: InsuranceCheckInput!) {
-  insuranceCheck(input: $input) {
+export const InsuranceCheckByCheckoutDocument = gql`
+    mutation insuranceCheckByCheckout($input: InsuranceCheckByCheckoutInput!) {
+  insuranceCheckByCheckout(input: $input) {
     status
     eligible
     errors
   }
 }
     `;
-export type InsuranceCheckMutationFn = Apollo.MutationFunction<InsuranceCheckMutation, InsuranceCheckMutationVariables>;
+export type InsuranceCheckByCheckoutMutationFn = Apollo.MutationFunction<InsuranceCheckByCheckoutMutation, InsuranceCheckByCheckoutMutationVariables>;
 
 /**
- * __useInsuranceCheckMutation__
+ * __useInsuranceCheckByCheckoutMutation__
  *
- * To run a mutation, you first call `useInsuranceCheckMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInsuranceCheckMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInsuranceCheckByCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInsuranceCheckByCheckoutMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [insuranceCheckMutation, { data, loading, error }] = useInsuranceCheckMutation({
+ * const [insuranceCheckByCheckoutMutation, { data, loading, error }] = useInsuranceCheckByCheckoutMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useInsuranceCheckMutation(baseOptions?: Apollo.MutationHookOptions<InsuranceCheckMutation, InsuranceCheckMutationVariables>) {
+export function useInsuranceCheckByCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<InsuranceCheckByCheckoutMutation, InsuranceCheckByCheckoutMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<InsuranceCheckMutation, InsuranceCheckMutationVariables>(InsuranceCheckDocument, options);
+        return Apollo.useMutation<InsuranceCheckByCheckoutMutation, InsuranceCheckByCheckoutMutationVariables>(InsuranceCheckByCheckoutDocument, options);
       }
-export type InsuranceCheckMutationHookResult = ReturnType<typeof useInsuranceCheckMutation>;
-export type InsuranceCheckMutationResult = Apollo.MutationResult<InsuranceCheckMutation>;
-export type InsuranceCheckMutationOptions = Apollo.BaseMutationOptions<InsuranceCheckMutation, InsuranceCheckMutationVariables>;
+export type InsuranceCheckByCheckoutMutationHookResult = ReturnType<typeof useInsuranceCheckByCheckoutMutation>;
+export type InsuranceCheckByCheckoutMutationResult = Apollo.MutationResult<InsuranceCheckByCheckoutMutation>;
+export type InsuranceCheckByCheckoutMutationOptions = Apollo.BaseMutationOptions<InsuranceCheckByCheckoutMutation, InsuranceCheckByCheckoutMutationVariables>;
 export const CompleteUploadFilesDocument = gql`
     mutation completeUploadFiles($files: [FileInput!]!) {
   completeUpload(files: $files) {

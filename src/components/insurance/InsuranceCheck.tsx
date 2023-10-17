@@ -6,7 +6,16 @@ import { useCheckoutQuery } from "@src/hooks/useCheckoutQuery";
 import { usePartnerContext } from "@src/context/PartnerContext";
 import { Button } from "@src/components/ui/Button";
 
-import { FlowType, InsuranceCheckMutation, InsuranceCheckMutationVariables, InsuranceTextractMutation, InsuranceTextractMutationVariables, InsuranceType, InsurancesQuery, InsurancesQueryVariables } from "@src/graphql/generated";
+import {
+  FlowType,
+  InsuranceCheckByCheckoutMutation,
+  InsuranceCheckByCheckoutMutationVariables,
+  InsuranceTextractMutation,
+  InsuranceTextractMutationVariables,
+  InsuranceType,
+  InsurancesQuery,
+  InsurancesQueryVariables,
+} from "@src/graphql/generated";
 import UploadForm from "./UploadForm";
 import ManualForm from "./ManualForm";
 import { Loading } from "../Loading";
@@ -51,9 +60,9 @@ const insuranceQuery = gql`
   }
 `;
 
-const insuranceCheckMutation = gql`
-  mutation insuranceCheck($input: InsuranceCheckInput!) {
-    insuranceCheck(input: $input) {
+const insuranceCheckByCheckoutMutation = gql`
+  mutation insuranceCheckByCheckout($input: InsuranceCheckByCheckoutInput!) {
+    insuranceCheckByCheckout(input: $input) {
       status
       eligible
       errors
@@ -66,14 +75,23 @@ const InsuranceCheck = () => {
   const checkoutId = String(router.query.id);
 
   const [requestSignedUrls] = useMutation(requestSignedUrlsMutation);
-  const [insuranceTextract] = useMutation<InsuranceTextractMutation, InsuranceTextractMutationVariables>(insuranceTextractMutation);
-  const [insuranceCheck] = useMutation<InsuranceCheckMutation, InsuranceCheckMutationVariables>(insuranceCheckMutation);
+  const [insuranceTextract] = useMutation<
+    InsuranceTextractMutation,
+    InsuranceTextractMutationVariables
+  >(insuranceTextractMutation);
+
+  const [insuranceCheckByCheckout] = useMutation<
+    InsuranceCheckByCheckoutMutation,
+    InsuranceCheckByCheckoutMutationVariables
+  >(insuranceCheckByCheckoutMutation);
 
   const { partner } = usePartnerContext();
   const { addNotification } = useNotificationStore();
 
   const { data, loading } = useCheckoutQuery(checkoutId);
-  const { data: insData } = useQuery<InsurancesQuery, InsurancesQueryVariables>(insuranceQuery);
+  const { data: insData } = useQuery<InsurancesQuery, InsurancesQueryVariables>(
+    insuranceQuery
+  );
 
   const [steps, setSteps] = useState(11); // Regular signup flow steps
   const [isManual, setIsManual] = useState(false);
@@ -141,17 +159,19 @@ const InsuranceCheck = () => {
           });
 
           if (data?.insuranceTextract.insurance) {
-            const parsedInsurance = data.insuranceTextract.insurance
+            const parsedInsurance = data.insuranceTextract.insurance;
 
             // find insurance ID from list
             if (parsedInsurance.company) {
-              const insuranceId = insData?.insurances.find((i) => i.name === parsedInsurance.company)?._id
-              if (insuranceId) setInsuranceId(insuranceId)
+              const insuranceId = insData?.insurances.find(
+                (i) => i.name === parsedInsurance.company
+              )?._id;
+              if (insuranceId) setInsuranceId(insuranceId);
             }
 
-            if (parsedInsurance.type) setType(parsedInsurance.type)
-            if (parsedInsurance.memberId) setMemberId(parsedInsurance.memberId)
-            if (parsedInsurance.groupId) setGroupId(parsedInsurance.groupId)
+            if (parsedInsurance.type) setType(parsedInsurance.type);
+            if (parsedInsurance.memberId) setMemberId(parsedInsurance.memberId);
+            if (parsedInsurance.groupId) setGroupId(parsedInsurance.groupId);
 
             setIsManual(true);
           }
@@ -180,7 +200,7 @@ const InsuranceCheck = () => {
   }) => {
     setErrors([]);
 
-    const { data } = await insuranceCheck({
+    const { data } = await insuranceCheckByCheckout({
       variables: {
         input: {
           checkoutId,
@@ -189,13 +209,12 @@ const InsuranceCheck = () => {
             memberId,
             groupId,
             type,
-          }
+          },
         },
       },
     });
 
-
-    const _errors = data?.insuranceCheck.errors
+    const _errors = data?.insuranceCheckByCheckout.errors;
     if (_errors && _errors.length > 0) {
       setErrors(_errors);
       return false;
@@ -221,16 +240,30 @@ const InsuranceCheck = () => {
         </div>
 
         {errors.length > 0 ? (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mx-6 rounded relative" role="alert">
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mx-6 rounded relative"
+            role="alert"
+          >
             <div>
               <strong className="font-bold">Error Processing Insurance!</strong>
               <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-                <svg className="fill-current h-6 w-6 text-red-500" onClick={() => setErrors([])} role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" /></svg>
+                <svg
+                  className="fill-current h-6 w-6 text-red-500"
+                  onClick={() => setErrors([])}
+                  role="button"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <title>Close</title>
+                  <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                </svg>
               </span>
             </div>
             <div className="ml-4 mt-2">
               <ul className="list-disc">
-                {errors.map((e) => <li>{e}</li>)}
+                {errors.map((e, idx) => (
+                  <li key={idx}>{e}</li>
+                ))}
               </ul>
             </div>
           </div>
