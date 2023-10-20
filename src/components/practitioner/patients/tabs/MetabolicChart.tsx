@@ -21,7 +21,11 @@ const legendItemKeys = {
   Empath: "#F43F5E",
 };
 
-export function MetabolicChart({ chartData }: { chartData?: Classification[] }) {
+export function MetabolicChart({
+  chartData,
+}: {
+  chartData?: Classification[];
+}) {
   interface ClassificationData {
     date: number;
     Rover: string;
@@ -49,8 +53,8 @@ export function MetabolicChart({ chartData }: { chartData?: Classification[] }) 
 
     //? calculated/ display/ then percentile
     const getPercentile = () => {
-      const percentile = classification?.calculatedPercentile
-        ?? classification?.percentile
+      const percentile =
+        classification?.calculatedPercentile ?? classification?.percentile;
 
       if (typeof percentile === "number") {
         return Math.round(percentile);
@@ -94,8 +98,9 @@ export function MetabolicChart({ chartData }: { chartData?: Classification[] }) 
                   </span>
                   {key}
                 </div>
-                <span className="bg-white p-1 px-2 rounded-lg font-[700] text-center">{`${(lastItem as any)?.[key]
-                  } %`}</span>
+                <span className="bg-white p-1 px-2 rounded-lg font-[700] text-center">{`${
+                  (lastItem as any)?.[key]
+                } %`}</span>
               </div>
             );
           })}

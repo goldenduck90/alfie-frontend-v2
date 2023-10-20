@@ -10,7 +10,9 @@ const getCheckoutQuery = gql`
         name
         state
         weightInLbs
-        insuranceCovered
+        insurance {
+          memberId
+        }
       }
     }
   }
@@ -44,7 +46,7 @@ export const useCheckoutQuery = (checkoutId: string | string[] | undefined) => {
   }, [data]);
 
   const insuranceCovered = useMemo(
-    () => data?.checkout.checkout.insuranceCovered ?? false,
+    () => data?.checkout.checkout.insurance ? true : false,
     [data]
   );
 

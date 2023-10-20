@@ -110,13 +110,11 @@ export type Checkout = {
   email: Scalars['String'];
   gender: Gender;
   heightInInches: Scalars['Float'];
-  insurance?: Maybe<Insurance>;
-  insuranceCovered?: Maybe<Scalars['Boolean']>;
-  insurancePlan?: Maybe<InsurancePlanValue>;
-  insuranceType?: Maybe<InsuranceTypeValue>;
+  insurance?: Maybe<InsuranceDetails>;
   name: Scalars['String'];
   pastTries: Array<Scalars['String']>;
   phone: Scalars['String'];
+  provider?: Maybe<Provider>;
   referrer?: Maybe<Scalars['String']>;
   sameAsShippingAddress: Scalars['Boolean'];
   shippingAddress: Address;
@@ -244,10 +242,7 @@ export type CreateUserInput = {
   gender: Gender;
   /** Height in inches. */
   heightInInches: Scalars['Float'];
-  insurance?: InputMaybe<InsuranceInput>;
-  insuranceCovered?: InputMaybe<Scalars['Boolean']>;
-  insurancePlan?: InputMaybe<InsurancePlanValue>;
-  insuranceType?: InputMaybe<InsuranceTypeValue>;
+  insurance?: InputMaybe<InsuranceDetailsInput>;
   /** If not provided, will be set when scale is activated. */
   metriportUserId?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
@@ -531,104 +526,141 @@ export type GoogleReverseGeoCodeResult = {
 
 export type Insurance = {
   __typename?: 'Insurance';
-  groupId: Scalars['String'];
-  groupName?: Maybe<Scalars['String']>;
-  insuranceCompany: Scalars['String'];
-  memberId: Scalars['String'];
-  payor?: Maybe<Scalars['String']>;
-  rxBIN?: Maybe<Scalars['String']>;
-  rxGroup?: Maybe<Scalars['String']>;
-  rxPCN?: Maybe<Scalars['String']>;
+  _id: Scalars['String'];
+  name: Scalars['String'];
+  states?: Maybe<Array<InsuranceState>>;
+};
+
+export type InsuranceAddress = {
+  __typename?: 'InsuranceAddress';
+  address1: Scalars['String'];
+  address2?: Maybe<Scalars['String']>;
+  city: Scalars['String'];
+  postalCode: Scalars['String'];
+  state: Scalars['String'];
+};
+
+export type InsuranceAddressInput = {
+  address1: Scalars['String'];
+  address2?: InputMaybe<Scalars['String']>;
+  city: Scalars['String'];
+  postalCode: Scalars['String'];
+  state: Scalars['String'];
 };
 
 export type InsuranceCheckInput = {
   checkoutId: Scalars['String'];
-  covered: Scalars['Boolean'];
-  insurance: InsuranceInput;
-  insurancePlan: InsurancePlanValue;
-  insuranceType: InsuranceTypeValue;
+  insurance: InsuranceDetailsInput;
 };
 
 export type InsuranceCheckResponse = {
   __typename?: 'InsuranceCheckResponse';
-  eligible: InsuranceEligibilityResponse;
-};
-
-export type InsuranceCoveredResponse = {
-  __typename?: 'InsuranceCoveredResponse';
-  comingSoon?: Maybe<Scalars['Boolean']>;
-  covered?: Maybe<Scalars['Boolean']>;
-  reason?: Maybe<Scalars['String']>;
-};
-
-export type InsuranceEligibilityResponse = {
-  __typename?: 'InsuranceEligibilityResponse';
+  dependents?: Maybe<Array<InsurancePerson>>;
   eligible: Scalars['Boolean'];
-  reason?: Maybe<Scalars['String']>;
-  rectifiedInsurance?: Maybe<Insurance>;
+  errors?: Maybe<Array<Scalars['String']>>;
+  payor?: Maybe<InsurancePayor>;
+  primary?: Maybe<InsurancePerson>;
+  provider?: Maybe<Provider>;
+  status: InsuranceStatus;
 };
 
-export type InsuranceInput = {
+export type InsuranceDetails = {
+  __typename?: 'InsuranceDetails';
+  dependents?: Maybe<Array<InsurancePerson>>;
+  groupId: Scalars['String'];
+  insurance: Insurance;
+  memberId: Scalars['String'];
+  payorId?: Maybe<Scalars['String']>;
+  payorName?: Maybe<Scalars['String']>;
+  primary: InsurancePerson;
+  rxBIN?: Maybe<Scalars['String']>;
+  rxGroup?: Maybe<Scalars['String']>;
+  rxPCN?: Maybe<Scalars['String']>;
+  status?: Maybe<InsuranceStatus>;
+  type: InsuranceType;
+};
+
+export type InsuranceDetailsInput = {
+  dependents?: InputMaybe<Array<InsurancePersonInput>>;
   groupId: Scalars['String'];
   groupName?: InputMaybe<Scalars['String']>;
-  insuranceCompany: Scalars['String'];
+  insuranceId: Scalars['String'];
   memberId: Scalars['String'];
-  payor?: InputMaybe<Scalars['String']>;
+  payorId?: InputMaybe<Scalars['String']>;
+  payorName?: InputMaybe<Scalars['String']>;
+  primary?: InputMaybe<InsurancePersonInput>;
   rxBIN?: InputMaybe<Scalars['String']>;
   rxGroup?: InputMaybe<Scalars['String']>;
   rxPCN?: InputMaybe<Scalars['String']>;
+  type: InsuranceType;
 };
 
-export type InsurancePlan = {
-  __typename?: 'InsurancePlan';
-  _id: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  types: Array<InsuranceTypeValue>;
-  value: InsurancePlanValue;
+export type InsurancePayor = {
+  __typename?: 'InsurancePayor';
+  payorId: Scalars['String'];
+  payorName: Scalars['String'];
 };
 
-/** An insurance plan enum value. */
-export enum InsurancePlanValue {
-  Aetna = 'Aetna',
-  AnthemBcbs = 'AnthemBCBS',
-  Bcbs = 'BCBS',
-  CarefirstBcbs = 'CarefirstBCBS',
-  Cigna = 'Cigna',
-  EmpireBcbs = 'EmpireBCBS',
-  HorizonBcbs = 'HorizonBCBS',
-  Humana = 'Humana',
-  Medicaid = 'Medicaid',
-  Medicare = 'Medicare',
-  Other = 'Other',
-  PartnerDirect = 'PartnerDirect',
-  UnitedHealthcare = 'UnitedHealthcare'
+export type InsurancePerson = {
+  __typename?: 'InsurancePerson';
+  address?: Maybe<InsuranceAddress>;
+  dateOfBirth?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  gender?: Maybe<Scalars['String']>;
+  insuredIndicator?: Maybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  relationToSubscriber?: Maybe<Scalars['String']>;
+  relationToSubscriberCode?: Maybe<Scalars['String']>;
+};
+
+export type InsurancePersonInput = {
+  address?: InputMaybe<InsuranceAddressInput>;
+  dateOfBirth?: InputMaybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  gender?: InputMaybe<Scalars['String']>;
+  insuredIndicator?: InputMaybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  relationToSubscriber?: InputMaybe<Scalars['String']>;
+  relationToSubscriberCode?: InputMaybe<Scalars['String']>;
+};
+
+export type InsuranceState = {
+  __typename?: 'InsuranceState';
+  cpid: Scalars['String'];
+  npi: Scalars['String'];
+  providers: Array<Scalars['String']>;
+  state: Scalars['String'];
+  status: InsuranceStatus;
+  types: Array<InsuranceType>;
+};
+
+/** Status of insurance, whether it's active, not active, or coming soon. */
+export enum InsuranceStatus {
+  Active = 'ACTIVE',
+  ComingSoon = 'COMING_SOON',
+  NotActive = 'NOT_ACTIVE'
 }
 
-export type InsurancePlansResponse = {
-  __typename?: 'InsurancePlansResponse';
-  plans: Array<InsurancePlan>;
-  types: Array<InsuranceType>;
+export type InsuranceTextractDetails = {
+  __typename?: 'InsuranceTextractDetails';
+  company?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
+  memberId?: Maybe<Scalars['String']>;
+  type?: Maybe<InsuranceType>;
 };
 
 export type InsuranceTextractResponse = {
   __typename?: 'InsuranceTextractResponse';
-  insuranceMatches: Array<Insurance>;
+  insurance?: Maybe<InsuranceTextractDetails>;
   lines: Array<Scalars['String']>;
   words: Array<Scalars['String']>;
 };
 
-export type InsuranceType = {
-  __typename?: 'InsuranceType';
-  _id: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  type: InsuranceTypeValue;
-};
-
-/** An insurance type enum value. */
-export enum InsuranceTypeValue {
+/** Types of insurance plans supported. */
+export enum InsuranceType {
   Epo = 'EPO',
-  Government = 'Government',
   Hmo = 'HMO',
+  Medicare = 'MEDICARE',
   Pos = 'POS',
   Ppo = 'PPO'
 }
@@ -811,7 +843,6 @@ export type MutationInsuranceCheckArgs = {
 
 export type MutationInsuranceTextractArgs = {
   s3Key: Scalars['String'];
-  userState?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -919,7 +950,7 @@ export type PatientModifyInput = {
   dateOfBirth: Scalars['DateTime'];
   email: Scalars['String'];
   gender: Scalars['String'];
-  insurance?: InputMaybe<InsuranceInput>;
+  insurance?: InputMaybe<InsuranceDetailsInput>;
   name: Scalars['String'];
   patientId: Scalars['String'];
   phoneNumber: Scalars['String'];
@@ -1000,6 +1031,7 @@ export type ProviderModifyInput = {
 
 export type Query = {
   __typename?: 'Query';
+  acknowledgeAlert: Array<Alert>;
   addressDetail: Address;
   addressSuggestions: Array<AddressSuggestion>;
   allUserTasks: UserTaskList;
@@ -1014,6 +1046,7 @@ export type Query = {
   getAlertsByPatient: Array<Alert>;
   getAllPatientsByHealthCoach: Array<User>;
   getAllPatientsByProvider: Array<User>;
+  getAllPatientsWithAlerts: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
   getProviderSchedule: ScheduleObject;
@@ -1021,9 +1054,7 @@ export type Query = {
   getSignupPartnerByTitle: SingupPartnerResponse;
   getSignupPartnerProviders: Array<SignupPartnerProvider>;
   getUserById: User;
-  insuranceCovered: InsuranceCoveredResponse;
-  insuranceEligibility: InsuranceEligibilityResponse;
-  insurancePlans: InsurancePlansResponse;
+  insurances: Array<Insurance>;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
@@ -1037,6 +1068,11 @@ export type Query = {
   userTask: UserTask;
   userTasks: UserTaskList;
   users: Array<User>;
+};
+
+
+export type QueryAcknowledgeAlertArgs = {
+  alertId: Scalars['String'];
 };
 
 
@@ -1113,22 +1149,6 @@ export type QueryGetSignupPartnerProvidersArgs = {
 
 export type QueryGetUserByIdArgs = {
   userId: Scalars['String'];
-};
-
-
-export type QueryInsuranceCoveredArgs = {
-  checkoutId: Scalars['String'];
-  insurancePlan: InsurancePlanValue;
-  insuranceType: InsuranceTypeValue;
-};
-
-
-export type QueryInsuranceEligibilityArgs = {
-  checkoutId: Scalars['String'];
-  cpid?: InputMaybe<Scalars['String']>;
-  insurance: InsuranceInput;
-  insurancePlan: InsurancePlanValue;
-  insuranceType: InsuranceTypeValue;
 };
 
 
@@ -1441,10 +1461,7 @@ export type User = {
   generatedSummary?: Maybe<Scalars['String']>;
   hasScale?: Maybe<Scalars['Boolean']>;
   heightInInches: Scalars['Float'];
-  insurance?: Maybe<Insurance>;
-  insuranceCovered?: Maybe<Scalars['Boolean']>;
-  insurancePlan?: Maybe<InsurancePlanValue>;
-  insuranceType?: Maybe<InsuranceTypeValue>;
+  insurance?: Maybe<InsuranceDetails>;
   labOrderSent?: Maybe<Scalars['Boolean']>;
   meetingRoomUrl?: Maybe<Scalars['String']>;
   meetingUrl?: Maybe<Scalars['String']>;
@@ -1609,32 +1626,23 @@ export type RequestSignedUrlsMutation = { __typename?: 'Mutation', requestSigned
 
 export type InsuranceTextractMutationVariables = Exact<{
   s3Key: Scalars['String'];
-  userState: Scalars['String'];
 }>;
 
 
-export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insuranceMatches: Array<{ __typename?: 'Insurance', memberId: string, insuranceCompany: string, payor?: string | null, groupId: string, groupName?: string | null, rxBIN?: string | null, rxPCN?: string | null, rxGroup?: string | null }> } };
-
-export type InsuranceCoveredQueryVariables = Exact<{
-  checkoutId: Scalars['String'];
-  insuranceType: InsuranceTypeValue;
-  insurancePlan: InsurancePlanValue;
-}>;
+export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insurance?: { __typename?: 'InsuranceTextractDetails', company?: string | null, type?: InsuranceType | null, memberId?: string | null, groupId?: string | null } | null } };
 
 
-export type InsuranceCoveredQuery = { __typename?: 'Query', insuranceCovered: { __typename?: 'InsuranceCoveredResponse', covered?: boolean | null, comingSoon?: boolean | null } };
-
-export type InsurancePlansQueryVariables = Exact<{ [key: string]: never; }>;
+export type InsurancesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type InsurancePlansQuery = { __typename?: 'Query', insurancePlans: { __typename?: 'InsurancePlansResponse', plans: Array<{ __typename?: 'InsurancePlan', _id: string, name?: string | null, value: InsurancePlanValue, types: Array<InsuranceTypeValue> }>, types: Array<{ __typename?: 'InsuranceType', _id: string, name?: string | null, type: InsuranceTypeValue }> } };
+export type InsurancesQuery = { __typename?: 'Query', insurances: Array<{ __typename?: 'Insurance', _id: string, name: string }> };
 
 export type InsuranceCheckMutationVariables = Exact<{
   input: InsuranceCheckInput;
 }>;
 
 
-export type InsuranceCheckMutation = { __typename?: 'Mutation', insuranceCheck: { __typename?: 'InsuranceCheckResponse', eligible: { __typename?: 'InsuranceEligibilityResponse', eligible: boolean, reason?: string | null } } };
+export type InsuranceCheckMutation = { __typename?: 'Mutation', insuranceCheck: { __typename?: 'InsuranceCheckResponse', status: InsuranceStatus, eligible: boolean, errors?: Array<string> | null } };
 
 export type CompleteUploadFilesMutationVariables = Exact<{
   files: Array<FileInput> | FileInput;
@@ -2070,17 +2078,13 @@ export type RequestSignedUrlsMutationHookResult = ReturnType<typeof useRequestSi
 export type RequestSignedUrlsMutationResult = Apollo.MutationResult<RequestSignedUrlsMutation>;
 export type RequestSignedUrlsMutationOptions = Apollo.BaseMutationOptions<RequestSignedUrlsMutation, RequestSignedUrlsMutationVariables>;
 export const InsuranceTextractDocument = gql`
-    mutation insuranceTextract($s3Key: String!, $userState: String!) {
-  insuranceTextract(s3Key: $s3Key, userState: $userState) {
-    insuranceMatches {
+    mutation insuranceTextract($s3Key: String!) {
+  insuranceTextract(s3Key: $s3Key) {
+    insurance {
+      company
+      type
       memberId
-      insuranceCompany
-      payor
       groupId
-      groupName
-      rxBIN
-      rxPCN
-      rxGroup
     }
     words
     lines
@@ -2103,7 +2107,6 @@ export type InsuranceTextractMutationFn = Apollo.MutationFunction<InsuranceTextr
  * const [insuranceTextractMutation, { data, loading, error }] = useInsuranceTextractMutation({
  *   variables: {
  *      s3Key: // value for 's3Key'
- *      userState: // value for 'userState'
  *   },
  * });
  */
@@ -2114,99 +2117,47 @@ export function useInsuranceTextractMutation(baseOptions?: Apollo.MutationHookOp
 export type InsuranceTextractMutationHookResult = ReturnType<typeof useInsuranceTextractMutation>;
 export type InsuranceTextractMutationResult = Apollo.MutationResult<InsuranceTextractMutation>;
 export type InsuranceTextractMutationOptions = Apollo.BaseMutationOptions<InsuranceTextractMutation, InsuranceTextractMutationVariables>;
-export const InsuranceCoveredDocument = gql`
-    query InsuranceCovered($checkoutId: String!, $insuranceType: InsuranceTypeValue!, $insurancePlan: InsurancePlanValue!) {
-  insuranceCovered(
-    checkoutId: $checkoutId
-    insuranceType: $insuranceType
-    insurancePlan: $insurancePlan
-  ) {
-    covered
-    comingSoon
+export const InsurancesDocument = gql`
+    query insurances {
+  insurances {
+    _id
+    name
   }
 }
     `;
 
 /**
- * __useInsuranceCoveredQuery__
+ * __useInsurancesQuery__
  *
- * To run a query within a React component, call `useInsuranceCoveredQuery` and pass it any options that fit your needs.
- * When your component renders, `useInsuranceCoveredQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useInsurancesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInsurancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useInsuranceCoveredQuery({
- *   variables: {
- *      checkoutId: // value for 'checkoutId'
- *      insuranceType: // value for 'insuranceType'
- *      insurancePlan: // value for 'insurancePlan'
- *   },
- * });
- */
-export function useInsuranceCoveredQuery(baseOptions: Apollo.QueryHookOptions<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>(InsuranceCoveredDocument, options);
-      }
-export function useInsuranceCoveredLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>(InsuranceCoveredDocument, options);
-        }
-export type InsuranceCoveredQueryHookResult = ReturnType<typeof useInsuranceCoveredQuery>;
-export type InsuranceCoveredLazyQueryHookResult = ReturnType<typeof useInsuranceCoveredLazyQuery>;
-export type InsuranceCoveredQueryResult = Apollo.QueryResult<InsuranceCoveredQuery, InsuranceCoveredQueryVariables>;
-export const InsurancePlansDocument = gql`
-    query insurancePlans {
-  insurancePlans {
-    plans {
-      _id
-      name
-      value
-      types
-    }
-    types {
-      _id
-      name
-      type
-    }
-  }
-}
-    `;
-
-/**
- * __useInsurancePlansQuery__
- *
- * To run a query within a React component, call `useInsurancePlansQuery` and pass it any options that fit your needs.
- * When your component renders, `useInsurancePlansQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInsurancePlansQuery({
+ * const { data, loading, error } = useInsurancesQuery({
  *   variables: {
  *   },
  * });
  */
-export function useInsurancePlansQuery(baseOptions?: Apollo.QueryHookOptions<InsurancePlansQuery, InsurancePlansQueryVariables>) {
+export function useInsurancesQuery(baseOptions?: Apollo.QueryHookOptions<InsurancesQuery, InsurancesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<InsurancePlansQuery, InsurancePlansQueryVariables>(InsurancePlansDocument, options);
+        return Apollo.useQuery<InsurancesQuery, InsurancesQueryVariables>(InsurancesDocument, options);
       }
-export function useInsurancePlansLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InsurancePlansQuery, InsurancePlansQueryVariables>) {
+export function useInsurancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InsurancesQuery, InsurancesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<InsurancePlansQuery, InsurancePlansQueryVariables>(InsurancePlansDocument, options);
+          return Apollo.useLazyQuery<InsurancesQuery, InsurancesQueryVariables>(InsurancesDocument, options);
         }
-export type InsurancePlansQueryHookResult = ReturnType<typeof useInsurancePlansQuery>;
-export type InsurancePlansLazyQueryHookResult = ReturnType<typeof useInsurancePlansLazyQuery>;
-export type InsurancePlansQueryResult = Apollo.QueryResult<InsurancePlansQuery, InsurancePlansQueryVariables>;
+export type InsurancesQueryHookResult = ReturnType<typeof useInsurancesQuery>;
+export type InsurancesLazyQueryHookResult = ReturnType<typeof useInsurancesLazyQuery>;
+export type InsurancesQueryResult = Apollo.QueryResult<InsurancesQuery, InsurancesQueryVariables>;
 export const InsuranceCheckDocument = gql`
     mutation insuranceCheck($input: InsuranceCheckInput!) {
   insuranceCheck(input: $input) {
-    eligible {
-      eligible
-      reason
-    }
+    status
+    eligible
+    errors
   }
 }
     `;
