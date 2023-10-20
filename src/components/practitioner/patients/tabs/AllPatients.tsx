@@ -26,6 +26,7 @@ import { useCurrentUserStore } from "@src/hooks/useCurrentUser";
 import { useGetAllPatientsByAdmins } from "@src/hooks/useGetAllPatientsByAdmin";
 import { Role } from "@src/graphql/generated";
 import { QueryResult, OperationVariables } from "@apollo/client";
+import { useGetAllPatientsWithAlerts } from "@src/hooks/useGetAllPatientsWithAlerts";
 
 export function AllPatientsTabs() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export function AllPatientsTabs() {
   const tab = (router?.query?.tab as string) || "all";
   const [activeTab, setActiveTab] = useState(tab || "all");
   const [globalFilter, setGlobalFilter] = useState("");
+
   const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach;
 
   return (
@@ -46,12 +48,12 @@ export function AllPatientsTabs() {
           <Tabs.Trigger value="all">
             <TabTitle active={activeTab === "all"}>All Patients</TabTitle>
           </Tabs.Trigger>
-          {/*// TODO: Add back when ready 
-           <Tabs.Trigger value="issues">
+
+          <Tabs.Trigger value="issues">
             <TabTitle active={activeTab === "issues"}>
-              Patients with Health Issues
+              Patients with Alerts
             </TabTitle>
-          </Tabs.Trigger> */}
+          </Tabs.Trigger>
         </Tabs.List>
 
         <TextField
@@ -75,13 +77,12 @@ export function AllPatientsTabs() {
           />
         )}
       </Tabs.Content>
-      {/*// TODO: Add back when ready 
-       <Tabs.Content value="issues" className="mt-2">
-        <AllPatientsTable
+      <Tabs.Content value="issues" className="mt-2">
+        <PatientsWithAlertsTable
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
-      </Tabs.Content> */}
+      </Tabs.Content>
     </Tabs.Root>
   );
 }
@@ -100,12 +101,27 @@ export function ProviderTable({
     globalFilter,
     setGlobalFilter,
   });
+  return <AllPatientsTable table={providerTable} query={providerPatients} />;
+}
+
+export function PatientsWithAlertsTable({
+  globalFilter,
+  setGlobalFilter,
+}: {
+  globalFilter: string;
+  setGlobalFilter: (value: string) => void;
+}) {
+  const patientsWithAlerts = useGetAllPatientsWithAlerts();
+
+  const patientsWithAlertsTable = usePatientTable({
+    data: patientsWithAlerts.data?.getAllPatientsWithAlerts || [],
+    globalFilter,
+    setGlobalFilter,
+  });
   return (
     <AllPatientsTable
-      globalFilter={globalFilter}
-      setGlobalFilter={setGlobalFilter}
-      table={providerTable}
-      query={providerPatients}
+      table={patientsWithAlertsTable}
+      query={patientsWithAlerts}
     />
   );
 }
@@ -127,8 +143,8 @@ export function AdminTable({
 
   return (
     <AllPatientsTable
-      globalFilter={globalFilter}
-      setGlobalFilter={setGlobalFilter}
+      // globalFilter={globalFilter}
+      // setGlobalFilter={setGlobalFilter}
       table={adminTable}
       query={adminUsers}
     />
@@ -136,13 +152,9 @@ export function AdminTable({
 }
 
 export function AllPatientsTable({
-  globalFilter,
-  setGlobalFilter,
   table,
   query,
 }: {
-  globalFilter: string;
-  setGlobalFilter: (value: string) => void;
   table: Table<Patient>;
   query: QueryResult<any, OperationVariables>;
 }) {

@@ -22,7 +22,6 @@ export function AvatarInitial({
   };
   const color = bgColors[index % bgColors.length];
 
-  console.log(text);
   const nameInitials = text;
 
   return (
