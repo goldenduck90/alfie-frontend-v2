@@ -135,6 +135,7 @@ export const medications = [
     medicines: ["Enalapril", "Lisinopril", "Perindopril", "Ramipril"],
   },
   { id: "ccbs", name: "CCBs", medicines: ["Amlodipine", "Diltiazem"] },
+  { id: "none", name: "None of the above" },
 ];
 
 export const medicalQuestions: QuestionProps<any>[] = [
