@@ -59,7 +59,6 @@ const ManualForm = ({ insurances, insuranceId, type, groupId, memberId, onSubmit
           return isValueInEnum;
         }
       ),
-      groupId: Yup.string().required("Group ID / Number is required"),
       memberId: Yup.string().required("Member ID  is required"),
     }),
     onSubmit: async ({ insuranceId, type, groupId, memberId }, { resetForm }) => {
@@ -115,7 +114,6 @@ const ManualForm = ({ insurances, insuranceId, type, groupId, memberId, onSubmit
               <div className="flex flex-col w-full">
                 <p className={`"text-primary-700" font-bold`}>
                   Group ID / Number
-                  <span className="text-[red]">*</span>
                 </p>
                 <TextInput
                   name="groupId"
