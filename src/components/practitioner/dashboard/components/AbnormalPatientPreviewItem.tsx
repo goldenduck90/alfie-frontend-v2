@@ -53,7 +53,11 @@ export function AbnormalPatientPreviewItem({
       )}
 
       <div className="flex gap-x-2 justify-end border-t-[1px] rounded-b-xl -m-6 mt-4 py-4 px-4 bg-gray-50">
-        <Link href={`/dashboard/patients/${patientId}`} passHref legacyBehavior>
+        <Link
+          href={`/dashboard/patients/${patientId}?tab=Alerts`}
+          passHref
+          legacyBehavior
+        >
           <Button buttonType="secondary">See Details</Button>
         </Link>
         <Link

@@ -58,6 +58,7 @@ export type Alert = {
   __typename?: 'Alert';
   _id: Scalars['String'];
   acknowledgedAt?: Maybe<Scalars['DateTime']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
   description: Scalars['String'];
   medical: Scalars['Boolean'];
   notifiedAt?: Maybe<Scalars['DateTime']>;
@@ -65,6 +66,7 @@ export type Alert = {
   severity: SeverityType;
   task: Task;
   title: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
 };
 
@@ -546,9 +548,14 @@ export type InsuranceAddressInput = {
   state: Scalars['String'];
 };
 
-export type InsuranceCheckInput = {
+export type InsuranceCheckByCheckoutInput = {
   checkoutId: Scalars['String'];
   insurance: InsuranceDetailsInput;
+};
+
+export type InsuranceCheckByUserInput = {
+  insurance: InsuranceDetailsInput;
+  userId: Scalars['String'];
 };
 
 export type InsuranceCheckResponse = {
@@ -716,7 +723,8 @@ export type Mutation = {
   createUserFromCheckout: Scalars['String'];
   forgotPassword: MessageResponse;
   generateMetriportConnectUrl: MetriportConnectResponse;
-  insuranceCheck: InsuranceCheckResponse;
+  insuranceCheckByCheckout: InsuranceCheckResponse;
+  insuranceCheckByUser: InsuranceCheckResponse;
   insuranceTextract: InsuranceTextractResponse;
   internalBulkPatientReassign: Scalars['Boolean'];
   internalOpsCreateNewProvider: User;
@@ -834,8 +842,13 @@ export type MutationGenerateMetriportConnectUrlArgs = {
 };
 
 
-export type MutationInsuranceCheckArgs = {
-  input: InsuranceCheckInput;
+export type MutationInsuranceCheckByCheckoutArgs = {
+  input: InsuranceCheckByCheckoutInput;
+};
+
+
+export type MutationInsuranceCheckByUserArgs = {
+  input: InsuranceCheckByUserInput;
 };
 
 
@@ -1029,6 +1042,7 @@ export type ProviderModifyInput = {
 
 export type Query = {
   __typename?: 'Query';
+  acknowledgeAlert: Array<Alert>;
   addressDetail: Address;
   addressSuggestions: Array<AddressSuggestion>;
   allUserTasks: UserTaskList;
@@ -1040,8 +1054,10 @@ export type Query = {
   generateSummary: User;
   getAProvider: EaProviderProfile;
   getAlerts: Array<Alert>;
+  getAlertsByPatient: Array<Alert>;
   getAllPatientsByHealthCoach: Array<User>;
   getAllPatientsByProvider: Array<User>;
+  getAllPatientsWithAlerts: Array<User>;
   getAllTasks: Array<Task>;
   getAllUserTasksByUser: Array<UserTask>;
   getProviderSchedule: ScheduleObject;
@@ -1063,6 +1079,11 @@ export type Query = {
   userTask: UserTask;
   userTasks: UserTaskList;
   users: Array<User>;
+};
+
+
+export type QueryAcknowledgeAlertArgs = {
+  alertId: Scalars['String'];
 };
 
 
@@ -1108,6 +1129,11 @@ export type QueryGenerateSummaryArgs = {
 
 export type QueryGetAProviderArgs = {
   eaProviderId: Scalars['String'];
+};
+
+
+export type QueryGetAlertsByPatientArgs = {
+  patientId: Scalars['String'];
 };
 
 
@@ -1621,12 +1647,12 @@ export type InsurancesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InsurancesQuery = { __typename?: 'Query', insurances: Array<{ __typename?: 'Insurance', _id: string, name: string }> };
 
-export type InsuranceCheckMutationVariables = Exact<{
-  input: InsuranceCheckInput;
+export type InsuranceCheckByCheckoutMutationVariables = Exact<{
+  input: InsuranceCheckByCheckoutInput;
 }>;
 
 
-export type InsuranceCheckMutation = { __typename?: 'Mutation', insuranceCheck: { __typename?: 'InsuranceCheckResponse', status: InsuranceStatus, eligible: boolean, errors?: Array<string> | null } };
+export type InsuranceCheckByCheckoutMutation = { __typename?: 'Mutation', insuranceCheckByCheckout: { __typename?: 'InsuranceCheckResponse', status: InsuranceStatus, eligible: boolean, errors?: Array<string> | null } };
 
 export type CompleteUploadFilesMutationVariables = Exact<{
   files: Array<FileInput> | FileInput;
@@ -1712,6 +1738,13 @@ export type GetAllUserTasksByUserQueryVariables = Exact<{
 
 
 export type GetAllUserTasksByUserQuery = { __typename?: 'Query', getAllUserTasksByUser: Array<{ __typename?: 'UserTask', _id: string, archived?: boolean | null, completed: boolean, dueAt?: any | null, pastDue?: boolean | null, completedAt?: any | null, createdAt?: any | null, updatedAt?: any | null, providerEmail?: string | null, task?: { __typename?: 'Task', _id: string, name?: string | null, type: TaskType, daysTillDue?: number | null, interval?: number | null } | null, answers?: Array<{ __typename?: 'UserAnswer', key: string, value?: any | null, type: AnswerType }> | null }> };
+
+export type GetAlertsByPatientQueryVariables = Exact<{
+  patientId: Scalars['String'];
+}>;
+
+
+export type GetAlertsByPatientQuery = { __typename?: 'Query', getAlertsByPatient: Array<{ __typename?: 'Alert', _id: string, title: string, description: string, severity: SeverityType, medical: boolean, acknowledgedAt?: any | null, notifiedAt?: any | null, createdAt?: any | null, user: { __typename?: 'User', _id: string, name: string, email: string }, task: { __typename?: 'Task', _id: string, type: TaskType } }> };
 
 export type UserSendbirdChannelQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -2129,41 +2162,41 @@ export function useInsurancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type InsurancesQueryHookResult = ReturnType<typeof useInsurancesQuery>;
 export type InsurancesLazyQueryHookResult = ReturnType<typeof useInsurancesLazyQuery>;
 export type InsurancesQueryResult = Apollo.QueryResult<InsurancesQuery, InsurancesQueryVariables>;
-export const InsuranceCheckDocument = gql`
-    mutation insuranceCheck($input: InsuranceCheckInput!) {
-  insuranceCheck(input: $input) {
+export const InsuranceCheckByCheckoutDocument = gql`
+    mutation insuranceCheckByCheckout($input: InsuranceCheckByCheckoutInput!) {
+  insuranceCheckByCheckout(input: $input) {
     status
     eligible
     errors
   }
 }
     `;
-export type InsuranceCheckMutationFn = Apollo.MutationFunction<InsuranceCheckMutation, InsuranceCheckMutationVariables>;
+export type InsuranceCheckByCheckoutMutationFn = Apollo.MutationFunction<InsuranceCheckByCheckoutMutation, InsuranceCheckByCheckoutMutationVariables>;
 
 /**
- * __useInsuranceCheckMutation__
+ * __useInsuranceCheckByCheckoutMutation__
  *
- * To run a mutation, you first call `useInsuranceCheckMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInsuranceCheckMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInsuranceCheckByCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInsuranceCheckByCheckoutMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [insuranceCheckMutation, { data, loading, error }] = useInsuranceCheckMutation({
+ * const [insuranceCheckByCheckoutMutation, { data, loading, error }] = useInsuranceCheckByCheckoutMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useInsuranceCheckMutation(baseOptions?: Apollo.MutationHookOptions<InsuranceCheckMutation, InsuranceCheckMutationVariables>) {
+export function useInsuranceCheckByCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<InsuranceCheckByCheckoutMutation, InsuranceCheckByCheckoutMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<InsuranceCheckMutation, InsuranceCheckMutationVariables>(InsuranceCheckDocument, options);
+        return Apollo.useMutation<InsuranceCheckByCheckoutMutation, InsuranceCheckByCheckoutMutationVariables>(InsuranceCheckByCheckoutDocument, options);
       }
-export type InsuranceCheckMutationHookResult = ReturnType<typeof useInsuranceCheckMutation>;
-export type InsuranceCheckMutationResult = Apollo.MutationResult<InsuranceCheckMutation>;
-export type InsuranceCheckMutationOptions = Apollo.BaseMutationOptions<InsuranceCheckMutation, InsuranceCheckMutationVariables>;
+export type InsuranceCheckByCheckoutMutationHookResult = ReturnType<typeof useInsuranceCheckByCheckoutMutation>;
+export type InsuranceCheckByCheckoutMutationResult = Apollo.MutationResult<InsuranceCheckByCheckoutMutation>;
+export type InsuranceCheckByCheckoutMutationOptions = Apollo.BaseMutationOptions<InsuranceCheckByCheckoutMutation, InsuranceCheckByCheckoutMutationVariables>;
 export const CompleteUploadFilesDocument = gql`
     mutation completeUploadFiles($files: [FileInput!]!) {
   completeUpload(files: $files) {
@@ -2739,6 +2772,57 @@ export function useGetAllUserTasksByUserLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetAllUserTasksByUserQueryHookResult = ReturnType<typeof useGetAllUserTasksByUserQuery>;
 export type GetAllUserTasksByUserLazyQueryHookResult = ReturnType<typeof useGetAllUserTasksByUserLazyQuery>;
 export type GetAllUserTasksByUserQueryResult = Apollo.QueryResult<GetAllUserTasksByUserQuery, GetAllUserTasksByUserQueryVariables>;
+export const GetAlertsByPatientDocument = gql`
+    query getAlertsByPatient($patientId: String!) {
+  getAlertsByPatient(patientId: $patientId) {
+    _id
+    title
+    description
+    severity
+    medical
+    acknowledgedAt
+    notifiedAt
+    createdAt
+    user {
+      _id
+      name
+      email
+    }
+    task {
+      _id
+      type
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAlertsByPatientQuery__
+ *
+ * To run a query within a React component, call `useGetAlertsByPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAlertsByPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAlertsByPatientQuery({
+ *   variables: {
+ *      patientId: // value for 'patientId'
+ *   },
+ * });
+ */
+export function useGetAlertsByPatientQuery(baseOptions: Apollo.QueryHookOptions<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>(GetAlertsByPatientDocument, options);
+      }
+export function useGetAlertsByPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>(GetAlertsByPatientDocument, options);
+        }
+export type GetAlertsByPatientQueryHookResult = ReturnType<typeof useGetAlertsByPatientQuery>;
+export type GetAlertsByPatientLazyQueryHookResult = ReturnType<typeof useGetAlertsByPatientLazyQuery>;
+export type GetAlertsByPatientQueryResult = Apollo.QueryResult<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>;
 export const UserSendbirdChannelDocument = gql`
     query UserSendbirdChannel($userId: String!) {
   userSendbirdChannel(userId: $userId) {

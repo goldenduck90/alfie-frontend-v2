@@ -1,18 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 
 import * as Tabs from "@radix-ui/react-tabs";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { CalendarIcon } from "@heroicons/react/outline";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
 import { Button } from "@src/components/ui/Button";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
-import { TaskType, User } from "@src/graphql/generated";
+import { TaskType, User, Alert, SeverityType } from "@src/graphql/generated";
 import { BloodPressureChart } from "../components/BloodPressureChart";
 import { MedicalQuestionnaire } from "../components/MedicalQuestionnaire";
 import { PatientTasks } from "../components/PatientTasks";
@@ -25,6 +25,7 @@ import { AdhocSchedule } from "../components/AdhocSchedule";
 import { GenerateSummary } from "../components/GenerateSummary";
 import { PatientChat } from "./PatientChat";
 import { nameToInitials } from "@src/utils/nameToInitials";
+import { timeSince } from "@src/utils/dateTime";
 
 const GetUserById = gql`
   query GetUser($userId: String!) {
@@ -117,7 +118,7 @@ const TabList = [
   "Tasks",
   "Medical Questionnaire",
   "Chat",
-  // "Alerts",
+  "Alerts",
 ];
 
 export function IndividualPatientTabs() {
@@ -297,9 +298,9 @@ export function IndividualPatientTabs() {
         <Tabs.Content value={TabList[3]}>
           <PatientChat />
         </Tabs.Content>
-        {/* <Tabs.Content value={TabList[4]}>
-          <AlertsPlaceholder />
-        </Tabs.Content> */}
+        <Tabs.Content value={TabList[4]}>
+          <PatientAlerts />
+        </Tabs.Content>
       </Tabs.Root>
     </div>
   );
@@ -437,52 +438,219 @@ const alertsList = [
   },
 ];
 
-function AlertsPlaceholder() {
+const getAlertsByPatient = gql`
+  query getAlertsByPatient($patientId: String!) {
+    getAlertsByPatient(patientId: $patientId) {
+      _id
+      title
+      description
+      severity
+      medical
+      acknowledgedAt
+      notifiedAt
+      createdAt
+      user {
+        _id
+        name
+        email
+      }
+      task {
+        _id
+        type
+      }
+    }
+  }
+`;
+
+const acknowledgeAlertMutation = gql`
+  mutation acknowledgeAlert($input: AcknowledgeAlertInput!) {
+    acknowledgeAlert(input: $input) {
+      _id
+      acknowledgedAt
+    }
+  }
+`;
+
+const SEVERITY_ORDER = [
+  SeverityType.Low,
+  SeverityType.Medium,
+  SeverityType.High,
+  SeverityType.Extreme,
+];
+const ALERT_TABS = ["Medical", "Administrative"];
+
+function PatientAlerts() {
+  const router = useRouter();
+  const patientId = router.query.patientId as string;
+  const { data, loading, error } = useQuery(getAlertsByPatient, {
+    variables: { patientId },
+  });
+  const [activeTab, setActiveTab] = useState(ALERT_TABS[0]);
+
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [medicalAlerts, setMedicalAlerts] = useState<Alert[]>([]);
+  const [administrativeAlerts, setAdministrativeAlerts] = useState<Alert[]>([]);
+
+  const [acknowledgeAlert] = useMutation(acknowledgeAlertMutation);
+
+  const handleAcknowledgeClick = async (alert: Alert) => {
+    const { data } = await acknowledgeAlert({
+      variables: { input: { id: alert._id } },
+    });
+
+    const { _id, acknowledgedAt } = data.acknowledgeAlert;
+    setAlerts([
+      ...alerts.map((alert) =>
+        alert._id === _id ? { ...alert, acknowledgedAt } : alert
+      ),
+    ]);
+  };
+
+  useEffect(() => {
+    if (loading) return;
+
+    if (error) {
+      setAlerts([]);
+    } else {
+      setAlerts(data.getAlertsByPatient);
+    }
+  }, [data, loading, error]);
+
+  useEffect(() => {
+    const sorted = [...alerts].sort(
+      (a, b) =>
+        SEVERITY_ORDER.indexOf(b.severity) - SEVERITY_ORDER.indexOf(a.severity)
+    );
+
+    const outstanding = sorted.filter((alert) => !alert.acknowledgedAt);
+    const acknowledged = sorted.filter((alert) => alert.acknowledgedAt);
+
+    setMedicalAlerts(
+      [...outstanding, ...acknowledged].filter((alert) => alert.medical)
+    );
+    setAdministrativeAlerts(
+      [...outstanding, ...acknowledged].filter((alert) => !alert.medical)
+    );
+  }, [alerts]);
+
   return (
     <div className="mt-6 flex flex-col gap-y-3 w-full">
-      {alertsList.map((alert) => (
-        <AlertItem key={alert.alertType} {...alert} />
-      ))}
+      <Tabs.Root
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value)}
+      >
+        <div className="flex items-center justify-between overflow-x-auto">
+          <Tabs.List className="flex  gap-x-3">
+            {ALERT_TABS.map((tab, i) => (
+              <TabTitle value={tab} key={i} active={activeTab === tab}>
+                {tab}
+              </TabTitle>
+            ))}
+          </Tabs.List>
+        </div>
+        <Tabs.Content value={ALERT_TABS[0]} className="mt-6">
+          {medicalAlerts.map((alert) => (
+            <AlertItem
+              key={alert._id}
+              alert={alert}
+              onAcknowledgeAlert={handleAcknowledgeClick}
+            />
+          ))}
+        </Tabs.Content>
+        <Tabs.Content value={ALERT_TABS[1]} className="mt-6">
+          {administrativeAlerts.map((alert) => (
+            <AlertItem
+              key={alert._id}
+              alert={alert}
+              onAcknowledgeAlert={handleAcknowledgeClick}
+            />
+          ))}
+        </Tabs.Content>
+      </Tabs.Root>
     </div>
   );
 }
 
-function AlertItem({
-  isAcknowledged,
-  alertType,
-  title,
-  subtitle,
-}: {
-  isAcknowledged?: boolean;
-  alertType: TaskType;
-  title: string;
-  subtitle: string;
-}) {
+const SeverityBadge = ({ severity }: { severity: SeverityType }) => {
+  const bgColor = useMemo(() => {
+    switch (severity) {
+      case SeverityType.Extreme:
+      case SeverityType.High:
+        return "bg-red-500";
+      case SeverityType.Medium:
+        return "bg-yellow-500";
+      default:
+        return "";
+    }
+  }, [severity]);
+
+  if (severity === SeverityType.Low) return null;
+
   return (
-    <div className="items-center justify-between border rounded-md border-gray-300 p-6 shadow bg-white grid grid-cols-6 md:grid-cols-12 w-full gap-y-3">
+    <span
+      className={`${bgColor} text-white text-xs font-medium mx-2 px-2.5 py-0.5 rounded-full`}
+    >
+      {severity}
+    </span>
+  );
+};
+
+function AlertItem({
+  alert,
+  onAcknowledgeAlert,
+}: {
+  alert: Alert;
+  onAcknowledgeAlert: (alert: Alert) => Promise<void>;
+}) {
+  const router = useRouter();
+  const { patientId } = router.query;
+
+  return (
+    <div className="items-center justify-between border rounded-md border-gray-300 p-6 shadow bg-white grid grid-cols-6 md:grid-cols-12 w-full gap-y-3 mb-2">
       <div className="col-span-6 flex items-center gap-x-2">
         <div className="flex items-center">
-          <ChooseTaskIcon value={alertType} />
+          <ChooseTaskIcon value={alert.task.type} />
         </div>
         <div className="col-span-5 justify-center">
-          <p className="font-bold text">{title}</p>
-          <p className="text-gray-500 text-sm">{subtitle}</p>
+          <p className="font-bold text">
+            {alert.title}
+            <SeverityBadge severity={alert.severity} />
+          </p>
+          <p className="text-gray-500 text-sm">{alert.description}</p>
         </div>
       </div>
       <div className="col-span-6 md:col-span-3 flex items-start justify-start gap-x-2">
         <CalendarIcon className="w-5 h-5" />
-        <p className="text-sm text-gray-500">3 hours ago</p>
+        <p className="text-sm text-gray-500">
+          {timeSince(new Date(alert.createdAt))} ago
+        </p>
       </div>
       <div className="col-span-6 md:col-span-3 flex  md:items-center gap-x-2 min-w-[230px] justify-start md:justify-end">
-        {isAcknowledged ? (
-          <div className="flex gap-x-2">
-            <CheckCircleIcon className="w-5 h-5 text-green-600" />
-            <p className="text-sm text-green-600">Acknowledged</p>
+        {alert.acknowledgedAt ? (
+          <div>
+            <div className="flex gap-x-2">
+              <CheckCircleIcon className="w-5 h-5 text-green-600" />
+              <p className="text-sm text-green-600">Acknowledged</p>
+            </div>
+            <p className="text-sm">
+              {new Date(alert.acknowledgedAt).toLocaleString()}
+            </p>
           </div>
         ) : (
           <React.Fragment>
-            <Button buttonType="secondary">Acknowledge</Button>
-            <Button>Contact</Button>
+            <Button
+              buttonType="secondary"
+              onClick={() => onAcknowledgeAlert(alert)}
+            >
+              Acknowledge
+            </Button>
+            <Button
+              onClick={() => {
+                router.push(`/dashboard/patients/${patientId}?tab=Chat`);
+              }}
+            >
+              Contact
+            </Button>
           </React.Fragment>
         )}
       </div>
