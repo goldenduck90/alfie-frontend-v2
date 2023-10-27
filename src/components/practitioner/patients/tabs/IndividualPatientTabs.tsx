@@ -176,6 +176,9 @@ export function IndividualPatientTabs() {
       ) : (
         "No Attachments"
       ),
+    "Payment Method": patient?.stripeSubscriptionId
+      ? "Cash Pay"
+      : "Insurance Pay",
     "Signup Partner": patient?.signupPartner?.title ?? "N/A",
   };
 
