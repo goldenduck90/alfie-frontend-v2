@@ -239,6 +239,7 @@ function Questionnaire({
           surgicalHistory: data.surgeries?.surgicalHistory,
           hasRequiredLabs: data?.requiredLabs ? "Yes" : "No",
           requiredLabs: String(data?.requiredLabs || ""),
+          labTakenAt: String(data?.labTakenAt ?? ""),
           weightLossAttemptTime: data?.weightLossAttemptTime,
           weightManagementMethods: data?.weightManagementMethods
             .map((wmm: string) => wmm)
