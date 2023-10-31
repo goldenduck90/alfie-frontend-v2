@@ -25,7 +25,6 @@ import { createS3key } from "@src/utils/upload";
 
 import { randomId } from "@src/utils/randomId";
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
-import { set } from "lodash";
 
 const requestSignedUrlsMutation = gql`
   mutation RequestSignedUrls($requests: [SignedUrlRequest!]!) {
@@ -160,10 +159,9 @@ const InsuranceCheck = () => {
           if (data?.insuranceTextract.insurance) {
             const parsedInsurance = data.insuranceTextract.insurance;
 
-            if (parsedInsurance.type) setType(parsedInsurance.type)
-            if (parsedInsurance.memberId) setMemberId(parsedInsurance.memberId)
-            if (parsedInsurance.groupId) setGroupId(parsedInsurance.groupId)
-
+            if (parsedInsurance.type) setType(parsedInsurance.type);
+            if (parsedInsurance.memberId) setMemberId(parsedInsurance.memberId);
+            if (parsedInsurance.groupId) setGroupId(parsedInsurance.groupId);
 
             setIsManual(true);
           }
@@ -237,7 +235,9 @@ const InsuranceCheck = () => {
             role="alert"
           >
             <div>
-              <strong className="font-bold">An error occured processing your insurance</strong>
+              <strong className="font-bold">
+                An error occured processing your insurance
+              </strong>
               <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
                 <svg
                   className="fill-current h-6 w-6 text-red-500"
@@ -254,14 +254,26 @@ const InsuranceCheck = () => {
             <div className="ml-4 mt-2">
               <ul className="list-disc">
                 {errors.map((e, idx) => {
-
-                  if (e === "INSURANCE_STATE_NOT_ACCEPTED" || e === "INSURANCE_TYPE_NOT_ACCEPTED" || e === "INSURANCE_NO_PROVIDERS") {
-                    return <li key={idx}>Unfortunately, we dont accept your insurance at this time. <Link href={`/signup/checkout/${checkoutId}`} className="font-bold text-brand-berry">Click here to continue without insurance.</Link></li>
+                  if (
+                    e === "INSURANCE_STATE_NOT_ACCEPTED" ||
+                    e === "INSURANCE_TYPE_NOT_ACCEPTED" ||
+                    e === "INSURANCE_NO_PROVIDERS"
+                  ) {
+                    return (
+                      <li key={idx}>
+                        Unfortunately, we dont accept your insurance at this
+                        time.{" "}
+                        <Link
+                          href={`/signup/checkout/${checkoutId}`}
+                          className="font-bold text-brand-berry"
+                        >
+                          Click here to continue without insurance.
+                        </Link>
+                      </li>
+                    );
                   }
 
-                  return (
-                    <li key={idx}>{e}</li>
-                  )
+                  return <li key={idx}>{e}</li>;
                 })}
               </ul>
             </div>
