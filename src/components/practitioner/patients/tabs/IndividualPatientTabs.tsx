@@ -506,6 +506,7 @@ function PatientAlerts() {
     ]);
   };
 
+
   useEffect(() => {
     if (loading) return;
 
@@ -594,6 +595,7 @@ const SeverityBadge = ({ severity }: { severity: SeverityType }) => {
     </span>
   );
 };
+
 
 function AlertItem({
   alert,

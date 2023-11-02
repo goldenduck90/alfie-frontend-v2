@@ -1642,6 +1642,7 @@ export type InsuranceTextractMutationVariables = Exact<{
 
 export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insurance?: { __typename?: 'InsuranceTextractDetails', company?: string | null, type?: InsuranceType | null, memberId?: string | null, groupId?: string | null } | null } };
 
+
 export type InsurancesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
