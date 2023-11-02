@@ -4,7 +4,7 @@ import { LocationMarkerIcon } from "@heroicons/react/solid";
 import { randomId } from "@src/utils/randomId";
 import GoogleMapReact from "google-map-react";
 import React, { useEffect, useState } from "react";
-import { Control, useController } from "react-hook-form";
+import { Control, UseFormRegister, useController } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/Button";
 import { TextField } from "../ui/TextField";
@@ -319,8 +319,10 @@ const requiredDocNames = [
 function FinalSubmitMetabolic({
   user,
   control,
+  register,
 }: {
   control: Control<any>;
+  register: UseFormRegister<any>;
   user?: User;
 }) {
   const { addNotification } = useNotificationStore();
@@ -333,17 +335,6 @@ function FinalSubmitMetabolic({
 
   const [error, setError] = useState<string | null>(null);
   const [uploadLabDocument] = useUploadLabDocumentMutation();
-
-  useEffect(() => {
-    if (field?.value) {
-      addNotification({
-        type: "success",
-        description: "Uploaded your lab documents successfully.",
-        id: randomId(),
-        title: "Lab Documents Uploaded",
-      });
-    }
-  }, [field?.value]);
 
   return (
     <div className="mx-auto max-w-[500px]">
@@ -403,6 +394,15 @@ function FinalSubmitMetabolic({
                 setError(null);
                 const documentId = data?.uploadDocument?.id;
                 console.log(`Document uploaded: ${JSON.stringify(data)}`);
+
+                // Push notification
+                addNotification({
+                  type: "success",
+                  description: "Uploaded your lab documents successfully.",
+                  id: randomId(),
+                  title: "Lab Documents Uploaded",
+                });
+
                 return documentId;
               }
             } catch (error) {
@@ -433,6 +433,20 @@ function FinalSubmitMetabolic({
           {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
       </InputFileField>
+      {field.value ? (
+        <div className="mt-4">
+          <p className="font-bold text-sm mb-2">When did you take your lab?</p>
+          <div className="relative">
+            <TextField
+              fullWidth
+              inputSize="medium"
+              type="date"
+              max={new Date().toISOString().split("T")[0]}
+              {...register("labTakenAt")}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
