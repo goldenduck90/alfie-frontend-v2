@@ -3,7 +3,7 @@ import { create } from "zustand";
 export interface INotification {
   title: string;
   description: string;
-  type: "success" | "error" | "info";
+  type: "success" | "error" | "info" | "warning";
   id: string;
 }
 
