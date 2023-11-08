@@ -15,6 +15,7 @@ const bloodPressureValidation = z.object({
   _id: z.string(),
   systolicBp: z.number().min(80).max(200),
   diastolicBp: z.number().min(40).max(150),
+  heartRate: z.number().min(30).max(200),
 });
 
 export function BloodPressure({
@@ -33,6 +34,7 @@ export function BloodPressure({
       _id: taskId,
       systolicBp: "",
       diastolicBp: "",
+      heartRate: "",
     },
     resolver: zodResolver(bloodPressureValidation),
   });
@@ -88,6 +90,21 @@ export function BloodPressure({
               inputSize="medium"
               type="number"
               {...register("diastolicBp", { valueAsNumber: true })}
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-y-2 mt-2">
+          <p className="font-bold text-sm">
+            What was your latest heart rate reading?
+          </p>
+          <div className="flex gap-x-3 justify-between items-center">
+            <TextField
+              rightIcon={<span className="pl-2 text-gray-400">HR</span>}
+              placeholder="80"
+              fullWidth
+              inputSize="medium"
+              type="number"
+              {...register("heartRate", { valueAsNumber: true })}
             />
           </div>
         </div>
