@@ -16,11 +16,13 @@ export function BloodPressureChart({
   title,
   systolicColor = "#0C52E8",
   diastolicColor = "#eb0e0e",
+  heartRateColor = "#22c55e",
   chartData,
 }: {
   title: string;
   systolicColor?: string;
   diastolicColor?: string;
+  heartRateColor?: string;
   chartData: any;
 }) {
   const sortedChartData = chartData?.sort((a: any, b: any) => a.date - b.date);
@@ -73,15 +75,24 @@ export function BloodPressureChart({
               dot={false}
               activeDot={{ r: 8 }}
             />
+            <Line
+              type="monotone"
+              dataKey="heartRate"
+              stroke={heartRateColor}
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 8 }}
+            />
             <Tooltip
               offset={0}
               content={({ payload, active }) => {
                 if (!active) return null;
                 const systolic = payload?.[0]?.payload?.systolic;
                 const diastolic = payload?.[0]?.payload?.diastolic;
+                const heartRate = payload?.[0]?.payload?.heartRate;
                 const date = payload?.[0]?.payload.date;
 
-                if (!systolic || !diastolic) return null;
+                if (!systolic || !diastolic || !heartRate) return null;
                 return (
                   <div className="py-1 px-2 text-center bg-black text-white rounded-lg text-sm ">
                     <div>{dayjs(date).format("MM/DD/YYYY")}</div>
@@ -92,12 +103,19 @@ export function BloodPressureChart({
                       />
                       <p>systolic: {`${systolic}`}</p>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 pb-1">
                       <div
                         className="h-4 w-4 rounded-full border-white border-2"
                         style={{ backgroundColor: diastolicColor }}
                       />
                       <p>diastolic: {`${diastolic}`}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div
+                        className="h-4 w-4 rounded-full border-white border-2"
+                        style={{ backgroundColor: heartRateColor }}
+                      />
+                      <p>heart rate: {`${heartRate}`}</p>
                     </div>
                   </div>
                 );
