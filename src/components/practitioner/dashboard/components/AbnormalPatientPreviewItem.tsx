@@ -48,7 +48,7 @@ export function AbnormalPatientPreviewItem({
       ) : (
         <div className="bg-red-100 my-2 p-2 rounded-xl border border-red-500 font-light text-red-500 flex items-center">
           <ExclamationCircleIcon className="h-5 w-5 mr-2" />
-          Abnormal {abnormality}
+          {abnormality}
         </div>
       )}
 
