@@ -102,17 +102,13 @@ export const TasksPage = () => {
     userEligibility?.userScheduleAppointmentTask;
 
   const userTasks = useMemo(() => {
-    if (!loading && !error) {
+    if (!loading && (!error || error && error.message === "You have no tasks to complete right now. We'll notify you when you do!")) {
       const userTaskList = data?.userTasks?.userTasks || [];
       const scheduleAppointmentTaskExists = userTaskList.some(
-        ({ task }) => task?.type === TaskType.ScheduleAppointment
+        ({ task, completed }) => task?.type === TaskType.ScheduleAppointment && !completed
       );
 
-      if (
-        !scheduleAppointmentTaskExists &&
-        userAppointmentEligibility?.daysLeft &&
-        userAppointmentEligibility?.daysLeft > 0
-      ) {
+      if (!scheduleAppointmentTaskExists) {
         // If "Schedule Appointment" is not in the server data, add it to the list
         return [
           {
@@ -155,7 +151,7 @@ export const TasksPage = () => {
 
   return (
     <div>
-      {error && (
+      {error && error.message == "You have no tasks to complete right now. We'll notify you when you do!" && userTasks.length === 0 && (
         <div className="flex flex-col bg-white p-6 rounded-lg">
           <h2 className="text-xl md:text-2xl font-bold font-mulish">
             No tasks available
@@ -163,7 +159,7 @@ export const TasksPage = () => {
           <GrayPlaceHolderBox content={error.message} />
         </div>
       )}
-      {!error && (
+      {userTasks.length > 0 && (
         <div className="flex flex-col bg-white p-6 rounded-lg">
           {/* <div className="flex flex-row pb-8">
             <ToggleGroup defaultValue="active" items={toggleItems} />

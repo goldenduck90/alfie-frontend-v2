@@ -134,7 +134,7 @@ export const TaskItem = ({
         return {
           duration: "1 minute",
           subtitle:
-            "Schedule an appointment after all tasks are completed and labs are sent.",
+            "Schedule an appointment with your provider.",
         };
       case TaskType.NewPatientIntakeForm:
         return {
@@ -169,7 +169,7 @@ export const TaskItem = ({
             <h3 className="text-gray-900 font-bold">
               {appointmentStartTime ? `Appointment with ${title}` : title}
             </h3>
-            <p className="text-gray-700">{taskMeta.subtitle}</p>
+            <p className="text-gray-700">{valid ? taskMeta.subtitle : helperText}</p>
           </div>
         </div>
         <div className="hidden md:flex">
@@ -276,11 +276,10 @@ function SubTask({
 }) {
   return (
     <div
-      className={`flex flex-col md:flex-row justify-between rounded-xl p-4 md:py-7 md:pr-6 md:pl-8 my-3 ${
-        isCompleted
-          ? "bg-green-50 border border-green-500 md:border-green-50"
-          : "bg-gray-100 border border-gray-100"
-      } `}
+      className={`flex flex-col md:flex-row justify-between rounded-xl p-4 md:py-7 md:pr-6 md:pl-8 my-3 ${isCompleted
+        ? "bg-green-50 border border-green-500 md:border-green-50"
+        : "bg-gray-100 border border-gray-100"
+        } `}
     >
       <p className="flex md:w-1/2">
         {children}{" "}
