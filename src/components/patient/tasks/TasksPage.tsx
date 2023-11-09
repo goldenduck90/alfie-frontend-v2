@@ -108,6 +108,19 @@ export const TasksPage = () => {
         ({ task, completed }) => task?.type === TaskType.ScheduleAppointment && !completed
       );
 
+      if (!userAppointmentEligibility?.completedRequiredTasks) {
+        return [
+          {
+            _id: "schedule-appointment-placeholder",
+            task: {
+              name: "Schedule Appointment",
+              type: TaskType.ScheduleAppointment,
+            },
+          } as UserTask,
+          ...userTaskList,
+        ];
+      }
+
       if (!scheduleAppointmentTaskExists) {
         // If "Schedule Appointment" is not in the server data, add it to the list
         return userTaskList
