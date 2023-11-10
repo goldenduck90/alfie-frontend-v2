@@ -967,6 +967,18 @@ export type PatientModifyInput = {
   phoneNumber: Scalars['String'];
 };
 
+export type PatientUpdateInput = {
+  address: AddressInput;
+  dateOfBirth: Scalars['DateTime'];
+  email: Scalars['String'];
+  gender: Gender;
+  heightInInches: Scalars['Float'],
+  name: Scalars['String'];
+  patientId: Scalars['String'];
+  phone: Scalars['String'];
+  weightInLbs?: Scalars['Float'];
+}
+
 export type PatientReassignInput = {
   newProviderId: Scalars['String'];
   patientId: Scalars['String'];

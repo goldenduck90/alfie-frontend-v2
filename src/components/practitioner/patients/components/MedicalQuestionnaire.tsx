@@ -1,5 +1,5 @@
 import { medications } from "@src/components/questionnaire/medicalQuestions";
-import { TableUserObject } from "../tabs/IndividualPatientTabs";
+import { TableUserObject } from "./TableUserObject";
 import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
 
 export function MedicalQuestionnaire({ taskData }: any) {
