@@ -188,6 +188,7 @@ export function IndividualPatientTabs() {
       date: number;
       systolic?: any;
       diastolic?: any;
+      heartRate?: any;
     }[];
   } = {} as any;
 
@@ -200,6 +201,7 @@ export function IndividualPatientTabs() {
         date: new Date(item.completedAt).getTime(),
         systolic: item?.answers[0]?.value,
         diastolic: item?.answers[1]?.value,
+        heartRate: item?.answers[2]?.value,
         value: item?.answers[0]?.value,
       });
     } else {
