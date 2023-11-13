@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import dayjs from "dayjs";
 import * as Yup from "yup";
 import { FormikProvider, useFormik } from "formik";
@@ -66,7 +67,9 @@ export function GeneralInformation({
           style={{ display: "flex", gap: 10, overflowY: "auto", padding: 6 }}
         >
           {patientImages.map(({ signedUrl, key }, idx) => (
-            <img
+            <Image
+              height={200}
+              width={400}
               key={idx}
               src={signedUrl}
               alt={key}
