@@ -71,6 +71,7 @@ const PreCheckout = () => {
       state: Yup.string().required("Please select your state."),
       phone: Yup.string()
         .required("Please enter your phone number.")
+        .length(10, "Phone number must be 10 characters.")
         .test("phone", "Please enter valid phone number.", (value) => {
           return isValidPhoneNumber(value ?? "", "US");
         }),

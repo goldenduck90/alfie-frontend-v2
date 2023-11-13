@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 const useRedirectHttps = () => {
     useEffect(() => {
+        if (process.env.NODE_ENV === "development") return
         if (window.location.protocol !== 'https:') {
             // Redirect to the same URL but with https
             const httpsUrl = `https://${window.location.host}${window.location.pathname}${window.location.search}`;
