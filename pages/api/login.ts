@@ -65,6 +65,7 @@ const partialUserLoginMutation = `
         email
         role
         eaProviderId
+        eaHealthCoachId
       }
     }
   }`;
