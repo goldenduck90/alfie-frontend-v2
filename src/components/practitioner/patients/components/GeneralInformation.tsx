@@ -144,7 +144,7 @@ export function GeneralInformation({
     },
   });
 
-  const { isSubmitting, submitForm } = patientForm;
+  const { isSubmitting, submitForm, dirty, resetForm } = patientForm;
 
   return (
     <FormikProvider value={patientForm}>
@@ -155,7 +155,7 @@ export function GeneralInformation({
               <Button
                 buttonType={"primary"}
                 onClick={submitForm}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !dirty} // Disable if submitting or no changes
               >
                 Save
               </Button>
@@ -163,7 +163,7 @@ export function GeneralInformation({
                 buttonType={"secondary"}
                 onClick={() => {
                   setIsEdit(false);
-                  patientForm.resetForm();
+                  resetForm();
                 }}
               >
                 Cancel
