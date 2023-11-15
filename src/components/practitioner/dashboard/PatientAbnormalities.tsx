@@ -4,7 +4,6 @@ import Link from "next/link";
 import { AbnormalPatientPreviewItem } from "./components/AbnormalPatientPreviewItem";
 import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 import { GrayPlaceHolderBox } from "@src/components/GrayPlaceHolderBox";
-import { Loading } from "@src/components/Loading";
 
 import { gql, useQuery } from "@apollo/client";
 import { nameToInitials } from "@src/utils/nameToInitials";
@@ -17,6 +16,7 @@ const getAlerts = gql`
       description
       severity
       medical
+      acknowledgedAt
       user {
         _id
         name
@@ -36,7 +36,9 @@ export function PatientAbnormalities() {
     if (error) {
       setAlerts([]);
     } else {
-      setAlerts(data.getAlerts);
+      const _alerts = data.getAlerts.filter((g: any) => !g.acknowledgedAt)
+
+      setAlerts(_alerts);
     }
   }, [data, loading, error]);
 

@@ -57,7 +57,7 @@ export function PatientTasks({ taskData }: any) {
           )}
         </Tabs.Content>
         <Tabs.Content value={TabList[1]}>
-          {completeTasks?.slice(0, 15)?.map((task: any, i: number) => (
+          {completeTasks?.sort((a, b) => Number(new Date(b.completedAt || "")) - Number(new Date(a.completedAt || ""))).map((task: any, i: number) => (
             <TaskItem {...task} key={i} />
           ))}
           {loading && renderLoadTasks}
@@ -80,11 +80,10 @@ function SmallTabTitle({
 }) {
   return (
     <div
-      className={`py-2 px-1 whitespace-nowrap text-sm hover:bg-gray-100 border-b-[3px] border-transparent ${
-        active
-          ? "text-brand-berry hover:bg-transparent  border-brand-berry "
-          : ""
-      }`}
+      className={`py-2 px-1 whitespace-nowrap text-sm hover:bg-gray-100 border-b-[3px] border-transparent ${active
+        ? "text-brand-berry hover:bg-transparent  border-brand-berry "
+        : ""
+        }`}
     >
       {children}
     </div>
