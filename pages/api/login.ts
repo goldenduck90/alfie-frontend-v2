@@ -45,7 +45,6 @@ query Me {
       firstName
       lastName
       email
-      numberOfPatients
     }
     pharmacyLocation
     meetingUrl
@@ -54,6 +53,59 @@ query Me {
   }
 }
 `;
+
+const getPatientInfoV2 = `
+query Me {
+  me {
+    _id
+    address {
+      line1
+      line2
+      city
+      state
+      postalCode
+      country
+    }
+    textOptIn
+    meetingRoomUrl
+    name
+    email
+    phone
+    role
+    dateOfBirth
+    weights {
+      value
+      date
+    }
+    gender
+    heightInInches
+    hasScale
+    akutePatientId
+    stripeCustomerId
+    stripeSubscriptionId
+    eaCustomerId
+    eaHealthCoachId
+    metriportUserId
+    subscriptionExpiresAt
+    provider {
+      _id
+      type
+      akuteId
+      eaProviderId
+      npi
+      licensedStates
+      firstName
+      lastName
+      email
+    }
+    pharmacyLocation
+    meetingUrl
+    labOrderSent
+    bmi
+  }
+}
+`;
+
 
 const partialUserLoginMutation = `
   mutation Login($input: LoginInput!) {
@@ -65,6 +117,7 @@ const partialUserLoginMutation = `
         email
         role
         eaProviderId
+        eaHealthCoachId
       }
     }
   }`;
@@ -132,7 +185,16 @@ export default withSessionRoute(async function loginRoute(req, res) {
           .json({ message: "Invalid credentials! Please try again." });
       }
 
-      (req.session as any).user = patientData?.data?.me;
+      if (patientData?.data?.me) {
+        // Clone the object to avoid modifying the original data
+        const userData = { ...patientData.data.me };
+
+        // Delete the weights array
+        delete userData.weights;
+
+        // Assign the modified object to the session user
+        (req.session as any).user = userData;
+      }
       await req.session.save();
       return res.json({ user: patientData?.data?.me });
     }

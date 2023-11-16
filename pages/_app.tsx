@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-query";
 import { SeoHeader } from "@src/components/seo/SeoHeader";
 import { PartnerProvider } from "@src/context/PartnerContext";
+import useRedirectHttps from "@src/hooks/useRedirectHttps";
 
 interface CustomAppProps extends AppProps {
   Component: AppProps["Component"] & {
@@ -22,12 +23,16 @@ interface CustomAppProps extends AppProps {
 }
 
 export default function App({ Component, pageProps }: CustomAppProps) {
+  const redirect = useRedirectHttps()
+  console.log(redirect)
+
   const isAuthRequired = Component.isAuthRequired ?? false;
 
   const getLayout = Component.getLayout || ((page: React.ReactNode) => page);
 
   const [queryClient] = React.useState(() => new QueryClient());
   const ComponentWithLayout = getLayout(<Component {...pageProps} />);
+
 
   return (
     <>
