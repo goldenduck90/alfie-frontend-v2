@@ -129,7 +129,7 @@ export const PreCheckout = () => {
       },
       {
         component: Testimonial,
-        beforeNext({}, _, currentStepIndex) {
+        beforeNext({ }, _, currentStepIndex) {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
@@ -171,7 +171,7 @@ export const PreCheckout = () => {
       },
       {
         component: WhatAlfieUse,
-        beforeNext({}, _, currentStepIndex) {
+        beforeNext({ }, _, currentStepIndex) {
           localStorage.setItem("preCheckoutStep", String(currentStepIndex));
           return Promise.resolve();
         },
@@ -224,6 +224,7 @@ export const PreCheckout = () => {
             .required("Please enter your email address."),
           phone: Yup.string()
             .required("Please enter your phone number.")
+            .length(10, "Phone number must be 10 characters.")
             .test("phone", "Please enter valid phone number.", (value) => {
               return isValidPhoneNumber(value ?? "", "US");
             }),

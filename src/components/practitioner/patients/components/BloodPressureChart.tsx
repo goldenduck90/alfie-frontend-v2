@@ -92,7 +92,7 @@ export function BloodPressureChart({
                 const heartRate = payload?.[0]?.payload?.heartRate;
                 const date = payload?.[0]?.payload.date;
 
-                if (!systolic || !diastolic || !heartRate) return null;
+                if (!systolic || !diastolic) return null;
                 return (
                   <div className="py-1 px-2 text-center bg-black text-white rounded-lg text-sm ">
                     <div>{dayjs(date).format("MM/DD/YYYY")}</div>
