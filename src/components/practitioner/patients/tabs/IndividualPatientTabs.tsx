@@ -13,6 +13,7 @@ import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
 import { Button } from "@src/components/ui/Button";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { TaskType, User, Alert, SeverityType } from "@src/graphql/generated";
+import { GeneralInformation } from "../components/GeneralInformation";
 import { BloodPressureChart } from "../components/BloodPressureChart";
 import { MedicalQuestionnaire } from "../components/MedicalQuestionnaire";
 import { PatientTasks } from "../components/PatientTasks";
@@ -139,48 +140,9 @@ export function IndividualPatientTabs() {
 
   const patient: User = data?.getUserById;
 
-  const patientImages =
-    patient?.files?.filter(
-      ({ signedUrl, contentType }) => signedUrl && contentType.includes("image")
-    ) ?? [];
 
-  const patientTable = {
-    "Full Name": patient?.name,
-    "Date of Birth": dayjs(patient?.dateOfBirth, { utc: true }).format(
-      "MM/DD/YYYY"
-    ),
-    "Email Address": patient?.email,
-    "Phone Number": patient?.phone,
-    "Address": `${patient?.address?.line1 || ""}, ${
-      (patient?.address?.line2 && ",") || ""
-    } ${patient?.address?.city}, ${patient?.address?.state}, ${
-      patient?.address?.postalCode
-    }`,
-    "Height In Inches": patient?.heightInInches,
-    "Weight": patient?.weights?.[patient.weights.length - 1]?.value,
-    "Attachments":
-      patientImages.length > 0 ? (
-        <div
-          style={{ display: "flex", gap: 10, overflowY: "auto", padding: 6 }}
-        >
-          {patientImages.map(({ signedUrl, key }, idx) => (
-            <img
-              key={idx}
-              src={signedUrl}
-              alt={key}
-              title={key}
-              style={{ objectFit: "contain", maxHeight: 200 }}
-            />
-          ))}
-        </div>
-      ) : (
-        "No Attachments"
-      ),
-    "Payment Method": patient?.stripeSubscriptionId
-      ? "Cash Pay"
-      : "Insurance Pay",
-    "Signup Partner": patient?.signupPartner?.title ?? "N/A",
-  };
+
+
 
   const chartInformation: {
     [key in TaskType]: {
@@ -247,7 +209,7 @@ export function IndividualPatientTabs() {
             loading={loading}
             activeTasks={activeTasks}
           />
-          <TableUserObject user={patientTable} loading={loading} />
+          <GeneralInformation patient={patient} patientLoading={loading} />
 
           {/*//? ADHOC SCHEDULING */}
           <AdhocSchedule patient={patient} />
@@ -350,53 +312,7 @@ function TableInformationHeader({
   );
 }
 
-export function TableUserObject({
-  user,
-  loading,
-}: {
-  user: any;
-  loading?: boolean;
-}) {
-  if (!user) return null;
-  return (
-    <div className="">
-      <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300 bg-white">
-        {Object.keys(user).map((key) => {
-          if (!user[key] && !loading) {
-            return null;
-          }
-          return (
-            <div
-              key={key}
-              className="flex flex-col md:flex-row gap-x-4 px-6 py-4"
-            >
-              <p className="capitalize min-w-[275px] font-bold">{key}</p>
-              {loading ? (
-                <div className="w-1/4 h-6 flex items-center">
-                  <PlaceHolderLine hasTopMargin />
-                </div>
-              ) : typeof user[key] !== "object" ||
-                React.isValidElement(user[key]) ? (
-                <div className="text-gray-600">{user[key]}</div>
-              ) : (
-                <p className="text-gray-600">
-                  {Object.keys(user[key]).map((subKey) => (
-                    <p className="text-gray-600">
-                      <strong>{subKey}:</strong>{" "}
-                      {Array.isArray(user[key][subKey])
-                        ? user[key][subKey]?.join(", ")
-                        : user[key][subKey]?.toString()}
-                    </p>
-                  ))}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+
 
 function TabTitle({
   value,
