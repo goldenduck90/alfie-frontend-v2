@@ -21,7 +21,8 @@ export const Layout = ({
   backRef,
 }: LayoutProps) => {
   const { user } = useCurrentUserStore();
-  const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach;
+  const isAdmin =
+    user?.role === Role.Admin || user?.role === Role.CareCoordinator;
   const { boot } = useIntercom();
 
   React.useEffect(() => {
@@ -73,14 +74,39 @@ export const Layout = ({
       href: "/dashboard/chat",
     },
   ];
+  const adminNavigation = [
+    {
+      name: "Dashboard",
+      href: "/dashboard",
+    },
+    {
+      name: "Appointments",
+      href: "/dashboard/appointments",
+    },
+    {
+      name: "Providers",
+      href: "/dashboard/providers",
+    },
+    {
+      name: "My Patients",
+      href: "/dashboard/patients",
+    },
+    {
+      name: "Chat",
+      href: "/dashboard/chat",
+    },
+  ];
 
   //? Patient Role includes Tasks, billing, and Frequently Asked Questions
   if (user?.role === Role.Patient) {
     navigation = patientNavigation;
-  } else if (user?.role === Role.Practitioner) {
+  } else if (
+    user?.role === Role.Practitioner ||
+    user?.role === Role.HealthCoach
+  ) {
     navigation = providerNavigation;
   } else if (isAdmin) {
-    navigation = providerNavigation;
+    navigation = adminNavigation;
   }
 
   return (
