@@ -44,7 +44,7 @@ export function InformationForm({
       value: p._id,
       selected: p._id.toString() === currentProviderId,
     }))
-  }, [data, loading])
+  }, [data, loading, currentProviderId])
 
   return (
     <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300 bg-white">

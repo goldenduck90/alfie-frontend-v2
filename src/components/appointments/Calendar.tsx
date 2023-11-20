@@ -97,7 +97,7 @@ export const CalendarView = () => {
     })
 
     return ps
-  }, [pData])
+  }, [pData, providerId])
 
   const {
     loading,

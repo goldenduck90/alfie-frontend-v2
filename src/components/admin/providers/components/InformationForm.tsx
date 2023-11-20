@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import { MailIcon } from "@heroicons/react/solid";
+import { HeartIcon, LockClosedIcon, MailIcon } from "@heroicons/react/solid";
 import { TextInput } from "@src/components/inputs/TextInput";
 import { IconInput } from "@src/components/inputs/IconInput";
 import { MultiSelectInput } from "@src/components/inputs/MultiSelectInput";
 import { NumberInput } from "@src/components/inputs/NumbeInput";
 import { States } from "@src/utils/states";
 
-export function InformationForm({
-  licensedStates,
-}: {
-  licensedStates: string[];
-}) {
+export function InformationForm() {
   return (
     <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300 bg-white">
       <div className="flex flex-col md:flex-row gap-x-4 px-6 py-4">
@@ -59,13 +55,22 @@ export function InformationForm({
       <div className="flex flex-col md:flex-row gap-x-4 px-6 py-4">
         <p className="capitalize min-w-[275px] font-bold">NPI</p>
         <div className="w-full md:w-[300px]">
-          <NumberInput
+          <IconInput
             name="npi"
-            placeholder="NPI is..."
-            type="number"
-            maxLength={10}
-            position="right"
-            showError={true}
+            placeholder="Enter a NPI..."
+            type="text"
+            icon={<HeartIcon className="h-5 w-5 text-brand-berry" />}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-row gap-x-4 px-6 py-4">
+        <p className="capitalize min-w-[275px] font-bold">Password</p>
+        <div className="w-full md:w-[300px]">
+          <IconInput
+            name="password"
+            placeholder="Enter a password..."
+            type="password"
+            icon={<LockClosedIcon className="h-5 w-5 text-brand-berry" />}
           />
         </div>
       </div>

@@ -35,7 +35,7 @@ export function AllPatientsTabs() {
   const [activeTab, setActiveTab] = useState(tab || "all");
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach;
+  const isAdmin = user?.role === Role.Admin || user?.role === Role.HealthCoach || user?.role === Role.CareCoordinator;
 
   return (
     <Tabs.Root

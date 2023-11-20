@@ -88,7 +88,7 @@ export const Layout = ({
       href: "/dashboard/providers",
     },
     {
-      name: "My Patients",
+      name: isAdmin ? "Patients" : "My Patients",
       href: "/dashboard/patients",
     },
     {

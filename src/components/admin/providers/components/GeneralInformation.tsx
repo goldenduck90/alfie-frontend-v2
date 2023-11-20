@@ -7,17 +7,29 @@ import { Provider } from "@src/graphql/generated";
 import { Button } from "@src/components/ui/Button";
 
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import gql from "graphql-tag";
+import { ApolloQueryResult, useMutation } from "@apollo/client";
+import { wait } from "@src/utils/wait";
+import { InfoProvider } from "../tabs/IndividualProviderTabs";
+
+const modifyProviderMutation = gql`
+  mutation ModifyProvider($input: ProviderModifyInput!) {
+    internalProviderModify(input: $input)
+  }
+`;
 
 export function GeneralInformation({
   provider,
-  loading,
+  refetchProvider,
 }: {
-  provider: Provider;
-  loading?: boolean;
+  provider: InfoProvider;
+  refetchProvider: () => Promise<ApolloQueryResult<any>>;
 }) {
   const { addNotification } = useNotificationStore();
+  const [editProvider] = useMutation(modifyProviderMutation);
 
   const defaultInput: any = {
+    providerId: provider?._id || "",
     firstName: provider?.firstName || "",
     lastName: provider?.lastName || "",
     email: provider?.email || "",
@@ -34,6 +46,8 @@ export function GeneralInformation({
     "Licensed States": provider?.licensedStates.join(", "),
     "NPI": provider?.npi,
     "Number of Patients": provider?.numberOfPatients,
+    "Akute ID": provider?.akuteId,
+    "Provider Type": provider?.type,
   };
 
   const providerInfoSchema = Yup.object().shape({
@@ -59,6 +73,11 @@ export function GeneralInformation({
       .required("Please provide licensed states.")
       .min(1, "At least one licensed state is required."),
     // You can include more array validations here if needed
+    password: Yup.string()
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character."
+      ),
     email: Yup.string()
       .required("Please enter an email address.")
       .email("Please enter a valid email address."),
@@ -75,13 +94,33 @@ export function GeneralInformation({
     enableReinitialize: true,
     validateOnChange: false,
     validationSchema: providerInfoSchema,
-    onSubmit: async (values) => {
-      // console.log(values);
+    onSubmit: async (values, { setSubmitting }) => {
+      setSubmitting(true);
+      const resp = await editProvider({
+        variables: {
+          input: values
+        }
+      })
 
+      if (resp.errors) {
+        addNotification({
+          description: "An error occured updating provider!",
+          id: "update-provider-info-failure",
+          type: "error",
+          title: "Error",
+        })
+        return
+      }
+
+      console.log("REFETCHING PROVIDER")
+      await wait(2000);
+      await refetchProvider();
+      setSubmitting(false);
       setIsEdit(false);
+      resetForm();
       addNotification({
         description: "Provider information successfully updated.",
-        id: "update-provider-info-success",
+        id: "update-patient-info-success",
         type: "success",
         title: "Success",
       });
@@ -117,12 +156,10 @@ export function GeneralInformation({
             <Button onClick={() => setIsEdit(true)}>Edit</Button>
           )}
         </div>
-        {isEdit && !loading ? (
-          <InformationForm
-            licensedStates={providerForm.values.licensedStates}
-          />
+        {isEdit ? (
+          <InformationForm />
         ) : (
-          <TableUserObject user={providerTable} loading={loading} />
+          <TableUserObject user={providerTable} />
         )}
       </div>
     </FormikProvider>

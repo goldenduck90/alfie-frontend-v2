@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from "@heroicons/react/outline";
-import { Provider } from "@src/graphql/generated";
+import { GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables, GetAllProvidersQuery, GetAllProvidersQueryVariables, Provider } from "@src/graphql/generated";
 import * as Tabs from "@radix-ui/react-tabs";
 import {
   createColumnHelper,
@@ -16,15 +16,24 @@ import {
   NumberOfPatientsCell,
   ProviderDefaultCell,
   ProviderNameCell,
-  NPICell,
 } from "@src/components/ui/table";
 import { TabTitle } from "@src/components/ui/tabs/TabTitle";
-// import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
-// import { AvatarInitial } from "@src/components/ui/AvatarInitial";
 import { useRouter } from "next/router";
-// import { useGetAllProvidersByAdmins } from "@src/hooks/useGetAllProviders";
-// import { QueryResult, OperationVariables } from "@apollo/client";
-import * as SelectPrimitive from "@radix-ui/react-select";
+import { gql, useQuery } from "@apollo/client";
+
+const getAllProvidersAdmin = gql`
+  query GetAllProvidersAdmin {
+    allProviders {
+      providers {
+        _id
+        firstName
+        lastName
+        email
+        numberOfPatients
+      }
+    }
+  }
+`
 
 export function AllProviders() {
   const [globalFilter, setGlobalFilter] = useState("");
@@ -32,6 +41,7 @@ export function AllProviders() {
   const router = useRouter();
   const tab = (router?.query?.tab as string) || "all";
   const [activeTab, setActiveTab] = useState(tab || "all");
+  const { data: pData } = useQuery<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>(getAllProvidersAdmin, {});
 
   return (
     <Tabs.Root
@@ -58,6 +68,7 @@ export function AllProviders() {
         <ProvidersTable
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
+          providers={pData?.allProviders.providers || []}
         />
       </Tabs.Content>
     </Tabs.Root>
@@ -67,71 +78,32 @@ export function AllProviders() {
 export function ProvidersTable({
   globalFilter,
   setGlobalFilter,
+  providers,
 }: {
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
+  providers: any[]
 }) {
-  const providers = {
-    data: {
-      users: [
-        {
-          _id: "65090d82d333855bec868b5d",
-          akuteId: "65090331380cff0008c67355",
-          eaProviderId: 3,
-          email: "testprovider@gallionetech.com",
-          emailTokenExpiresAt: "2021-03-29T12:34:56.789Z",
-          firstName: "Test",
-          lastName: "Provider",
-          licensedStates: ["FL", "MD", "VA", "DC"],
-          npi: "5123451234",
-          numberOfPatients: 10,
-          type: "Practitioner",
-        },
-        {
-          _id: "650903e1737b3d11b845826d",
-          akuteId: "650903c3380cff0008c67356",
-          eaProviderId: 100,
-          email: "testdoctor@gallionetech.com",
-          emailTokenExpiresAt: "2021-03-29T12:34:56.789Z",
-          firstName: "Test",
-          lastName: "Doctor",
-          licensedStates: ["FL", "MD", "VA", "DC"],
-          npi: "346234535",
-          numberOfPatients: 8,
-          type: "Doctor",
-        },
-      ],
-    },
-  };
-  // const providers = useGetAllProvidersByAdmins();
-  console.log("providers================", providers);
-
   const providersTable = useProviderTable({
-    data: providers.data?.users || [],
+    data: providers || [],
     globalFilter,
     setGlobalFilter,
   });
 
   return <AllProvidersTable table={providersTable} />;
-  // return <AllProvidersTable table={providersTable} query={providers} />;
 }
 
 export function AllProvidersTable({
   table,
-}: // query,
-{
+}: {
   table: Table<Provider>;
-  // query: QueryResult<any, OperationVariables>;
 }) {
   const router = useRouter();
 
-  // const { data, error, loading } = query;
-
   return (
     <div className="max-h-[50vh]">
-      <p className="text-lg">{`${
-        table?.getCoreRowModel().rows.length
-      } Providers`}</p>
+      <p className="text-lg">{`${table?.getCoreRowModel().rows.length
+        } Providers`}</p>
       <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
         <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
           <thead>
@@ -143,9 +115,9 @@ export function AllProvidersTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </div>
                   </th>
                 ))}
@@ -249,10 +221,6 @@ const columns = [
   columnHelper.accessor("email", {
     header: () => <Header>Email address</Header>,
     cell: (info) => <ProviderDefaultCell info={info} />,
-  }),
-  columnHelper.accessor("npi", {
-    header: () => <Header>NPI</Header>,
-    cell: (info) => <NPICell info={info} />,
   }),
   columnHelper.accessor("numberOfPatients", {
     header: () => <Header>Number of Patients</Header>,

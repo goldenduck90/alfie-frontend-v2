@@ -734,9 +734,9 @@ export type Mutation = {
   insuranceTextract: InsuranceTextractResponse;
   internalBulkPatientReassign: Scalars['Boolean'];
   internalOpsCreateNewProvider: User;
-  internalOpsModifyProvider: User;
   internalPatientModify: Scalars['Boolean'];
   internalPatientReassign: User;
+  internalProviderModify: Scalars['Boolean'];
   login: LoginResponse;
   recordScaleReading: User;
   requestSignedUrls: Array<SignedUrlResponse>;
@@ -879,11 +879,6 @@ export type MutationInternalOpsCreateNewProviderArgs = {
 };
 
 
-export type MutationInternalOpsModifyProviderArgs = {
-  input: ProviderModifyInput;
-};
-
-
 export type MutationInternalPatientModifyArgs = {
   input: PatientModifyInput;
 };
@@ -891,6 +886,11 @@ export type MutationInternalPatientModifyArgs = {
 
 export type MutationInternalPatientReassignArgs = {
   input: PatientReassignInput;
+};
+
+
+export type MutationInternalProviderModifyArgs = {
+  input: ProviderModifyInput;
 };
 
 
@@ -1075,12 +1075,12 @@ export type ProviderListResponse = {
 };
 
 export type ProviderModifyInput = {
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  licensedStates: Array<Scalars['String']>;
-  npi: Scalars['String'];
-  providerCode: Scalars['String'];
+  email?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  licensedStates?: InputMaybe<Array<Scalars['String']>>;
+  npi?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
   providerId: Scalars['String'];
 };
 
@@ -1114,6 +1114,7 @@ export type Query = {
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
+  provider: Provider;
   reverseGeoCode: Array<GoogleReverseGeoCodeResult>;
   task?: Maybe<Task>;
   timeslots: TimeslotsResponse;
@@ -1220,6 +1221,11 @@ export type QueryPharmacyLocationsArgs = {
 
 export type QueryPlacesArgs = {
   input: GooglePlacesSearchInput;
+};
+
+
+export type QueryProviderArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -1648,6 +1654,18 @@ export type Weight = {
   value: Scalars['Float'];
 };
 
+export type ModifyProviderMutationVariables = Exact<{
+  input: ProviderModifyInput;
+}>;
+
+
+export type ModifyProviderMutation = { __typename?: 'Mutation', internalProviderModify: boolean };
+
+export type GetAllProvidersAdminQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllProvidersAdminQuery = { __typename?: 'Query', allProviders: { __typename?: 'ProviderListResponse', providers: Array<{ __typename?: 'Provider', _id: string, firstName: string, lastName: string, email: string, numberOfPatients?: number | null }> } };
+
 export type CancelAppointmentMutationVariables = Exact<{
   input: GetAppointmentInput;
 }>;
@@ -1947,6 +1965,77 @@ export type CompleteTaskMutationVariables = Exact<{
 export type CompleteTaskMutation = { __typename?: 'Mutation', completeUserTask: { __typename?: 'UserTask', completed: boolean } };
 
 
+export const ModifyProviderDocument = gql`
+    mutation ModifyProvider($input: ProviderModifyInput!) {
+  internalProviderModify(input: $input)
+}
+    `;
+export type ModifyProviderMutationFn = Apollo.MutationFunction<ModifyProviderMutation, ModifyProviderMutationVariables>;
+
+/**
+ * __useModifyProviderMutation__
+ *
+ * To run a mutation, you first call `useModifyProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useModifyProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [modifyProviderMutation, { data, loading, error }] = useModifyProviderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useModifyProviderMutation(baseOptions?: Apollo.MutationHookOptions<ModifyProviderMutation, ModifyProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ModifyProviderMutation, ModifyProviderMutationVariables>(ModifyProviderDocument, options);
+      }
+export type ModifyProviderMutationHookResult = ReturnType<typeof useModifyProviderMutation>;
+export type ModifyProviderMutationResult = Apollo.MutationResult<ModifyProviderMutation>;
+export type ModifyProviderMutationOptions = Apollo.BaseMutationOptions<ModifyProviderMutation, ModifyProviderMutationVariables>;
+export const GetAllProvidersAdminDocument = gql`
+    query GetAllProvidersAdmin {
+  allProviders {
+    providers {
+      _id
+      firstName
+      lastName
+      email
+      numberOfPatients
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllProvidersAdminQuery__
+ *
+ * To run a query within a React component, call `useGetAllProvidersAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllProvidersAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllProvidersAdminQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllProvidersAdminQuery(baseOptions?: Apollo.QueryHookOptions<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>(GetAllProvidersAdminDocument, options);
+      }
+export function useGetAllProvidersAdminLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>(GetAllProvidersAdminDocument, options);
+        }
+export type GetAllProvidersAdminQueryHookResult = ReturnType<typeof useGetAllProvidersAdminQuery>;
+export type GetAllProvidersAdminLazyQueryHookResult = ReturnType<typeof useGetAllProvidersAdminLazyQuery>;
+export type GetAllProvidersAdminQueryResult = Apollo.QueryResult<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>;
 export const CancelAppointmentDocument = gql`
     mutation CancelAppointment($input: GetAppointmentInput!) {
   cancelAppointment(input: $input) {
