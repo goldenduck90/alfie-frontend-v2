@@ -76,6 +76,7 @@ export const CalendarView = () => {
   const isHealthCoach = session[0]?.user?.role === Role.HealthCoach;
   const isPatient = session[0]?.user?.role === Role.Patient;
   const isProvider = session[0]?.user?.role === Role.Practitioner || session[0]?.user?.role === Role.Doctor || session[0]?.user?.role === Role.HealthCoach;
+  const isAdmin = session[0]?.user?.role === Role.Admin || session[0]?.user?.role === Role.CareCoordinator;
   const [providerId, setProviderId] = useState("healthcoach");
 
   const { data: pData } = useQuery<GetAllProvidersQuery, GetAllProvidersQueryVariables>(getAllProvider, {});
@@ -107,7 +108,7 @@ export const CalendarView = () => {
     variables: {
       input: {
         ...(isHealthCoach && ({ providerId: "healthcoach" })),
-        ...(!isHealthCoach && isPatient && !isProvider && ({ providerId })),
+        ...(!isHealthCoach && !isPatient && !isProvider && ({ providerId })),
         timezone: dayjs.tz.guess(),
         month: dayjs().month() + 1,
       },
@@ -122,7 +123,7 @@ export const CalendarView = () => {
     variables: {
       input: {
         ...(isHealthCoach && ({ providerId: "healthcoach" })),
-        ...(!isHealthCoach && isPatient && !isProvider && ({ providerId })),
+        ...(!isHealthCoach && !isPatient && !isProvider && ({ providerId })),
         timezone: dayjs.tz.guess(),
         selectedDate: dayjs(new Date()).format("YYYY-MM-DD H:mm"),
       },
@@ -257,12 +258,12 @@ export const CalendarView = () => {
                   <AppointmentPreviewItem
                     isLoading={loading}
                     name={
-                      isProvider
+                      isProvider || isAdmin
                         ? meetingToShow.eaCustomer?.name
                         : meetingToShow.eaProvider?.name
                     }
                     providerTitle={
-                      isProvider ? "Patient" : meetingToShow.eaProvider?.type
+                      isProvider || isAdmin ? "Patient" : meetingToShow.eaProvider?.type
                     }
                     renderDate={{
                       time: dayjs(meetingToShow.start).format("h:mm A"),
@@ -297,12 +298,12 @@ export const CalendarView = () => {
               <AppointmentPreviewItem
                 isLoading={loading}
                 name={
-                  isProvider
+                  isProvider || isAdmin
                     ? upcomingAppointment.eaCustomer?.name
                     : upcomingAppointment.eaProvider?.name
                 }
                 providerTitle={
-                  isProvider ? "Patient" : upcomingAppointment.eaProvider?.type
+                  isProvider || isAdmin ? "Patient" : upcomingAppointment.eaProvider?.type
                 }
                 renderDate={{
                   time: dayjs(upcomingAppointment.start).format("h:mm A"),

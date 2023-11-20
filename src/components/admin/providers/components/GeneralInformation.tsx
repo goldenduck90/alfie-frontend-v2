@@ -4,7 +4,6 @@ import { FormikProvider, useFormik } from "formik";
 import { TableUserObject } from "./TableUserObject";
 import { InformationForm } from "./InformationForm";
 import { Provider } from "@src/graphql/generated";
-import { ProviderUpdateInput } from "@src/graphql/generated";
 import { Button } from "@src/components/ui/Button";
 
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
@@ -18,7 +17,7 @@ export function GeneralInformation({
 }) {
   const { addNotification } = useNotificationStore();
 
-  const defaultInput: ProviderUpdateInput = {
+  const defaultInput: any = {
     firstName: provider?.firstName || "",
     lastName: provider?.lastName || "",
     email: provider?.email || "",
