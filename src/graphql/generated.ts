@@ -477,12 +477,14 @@ export type GetAppointmentInput = {
 };
 
 export type GetAppointmentsByDateInput = {
+  providerId?: InputMaybe<Scalars['String']>;
   selectedDate: Scalars['String'];
   timezone: Scalars['String'];
 };
 
 export type GetAppointmentsByMonthInput = {
   month: Scalars['Float'];
+  providerId?: InputMaybe<Scalars['String']>;
   timezone: Scalars['String'];
 };
 
@@ -492,7 +494,7 @@ export type GetTimeslotsInput = {
   healthCoach?: InputMaybe<Scalars['Boolean']>;
   selectedDate: Scalars['String'];
   timezone: Scalars['String'];
-  userId?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
 };
 
 export type GetUserTasksInput = {
@@ -997,6 +999,7 @@ export type PatientModifyInput = {
   gender?: InputMaybe<Gender>;
   heightInInches?: InputMaybe<Scalars['Float']>;
   name?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
   patientId: Scalars['String'];
   phone?: InputMaybe<Scalars['String']>;
   providerId?: InputMaybe<Scalars['String']>;
@@ -1135,7 +1138,7 @@ export type QueryAddressSuggestionsArgs = {
 
 
 export type QueryAllProvidersArgs = {
-  state: Scalars['String'];
+  state?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1476,6 +1479,7 @@ export type TimeslotsResponse = {
 };
 
 export type UpcomingAppointmentsInput = {
+  providerId?: InputMaybe<Scalars['String']>;
   selectedDate?: InputMaybe<Scalars['String']>;
   timezone: Scalars['String'];
 };
@@ -1712,11 +1716,6 @@ export type CompleteUploadFilesMutationVariables = Exact<{
 
 export type CompleteUploadFilesMutation = { __typename?: 'Mutation', completeUpload: { __typename?: 'User', _id: string } };
 
-export type GetRoleQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetRoleQuery = { __typename?: 'Query', getRole: { __typename?: 'RoleResponse', role: Role } };
-
 export type UpdateAppointmentMutationMutationVariables = Exact<{
   input: UpdateAppointmentInput;
 }>;
@@ -1784,7 +1783,7 @@ export type GetUserSummaryQueryVariables = Exact<{
 export type GetUserSummaryQuery = { __typename?: 'Query', generateSummary: { __typename?: 'User', generatedSummary?: string | null } };
 
 export type GetAllProvidersQueryVariables = Exact<{
-  state: Scalars['String'];
+  state?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -1795,7 +1794,7 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', _id: string, textOptIn?: boolean | null, meetingRoomUrl?: string | null, generatedSummary?: string | null, name: string, email: string, phone: string, role: Role, dateOfBirth: any, gender: Gender, heightInInches: number, akutePatientId?: string | null, stripeCustomerId?: string | null, stripeSubscriptionId?: string | null, eaCustomerId?: string | null, eaHealthCoachId?: string | null, subscriptionExpiresAt: any, pharmacyLocation?: string | null, meetingUrl?: string | null, labOrderSent?: boolean | null, bmi?: number | null, provider?: { __typename?: 'Provider', _id: string } | null, address: { __typename?: 'Address', line1: string, line2?: string | null, city: string, state: string, postalCode: string, country?: string | null }, weights: Array<{ __typename?: 'Weight', value: number, date: any }>, classifications?: Array<{ __typename?: 'Classification', classification: string, calculatedPercentile?: number | null, percentile: number, date: any }> | null, files: Array<{ __typename?: 'File', key: string, signedUrl: string, contentType: string, metadata?: Array<{ __typename?: 'FileMetadata', key: string, value: string }> | null }>, signupPartner?: { __typename?: 'SignupPartner', title: string } | null } };
+export type GetUserQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', _id: string, textOptIn?: boolean | null, meetingRoomUrl?: string | null, generatedSummary?: string | null, name: string, email: string, phone: string, role: Role, dateOfBirth: any, gender: Gender, heightInInches: number, akutePatientId?: string | null, stripeCustomerId?: string | null, stripeSubscriptionId?: string | null, eaCustomerId?: string | null, eaHealthCoachId?: string | null, subscriptionExpiresAt: any, pharmacyLocation?: string | null, meetingUrl?: string | null, labOrderSent?: boolean | null, bmi?: number | null, provider?: { __typename?: 'Provider', _id: string, firstName: string, lastName: string } | null, address: { __typename?: 'Address', line1: string, line2?: string | null, city: string, state: string, postalCode: string, country?: string | null }, weights: Array<{ __typename?: 'Weight', value: number, date: any }>, classifications?: Array<{ __typename?: 'Classification', classification: string, calculatedPercentile?: number | null, percentile: number, date: any }> | null, files: Array<{ __typename?: 'File', key: string, signedUrl: string, contentType: string, metadata?: Array<{ __typename?: 'FileMetadata', key: string, value: string }> | null }>, signupPartner?: { __typename?: 'SignupPartner', title: string } | null } };
 
 export type GetAllUserTasksByUserQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -2315,40 +2314,6 @@ export function useCompleteUploadFilesMutation(baseOptions?: Apollo.MutationHook
 export type CompleteUploadFilesMutationHookResult = ReturnType<typeof useCompleteUploadFilesMutation>;
 export type CompleteUploadFilesMutationResult = Apollo.MutationResult<CompleteUploadFilesMutation>;
 export type CompleteUploadFilesMutationOptions = Apollo.BaseMutationOptions<CompleteUploadFilesMutation, CompleteUploadFilesMutationVariables>;
-export const GetRoleDocument = gql`
-    query getRole {
-  getRole {
-    role
-  }
-}
-    `;
-
-/**
- * __useGetRoleQuery__
- *
- * To run a query within a React component, call `useGetRoleQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRoleQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetRoleQuery(baseOptions?: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, options);
-      }
-export function useGetRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, options);
-        }
-export type GetRoleQueryHookResult = ReturnType<typeof useGetRoleQuery>;
-export type GetRoleLazyQueryHookResult = ReturnType<typeof useGetRoleLazyQuery>;
-export type GetRoleQueryResult = Apollo.QueryResult<GetRoleQuery, GetRoleQueryVariables>;
 export const UpdateAppointmentMutationDocument = gql`
     mutation UpdateAppointmentMutation($input: UpdateAppointmentInput!) {
   updateAppointment(input: $input) {
@@ -2750,7 +2715,7 @@ export type GetUserSummaryQueryHookResult = ReturnType<typeof useGetUserSummaryQ
 export type GetUserSummaryLazyQueryHookResult = ReturnType<typeof useGetUserSummaryLazyQuery>;
 export type GetUserSummaryQueryResult = Apollo.QueryResult<GetUserSummaryQuery, GetUserSummaryQueryVariables>;
 export const GetAllProvidersDocument = gql`
-    query GetAllProviders($state: String!) {
+    query GetAllProviders($state: String) {
   allProviders(state: $state) {
     providers {
       _id
@@ -2777,7 +2742,7 @@ export const GetAllProvidersDocument = gql`
  *   },
  * });
  */
-export function useGetAllProvidersQuery(baseOptions: Apollo.QueryHookOptions<GetAllProvidersQuery, GetAllProvidersQueryVariables>) {
+export function useGetAllProvidersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllProvidersQuery, GetAllProvidersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllProvidersQuery, GetAllProvidersQueryVariables>(GetAllProvidersDocument, options);
       }
@@ -2801,6 +2766,8 @@ export const GetUserDocument = gql`
     role
     provider {
       _id
+      firstName
+      lastName
     }
     dateOfBirth
     address {

@@ -1,9 +1,13 @@
 import { DialogModal } from "@src/components/modal/Dialog";
 import { ScheduleAppointment } from "@src/components/modal/variants/schedule/Schedule";
 import { Button } from "@src/components/ui/Button";
-import { User } from "@src/graphql/generated";
+import { useUserStateContext } from "@src/context/SessionContext";
+import { Role, User } from "@src/graphql/generated";
 
 export function AdhocSchedule({ patient }: { patient: User }) {
+  const session = useUserStateContext();
+  const isHealthCoach = session[0]?.user?.role === Role.HealthCoach;
+
   return (
     <div className="w-full mt-6">
       <div className="flex justify-between">
@@ -12,13 +16,14 @@ export function AdhocSchedule({ patient }: { patient: User }) {
           <Button
             onClick={() => {
               console.log("clicked");
-             }}
+            }}
           >
             Schedule
           </Button>
         }>
           <ScheduleAppointment
             userId={patient?._id}
+            healthCoach={isHealthCoach}
             notes="Scheduled by provider"
           />
         </DialogModal>

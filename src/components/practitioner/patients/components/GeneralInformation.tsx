@@ -16,8 +16,7 @@ import { convertInchesToFeetInches } from "@src/utils/height";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
 import { wait } from "@src/utils/wait";
-import { Router, useRouter } from "next/router";
-import { useCheckRole } from "@src/hooks/useCheckRole";
+import { useRouter } from "next/router";
 import { useUserStateContext } from "@src/context/SessionContext";
 
 const modifyPatientMutation = gql`

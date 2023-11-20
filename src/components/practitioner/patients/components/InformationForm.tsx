@@ -11,8 +11,8 @@ import { NumberInput } from "@src/components/inputs/NumbeInput";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/client";
 
-const getAllProvider = gql`
-  query GetAllProviders($state: String!) {
+export const getAllProvider = gql`
+  query GetAllProviders($state: String) {
     allProviders(state: $state) {
       providers {
         _id

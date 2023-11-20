@@ -34,13 +34,6 @@ dayjs.extend(isToday);
 dayjs.extend(isTomorrow);
 dayjs.tz.setDefault(dayjs.tz.guess());
 
-const getRoleQuery = gql`
-  query getRole {
-    getRole {
-      role
-    }
-  }
-`;
 
 const updateAppointmentMutation = gql`
   mutation UpdateAppointmentMutation($input: UpdateAppointmentInput!) {
@@ -99,7 +92,7 @@ export function ScheduleAppointment({
   healthCoach = false,
 }: {
   eaAppointmentId?: string;
-  userId?: string;
+  userId: string;
   start?: string;
   end?: string;
   notes?: string;
@@ -108,15 +101,6 @@ export function ScheduleAppointment({
   eaCustomerName?: string;
   healthCoach?: boolean;
 }) {
-  const result = useQuery(getRoleQuery);
-  const isProvider =
-    result.data?.getRole?.role === Role.Practitioner ||
-    result.data?.getRole?.role === Role.CareCoordinator ||
-    result.data?.getRole?.role === Role.Doctor ||
-    result.data?.getRole?.role === Role.HealthCoach;
-
-  const isHealthCoach =
-    result.data?.getRole?.role === Role.HealthCoach || healthCoach;
 
   const [update] = useMutation(updateAppointmentMutation);
   const [create] = useMutation(createAppointmentMutation);
@@ -130,8 +114,8 @@ export function ScheduleAppointment({
       eaAppointmentId,
       selectedDate: start
         ? dayjs(
-            `${dayjs(start).format("YYYY-MM-DD")} ${dayjs().format("H:mm")}`
-          )
+          `${dayjs(start).format("YYYY-MM-DD")} ${dayjs().format("H:mm")}`
+        )
         : dayjs(),
       start: start,
       end: end,
@@ -140,7 +124,7 @@ export function ScheduleAppointment({
       eaCustomer: undefined,
       userId,
       eaCustomerName,
-      healthCoach: isHealthCoach,
+      healthCoach,
     },
     onSubmit: async (values) => {
       try {
@@ -155,7 +139,7 @@ export function ScheduleAppointment({
                 ...(values.notes && {
                   notes: values.notes,
                 }),
-                bypassNotice: isProvider ? true : false,
+                bypassNotice: false,
               },
             },
           });
@@ -172,17 +156,13 @@ export function ScheduleAppointment({
           const { data } = await create({
             variables: {
               input: {
-                ...(isProvider && {
-                  userId: values.userId,
-                }),
-                ...(isHealthCoach && {
-                  healthCoach: true,
-                }),
+                userId: values.userId,
+                healthCoach: values.healthCoach,
                 start: dayjs(values.start).format("YYYY-MM-DD H:mm"),
                 end: dayjs(values.end).format("YYYY-MM-DD H:mm"),
                 timezone: dayjs.tz.guess(),
                 notes: values.notes,
-                bypassNotice: isProvider ? true : false,
+                bypassNotice: false,
                 ...(userTaskId && {
                   userTaskId,
                 }),
@@ -246,17 +226,6 @@ export function ScheduleAppointment({
       },
     ],
   });
-
-  useEffect(() => {
-    if (result.loading) return;
-    if (!result.data) return;
-    if (scheduleForm.values.healthCoach) return;
-    if (result.data?.getRole?.role === Role.Admin) return;
-    const isHealthCoach =
-      result.data?.getRole?.role === Role.HealthCoach || healthCoach;
-    scheduleForm.setFieldValue("healthCoach", isHealthCoach);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [healthCoach, result.data, result.loading]);
 
   const setOpen = useDialogToggle();
 
@@ -337,8 +306,8 @@ export function ScheduleAppointment({
               {currentStepIndex === 0
                 ? "Next"
                 : currentStepIndex === 1
-                ? "Confirm"
-                : "Done"}
+                  ? "Confirm"
+                  : "Done"}
             </Button>
           </div>
         </>
