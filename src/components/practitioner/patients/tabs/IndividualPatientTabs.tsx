@@ -39,6 +39,11 @@ const GetUserById = gql`
       email
       phone
       role
+      provider {
+        _id
+        firstName
+        lastName
+      }
       dateOfBirth
       address {
         line1
@@ -127,11 +132,13 @@ export function IndividualPatientTabs() {
   const patientId = router.query.patientId as string;
   const activeTab = (router?.query?.tab as string) || TabList[0];
 
-  const { data, loading, error } = useQuery(GetUserById, {
+  const { data, loading, refetch } = useQuery(GetUserById, {
     variables: {
       userId: patientId,
     },
+    nextFetchPolicy: "network-only",
   });
+
   const taskData = useQuery(getTasksQuery, {
     variables: {
       userId: patientId,
@@ -139,10 +146,6 @@ export function IndividualPatientTabs() {
   });
 
   const patient: User = data?.getUserById;
-
-
-
-
 
   const chartInformation: {
     [key in TaskType]: {
@@ -209,7 +212,11 @@ export function IndividualPatientTabs() {
             loading={loading}
             activeTasks={activeTasks}
           />
-          <GeneralInformation patient={patient} patientLoading={loading} />
+          <GeneralInformation
+            patient={patient}
+            patientLoading={loading}
+            refetchPatient={refetch}
+          />
 
           {/*//? ADHOC SCHEDULING */}
           <AdhocSchedule patient={patient} />
@@ -326,9 +333,8 @@ function TabTitle({
   return (
     <Tabs.Trigger
       value={value}
-      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${
-        active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
-      }`}
+      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
+        }`}
     >
       {children}
     </Tabs.Trigger>

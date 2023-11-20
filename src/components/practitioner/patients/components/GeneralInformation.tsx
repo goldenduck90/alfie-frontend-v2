@@ -8,26 +8,45 @@ import { isValidPhoneNumber } from "libphonenumber-js";
 
 import { TableUserObject } from "./TableUserObject";
 import { InformationForm } from "./InformationForm";
-import { User } from "@src/graphql/generated";
-import { PatientUpdateInput } from "@src/graphql/generated";
+import { Gender, ModifyPatientMutation, ModifyPatientMutationVariables, PatientModifyInput, Role, User } from "@src/graphql/generated";
 import { Button } from "@src/components/ui/Button";
 
 import { useNotificationStore } from "@src/hooks/useNotificationStore";
+import { convertInchesToFeetInches } from "@src/utils/height";
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/client";
+import { wait } from "@src/utils/wait";
+import { Router, useRouter } from "next/router";
+import { useCheckRole } from "@src/hooks/useCheckRole";
+import { useUserStateContext } from "@src/context/SessionContext";
+
+const modifyPatientMutation = gql`
+  mutation ModifyPatient($input: PatientModifyInput!) {
+    internalPatientModify(input: $input)
+  }
+`;
 
 export function GeneralInformation({
   patient,
   patientLoading,
+  refetchPatient,
 }: {
   patient: User;
   patientLoading?: boolean;
+  refetchPatient: () => Promise<any>
 }) {
-  const { addNotification } = useNotificationStore();
+  const router = useRouter();
+  const session = useUserStateContext();
+  const user = session[0]?.user;
 
-  const defaultInput: PatientUpdateInput = {
+  const { addNotification } = useNotificationStore();
+  const [editPatient, { loading }] = useMutation<ModifyPatientMutation, ModifyPatientMutationVariables>(modifyPatientMutation);
+
+  const defaultInput: PatientModifyInput = {
     name: patient?.name || "",
     dateOfBirth: patient?.dateOfBirth || new Date().toLocaleDateString(),
     email: patient?.email || "",
-    phone: patient?.phone.substring(2) || "",
+    phone: patient?.phone || "",
     address: {
       city: patient?.address.city || "",
       line1: patient?.address.line1 || "",
@@ -38,7 +57,8 @@ export function GeneralInformation({
     heightInInches: patient?.heightInInches || 0,
     weightInLbs: patient?.weights?.[patient.weights.length - 1]?.value || 0,
     patientId: patient?._id || "",
-    gender: patient?.gender || "Male",
+    gender: patient?.gender || Gender.Male,
+    providerId: patient?.provider?._id,
   };
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
@@ -54,13 +74,13 @@ export function GeneralInformation({
     ),
     "Email Address": patient?.email,
     "Phone Number": patient?.phone,
-    "Address": `${patient?.address?.line1 || ""}, ${
-      (patient?.address?.line2 && ",") || ""
-    } ${patient?.address?.city}, ${patient?.address?.state}, ${
-      patient?.address?.postalCode
-    }`,
-    "Height In Inches": patient?.heightInInches,
-    "Weight": patient?.weights?.[patient.weights.length - 1]?.value,
+    "Provider": `${patient?.provider?.firstName} ${patient?.provider?.lastName}`,
+    "Address": `${patient?.address?.line1 || ""}, ${(patient?.address?.line2 && ",") || ""
+      } ${patient?.address?.city}, ${patient?.address?.state}, ${patient?.address?.postalCode
+      }`,
+    "Gender": `${patient?.gender === Gender.Male ? "Male" : "Female"}`,
+    "Height": convertInchesToFeetInches(patient?.heightInInches),
+    "Weight": `${patient?.weights?.[patient.weights.length - 1]?.value}lbs`,
     "Attachments":
       patientImages.length > 0 ? (
         <div
@@ -103,6 +123,11 @@ export function GeneralInformation({
     email: Yup.string()
       .required("Please enter an email address.")
       .email("Please enter a valid email address."),
+    password: Yup.string()
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character."
+      ),
     phone: Yup.string()
       .required("Please enter a phone number.")
       .test("phone", "Please enter a valid phone number.", (value) => {
@@ -115,7 +140,6 @@ export function GeneralInformation({
       state: Yup.string().required("Please enter a state."),
       postalCode: Yup.string().required("Please enter a zip code."),
     }),
-
     heightInInches: Yup.number()
       .required("Please enter a height.")
       .min(48, "Please enter a valid height.")
@@ -124,6 +148,7 @@ export function GeneralInformation({
       .required("Please provide a weight.")
       .min(80, "The weight must be greater than or equal to 80.")
       .max(800, "The weight must be less than or equal to 800."),
+    providerId: Yup.string().required("Please select a provider."),
   });
 
   const patientForm = useFormik({
@@ -131,16 +156,40 @@ export function GeneralInformation({
     enableReinitialize: true,
     validateOnChange: false,
     validationSchema: patientInfoSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setSubmitting }) => {
+      setSubmitting(true);
       // console.log(values);
+      const resp = await editPatient({
+        variables: {
+          input: values
+        }
+      })
 
+      if (resp.errors) {
+        addNotification({
+          description: "An error occured updating patient!",
+          id: "update-patient-info-failure",
+          type: "error",
+          title: "Error",
+        })
+        return
+      }
+
+      console.log("REFETCHING PATIENT")
+      await wait(2000);
+      await refetchPatient();
+      setSubmitting(false);
       setIsEdit(false);
+      resetForm();
       addNotification({
         description: "Patient information successfully updated.",
         id: "update-patient-info-success",
         type: "success",
         title: "Success",
       });
+      if (user?.role === Role.Practitioner && values.providerId !== defaultInput.providerId) {
+        router.replace("/dashboard/patients?reload=true")
+      }
     },
   });
 
@@ -173,8 +222,11 @@ export function GeneralInformation({
             <Button onClick={() => setIsEdit(true)}>Edit</Button>
           )}
         </div>
-        {isEdit && !patientLoading ? (
-          <InformationForm addressValues={patientForm.values.address} />
+        {isEdit && !patientLoading && patientForm.values.address ? (
+          <InformationForm
+            addressValues={patientForm.values.address}
+            currentProviderId={patient?.provider?._id || ""}
+          />
         ) : (
           <TableUserObject user={patientTable} loading={patientLoading} />
         )}

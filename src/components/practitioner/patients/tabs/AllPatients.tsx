@@ -10,7 +10,7 @@ import {
   Table,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField } from "@src/components/ui/TextField";
 import { SearchIcon } from "@heroicons/react/solid";
 import {
@@ -159,14 +159,29 @@ export function AllPatientsTable({
   query: QueryResult<any, OperationVariables>;
 }) {
   const router = useRouter();
+  const reload = router.query["reload"];
+  const { data, error, loading, refetch } = query;
+  const [reloading, setReloading] = useState(false);
 
-  const { data, error, loading } = query;
+  useEffect(() => {
+    if (!reload) return
+    if (reloading) return
+
+    const reloadPatients = async () => {
+      setReloading(true);
+      await refetch();
+      router.replace("/dashboard/patients");
+      setReloading(false);
+    }
+
+    reloadPatients();
+  }, [reload])
+
 
   return (
     <div className="max-h-[50vh]">
-      <p className="text-lg">{`${
-        table?.getCoreRowModel().rows.length
-      } Patients`}</p>
+      <p className="text-lg">{`${table?.getCoreRowModel().rows.length
+        } Patients`}</p>
       <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
         <table className="divide-y divide-gray-300  table-fixed w-auto rounded-md overflow-hidden min-w-full">
           <thead>
@@ -178,9 +193,9 @@ export function AllPatientsTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </div>
                   </th>
                 ))}
@@ -217,9 +232,8 @@ export function AllPatientsTable({
                                   </div>
                                 )}
                                 <div
-                                  className={`${
-                                    j === 0 ? "w-24" : "w-[60%]"
-                                  } mt-3 `}
+                                  className={`${j === 0 ? "w-24" : "w-[60%]"
+                                    } mt-3 `}
                                 >
                                   <PlaceHolderLine />
                                 </div>

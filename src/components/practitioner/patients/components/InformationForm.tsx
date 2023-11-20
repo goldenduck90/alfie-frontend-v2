@@ -1,20 +1,51 @@
-import React from "react";
-import { CalendarIcon } from "@heroicons/react/solid";
+import React, { useMemo } from "react";
+import { CalendarIcon, LockClosedIcon } from "@heroicons/react/solid";
 import { MailIcon, PhoneIcon } from "@heroicons/react/solid";
-
-import { AddressInput } from "@src/graphql/generated";
+import { AddressInput, GetAllProvidersQuery, GetAllProvidersQueryVariables } from "@src/graphql/generated";
 import { AddressForm } from "@src/components/ui/AddressForm";
 import { TextInput } from "@src/components/inputs/TextInput";
 import { DateInput } from "@src/components/inputs/DateInput";
 import { IconInput } from "@src/components/inputs/IconInput";
 import { SelectInput } from "@src/components/inputs/SelectInput";
 import { NumberInput } from "@src/components/inputs/NumbeInput";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/client";
+
+const getAllProvider = gql`
+  query GetAllProviders($state: String!) {
+    allProviders(state: $state) {
+      providers {
+        _id
+        firstName
+        lastName
+      }
+    }
+  }
+`
 
 export function InformationForm({
   addressValues,
+  currentProviderId,
 }: {
   addressValues: AddressInput;
+  currentProviderId: string;
 }) {
+  const { data, loading } = useQuery<GetAllProvidersQuery, GetAllProvidersQueryVariables>(getAllProvider, {
+    variables: {
+      state: addressValues.state,
+    },
+  });
+
+  const providers = useMemo(() => {
+    if (loading || !data) return []
+
+    return data?.allProviders.providers.map((p) => ({
+      label: `${p.firstName} ${p.lastName}`,
+      value: p._id,
+      selected: p._id.toString() === currentProviderId,
+    }))
+  }, [data, loading])
+
   return (
     <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300 bg-white">
       <div className="flex flex-col md:flex-row gap-x-4 px-6 py-4">
@@ -51,6 +82,17 @@ export function InformationForm({
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-x-4 px-6 py-4">
+        <p className="capitalize min-w-[275px] font-bold">Password</p>
+        <div className="w-full md:w-[300px]">
+          <IconInput
+            name="password"
+            placeholder="Enter a password..."
+            type="password"
+            icon={<LockClosedIcon className="h-5 w-5 text-brand-berry" />}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-row gap-x-4 px-6 py-4">
         <p className="capitalize min-w-[275px] font-bold">Phone Number</p>
         <div className="w-full md:w-[300px]">
           <IconInput
@@ -58,6 +100,16 @@ export function InformationForm({
             placeholder="Phone number is..."
             type="tel"
             icon={<PhoneIcon className="h-5 w-5 text-brand-berry" />}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-row gap-x-4 px-6 py-4">
+        <p className="capitalize min-w-[275px] font-bold">Provider</p>
+        <div className="w-full md:w-[300px]">
+          <SelectInput
+            name="providerId"
+            placeholder="Select a provider..."
+            options={providers}
           />
         </div>
       </div>
