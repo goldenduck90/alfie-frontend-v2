@@ -25,6 +25,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
+import { Role } from "@src/graphql/generated";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -81,7 +82,7 @@ function AppointmentDetails() {
     userId,
   } = data?.appointment || {};
 
-  const isProvider = session[0]?.user?.role !== "Patient";
+  const isProvider = session[0]?.user?.role !== Role.Patient;
   const firstNameInitial = isProvider
     ? eaCustomer?.name?.charAt(0).toUpperCase()
     : eaProvider?.name?.charAt(0).toUpperCase();
@@ -94,9 +95,8 @@ function AppointmentDetails() {
       subtitle={
         loading
           ? "Loading Details..."
-          : `Online appointment scheduled with ${
-              isProvider ? eaCustomer?.name : eaProvider?.name
-            }.`
+          : `Online appointment scheduled with ${isProvider ? eaCustomer?.name : eaProvider?.name
+          }.`
       }
       hasBackButton={true}
     >
@@ -163,8 +163,8 @@ function AppointmentDetails() {
                       {startDate.isToday()
                         ? `Today @ ${startDate.format("h:mm A")}`
                         : startDate.isTomorrow()
-                        ? `Tomorrow @ ${startDate.format("h:mm A")}`
-                        : startDate.format("MM-DD-YYYY @ h:mm A")}{" "}
+                          ? `Tomorrow @ ${startDate.format("h:mm A")}`
+                          : startDate.format("MM-DD-YYYY @ h:mm A")}{" "}
                       - {dayjs(end).format("h:mm A")}{" "}
                       {`(${getTimeZone(TZ_FORMAT.SHORT)})`}
                     </h2>
@@ -244,7 +244,7 @@ function AppointmentDetails() {
                 <Button
                   disabled={loading || hasStarted}
                   buttonType="urgent"
-                  onClick={() => {}}
+                  onClick={() => { }}
                 >
                   Cancel this visit
                 </Button>
@@ -261,7 +261,7 @@ function AppointmentDetails() {
             <DialogModal
               triggerAsChild
               trigger={
-                <Button disabled={loading || hasStarted} onClick={() => {}}>
+                <Button disabled={loading || hasStarted} onClick={() => { }}>
                   Reschedule
                 </Button>
               }
@@ -271,7 +271,7 @@ function AppointmentDetails() {
                 start={start}
                 end={end}
                 notes={notes}
-                userId={isProvider ? userId : undefined}
+                userId={userId}
                 eaCustomerName={eaCustomer?.name}
                 healthCoach={String(eaProvider?.id) === "118"}
                 onComplete={() => {

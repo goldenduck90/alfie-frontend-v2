@@ -47,9 +47,8 @@ export const DateInput = ({
           {icon}
         </span>
         <DatePicker
-          className={`${
-            error ? "border-red-500" : "border-gray-300"
-          } w-full py-1 rounded-2xl border-2 pl-10 placeholder-gray-400 bg-white text-black`}
+          className={`${error ? "border-red-500" : "border-gray-300"
+            } w-full py-1 rounded-2xl border-2 pl-10 placeholder-gray-400 bg-white text-black`}
           placeholderText={placeholder}
           {...props}
           selected={new Date(value)}

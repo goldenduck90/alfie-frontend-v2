@@ -13,6 +13,7 @@ import { ChooseTaskIcon } from "@src/components/ChooseTaskIcon";
 import { Button } from "@src/components/ui/Button";
 import { PlaceHolderLine } from "@src/components/ui/PlaceHolderLine";
 import { TaskType, User, Alert, SeverityType } from "@src/graphql/generated";
+import { GeneralInformation } from "../components/GeneralInformation";
 import { BloodPressureChart } from "../components/BloodPressureChart";
 import { MedicalQuestionnaire } from "../components/MedicalQuestionnaire";
 import { PatientTasks } from "../components/PatientTasks";
@@ -38,6 +39,11 @@ const GetUserById = gql`
       email
       phone
       role
+      provider {
+        _id
+        firstName
+        lastName
+      }
       dateOfBirth
       address {
         line1
@@ -126,11 +132,13 @@ export function IndividualPatientTabs() {
   const patientId = router.query.patientId as string;
   const activeTab = (router?.query?.tab as string) || TabList[0];
 
-  const { data, loading, error } = useQuery(GetUserById, {
+  const { data, loading, refetch } = useQuery(GetUserById, {
     variables: {
       userId: patientId,
     },
+    nextFetchPolicy: "network-only",
   });
+
   const taskData = useQuery(getTasksQuery, {
     variables: {
       userId: patientId,
@@ -138,49 +146,6 @@ export function IndividualPatientTabs() {
   });
 
   const patient: User = data?.getUserById;
-
-  const patientImages =
-    patient?.files?.filter(
-      ({ signedUrl, contentType }) => signedUrl && contentType.includes("image")
-    ) ?? [];
-
-  const patientTable = {
-    "Full Name": patient?.name,
-    "Date of Birth": dayjs(patient?.dateOfBirth, { utc: true }).format(
-      "MM/DD/YYYY"
-    ),
-    "Email Address": patient?.email,
-    "Phone Number": patient?.phone,
-    "Address": `${patient?.address?.line1 || ""}, ${
-      (patient?.address?.line2 && ",") || ""
-    } ${patient?.address?.city}, ${patient?.address?.state}, ${
-      patient?.address?.postalCode
-    }`,
-    "Height In Inches": patient?.heightInInches,
-    "Weight": patient?.weights?.[patient.weights.length - 1]?.value,
-    "Attachments":
-      patientImages.length > 0 ? (
-        <div
-          style={{ display: "flex", gap: 10, overflowY: "auto", padding: 6 }}
-        >
-          {patientImages.map(({ signedUrl, key }, idx) => (
-            <img
-              key={idx}
-              src={signedUrl}
-              alt={key}
-              title={key}
-              style={{ objectFit: "contain", maxHeight: 200 }}
-            />
-          ))}
-        </div>
-      ) : (
-        "No Attachments"
-      ),
-    "Payment Method": patient?.stripeSubscriptionId
-      ? "Cash Pay"
-      : "Insurance Pay",
-    "Signup Partner": patient?.signupPartner?.title ?? "N/A",
-  };
 
   const chartInformation: {
     [key in TaskType]: {
@@ -247,7 +212,11 @@ export function IndividualPatientTabs() {
             loading={loading}
             activeTasks={activeTasks}
           />
-          <TableUserObject user={patientTable} loading={loading} />
+          <GeneralInformation
+            patient={patient}
+            patientLoading={loading}
+            refetchPatient={refetch}
+          />
 
           {/*//? ADHOC SCHEDULING */}
           <AdhocSchedule patient={patient} />
@@ -350,53 +319,7 @@ function TableInformationHeader({
   );
 }
 
-export function TableUserObject({
-  user,
-  loading,
-}: {
-  user: any;
-  loading?: boolean;
-}) {
-  if (!user) return null;
-  return (
-    <div className="">
-      <div className="min-w-full mt-6 border border-gray-200 rounded-md divide-y divide-y-gray-300 bg-white">
-        {Object.keys(user).map((key) => {
-          if (!user[key] && !loading) {
-            return null;
-          }
-          return (
-            <div
-              key={key}
-              className="flex flex-col md:flex-row gap-x-4 px-6 py-4"
-            >
-              <p className="capitalize min-w-[275px] font-bold">{key}</p>
-              {loading ? (
-                <div className="w-1/4 h-6 flex items-center">
-                  <PlaceHolderLine hasTopMargin />
-                </div>
-              ) : typeof user[key] !== "object" ||
-                React.isValidElement(user[key]) ? (
-                <div className="text-gray-600">{user[key]}</div>
-              ) : (
-                <p className="text-gray-600">
-                  {Object.keys(user[key]).map((subKey) => (
-                    <p className="text-gray-600">
-                      <strong>{subKey}:</strong>{" "}
-                      {Array.isArray(user[key][subKey])
-                        ? user[key][subKey]?.join(", ")
-                        : user[key][subKey]?.toString()}
-                    </p>
-                  ))}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+
 
 function TabTitle({
   value,
@@ -410,9 +333,8 @@ function TabTitle({
   return (
     <Tabs.Trigger
       value={value}
-      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${
-        active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
-      }`}
+      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
+        }`}
     >
       {children}
     </Tabs.Trigger>

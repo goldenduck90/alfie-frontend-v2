@@ -16,6 +16,7 @@ import { TaskType } from "@src/graphql/generated";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import { useUserStateContext } from "@src/context/SessionContext";
 
 export const TaskSelector = ({
   type,
@@ -29,6 +30,8 @@ export const TaskSelector = ({
   createdAt?: Date;
 }) => {
   const router = useRouter();
+  const session = useUserStateContext();
+  const userId = session[0]?.user?._id || "";
 
   switch (type) {
     case TaskType.IdAndInsuranceUpload:
@@ -108,7 +111,10 @@ export const TaskSelector = ({
     case TaskType.ScheduleAppointment:
       return (
         <DialogModal triggerAsChild trigger={trigger}>
-          <ScheduleAppointment userTaskId={userTaskId} />
+          <ScheduleAppointment
+            userTaskId={userTaskId}
+            userId={userId}
+          />
         </DialogModal>
       );
     case TaskType.ScheduleHealthCoachAppointment:
@@ -116,6 +122,7 @@ export const TaskSelector = ({
         <DialogModal triggerAsChild trigger={trigger}>
           <ScheduleAppointment
             userTaskId={userTaskId}
+            userId={userId}
             healthCoach
           />
         </DialogModal>

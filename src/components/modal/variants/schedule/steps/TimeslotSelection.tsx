@@ -53,8 +53,6 @@ export const TimeslotSelection = () => {
   const [, { value: healthCoach }] = useField("healthCoach");
   const [, { value: userId }] = useField("userId");
 
-  const session = useUserStateContext();
-  const isProvider = session[0]?.user?.role !== "Patient";
   const timezone = dayjs.tz.guess();
 
   const { loading, data, error } = useQuery(getTimeslotsQuery, {
@@ -62,14 +60,12 @@ export const TimeslotSelection = () => {
       input: {
         timezone,
         selectedDate: dayjs(selectedDate).format("YYYY-MM-DD"),
-        bypassNotice: isProvider ? true : false,
+        bypassNotice: false,
         healthCoach,
         ...(eaAppointmentId && {
           appointmentId: eaAppointmentId,
         }),
-        ...(userId && {
-          userId,
-        })
+        userId,
       }
     },
   });
@@ -94,7 +90,6 @@ export const TimeslotSelection = () => {
     if (userId && !data?.timeslots?.eaCustomer) return;
 
     setProvider(data?.timeslots?.eaProvider);
-
     if (userId) {
       setCustomer(data?.timeslots?.eaCustomer);
     }

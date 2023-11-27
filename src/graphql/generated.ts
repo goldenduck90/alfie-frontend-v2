@@ -17,6 +17,10 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AcknowledgeAlertInput = {
+  id: Scalars['String'];
+};
+
 export type Address = {
   __typename?: 'Address';
   city: Scalars['String'];
@@ -473,12 +477,14 @@ export type GetAppointmentInput = {
 };
 
 export type GetAppointmentsByDateInput = {
+  providerId?: InputMaybe<Scalars['String']>;
   selectedDate: Scalars['String'];
   timezone: Scalars['String'];
 };
 
 export type GetAppointmentsByMonthInput = {
   month: Scalars['Float'];
+  providerId?: InputMaybe<Scalars['String']>;
   timezone: Scalars['String'];
 };
 
@@ -488,7 +494,7 @@ export type GetTimeslotsInput = {
   healthCoach?: InputMaybe<Scalars['Boolean']>;
   selectedDate: Scalars['String'];
   timezone: Scalars['String'];
-  userId?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
 };
 
 export type GetUserTasksInput = {
@@ -572,12 +578,12 @@ export type InsuranceCheckResponse = {
 export type InsuranceDetails = {
   __typename?: 'InsuranceDetails';
   dependents?: Maybe<Array<InsurancePerson>>;
-  groupId: Scalars['String'];
+  groupId?: Maybe<Scalars['String']>;
   insurance: Insurance;
   memberId: Scalars['String'];
   payorId?: Maybe<Scalars['String']>;
   payorName?: Maybe<Scalars['String']>;
-  primary: InsurancePerson;
+  primary?: Maybe<InsurancePerson>;
   rxBIN?: Maybe<Scalars['String']>;
   rxGroup?: Maybe<Scalars['String']>;
   rxPCN?: Maybe<Scalars['String']>;
@@ -587,7 +593,7 @@ export type InsuranceDetails = {
 
 export type InsuranceDetailsInput = {
   dependents?: InputMaybe<Array<InsurancePersonInput>>;
-  groupId: Scalars['String'];
+  groupId?: InputMaybe<Scalars['String']>;
   groupName?: InputMaybe<Scalars['String']>;
   insuranceId: Scalars['String'];
   memberId: Scalars['String'];
@@ -648,7 +654,6 @@ export enum InsuranceStatus {
 
 export type InsuranceTextractDetails = {
   __typename?: 'InsuranceTextractDetails';
-  company?: Maybe<Scalars['String']>;
   groupId?: Maybe<Scalars['String']>;
   memberId?: Maybe<Scalars['String']>;
   type?: Maybe<InsuranceType>;
@@ -704,6 +709,7 @@ export type MetriportConnectResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acknowledgeAlert: Alert;
   archiveTask: UserTask;
   assignTaskToUser: UserTask;
   batchCreateOrUpdateProviders?: Maybe<BatchCreateOrUpdateProvidersResponse>;
@@ -728,15 +734,16 @@ export type Mutation = {
   insuranceTextract: InsuranceTextractResponse;
   internalBulkPatientReassign: Scalars['Boolean'];
   internalOpsCreateNewProvider: User;
-  internalOpsModifyProvider: User;
   internalPatientModify: Scalars['Boolean'];
   internalPatientReassign: User;
+  internalProviderModify: Scalars['Boolean'];
   login: LoginResponse;
   recordScaleReading: User;
   requestSignedUrls: Array<SignedUrlResponse>;
   resetPassword: LoginResponse;
   runPostAppointmentJob: MessageResponse;
   scorePatients: Score;
+  submitSurvey: Nps;
   subscribeEmail: MessageResponse;
   updateAppointment: EaAppointment;
   updateAppointmentAttended: MessageResponse;
@@ -744,6 +751,11 @@ export type Mutation = {
   updateProviderSchedule: UpdateScheduleMessage;
   updateUserTask: UserTask;
   uploadDocument: AkuteDocument;
+};
+
+
+export type MutationAcknowledgeAlertArgs = {
+  input: AcknowledgeAlertInput;
 };
 
 
@@ -867,11 +879,6 @@ export type MutationInternalOpsCreateNewProviderArgs = {
 };
 
 
-export type MutationInternalOpsModifyProviderArgs = {
-  input: ProviderModifyInput;
-};
-
-
 export type MutationInternalPatientModifyArgs = {
   input: PatientModifyInput;
 };
@@ -879,6 +886,11 @@ export type MutationInternalPatientModifyArgs = {
 
 export type MutationInternalPatientReassignArgs = {
   input: PatientReassignInput;
+};
+
+
+export type MutationInternalProviderModifyArgs = {
+  input: ProviderModifyInput;
 };
 
 
@@ -904,6 +916,11 @@ export type MutationResetPasswordArgs = {
 
 export type MutationScorePatientsArgs = {
   userId: Scalars['String'];
+};
+
+
+export type MutationSubmitSurveyArgs = {
+  input: NpsInput;
 };
 
 
@@ -946,6 +963,25 @@ export type MutationUploadDocumentArgs = {
   input: DocUploadInput;
 };
 
+export type Nps = {
+  __typename?: 'NPS';
+  _id: Scalars['String'];
+  appointmentId: Scalars['String'];
+  createdAt?: Maybe<Scalars['DateTime']>;
+  feedback?: Maybe<Scalars['String']>;
+  score?: Maybe<Scalars['Float']>;
+  textAnswer?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user: User;
+};
+
+export type NpsInput = {
+  feedback?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+  score: Scalars['Float'];
+  textAnswer?: InputMaybe<Scalars['String']>;
+};
+
 export type PartialUser = {
   __typename?: 'PartialUser';
   _id: Scalars['String'];
@@ -957,14 +993,17 @@ export type PartialUser = {
 };
 
 export type PatientModifyInput = {
-  address: AddressInput;
-  dateOfBirth: Scalars['DateTime'];
-  email: Scalars['String'];
-  gender: Scalars['String'];
-  insurance?: InputMaybe<InsuranceDetailsInput>;
-  name: Scalars['String'];
+  address?: InputMaybe<AddressInput>;
+  dateOfBirth?: InputMaybe<Scalars['DateTime']>;
+  email?: InputMaybe<Scalars['String']>;
+  gender?: InputMaybe<Gender>;
+  heightInInches?: InputMaybe<Scalars['Float']>;
+  name?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
   patientId: Scalars['String'];
-  phoneNumber: Scalars['String'];
+  phone?: InputMaybe<Scalars['String']>;
+  providerId?: InputMaybe<Scalars['String']>;
+  weightInLbs?: InputMaybe<Scalars['Float']>;
 };
 
 export type PatientReassignInput = {
@@ -1030,21 +1069,26 @@ export type ProviderInput = {
   type: Role;
 };
 
+export type ProviderListResponse = {
+  __typename?: 'ProviderListResponse';
+  providers: Array<Provider>;
+};
+
 export type ProviderModifyInput = {
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  licensedStates: Array<Scalars['String']>;
-  npi: Scalars['String'];
-  providerCode: Scalars['String'];
+  email?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  licensedStates?: InputMaybe<Array<Scalars['String']>>;
+  npi?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
   providerId: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  acknowledgeAlert: Array<Alert>;
   addressDetail: Address;
   addressSuggestions: Array<AddressSuggestion>;
+  allProviders: ProviderListResponse;
   allUserTasks: UserTaskList;
   allUserTasksByUserId?: Maybe<Array<UserTask>>;
   appointment: EaAppointment;
@@ -1064,11 +1108,13 @@ export type Query = {
   getRole: RoleResponse;
   getSignupPartnerByTitle: SingupPartnerResponse;
   getSignupPartnerProviders: Array<SignupPartnerProvider>;
+  getSurvey: Nps;
   getUserById: User;
   insurances: Array<Insurance>;
   me: User;
   pharmacyLocations: Array<PharmacyLocationResult>;
   places: Array<GooglePlacesSearchResult>;
+  provider: Provider;
   reverseGeoCode: Array<GoogleReverseGeoCodeResult>;
   task?: Maybe<Task>;
   timeslots: TimeslotsResponse;
@@ -1082,11 +1128,6 @@ export type Query = {
 };
 
 
-export type QueryAcknowledgeAlertArgs = {
-  alertId: Scalars['String'];
-};
-
-
 export type QueryAddressDetailArgs = {
   placeId: Scalars['String'];
 };
@@ -1094,6 +1135,11 @@ export type QueryAddressDetailArgs = {
 
 export type QueryAddressSuggestionsArgs = {
   query: AddressQuery;
+};
+
+
+export type QueryAllProvidersArgs = {
+  state?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1158,6 +1204,11 @@ export type QueryGetSignupPartnerProvidersArgs = {
 };
 
 
+export type QueryGetSurveyArgs = {
+  id: Scalars['String'];
+};
+
+
 export type QueryGetUserByIdArgs = {
   userId: Scalars['String'];
 };
@@ -1170,6 +1221,11 @@ export type QueryPharmacyLocationsArgs = {
 
 export type QueryPlacesArgs = {
   input: GooglePlacesSearchInput;
+};
+
+
+export type QueryProviderArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -1429,6 +1485,7 @@ export type TimeslotsResponse = {
 };
 
 export type UpcomingAppointmentsInput = {
+  providerId?: InputMaybe<Scalars['String']>;
   selectedDate?: InputMaybe<Scalars['String']>;
   timezone: Scalars['String'];
 };
@@ -1472,10 +1529,14 @@ export type User = {
   generatedSummary?: Maybe<Scalars['String']>;
   hasScale?: Maybe<Scalars['Boolean']>;
   heightInInches: Scalars['Float'];
+  inactive?: Maybe<Scalars['Boolean']>;
   insurance?: Maybe<InsuranceDetails>;
   labOrderSent?: Maybe<Scalars['Boolean']>;
+  lastMetriportConsolidatedQuery?: Maybe<Scalars['DateTime']>;
   meetingRoomUrl?: Maybe<Scalars['String']>;
   meetingUrl?: Maybe<Scalars['String']>;
+  metriportFacilityId?: Maybe<Scalars['String']>;
+  metriportPatientId?: Maybe<Scalars['String']>;
   metriportUserId?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   password: Scalars['String'];
@@ -1593,6 +1654,18 @@ export type Weight = {
   value: Scalars['Float'];
 };
 
+export type ModifyProviderMutationVariables = Exact<{
+  input: ProviderModifyInput;
+}>;
+
+
+export type ModifyProviderMutation = { __typename?: 'Mutation', internalProviderModify: boolean };
+
+export type GetAllProvidersAdminQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllProvidersAdminQuery = { __typename?: 'Query', allProviders: { __typename?: 'ProviderListResponse', providers: Array<{ __typename?: 'Provider', _id: string, firstName: string, lastName: string, email: string, numberOfPatients?: number | null }> } };
+
 export type CancelAppointmentMutationVariables = Exact<{
   input: GetAppointmentInput;
 }>;
@@ -1640,8 +1713,7 @@ export type InsuranceTextractMutationVariables = Exact<{
 }>;
 
 
-export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insurance?: { __typename?: 'InsuranceTextractDetails', company?: string | null, type?: InsuranceType | null, memberId?: string | null, groupId?: string | null } | null } };
-
+export type InsuranceTextractMutation = { __typename?: 'Mutation', insuranceTextract: { __typename?: 'InsuranceTextractResponse', words: Array<string>, lines: Array<string>, insurance?: { __typename?: 'InsuranceTextractDetails', type?: InsuranceType | null, memberId?: string | null, groupId?: string | null } | null } };
 
 export type InsurancesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1661,11 +1733,6 @@ export type CompleteUploadFilesMutationVariables = Exact<{
 
 
 export type CompleteUploadFilesMutation = { __typename?: 'Mutation', completeUpload: { __typename?: 'User', _id: string } };
-
-export type GetRoleQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetRoleQuery = { __typename?: 'Query', getRole: { __typename?: 'RoleResponse', role: Role } };
 
 export type UpdateAppointmentMutationMutationVariables = Exact<{
   input: UpdateAppointmentInput;
@@ -1717,7 +1784,14 @@ export type GetUserCompletedAppointmentTasksInMonthQuery = { __typename?: 'Query
 export type GetAlertsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAlertsQuery = { __typename?: 'Query', getAlerts: Array<{ __typename?: 'Alert', _id: string, title: string, description: string, severity: SeverityType, medical: boolean, user: { __typename?: 'User', _id: string, name: string, email: string } }> };
+export type GetAlertsQuery = { __typename?: 'Query', getAlerts: Array<{ __typename?: 'Alert', _id: string, title: string, description: string, severity: SeverityType, medical: boolean, acknowledgedAt?: any | null, user: { __typename?: 'User', _id: string, name: string, email: string } }> };
+
+export type ModifyPatientMutationVariables = Exact<{
+  input: PatientModifyInput;
+}>;
+
+
+export type ModifyPatientMutation = { __typename?: 'Mutation', internalPatientModify: boolean };
 
 export type GetUserSummaryQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -1726,12 +1800,19 @@ export type GetUserSummaryQueryVariables = Exact<{
 
 export type GetUserSummaryQuery = { __typename?: 'Query', generateSummary: { __typename?: 'User', generatedSummary?: string | null } };
 
+export type GetAllProvidersQueryVariables = Exact<{
+  state?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetAllProvidersQuery = { __typename?: 'Query', allProviders: { __typename?: 'ProviderListResponse', providers: Array<{ __typename?: 'Provider', _id: string, firstName: string, lastName: string }> } };
+
 export type GetUserQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', _id: string, textOptIn?: boolean | null, meetingRoomUrl?: string | null, generatedSummary?: string | null, name: string, email: string, phone: string, role: Role, dateOfBirth: any, gender: Gender, heightInInches: number, akutePatientId?: string | null, stripeCustomerId?: string | null, stripeSubscriptionId?: string | null, eaCustomerId?: string | null, eaHealthCoachId?: string | null, subscriptionExpiresAt: any, pharmacyLocation?: string | null, meetingUrl?: string | null, labOrderSent?: boolean | null, bmi?: number | null, address: { __typename?: 'Address', line1: string, line2?: string | null, city: string, state: string, postalCode: string, country?: string | null }, weights: Array<{ __typename?: 'Weight', value: number, date: any }>, classifications?: Array<{ __typename?: 'Classification', classification: string, calculatedPercentile?: number | null, percentile: number, date: any }> | null, files: Array<{ __typename?: 'File', key: string, signedUrl: string, contentType: string, metadata?: Array<{ __typename?: 'FileMetadata', key: string, value: string }> | null }>, signupPartner?: { __typename?: 'SignupPartner', title: string } | null } };
+export type GetUserQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', _id: string, textOptIn?: boolean | null, meetingRoomUrl?: string | null, generatedSummary?: string | null, name: string, email: string, phone: string, role: Role, dateOfBirth: any, gender: Gender, heightInInches: number, akutePatientId?: string | null, stripeCustomerId?: string | null, stripeSubscriptionId?: string | null, eaCustomerId?: string | null, eaHealthCoachId?: string | null, subscriptionExpiresAt: any, pharmacyLocation?: string | null, meetingUrl?: string | null, labOrderSent?: boolean | null, bmi?: number | null, provider?: { __typename?: 'Provider', _id: string, firstName: string, lastName: string } | null, address: { __typename?: 'Address', line1: string, line2?: string | null, city: string, state: string, postalCode: string, country?: string | null }, weights: Array<{ __typename?: 'Weight', value: number, date: any }>, classifications?: Array<{ __typename?: 'Classification', classification: string, calculatedPercentile?: number | null, percentile: number, date: any }> | null, files: Array<{ __typename?: 'File', key: string, signedUrl: string, contentType: string, metadata?: Array<{ __typename?: 'FileMetadata', key: string, value: string }> | null }>, signupPartner?: { __typename?: 'SignupPartner', title: string } | null } };
 
 export type GetAllUserTasksByUserQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -1746,6 +1827,13 @@ export type GetAlertsByPatientQueryVariables = Exact<{
 
 
 export type GetAlertsByPatientQuery = { __typename?: 'Query', getAlertsByPatient: Array<{ __typename?: 'Alert', _id: string, title: string, description: string, severity: SeverityType, medical: boolean, acknowledgedAt?: any | null, notifiedAt?: any | null, createdAt?: any | null, user: { __typename?: 'User', _id: string, name: string, email: string }, task: { __typename?: 'Task', _id: string, type: TaskType } }> };
+
+export type AcknowledgeAlertMutationVariables = Exact<{
+  input: AcknowledgeAlertInput;
+}>;
+
+
+export type AcknowledgeAlertMutation = { __typename?: 'Mutation', acknowledgeAlert: { __typename?: 'Alert', _id: string, acknowledgedAt?: any | null } };
 
 export type UserSendbirdChannelQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -1827,6 +1915,20 @@ export type CreateOrFindCheckoutMutationVariables = Exact<{
 
 export type CreateOrFindCheckoutMutation = { __typename?: 'Mutation', createOrFindCheckout: { __typename?: 'CheckoutResponse', message?: string | null, checkout: { __typename?: 'Checkout', _id: string } } };
 
+export type GetSurveyQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetSurveyQuery = { __typename?: 'Query', getSurvey: { __typename?: 'NPS', _id: string, score?: number | null } };
+
+export type SubmitSurveyMutationVariables = Exact<{
+  input: NpsInput;
+}>;
+
+
+export type SubmitSurveyMutation = { __typename?: 'Mutation', submitSurvey: { __typename?: 'NPS', _id: string } };
+
 export type GetAddressSuggestionsQueryVariables = Exact<{
   query: AddressQuery;
 }>;
@@ -1863,6 +1965,77 @@ export type CompleteTaskMutationVariables = Exact<{
 export type CompleteTaskMutation = { __typename?: 'Mutation', completeUserTask: { __typename?: 'UserTask', completed: boolean } };
 
 
+export const ModifyProviderDocument = gql`
+    mutation ModifyProvider($input: ProviderModifyInput!) {
+  internalProviderModify(input: $input)
+}
+    `;
+export type ModifyProviderMutationFn = Apollo.MutationFunction<ModifyProviderMutation, ModifyProviderMutationVariables>;
+
+/**
+ * __useModifyProviderMutation__
+ *
+ * To run a mutation, you first call `useModifyProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useModifyProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [modifyProviderMutation, { data, loading, error }] = useModifyProviderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useModifyProviderMutation(baseOptions?: Apollo.MutationHookOptions<ModifyProviderMutation, ModifyProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ModifyProviderMutation, ModifyProviderMutationVariables>(ModifyProviderDocument, options);
+      }
+export type ModifyProviderMutationHookResult = ReturnType<typeof useModifyProviderMutation>;
+export type ModifyProviderMutationResult = Apollo.MutationResult<ModifyProviderMutation>;
+export type ModifyProviderMutationOptions = Apollo.BaseMutationOptions<ModifyProviderMutation, ModifyProviderMutationVariables>;
+export const GetAllProvidersAdminDocument = gql`
+    query GetAllProvidersAdmin {
+  allProviders {
+    providers {
+      _id
+      firstName
+      lastName
+      email
+      numberOfPatients
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllProvidersAdminQuery__
+ *
+ * To run a query within a React component, call `useGetAllProvidersAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllProvidersAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllProvidersAdminQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllProvidersAdminQuery(baseOptions?: Apollo.QueryHookOptions<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>(GetAllProvidersAdminDocument, options);
+      }
+export function useGetAllProvidersAdminLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>(GetAllProvidersAdminDocument, options);
+        }
+export type GetAllProvidersAdminQueryHookResult = ReturnType<typeof useGetAllProvidersAdminQuery>;
+export type GetAllProvidersAdminLazyQueryHookResult = ReturnType<typeof useGetAllProvidersAdminLazyQuery>;
+export type GetAllProvidersAdminQueryResult = Apollo.QueryResult<GetAllProvidersAdminQuery, GetAllProvidersAdminQueryVariables>;
 export const CancelAppointmentDocument = gql`
     mutation CancelAppointment($input: GetAppointmentInput!) {
   cancelAppointment(input: $input) {
@@ -2092,7 +2265,6 @@ export const InsuranceTextractDocument = gql`
     mutation insuranceTextract($s3Key: String!) {
   insuranceTextract(s3Key: $s3Key) {
     insurance {
-      company
       type
       memberId
       groupId
@@ -2231,40 +2403,6 @@ export function useCompleteUploadFilesMutation(baseOptions?: Apollo.MutationHook
 export type CompleteUploadFilesMutationHookResult = ReturnType<typeof useCompleteUploadFilesMutation>;
 export type CompleteUploadFilesMutationResult = Apollo.MutationResult<CompleteUploadFilesMutation>;
 export type CompleteUploadFilesMutationOptions = Apollo.BaseMutationOptions<CompleteUploadFilesMutation, CompleteUploadFilesMutationVariables>;
-export const GetRoleDocument = gql`
-    query getRole {
-  getRole {
-    role
-  }
-}
-    `;
-
-/**
- * __useGetRoleQuery__
- *
- * To run a query within a React component, call `useGetRoleQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRoleQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetRoleQuery(baseOptions?: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, options);
-      }
-export function useGetRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, options);
-        }
-export type GetRoleQueryHookResult = ReturnType<typeof useGetRoleQuery>;
-export type GetRoleLazyQueryHookResult = ReturnType<typeof useGetRoleLazyQuery>;
-export type GetRoleQueryResult = Apollo.QueryResult<GetRoleQuery, GetRoleQueryVariables>;
 export const UpdateAppointmentMutationDocument = gql`
     mutation UpdateAppointmentMutation($input: UpdateAppointmentInput!) {
   updateAppointment(input: $input) {
@@ -2563,6 +2701,7 @@ export const GetAlertsDocument = gql`
     description
     severity
     medical
+    acknowledgedAt
     user {
       _id
       name
@@ -2598,6 +2737,37 @@ export function useGetAlertsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type GetAlertsQueryHookResult = ReturnType<typeof useGetAlertsQuery>;
 export type GetAlertsLazyQueryHookResult = ReturnType<typeof useGetAlertsLazyQuery>;
 export type GetAlertsQueryResult = Apollo.QueryResult<GetAlertsQuery, GetAlertsQueryVariables>;
+export const ModifyPatientDocument = gql`
+    mutation ModifyPatient($input: PatientModifyInput!) {
+  internalPatientModify(input: $input)
+}
+    `;
+export type ModifyPatientMutationFn = Apollo.MutationFunction<ModifyPatientMutation, ModifyPatientMutationVariables>;
+
+/**
+ * __useModifyPatientMutation__
+ *
+ * To run a mutation, you first call `useModifyPatientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useModifyPatientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [modifyPatientMutation, { data, loading, error }] = useModifyPatientMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useModifyPatientMutation(baseOptions?: Apollo.MutationHookOptions<ModifyPatientMutation, ModifyPatientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ModifyPatientMutation, ModifyPatientMutationVariables>(ModifyPatientDocument, options);
+      }
+export type ModifyPatientMutationHookResult = ReturnType<typeof useModifyPatientMutation>;
+export type ModifyPatientMutationResult = Apollo.MutationResult<ModifyPatientMutation>;
+export type ModifyPatientMutationOptions = Apollo.BaseMutationOptions<ModifyPatientMutation, ModifyPatientMutationVariables>;
 export const GetUserSummaryDocument = gql`
     query GetUserSummary($userId: String!) {
   generateSummary(userId: $userId) {
@@ -2633,6 +2803,45 @@ export function useGetUserSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetUserSummaryQueryHookResult = ReturnType<typeof useGetUserSummaryQuery>;
 export type GetUserSummaryLazyQueryHookResult = ReturnType<typeof useGetUserSummaryLazyQuery>;
 export type GetUserSummaryQueryResult = Apollo.QueryResult<GetUserSummaryQuery, GetUserSummaryQueryVariables>;
+export const GetAllProvidersDocument = gql`
+    query GetAllProviders($state: String) {
+  allProviders(state: $state) {
+    providers {
+      _id
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllProvidersQuery__
+ *
+ * To run a query within a React component, call `useGetAllProvidersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllProvidersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllProvidersQuery({
+ *   variables: {
+ *      state: // value for 'state'
+ *   },
+ * });
+ */
+export function useGetAllProvidersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllProvidersQuery, GetAllProvidersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllProvidersQuery, GetAllProvidersQueryVariables>(GetAllProvidersDocument, options);
+      }
+export function useGetAllProvidersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProvidersQuery, GetAllProvidersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllProvidersQuery, GetAllProvidersQueryVariables>(GetAllProvidersDocument, options);
+        }
+export type GetAllProvidersQueryHookResult = ReturnType<typeof useGetAllProvidersQuery>;
+export type GetAllProvidersLazyQueryHookResult = ReturnType<typeof useGetAllProvidersLazyQuery>;
+export type GetAllProvidersQueryResult = Apollo.QueryResult<GetAllProvidersQuery, GetAllProvidersQueryVariables>;
 export const GetUserDocument = gql`
     query GetUser($userId: String!) {
   getUserById(userId: $userId) {
@@ -2644,6 +2853,11 @@ export const GetUserDocument = gql`
     email
     phone
     role
+    provider {
+      _id
+      firstName
+      lastName
+    }
     dateOfBirth
     address {
       line1
@@ -2824,6 +3038,40 @@ export function useGetAlertsByPatientLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetAlertsByPatientQueryHookResult = ReturnType<typeof useGetAlertsByPatientQuery>;
 export type GetAlertsByPatientLazyQueryHookResult = ReturnType<typeof useGetAlertsByPatientLazyQuery>;
 export type GetAlertsByPatientQueryResult = Apollo.QueryResult<GetAlertsByPatientQuery, GetAlertsByPatientQueryVariables>;
+export const AcknowledgeAlertDocument = gql`
+    mutation acknowledgeAlert($input: AcknowledgeAlertInput!) {
+  acknowledgeAlert(input: $input) {
+    _id
+    acknowledgedAt
+  }
+}
+    `;
+export type AcknowledgeAlertMutationFn = Apollo.MutationFunction<AcknowledgeAlertMutation, AcknowledgeAlertMutationVariables>;
+
+/**
+ * __useAcknowledgeAlertMutation__
+ *
+ * To run a mutation, you first call `useAcknowledgeAlertMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcknowledgeAlertMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acknowledgeAlertMutation, { data, loading, error }] = useAcknowledgeAlertMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAcknowledgeAlertMutation(baseOptions?: Apollo.MutationHookOptions<AcknowledgeAlertMutation, AcknowledgeAlertMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcknowledgeAlertMutation, AcknowledgeAlertMutationVariables>(AcknowledgeAlertDocument, options);
+      }
+export type AcknowledgeAlertMutationHookResult = ReturnType<typeof useAcknowledgeAlertMutation>;
+export type AcknowledgeAlertMutationResult = Apollo.MutationResult<AcknowledgeAlertMutation>;
+export type AcknowledgeAlertMutationOptions = Apollo.BaseMutationOptions<AcknowledgeAlertMutation, AcknowledgeAlertMutationVariables>;
 export const UserSendbirdChannelDocument = gql`
     query UserSendbirdChannel($userId: String!) {
   userSendbirdChannel(userId: $userId) {
@@ -3287,6 +3535,75 @@ export function useCreateOrFindCheckoutMutation(baseOptions?: Apollo.MutationHoo
 export type CreateOrFindCheckoutMutationHookResult = ReturnType<typeof useCreateOrFindCheckoutMutation>;
 export type CreateOrFindCheckoutMutationResult = Apollo.MutationResult<CreateOrFindCheckoutMutation>;
 export type CreateOrFindCheckoutMutationOptions = Apollo.BaseMutationOptions<CreateOrFindCheckoutMutation, CreateOrFindCheckoutMutationVariables>;
+export const GetSurveyDocument = gql`
+    query getSurvey($id: String!) {
+  getSurvey(id: $id) {
+    _id
+    score
+  }
+}
+    `;
+
+/**
+ * __useGetSurveyQuery__
+ *
+ * To run a query within a React component, call `useGetSurveyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSurveyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSurveyQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetSurveyQuery(baseOptions: Apollo.QueryHookOptions<GetSurveyQuery, GetSurveyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSurveyQuery, GetSurveyQueryVariables>(GetSurveyDocument, options);
+      }
+export function useGetSurveyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSurveyQuery, GetSurveyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSurveyQuery, GetSurveyQueryVariables>(GetSurveyDocument, options);
+        }
+export type GetSurveyQueryHookResult = ReturnType<typeof useGetSurveyQuery>;
+export type GetSurveyLazyQueryHookResult = ReturnType<typeof useGetSurveyLazyQuery>;
+export type GetSurveyQueryResult = Apollo.QueryResult<GetSurveyQuery, GetSurveyQueryVariables>;
+export const SubmitSurveyDocument = gql`
+    mutation SubmitSurvey($input: NPSInput!) {
+  submitSurvey(input: $input) {
+    _id
+  }
+}
+    `;
+export type SubmitSurveyMutationFn = Apollo.MutationFunction<SubmitSurveyMutation, SubmitSurveyMutationVariables>;
+
+/**
+ * __useSubmitSurveyMutation__
+ *
+ * To run a mutation, you first call `useSubmitSurveyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitSurveyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitSurveyMutation, { data, loading, error }] = useSubmitSurveyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubmitSurveyMutation(baseOptions?: Apollo.MutationHookOptions<SubmitSurveyMutation, SubmitSurveyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubmitSurveyMutation, SubmitSurveyMutationVariables>(SubmitSurveyDocument, options);
+      }
+export type SubmitSurveyMutationHookResult = ReturnType<typeof useSubmitSurveyMutation>;
+export type SubmitSurveyMutationResult = Apollo.MutationResult<SubmitSurveyMutation>;
+export type SubmitSurveyMutationOptions = Apollo.BaseMutationOptions<SubmitSurveyMutation, SubmitSurveyMutationVariables>;
 export const GetAddressSuggestionsDocument = gql`
     query GetAddressSuggestions($query: AddressQuery!) {
   addressSuggestions(query: $query) {

@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import * as Sentry from "@sentry/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Calendar from "react-calendar";
 import { AppointmentPreviewItem } from "../ui/AppointmentPreviewItem";
 import {
@@ -18,6 +18,9 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isToday from "dayjs/plugin/isToday";
 import isTomorrow from "dayjs/plugin/isTomorrow";
+import { GetAllProvidersQuery, GetAllProvidersQueryVariables, Role } from "@src/graphql/generated";
+import { getAllProvider } from "../practitioner/patients/components/InformationForm";
+import { SelectInputNonFormik } from "../inputs/SelectInput";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -70,8 +73,31 @@ interface IMeeting {
 export const CalendarView = () => {
   const [value, onChange] = useState(new Date());
   const session = useUserStateContext();
-  const isProvider = session[0]?.user?.role !== "Patient";
-  const [reloaded, setReloaded] = useState(false);
+  const isHealthCoach = session[0]?.user?.role === Role.HealthCoach;
+  const isPatient = session[0]?.user?.role === Role.Patient;
+  const isProvider = session[0]?.user?.role === Role.Practitioner || session[0]?.user?.role === Role.Doctor || session[0]?.user?.role === Role.HealthCoach;
+  const isAdmin = session[0]?.user?.role === Role.Admin || session[0]?.user?.role === Role.CareCoordinator;
+  const [providerId, setProviderId] = useState("healthcoach");
+
+  const { data: pData } = useQuery<GetAllProvidersQuery, GetAllProvidersQueryVariables>(getAllProvider, {});
+
+  const providers = useMemo(() => {
+    if (!pData) return []
+
+    const ps = pData?.allProviders.providers.map((p: any) => ({
+      label: `${p.firstName} ${p.lastName}`,
+      value: p._id,
+      selected: p._id.toString() === providerId,
+    }))
+
+    ps.push({
+      label: `Gabrielle Hungate`,
+      value: "healthcoach",
+      selected: providerId === "healthcoach",
+    })
+
+    return ps
+  }, [pData, providerId])
 
   const {
     loading,
@@ -81,6 +107,8 @@ export const CalendarView = () => {
   } = useQuery(getAppointmentsByMonthQuery, {
     variables: {
       input: {
+        ...(isHealthCoach && ({ providerId: "healthcoach" })),
+        ...(!isHealthCoach && !isPatient && !isProvider && ({ providerId })),
         timezone: dayjs.tz.guess(),
         month: dayjs().month() + 1,
       },
@@ -91,10 +119,11 @@ export const CalendarView = () => {
     loading: loadingUpcoming,
     data: upcomingData,
     error: upcomingError,
-    refetch: refetchUpcoming,
   } = useQuery(upcomingAppointmentsQuery, {
     variables: {
       input: {
+        ...(isHealthCoach && ({ providerId: "healthcoach" })),
+        ...(!isHealthCoach && !isPatient && !isProvider && ({ providerId })),
         timezone: dayjs.tz.guess(),
         selectedDate: dayjs(new Date()).format("YYYY-MM-DD H:mm"),
       },
@@ -143,6 +172,17 @@ export const CalendarView = () => {
   return (
     <div className="flex flex-col md:flex-row gap-6 bg-white md:bg-transparent border md:border-none p-4 md:p-0 rounded-xl">
       <div className="bg-white p-2 md:border rounded-xl md:p-7">
+        {!isHealthCoach && !isProvider && !isPatient && (
+          <div className="flex items-center py-2 space-x-2">
+            <h2 className="font-semibold">Provider:</h2>
+            <SelectInputNonFormik
+              options={providers || []}
+              onChange={(v) => setProviderId(v)}
+              value={providerId}
+              placeholder="Select a provider"
+            />
+          </div>
+        )}
         <div className="flex justify-between pb-6 items-center">
           <h2 className="font-semibold">{dayjs(value).format("MMMM YYYY")}</h2>
           <div className="">
@@ -186,15 +226,15 @@ export const CalendarView = () => {
           tileContent={({ date, view }) =>
             // If a date in the month view has meetings, show a dot the meetings are found in the meetings array
             view === "month" &&
-            meetings.filter((meeting) => {
-              const isSameDay = dayjs(meeting.start).isSame(date, "date");
+              meetings.filter((meeting) => {
+                const isSameDay = dayjs(meeting.start).isSame(date, "date");
 
-              if (isSameDay) {
-                return true;
-              }
+                if (isSameDay) {
+                  return true;
+                }
 
-              return false;
-            }).length > 0 ? (
+                return false;
+              }).length > 0 ? (
               <div className="flex justify-center">
                 <div className="w-2 h-2 bg-red-400 absolute md:mt-2 rounded-full" />
               </div>
@@ -218,20 +258,20 @@ export const CalendarView = () => {
                   <AppointmentPreviewItem
                     isLoading={loading}
                     name={
-                      isProvider
+                      isProvider || isAdmin
                         ? meetingToShow.eaCustomer?.name
                         : meetingToShow.eaProvider?.name
                     }
                     providerTitle={
-                      isProvider ? "Patient" : meetingToShow.eaProvider?.type
+                      isProvider || isAdmin ? "Patient" : meetingToShow.eaProvider?.type
                     }
                     renderDate={{
                       time: dayjs(meetingToShow.start).format("h:mm A"),
                       date: dayjs(meetingToShow.start).isToday()
                         ? "Today"
                         : dayjs(meetingToShow.start).isTomorrow()
-                        ? "Tomorrow"
-                        : dayjs(meetingToShow.start).format("MM-DD-YYYY"),
+                          ? "Tomorrow"
+                          : dayjs(meetingToShow.start).format("MM-DD-YYYY"),
                     }}
                     appointmentId={meetingToShow.eaAppointmentId}
                   />
@@ -258,20 +298,20 @@ export const CalendarView = () => {
               <AppointmentPreviewItem
                 isLoading={loading}
                 name={
-                  isProvider
+                  isProvider || isAdmin
                     ? upcomingAppointment.eaCustomer?.name
                     : upcomingAppointment.eaProvider?.name
                 }
                 providerTitle={
-                  isProvider ? "Patient" : upcomingAppointment.eaProvider?.type
+                  isProvider || isAdmin ? "Patient" : upcomingAppointment.eaProvider?.type
                 }
                 renderDate={{
                   time: dayjs(upcomingAppointment.start).format("h:mm A"),
                   date: dayjs(upcomingAppointment.start).isToday()
                     ? "Today"
                     : dayjs(upcomingAppointment.start).isTomorrow()
-                    ? "Tomorrow"
-                    : dayjs(upcomingAppointment.start).format("MM-DD-YYYY"),
+                      ? "Tomorrow"
+                      : dayjs(upcomingAppointment.start).format("MM-DD-YYYY"),
                 }}
                 appointmentId={upcomingAppointment.eaAppointmentId}
               />

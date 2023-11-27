@@ -45,7 +45,6 @@ export const SelectInput: FC<ISelectInput> = ({
         <select
           ref={selectRef}
           disabled={disabled}
-          defaultValue={value}
           value={value}
           onFocus={() => setError(undefined)}
           onChange={handleChange}
@@ -67,6 +66,53 @@ export const SelectInput: FC<ISelectInput> = ({
         </button>
       </div>
       {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
+    </>
+  );
+};
+
+
+
+export const SelectInputNonFormik = ({
+  placeholder,
+  options,
+  value,
+  disabled = false,
+  onChange,
+}: {
+  placeholder?: string
+  options: OptionInput[]
+  value?: any
+  disabled?: boolean
+  onChange: (val: any) => void
+}) => {
+  const selectRef = useRef<HTMLSelectElement>(null);
+  return (
+    <>
+      <div
+        className={`flex flex-row mt-1 w-full rounded-2xl border-2 overflow-hidden border-gray-300`}
+      >
+        <select
+          ref={selectRef}
+          disabled={disabled}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="appearance-none w-full py-1 rounded-lg pl-3 focus:outline-none placeholder-gray-400 bg-white"
+        >
+          <option value="">{placeholder}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label || option.value}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className="flex items-center px-2 text-brand-berry"
+          onClick={() => selectRef.current?.focus()}
+        >
+          <ChevronDownIcon className="w-6 h-6 text-brand-berry" />
+        </button>
+      </div>
     </>
   );
 };
