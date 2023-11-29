@@ -191,6 +191,7 @@ export default withSessionRoute(async function loginRoute(req, res) {
 
         // Delete the weights array
         delete userData.weights;
+        delete userData.score;
 
         // Assign the modified object to the session user
         (req.session as any).user = userData;
