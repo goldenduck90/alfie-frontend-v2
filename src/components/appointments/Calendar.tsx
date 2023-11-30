@@ -210,7 +210,7 @@ export const CalendarView = () => {
         </div>
         <Calendar
           tileClassName=""
-          onChange={(val) => val instanceof Date && onChange(val)}
+          onChange={(val: any) => val instanceof Date && onChange(val)}
           showNavigation={false}
           value={value}
           tileDisabled={({ date }) => {
@@ -227,6 +227,7 @@ export const CalendarView = () => {
             // If a date in the month view has meetings, show a dot the meetings are found in the meetings array
             view === "month" &&
               meetings.filter((meeting) => {
+                console.log(date, meeting.start)
                 const isSameDay = dayjs(meeting.start).isSame(date, "date");
 
                 if (isSameDay) {
