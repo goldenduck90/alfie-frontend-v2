@@ -66,4 +66,4 @@ export const States: OptionInput[] = [
 export const getStateByAbbreviation = (value: string) =>
   States.find((state) => state.value === value);
 
-export const ValidStates = ["VA", "MD", "DC", "NY", "NJ", "CA", "FL", "TX"];
+export const ValidStates = ["VA", "MD", "DC", "NY", "NJ", "FL", "TX"];
