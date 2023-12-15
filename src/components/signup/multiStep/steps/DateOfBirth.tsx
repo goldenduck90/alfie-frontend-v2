@@ -1,6 +1,7 @@
 import { CalendarIcon } from "@heroicons/react/solid";
 import React from "react";
 import { DateInput } from "@src/components/inputs/DateInput";
+import dayjs from "dayjs";
 
 export const DateOfBirth = () => {
   return (
@@ -21,6 +22,7 @@ export const DateOfBirth = () => {
           placeholder="MM/DD/YYYY"
           icon={<CalendarIcon className="h-5 w-5 text-brand-berry" />}
           maxDate={new Date()}
+          minDate={dayjs(new Date()).subtract(90, "years").toDate()}
         />
       </div>
     </div>

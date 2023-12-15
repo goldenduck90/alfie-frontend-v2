@@ -6,6 +6,7 @@ import { CalendarIcon } from "@heroicons/react/solid";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { States } from "@src/utils/states";
 import { DateInput } from "@src/components/inputs/DateInput";
+import dayjs from "dayjs";
 
 const ContactInformation = () => {
   const [, , { setValue: setBiologicalSexValue }] = useField("biologicalSex");
@@ -48,6 +49,7 @@ const ContactInformation = () => {
               placeholder="MM/DD/YYYY"
               icon={<CalendarIcon className="h-5 w-5 text-brand-berry" />}
               maxDate={new Date()}
+              minDate={dayjs(new Date()).subtract(90, "years").toDate()}
             />
           </div>
           <div className="flex flex-col  w-64">
