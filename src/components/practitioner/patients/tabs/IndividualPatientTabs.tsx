@@ -319,8 +319,6 @@ function TableInformationHeader({
   );
 }
 
-
-
 function TabTitle({
   value,
   children,
@@ -333,8 +331,9 @@ function TabTitle({
   return (
     <Tabs.Trigger
       value={value}
-      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
-        }`}
+      className={`p-3 border border-transparent rounded-md hover:bg-gray-100 min-w-fit ${
+        active ? "text-brand-berry bg-blue-100 hover:bg-blue-100" : ""
+      }`}
     >
       {children}
     </Tabs.Trigger>
@@ -433,7 +432,6 @@ function PatientAlerts() {
     ]);
   };
 
-
   useEffect(() => {
     if (loading) return;
 
@@ -518,11 +516,10 @@ const SeverityBadge = ({ severity }: { severity: SeverityType }) => {
     <span
       className={`${bgColor} text-white text-xs font-medium mx-2 px-2.5 py-0.5 rounded-full`}
     >
-      {severity}
+      Severity: {severity}
     </span>
   );
 };
-
 
 function AlertItem({
   alert,
